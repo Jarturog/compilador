@@ -16,34 +16,28 @@
 - Operacions:
   o Assignació:      nombreDeVariable: valorVariable
   o Condicional:      ¿proposiciónAEvaluar? { ··· } ¿segundaProposiciónSiNoSeCumpleLaAnterior? { ··· } ¿no? { ··· }      el 'no' es el else
-  o Selecció múltiple (tipus switch):      ¿¿proposiciónAEvaluar?? { caso valor1: ··· fin; caso valor2: ··· caso predeterminado: ··· }
+  o Selecció múltiple (tipus switch):      ¿¿proposiciónAEvaluar?? { caso valor1-> ··· fin; caso valor2-> ··· caso predeterminado-> ··· }
   o Bucles:
-    ▪ while:
-    ▪ repeat until
-    ▪ for
-    ▪ altres
-  o Crida a procediments i funcions amb paràmetres
-  o Retorn de funcions si aquestes s’implementen
+    ▪ while:      mientras (proposiciónAEvaluar) { ··· }
+    ▪ repeat until:      haz { ··· } mientras (proposiciónAEvaluar);
+    ▪ for:      para (declaraciones; proposiciónAEvaluar; ejecutadoEnCadaIteración) { ··· }
+    ~~▪ altres~~
+  o Crida a procediments i funcions amb paràmetres:      nombreFuncion(parámetro1, parámetro2, ···);
+  o Retorn de funcions si aquestes s’implementen:      nombreDeVariable: nombreFuncion(parámetro1, parámetro2, ···);
 - Expressions aritmètiques i lògiques:
-o Fent ús de literals del tipus adient
-o Fent ús de constants i variables
-• Operacions d’entrada i sortida
-o Entrada per teclat
-o Sortida per pantalla
-o Entrada i sortida des de fitxer*
-• Operadors6
-:
-o Aritmètics2
-: suma, resta, producte, divisió, mòdul
-o Relacionals2
-: igual, diferent, major, menor, major o igual, menor o igual
-o Lògics2
-: i, o, no
-o Especials*
-:
-▪ Pre increment/decrement
-▪ Post increment/decrement
-▪ Assignació i operació alhora és a dir la combinació de cada operador amb l’operació
-d’assignació (+=, ...)
-▪ Operació condicional (? : )
-▪ altres
+  o Fent ús de literals del tipus adient:      variable: 5+4;
+  o Fent ús de constants i variables:      variable: constante + variable2;
+- Operacions d’entrada i sortida:
+  o Entrada per teclat:      todavía a pensar
+  o Sortida per pantalla:      todavía a pensar
+  o Entrada i sortida des de fitxer:      todavía a pensar
+- Operadors:
+  o Aritmètics: suma, resta, producte, divisió, mòdul:      +, -, *, /, \
+  o Relacionals: igual, diferent, major, menor, major o igual, menor o igual:      =, /=, >, <, >=, <=
+  o Lògics: i, o, no:      &, |, ¬
+  o Especials:
+    ▪ Pre increment/decrement:      ++variable/--variable
+    ▪ Post increment/decrement:      variable++/variable--
+    ▪ Assignació i operació alhora és a dir la combinació de cada operador amb l’operació d’assignació (+=, ...):      +=, -=, *=, /=, \=, &=, |=, **=
+    ▪ Operació condicional (? -> ):
+    ▪ altres:      potencia: ** y porcentaje: %, donde 5% = 0.05
