@@ -1,4 +1,4 @@
-#MARTURO - JAMARTAC
+# MARTURO - JAMARTAC
 
 - Un cos general de programa on hi hagi d’haver els subprogrames, les declaracions i les instruccions del programa:       void main(letra[][] args) { ··· }
 - Definició de subprogrames:      tipoRetornoSugerido nombreFunción(parámetros) { ··· }
