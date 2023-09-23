@@ -1,12 +1,12 @@
 # MARTURO - JAMARTAC
 
-- Un cos general de programa on hi hagi d’haver els subprogrames, les declaracions i les instruccions del programa:       void main(letra[][] args) { ··· }
+- Un cos general de programa on hi hagi d’haver els subprogrames, les declaracions i les instruccions del programa:       void main(car[][] args) { ··· }
 - Definició de subprogrames:      tipoRetornoSugerido nombreFunción(parámetros) { ··· }
 - Tipus:
   - Enter:      ent
-  - Cadena de caràcters:      letra[]
+  - Cadena de caràcters:      car[]
   - Lògic:      prop (de proposición, ya que puede ser cierta o falsa)
-  - Altres*:      real, letra, puntero...
+  - Altres*:      real, car
 - Tipus definits per l’usuari:
   - Tuples:      tupla nombreTupla { ··· } (como los struct's en C)
   - Taules amb múltiples dimensions:      tipoDeDato nombreDeVariable [][]        y      tipoDeDato nombreDeVariable []**2 (yo me encargaré de este, no te ralles marta)
@@ -18,9 +18,9 @@
   - Condicional:      ¿proposiciónAEvaluar? { ··· } ¿segundaProposiciónSiNoSeCumpleLaAnterior? { ··· } ¿no? { ··· }      el 'no' es el else
   - Selecció múltiple (tipus switch):      ¿¿proposiciónAEvaluar?? { caso valor1-> ··· fin; caso valor2-> ··· caso predeterminado-> ··· }
   - Bucles:
-    - while:      mientras (proposiciónAEvaluar) { ··· }
-    - repeat until:      haz { ··· } mientras (proposiciónAEvaluar);
-    - for:      para (declaraciones; proposiciónAEvaluar; ejecutadoEnCadaIteración) { ··· }
+    - while:      loop (proposiciónAEvaluar) { ··· }
+    - repeat until:      do { ··· } loop (proposiciónAEvaluar);
+    - for:      loop (declaraciones; proposiciónAEvaluar; ejecutadoEnCadaIteración) { ··· }
     ~~- altres~~
   - Crida a procediments i funcions amb paràmetres:      nombreFuncion(parámetro1, parámetro2, ···);
   - Retorn de funcions si aquestes s’implementen:      nombreDeVariable: nombreFuncion(parámetro1, parámetro2, ···);
@@ -28,9 +28,9 @@
   - Fent ús de literals del tipus adient:      variable: 5+4;
   - Fent ús de constants i variables:      variable: constante + variable2;
 - Operacions d’entrada i sortida:
-  - Entrada per teclat:      **todavía a pensar**
-  - Sortida per pantalla:      **todavía a pensar**
-  - Entrada i sortida des de fitxer:      **todavía a pensar**
+  - Entrada per teclat:      enter();
+  - Sortida per pantalla:      show();
+  - Entrada i sortida des de fitxer:      write();/read();
 - Operadors:
   - Aritmètics: suma, resta, producte, divisió, mòdul:      +, -, *, /, \
   - Relacionals: igual, diferent, major, menor, major o igual, menor o igual:      =, /=, >, <, >=, <=
