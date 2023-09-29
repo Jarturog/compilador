@@ -1,4 +1,4 @@
-# MARTURO - JAMARTAC
+# ARTAM
 
 - Un cos general de programa on hi hagi d’haver els subprogrames, les declaracions i les instruccions del programa:       void main(car[][] args) { ··· }
 - Definició de subprogrames:      tipoRetornoSugerido nombreFunción(parámetros) { ··· }
