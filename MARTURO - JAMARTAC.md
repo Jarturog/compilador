@@ -15,7 +15,7 @@
   - Constants:      const nombreConstante: valorConstante
 - Operacions:
   - Assignació:      nombreDeVariable: valorVariable
-  - Condicional:      ¿proposiciónAEvaluar? { ··· } ¿segundaProposiciónSiNoSeCumpleLaAnterior? { ··· } ¿no? { ··· }      el 'no' es el else
+  - Condicional:      ¿proposiciónAEvaluar? { ··· } ¿no? ¿segundaProposiciónSiNoSeCumpleLaAnterior? { ··· } ¿no? { ··· }      el 'no' es el else
   - Selecció múltiple (tipus switch):      ¿¿proposiciónAEvaluar?? { caso valor1-> ··· fin; caso valor2-> ··· caso predeterminado-> ··· }
   - Bucles:
     - while:      loop (proposiciónAEvaluar) { ··· }
