@@ -1,5 +1,7 @@
 # Parte que realiza el análisis léxico mediante JFLex
 ## ARTAM pasado a expresiones regulares:
+
+
 digito      [0-9]
 digitos     {digito}+
 signo       [+-]?  ##SOBRA
