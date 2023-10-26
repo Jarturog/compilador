@@ -2,7 +2,7 @@
 ## ARTAM pasado a expresiones regulares:
 digito      [0-9]
 digitos     {digito}+
-signo       [+-]?
+signo       [+-]?  ##SOBRA
 ent10       signo[([1-9]{digito}*)0+]
 ent2        0b[01]+
 ent8        0o[0-7]+
@@ -22,11 +22,14 @@ kw_void     void
 val_prop    (verdadero|falso)
 val_car     '{car}'
 val_cars    \"{cars}\"
-!!!!prop        {prop}{op_binario}{prop}
+!!prop      ({prop}{op_binario}{prop})|   (props luego se puede convertir en algo  !!es lo mismo q operacion!! )
 param       {tipo}{id}
 params      ({param},)*{param}
-cabFunc     [{tipo}{kw_void}]{id}\({params}?\)
+!!cabFunc     [{tipo}{kw_void}]{id}\({params}?\)  #ponemos llaves apertura cierre? 
 dec         {tipo}{id}(,{id})*
-!!!decAsig     {dec}:{asignable}
-!!!instr       ({llamadaFunc}|{operacion}|{dec});
-
+decAsig     {dec}:{asignable}
+asignable   {}:{}
+instr       ({llamadaFunc}|{operacion}|{decAsig});
+op_binario  [=\<\>(\<=)(\>=)\+\-\*\/\%\|&\\]       # = < > <= >= + - * / % | & \
+llamadaFunc {id}\(!!parametros!!\) #le ponemos puntocoma como final de linea?
+operacion   ({digito}|{digitos}|{id}){op_binario}({digito}|{digitos}|{id})
