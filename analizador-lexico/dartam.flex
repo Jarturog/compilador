@@ -43,18 +43,22 @@ kwChar      = "car"
 kwInt       = "ent"
 kwDouble    = "real"
 kwBool      = "prop"
-kwVoid      = "void"
+kwConst     = "inmut"  //inmutable
+kwVoid      = "vacio"
 
-kwMain      = "main"
-
+kwMain      = "inicio"
 kwIfO       = "si"
 kwElif      = "sino"
 kwElse      = "no"
 kwSwitch    = "selec"
 kwWhileFor  = "loop"
 kwReturn    = "pop" "-|"
-kwTrue      = ""
-kwFalse     = ""
+kwTrue      = "cierto"
+kwFalse     = "falso"
+
+comentarLinea   = "//"
+comentarBloqueI=  "#"
+comentarBloqueF  = "#"
 
 
 
