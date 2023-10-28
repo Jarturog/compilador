@@ -7,12 +7,14 @@ digits      ={digit}+
 letter      =[A-Za-z]
 id          ={letter}({letter}|{digit})*
 signo       =[+-]? 
-base10       =signo[0|[1-9]{digito}*]
+base10      =signo[0|[1-9]{digito}*]
 binario     =0b[01]+
 octal       =0o[0-7]+
 hex         =0x[A-Fa-f0-9]+
-entero     [{base10}{binario}{octal}{hex}]
-real    {base10}?\.{digitos}?([Ee]{ent10})?
+entero      =[{base10}{binario}{octal}{hex}]
+real        ={base10}?\.{digitos}?([Ee]{ent10})?
+val_prop    ={cierto|falso}
+
 // Símbolos
 
 parenIzq	= \(
@@ -59,6 +61,7 @@ kwElif      = "sino"
 kwElse      = "no"
 kwSwitch    = "selec"
 kwWhileFor  = "loop"
+kwDoLoop    = "do"
 kwReturn    = "pop" "-|"
 kwTrue      = "cierto"
 kwFalse     = "falso"
