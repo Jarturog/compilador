@@ -4,8 +4,9 @@ import java.io.*;
 
 digit       =[0-9]
 digits      ={digit}+
-letter      =[A-Za-z]
-id          ={letter}({letter}|{digit})*
+car         =[A-Za-z]
+cars        ={car}+
+id          ={car}({car}|{digit})*
 signo       =[+-]? 
 base10      =signo[0|[1-9]{digito}*]
 binario     =0b[01]+
@@ -14,6 +15,8 @@ hex         =0x[A-Fa-f0-9]+
 entero      =[{base10}{binario}{octal}{hex}]
 real        ={base10}?\.{digitos}?([Ee]{ent10})?
 val_prop    ={cierto|falso}
+
+
 
 // Símbolos
 
