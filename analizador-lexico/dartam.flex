@@ -2,30 +2,37 @@ import java.io.*;
 %%
 // Declaracions
 
-digit [0-9]
-digits {digit}+
-letter [A-Za-z]
-id {letter}({letter}|{digit})*
-
+digit       =[0-9]
+digits      ={digit}+
+letter      =[A-Za-z]
+id          ={letter}({letter}|{digit})*
+signo       =[+-]? 
+base10       =signo[0|[1-9]{digito}*]
+binario     =0b[01]+
+octal       =0o[0-7]+
+hex         =0x[A-Fa-f0-9]+
+entero     [{base10}{binario}{octal}{hex}]
+real    {base10}?\.{digitos}?([Ee]{ent10})?
 // Símbolos
 
-ParenIzq	= \(
-ParenDer	= \)
-LaveIzq		= \{
-LlaveDer 	= \}
-BracketIzq	= \[
-BracketDer	= \]
+parenIzq	= \(
+parenDer	= \)
+laveIzq		= \{
+llaveDer 	= \}
+bracketIzq	= \[
+bracketDer	= \]
 endInstr    = ;
 asig        = :
 coma	    = ,
 
 //Operadores
 
-Eq          = \=
-Mayor       = \>
-Menor       = \<
-MayorEq     = \>\=
-MenorEq     = \<\=
+eq          = \=
+diferent    = \/\=
+mayor       = \>
+menor       = \<
+mayorEq     = \>\=
+menorEq     = \<\=
 Sum         = \+
 Res         = \-
 Mult        =\*
