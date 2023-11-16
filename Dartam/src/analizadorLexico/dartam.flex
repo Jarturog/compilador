@@ -11,7 +11,7 @@ package analizadorLexico;
 import java.io.*; // aquí van los imports
 import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-import jlex_cup_example.compiler_components.cup.ParserSym;
+//import jlex_cup_example.compiler_components.cup.ParserSym;
 
 %%
 /** **
@@ -199,6 +199,9 @@ finLinea = [\r\n]+
 {kw_Else}			{ tokens.add(yytext() + " : RES_ELSE"); return symbol(ParserSym.RES_ELSE); }
 {kw_WhileFor}		{ tokens.add(yytext() + " : RES_LOOP"); return symbol(ParserSym.RES_LOOP); }
 {kw_DoLoop}			{ tokens.add(yytext() + " : RES_DO"); return symbol(ParserSym.RES_DO); }
+
+//{kw_switch}                     { tokens.add(yytext() + " : RES_RETURN"); return symbol(ParserSym.RES_RETURN); }
+
 //{resReturn}			{ tokens.add(yytext() + " : RES_RETURN"); return symbol(ParserSym.RES_RETURN); }
 //{resIn} 			{ tokens.add(yytext() + " : RES_IN"); return symbol(ParserSym.RES_IN); }
 //{resOut} 			{ tokens.add(yytext() + " : RES_OUT"); return symbol(ParserSym.RES_OUT); }

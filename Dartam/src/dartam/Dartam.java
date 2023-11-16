@@ -3,14 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Project/Maven2/JavaApp/src/main/java/${packagePath}/${mainClassName}.java to edit this template
  */
 
-package aplicacion;
+package dartam;
 
 import analizadorLexico.Scanner;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.FileReader;
+import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.SymbolFactory;
+
 
 /**
  *
@@ -26,7 +28,7 @@ public class Dartam {
             //Leeremos el documento ejemplo.txt que contiene varioss valores
             input = new FileReader("ejemplo.txt");
             Scanner scanner = new Scanner(input);
-            SymbolFactory sf = new ComplexSymbolFactory();
+            //SymbolFactory sf = new ComplexSymbolFactory();
             Parser parser = new Parser(scanner, sf);
             parser.parse();
         } catch(Exception e) {
