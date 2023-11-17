@@ -11,6 +11,8 @@ package analizadorLexico;
 import java.io.*; // aquí van los imports
 import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import analizadorLexico.syntactic.ParserSym;
+
 //import jlex_cup_example.compiler_components.cup.ParserSym;
 
 %%
@@ -50,18 +52,20 @@ La línia anterior és una alternativa a la indicació element a element:
 // kw que es una palabra reservada (keyword)
 
 sub_digit   = [0-9]
-sub_digits  = {sub_digit}+
+//sub_digits  = {sub_digit}+ NO SE USA
 sub_letra   = [A-Za-z] // no confundir con carácter
 id          = ({sub_letra}|_)({sub_letra}|{sub_digit}|_)*
-sub_signo   = [+-]? 
+sub_signo   = [+|-]? 
+
 //digito* por [1-9]*
-sub_base10  = sub_signo[0|[1-9]*]
+sub_base10  = {sub_signo}[0|[1-9]*]
 sub_binario = 0b[01]+
 sub_octal   = 0o[0-7]+
 sub_hex     = 0x[A-Fa-f0-9]+
-val_entero  = [{sub_base10}{sub_binario}{sub_octal}{sub_hex}]
+val_entero  = {sub_base10}|{sub_binario}|{sub_octal}|{sub_hex}
+
 //cambiado digitos->sub_base10
-val_real    = {sub_base10}?\.{sub_base10}?([Ee]{ent10})?
+val_real    = {sub_base10}?\.{sub_base10}?([Ee]{sub_base10})?
 val_prop    = {kw_True}|{kw_False}
 
 // Símbolos
@@ -72,12 +76,11 @@ sim_llaveIzq	= \{
 sim_llaveDer 	= \}
 sim_bracketIzq	= \[
 sim_bracketDer	= \]
-sim_endInstr    = ;
-sim_asig        = :
-sim_coma	= ,
+sim_endInstr    = \;
+sim_asig        = \:
+sim_coma	= \,
 
 //Operadores
-
 op_eq       = \= 
 op_diferent = \/\= 
 op_mayor    = \>
@@ -119,7 +122,7 @@ comentarLinea  = "\/\/"
 comentarBloque = "#" // tanto para el inicio como para el final
 comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 
-espacioBlanco = [ \t]+
+espacioBlanco = [  \t\r\n]+
 finLinea = [\r\n]+
 
 //Codigo necesario para que la clase Scanner funcione correctamente 
@@ -199,17 +202,20 @@ finLinea = [\r\n]+
 {kw_Else}			{ tokens.add(yytext() + " : RES_ELSE"); return symbol(ParserSym.RES_ELSE); }
 {kw_WhileFor}		{ tokens.add(yytext() + " : RES_LOOP"); return symbol(ParserSym.RES_LOOP); }
 {kw_DoLoop}			{ tokens.add(yytext() + " : RES_DO"); return symbol(ParserSym.RES_DO); }
+{kw_Double}			{ tokens.add(yytext() + " : RES_DOUBLE"); return symbol(ParserSym.RES_DOUBLE); }
 
-//{kw_switch}                     { tokens.add(yytext() + " : RES_RETURN"); return symbol(ParserSym.RES_RETURN); }
+{kw_Switch }                     { tokens.add(yytext() + " : RES_RETURN"); return symbol(ParserSym.SWITCH); }
+{comentario}			{ /* No hacemos nada */ }
 
 //{resReturn}			{ tokens.add(yytext() + " : RES_RETURN"); return symbol(ParserSym.RES_RETURN); }
 //{resIn} 			{ tokens.add(yytext() + " : RES_IN"); return symbol(ParserSym.RES_IN); }
 //{resOut} 			{ tokens.add(yytext() + " : RES_OUT"); return symbol(ParserSym.RES_OUT); }
 // Types
 {kw_Int}		    	{ tokens.add(yytext() + " : TYPE_INTEGER"); return symbol(ParserSym.TYPE_INTEGER); }
-// {kw_Char}			{ tokens.add(yytext() + " : TYPE_CHARACTER"); return symbol(ParserSym.TYPE_CHARACTER); }
+{kw_Char}			{ tokens.add(yytext() + " : TYPE_CHARACTER"); return symbol(ParserSym.TYPE_CHARACTER); }
 {kw_Bool}			{ tokens.add(yytext() + " : TYPE_BOOLEAN"); return symbol(ParserSym.TYPE_BOOLEAN); }
 {kw_Void}			{ tokens.add(yytext() + " : TYPE_VOID"); return symbol(ParserSym.TYPE_VOID); }
+{kw_Return}			{ tokens.add(yytext() + " : RES_RETURN"); return symbol(ParserSym.RETURN); }
 
 // Special characters
 {sim_parenIzq}			{ tokens.add(yytext() + " : L_PAREN"); return symbol(ParserSym.L_PAREN); }
@@ -237,20 +243,17 @@ finLinea = [\r\n]+
 {sim_asig}	    		{ tokens.add(yytext() + " : EQUAL"); return symbol(ParserSym.EQUAL); }
 // no tenemos: {swapSym} 			{ tokens.add(yytext() + " : OP_SWAP"); return symbol(ParserSym.OP_SWAP); }
 
-{finLinea}  {return symbol(ParserSym.EOF)}
-{espacioBlanco} { /* no hacemos nada*/}
-
 // Non-reserved words
 // {character}			{ tokens.add(yytext() + " : CHARACTER"); return symbol(ParserSym.CHARACTER, yytext().charAt(1)); }
 
-//Da error no se porque     
-//{val_entero}    		{ try {tokens.add(yytext() + " : INTEGER"); return symbol{ParserSym.INT, Integer.parseInt(yytext())};} catch(Exception nf){return symbol(ParserSym.error);} }
+{val_real}                          { try {tokens.add(yytext() + " : DOUBLE"); return symbol(ParserSym.valor, Double.parseDouble(this.yytext()));} catch(Exception nf){return symbol(ParserSym.error);}}     
+{val_entero}    		{ try {tokens.add(yytext() + " : INTEGER"); return symbol{ParserSym.INT, Integer.parseInt(yytext())};} catch(Exception nf){return symbol(ParserSym.error);} }
 {val_prop}			{ tokens.add(yytext() + " : BOOLEAN"); return symbol(ParserSym.BOOLEAN, Boolean.parseBoolean(yytext())); }
 // {string}			{ tokens.add(yytext() + " : STRING"); return symbol(ParserSym.STRING, yytext());}
 
 {id}		{ tokens.add(yytext() + " : IDENTIFIER"); return symbol(ParserSym.IDENTIFIER, yytext()); }
-
-// nos falta añadir un ws: {ws}				{ /* Do nothing */ }
+{finLinea}  {return symbol(ParserSym.EOF)}
+{espacioBlanco} { /* no hacemos nada*/}
 [^]					{ errors.add(errorMessage()); System.err.println(errorMessage());
 						return symbol(ParserSym.error); 
 					}
