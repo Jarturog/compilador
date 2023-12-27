@@ -57,7 +57,7 @@ sub_signo   = [+|-]?
 id          = ({sub_letra}|_)({sub_letra}|{sub_digit}|_)*
 
 //Descripción de digitos
-sub_base10  = {sub_signo}{sub_digit}+]
+sub_base10  = {sub_signo}{sub_digit}+
 sub_binario = 0b[01]+
 sub_octal   = 0o[0-7]+
 sub_hex     = 0x[A-Fa-f0-9]+
