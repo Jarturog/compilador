@@ -28,9 +28,7 @@ public class Dartam {
             //Leeremos el documento ejemplo.txt que contiene varioss valores
             input = new FileReader("ejemplo.txt");
             Scanner scanner = new Scanner(input);
-            //SymbolFactory sf = new ComplexSymbolFactory();
-            Parser parser = new Parser(scanner, sf);
-            parser.parse();
+            
         } catch(Exception e) {
             System.err.println("error: "+e);
             e.printStackTrace(System.err);

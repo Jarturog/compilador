@@ -122,23 +122,21 @@ kw_False     = "falso"
 
 comentarLinea  = "\/\/"
 comentarBloque = "#" // tanto para el inicio como para el final
-comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
+comentario = {comentarLinea}|{comentarBloque}[^]*{comentarBloque}
 
-espacioBlanco = [' '| '\t']+
+espacioBlanco = [ \t]+
 finLinea = [\r\n]+
 
 //Codigo necesario para que la clase Scanner funcione correctamente 
 %{
     private ArrayList<String> tokens = new ArrayList<>();
-    
+    private ArrayList<String> errors = new ArrayList<>();
     
     public String writeTokens(){
 		String tokenList = "";
-
 		for(String s : tokens){
 			tokenList += s + "\n";
 		}
-
 		return tokenList;
     }
 
@@ -160,6 +158,10 @@ finLinea = [\r\n]+
 				throw new NumberFormatException(errorMessage());
 		}
     }
+
+    private String errorMessage(){
+		return " !! Lexic error: Not recognized token " + yytext() + " at position [line: " + (yyline+1) + ", column: " + (yycolumn+1) + "]";
+    }
     
     /***
        Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
@@ -170,22 +172,24 @@ finLinea = [\r\n]+
      **/
     private ComplexSymbol symbol(int type) {
         // Sumar 1 per a que la primera línia i columna no sigui 0.
-        Location esquerra = new Location(yyline+1, yycolumn+1);
-        Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1);
-
-        return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta);
-    }
+        ComplexSymbol simbolo = new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta);
+        simbolo.left = yyline +1;
+        simbolo.right = yycolumn;
+        tokens.add(simbolo);
+        return simbolo;
+     }
     
     /**
      Construcció d'un symbol amb un atribut associat.
      **/
     private Symbol symbol(int type, Object value) {
         // Sumar 1 per a que la primera línia i columna no sigui 0.
-        Location esquerra = new Location(yyline+1, yycolumn+1);
-        Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1);
-
-        return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
-    }
+        ComplexSymbol simbolo = new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
+        simbolo.left = yyline + 1;
+        simbolo.right = yycolumn;
+        tokens.add(simbolo);
+        return simbolo;
+}
 %}
 
 /***************************************************************************************/
