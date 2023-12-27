@@ -1,3 +1,5 @@
 /Dartam/target/
 /Dartam/nbproject/private/
 .DS_Store
+*~
+jflex-1.9.1/
