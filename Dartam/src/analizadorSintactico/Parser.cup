@@ -2,11 +2,11 @@
 /**
  Per compilar aquest fitxer s'ha d'haver instal·lat JavaCup
 
-  java -jar java-cup-11b.jar sintactic.cup
+  java -jar java-cup-11b.jar Parser.cup
 
 alternativament
 
-  java -classpath path_fins_java-cup-11b.jar java_cup.Main sintactic.cup
+  java -classpath path_fins_java-cup-11b.jar java_cup.Main Parser.cup
 
  **/
 
@@ -17,7 +17,7 @@ alternativament
  *
  * Equipo: Marta, Arturo, Dani
  */
-package analizadorLexico;
+package analizadorSintactico;
 
 
 
@@ -25,7 +25,7 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
 import java_cup.runtime.*;
 
-import analizadorLexico.Symbols.*;
+import analizadorSintactico.Symbols.*;
 
 import java.io.PrintStream;
 import java.util.HashMap;
