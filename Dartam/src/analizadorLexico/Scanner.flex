@@ -47,68 +47,89 @@ La línia anterior és una alternativa a la indicació element a element:
 %eofval}
 
 // Declaracions
+// sub quiere decir que es un lexema que forma parte de otro
+// val que comprende valores
+// op que es una operación
+// sim que es un símbolo
+// kw que es una palabra reservada (keyword)
 
-id		= [A-Za-z_][A-Za-z0-9_]*
+sub_digit   = [0-9]
+sub_letra   = [A-Za-z] // no confundir con carácter
+sub_signo   = [+|-]? 
+id          = ({sub_letra}|_)({sub_letra}|{sub_digit}|_)*
 
-digit19		= [1-9]
-digit10		= [0-9]
-digit2		= [0-1]
-digit8		= [0-7]
-digit16		= [0-9A-Fa-f]
+//Descripción de digitos
+sub_base10  = {sub_signo}{sub_digit}+
+sub_binario = 0b[01]+
+sub_octal   = 0o[0-7]+
+sub_hex     = 0x[A-Fa-f0-9]+
+
+val_real    = {sub_base10}?\.{sub_base10}?([Ee]{sub_base10})?
+val_prop    = {kw_True}|{kw_False}
+val_entero  = {sub_base10}|{sub_binario}|{sub_octal}|{sub_hex}
+val_char = {sim_comillaSimple}({sub_letra}|{sub_digit}){sim_comillaSimple}
+val_cadena  = {sim_comillaDoble}({sub_letra}|{sub_digit})*{sim_comillaDoble}
+
+// Símbolos
+sym_parenIzq	= \(
+sym_parenDer	= \)
+sym_llaveIzq	= \{
+sym_llaveDer 	= \}
+sym_bracketIzq	= \[
+sym_bracketDer	= \]
+sym_endInstr    = \;
+sym_asig        = \:
+sym_coma	= \,
+sym_comillaSimple = \'
+sym_comillaDoble = \"
+
+//Operadores
+op_eq       = \= 
+op_diferent = \/\= 
+op_mayor    = \>
+op_menor    = \<
+op_mayorEq  = (\>\=)|(\=\>)
+op_menorEq  = (\<\=)|(\=\<)
+op_sum      = \+
+op_res      = \-
+op_mul      = \*
+op_div      = \/
+op_porcent  = \%
+op_or       = \|
+op_and      = &
+op_mod      = \\
+op_neg      = \!
+
+
+//Palabras reservadas
+type_Char      = "car"
+type_String    = "string"
+type_Int       = "ent"
+type_Double    = "val_real"
+type_Bool      = "prop"
+type_Const     = "inmut"  // inmutable
+type_Void      = "vacio"
+
+kw_Main      = "inicio"
+kw_If        = "si"
+kw_Elif      = "sino"
+kw_Else      = "no"
+kw_Switch    = "select"
+kw_WhileFor  = "loop"
+kw_DoLoop    = "do"
+kw_Return    = "pop" 
+kw_True      = "cierto"
+kw_False     = "falso"
+
+comentarLinea  = "\/\/"
+comentarBloque = "#" // tanto para el inicio como para el final
+comentario = {comentarLinea}|{comentarBloque}[^]*{comentarBloque}
+
+espacioBlanco = [ \t]+
+finLinea = [\r\n]+
+
+
 zerodigit	= 0
-tagbinari	= 0b
-taghexa		= 0x
-tagoctal	= 0o
-tagexponent	= [eE]
-
-signe		= [\+|\-]?
-punt		= \.
-
-decimal		= {digit19}{digit10}*
-binari		= {digit2}+
-octal		= {digit8}+
-hexadecimal	= {digit16}+
-
-realdigits1	= {digit10}+{punt}?{digit10}* 
-realdigits2	= {digit10}*{punt}?{digit10}+
-realdigits	= ({realdigits1}|{realdigits2})
-exponent	= {tagexponent}{signe}{realdigits}
-real		= {realdigits}{exponent}?
-
-add          = \+
-sub          = \-
-mul          = \*
-div          = \/
-mod          = %
-lparen       = \(
-rparen       = \)
-
-assign       = \=
-
-lletraA      = ['A'|'a']
-lletraE      = ['E'|'e']
-lletraH      = ['H'|'h']
-lletraI      = ['I'|'i']
-lletraL      = ['L'|'l']
-lletraN      = ['N'|'n']
-lletraP      = ['P'|'p']
-lletraR      = ['R'|'r']
-lletraS      = ['S'|'s']
-lletraT      = ['T'|'t']
-lletraV      = ['V'|'v']
-lletraX      = ['X'|'x']
-
-invcmd       = {lletraI}{lletraN}{lletraV}
-helpcmd      = {lletraH}{lletraE}{lletraL}{lletraP}
-quitcmd      = {lletraE}{lletraX}{lletraI}{lletraT}
-varscmd      = {lletraV}{lletraA}{lletraR}{lletraS}
-
-anscmd       = {lletraA}{lletraN}{lletraS}
-
-ws           = [' '|'\t']+
-endline      = ['\r'|'\n'|"\r\n"]+
-
-cmdLineEnd   = ['\r'|'\n'|"\r\n"]*;
 
 
 // El següent codi es copiarà també, dins de la classe. És a dir, si es posa res
@@ -147,37 +168,28 @@ cmdLineEnd   = ['\r'|'\n'|"\r\n"]*;
 // Regles/accions
 // És molt important l'ordre de les regles!!!
 
-{add}                    { return symbol(ParserSym.ADD);    }
-{sub}                    { return symbol(ParserSym.SUB);    }
-{mul}                    { return symbol(ParserSym.MUL);    }
-{div}                    { return symbol(ParserSym.DIV);    }
-{mod}                    { return symbol(ParserSym.MOD);    }
-{lparen}                 { return symbol(ParserSym.LParen); }
-{rparen}                 { return symbol(ParserSym.RParen); }
+{op_sum}                    { return symbol(ParserSym.ADD);    }
+{op_res}                    { return symbol(ParserSym.SUB);    }
+{op_mul}                    { return symbol(ParserSym.MUL);    }
+{op_div}                    { return symbol(ParserSym.DIV);    }
+{op_mod}                    { return symbol(ParserSym.MOD);    }
+{sym_parenIzq}                 { return symbol(ParserSym.LParen); }
+{sym_parenDer}                 { return symbol(ParserSym.RParen); }
 
-{assign}                 { return symbol(ParserSym.ASSIGN); }
+{sym_asig}                 { return symbol(ParserSym.ASSIGN); }
 
-{invcmd}                 { return symbol(ParserSym.INV);       }
-
-{helpcmd}                { return symbol(ParserSym.HELPCMD);   }
-{quitcmd}                { return symbol(ParserSym.QUITCMD);   }
-{varscmd}                { return symbol(ParserSym.DUMPVARS);  }
-
-{anscmd}                 { return symbol(ParserSym.ANS);       }
 
 {id}                     { return symbol(ParserSym.ID, this.yytext()); }
 
 {zerodigit}              { return symbol(ParserSym.valor, 0.0); }
-{tagbinari}{binari}      { return symbol(ParserSym.valor, Double.valueOf(Integer.parseInt(this.yytext().substring(2, this.yytext().length()),2))); }
-{taghexa}{hexadecimal}   { return symbol(ParserSym.valor, Double.valueOf(Integer.parseInt(this.yytext().substring(2, this.yytext().length()),16))); }
-{tagoctal}{octal}        { return symbol(ParserSym.valor, Double.valueOf(Integer.parseInt(this.yytext().substring(2, this.yytext().length()),8))); }
-{decimal}                { return symbol(ParserSym.valor, Double.parseDouble(this.yytext())); }
-{real}                   { return symbol(ParserSym.valor, Double.parseDouble(this.yytext())); }
+{sub_binario}            { return symbol(ParserSym.valor, Double.valueOf(Integer.parseInt(this.yytext().substring(2, this.yytext().length()),2))); }
+{sub_hex}                { return symbol(ParserSym.valor, Double.valueOf(Integer.parseInt(this.yytext().substring(2, this.yytext().length()),16))); }
+{sub_octal}        { return symbol(ParserSym.valor, Double.valueOf(Integer.parseInt(this.yytext().substring(2, this.yytext().length()),8))); }
+{sub_base10}                { return symbol(ParserSym.valor, Double.parseDouble(this.yytext())); }
+{val_real}                   { return symbol(ParserSym.valor, Double.parseDouble(this.yytext())); }
 
-{cmdLineEnd}             { return symbol(ParserSym.EndCmdInteractive); }
-
-{ws}                     { /* No fer res amb els espais */  }
-{endline}                { return symbol(ParserSym.EndCmd); }
+{espacioBlanco}                     { /* No fer res amb els espais */  }
+{finLinea}                { return symbol(ParserSym.EndCmd); }
 
 [^]                      { return symbol(ParserSym.error);  }
 
