@@ -124,32 +124,47 @@ terminal    Integer             INT;
 terminal    Double              DOUBLE;
 terminal    Character           CHAR;
 
-non terminal SymbolBody         BODY;
-non terminal SymbolDecs         DECLARATIONS;
-non terminal SymbolDec          DECLARATION;
-non terminal SymbolDecCont      DECLARATION_COUNT;
-non terminal SymbolMain         MAIN;
-non terminal SymbolArgs         ARGS;
-non terminal SymbolArg          ARG;
-non terminal SymbolInstrs       INSTRUCTIONS;
-non terminal SymbolInstr        INSTRUCTION;
-non terminal SymbolFunc         FUNCTION;
-non terminal SymbolType         TYPE;
-non terminal SymbolVar          VARIABLE;
-non terminal SymbolAssign       ASSIGNATION;
-non terminal SymbolSwap         SYM_SWAP;
-non terminal SymbolReturn       RETURN;
-non terminal SymbolIn           IN;
-non terminal SymbolOut          OUT;
-non terminal SymbolOperation    OPERATION;
-non terminal SymbolOperand      OPERAND;
-non terminal SymbolValue        VALUE;
-non terminal SymbolOp           OP;
-non terminal SymbolIf           IF;
-non terminal SymbolElse         ELSE;
-non terminal SymbolLoop         LOOP;
-non terminal SymbolFuncCall     FUNCTION_CALL;
-non terminal SymbolParams       PARAMS;
+non terminal SymbolBody BODY;
+non terminal SymbolMain MAIN;
+non terminal SymbolMethod METHOD;
+non terminal SymbolTypeRetorno TIPO_RETORNO;
+non terminal SymbolTypeVar TIPO_VAR;
+non terminal SymbolGetParams GETPARAMS;
+non terminal SymbolParam PARAM;
+non terminal SymbolDecs DECS;
+non terminal SymbolConst CONST;
+non terminal SymbolIDDecsLista IDDECSLISTA;
+non terminal SymbolAsig ASIG;
+non terminal SymbolElementoMetodo ELEMENTO_METODO;
+non terminal SymbolInstr INSTR;
+non terminal SymbolFCall FCALL;
+non terminal SymbolFName FNAME;
+non terminal SymbolSetParams SETPARAMS;
+non terminal SymbolOperandsLista OPERANDSLISTA;
+non terminal SymbolStandaloneOp STANDALONE_OP;
+non terminal SymbolReturn RETURN;
+non terminal SymbolSwap SWAP;
+non terminal SymbolAsigs ASIGS;
+non terminal SymbolIDAsigLista IDASIGLISTA;
+non terminal SymbolAsOp AS_OP;
+non terminal SymbolOperand OPERAND;
+non terminal SymbolUnaryExpression UNARY_EXPRESSION;
+non terminal SymbolBinaryExpression BINARY_EXPRESSION;
+non terminal SymbolConditionalExpression CONDITIONAL_EXPRESSION;
+non terminal SymbolAtomicExpression ATOMIC_EXPRESSION;
+non terminal SymbolBinaryOperator BINARY_OPERATOR;
+non terminal SymbolUnaryOperator UNARY_OPERATOR;
+non terminal SymbolLoop LOOP;
+non terminal SymbolLoopCond LOOP_COND;
+non terminal SymbolIf IF;
+non terminal SymbolElifs ELIFS;
+non terminal SymbolElif ELIF;
+non terminal SymbolElse ELSE;
+non terminal SymbolSwitch SWITCH;
+non terminal SymbolCasos CASOS;
+non terminal SymbolCaso CASO;
+non terminal SymbolPred PRED;
+non terminal S, S1, S2;
 
 // cosas que he quitado de Andreas:
 // non terminal Object             FIXED_VALUE;
@@ -157,8 +172,7 @@ non terminal SymbolParams       PARAMS;
 // non terminal SymbolList         LIST, CONT_LIST;
 // non terminal SymbolBase         HEADER_SEGMENT;
 
-precedence left POT, MUL, DIV, MOD, ADD, SUB;
-precedence left AND, OR;
+precedence left OP_AND, OP_OR, OP_POT, OP_MUL, OP_DIV, OP_MOD, OP_ADD, OP_SUB;
 
 S ::= S1 S
         | S2
@@ -183,14 +197,14 @@ BODY ::= ELEMENTO_METODO BODY
         ;
 
 TIPO_RETORNO ::= TIPO_VAR
-        | VOID
+        | KW_VOID
         ;
 
-TIPO_VAR ::= BOOL
-        | INT
-        | DOUBLE
-        | CHAR
-        | STRING
+TIPO_VAR ::= KW_BOOL
+        | KW_INT
+        | KW_DOUBLE
+        | KW_CHAR
+        | KW_STRING
         ;
 
 GETPARAMS ::= PARAM COMMA GETPARAMS
@@ -230,10 +244,10 @@ FCALL ::= FNAME LPAREN SETPARAMS RPAREN
         ;
 
 FNAME ::= ID
-        | IN
-        | OUT
-        | WRITE
-        | READ
+        | KW_IN
+        | KW_OUT
+        | KW_WRITE
+        | KW_READ
         ;
 
 SETPARAMS ::= OPERANDSLISTA
@@ -251,7 +265,7 @@ STANDALONE_OP ::= RETURN
         ;
 
 RETURN ::= KW_RETURN
-        | KW_RETURN OPERATION
+        | KW_RETURN OPERAND
         ;
 
 SWAP ::= OPERAND OP_SWAP OPERAND
@@ -288,7 +302,7 @@ UNARY_EXPRESSION ::= UNARY_OPERATOR OPERAND
 BINARY_EXPRESSION ::= OPERAND BINARY_OPERATOR OPERAND
         ;
 
-CONDITIONAL_EXPRESSION ::= OPERAND COND OPERAND ARROW OPERAND
+CONDITIONAL_EXPRESSION ::= OPERAND OP_COND OPERAND ARROW OPERAND
         ;
 
 ATOMIC_EXPRESSION ::= ID
@@ -299,7 +313,7 @@ ATOMIC_EXPRESSION ::= ID
         | CHAR
         ;
 
-CONCATENABLE_BINARY_OPERATOR ::= OP_ADD
+BINARY_OPERATOR ::= OP_ADD
         | OP_SUB
         | OP_MUL
         | OP_DIV
@@ -323,21 +337,23 @@ UNARY_OPERATOR ::= OP_NOT
 
 LOOP ::= KW_LOOP LOOP_COND LKEY BODY RKEY
         | KW_DO LKEY BODY RKEY LOOP_COND ENDINSTR
+        ;
 
 LOOP_COND ::= OPERAND
         | DECS ENDINSTR OPERAND ENDINSTR OPERAND
+        ;
 
-IF ::= KW_IF OPERAND LKEY BODY_IF RKEY ELIFS ELSE
+IF ::= KW_IF OPERAND LKEY BODY RKEY ELIFS ELSE
         ;
 
 ELIFS ::= ELIF ELIFS
         |
         ;
 
-ELIF ::= KW_ELIF OPERAND LKEY BODY_IF RKEY
+ELIF ::= KW_ELIF OPERAND LKEY BODY RKEY
         ;
 
-ELSE ::= KW_ELSE LKEY BODY_IF RKEY
+ELSE ::= KW_ELSE LKEY BODY RKEY
         |
         ;
 
