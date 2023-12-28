@@ -1,16 +1,15 @@
 /**
- * Assignatura 21742 - Compiladors I 
+ * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Computació 
- * Curs: 2018-2019
+ * Itinerari: Intel·ligència Artificial i Computació
  *
  * Professor: Pere Palmer
  */
-package jlex_cup_example.compiler_components.cup.symbols;
+package analizadorSintactico.Symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-import jlex_cup_example.compiler_components.cup.ParserSym;
 
+import analizadorSintactico.ParserSym;
 /**
  * Classe que implementa la variable T de la gramàtica
  * 
@@ -24,27 +23,31 @@ public class SymbolT extends SymbolBase {
      * @param valorF
      * @param valorEp 
      */  
-    public SymbolT(int valorF, SymbolTp valorTp) {
-        super("T", 0); // Crear instància amb un valor fals
-        Integer valor;
+    public SymbolT(double valorF, SymbolTp valorTp) {
+        super("T", 0.0); // Crear instància amb un valor fals
+        Double valor;
         
         if ((valorTp == null) || (valorTp.isEmpty())) {
             valor = valorF;
         } else {
             switch (valorTp.getOperacio()) {
                 case ParserSym.MUL:
-                    valor = valorF * (Integer)valorTp.value;
+                    valor = valorF * (Double)valorTp.value;
                     break;
                 case ParserSym.DIV:
-                    valor = valorF / (Integer)valorTp.value;
+                    valor = valorF / (Double)valorTp.value;
                     break;
                 case ParserSym.MOD:
-                    valor = valorF % (Integer)valorTp.value;
+                    valor = valorF % (Double)valorTp.value;
                     break;
                 default:
-                    valor = 0;
+                    valor = 0.0;
             }
         }
         this.value = valor;
+    }
+    
+    public SymbolT() {
+        super();
     }
 }

@@ -1,16 +1,15 @@
 /**
- * Assignatura 21742 - Compiladors I 
+ * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Computació 
- * Curs: 2018-2019
+ * Itinerari: Intel·ligència Artificial i Computació
  *
  * Professor: Pere Palmer
  */
-package jlex_cup_example.compiler_components.cup.symbols;
+package analizadorSintactico.Symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-import jlex_cup_example.compiler_components.cup.ParserSym;
 
+import analizadorSintactico.ParserSym;
 /**
  * Classe que implementa la variable E de la gramàtica. De moment no fa res més
  * que extendre la classe base SymbolBase
@@ -25,24 +24,41 @@ public class SymbolE extends SymbolBase {
      * @param valorT
      * @param valorEp 
      */
-    public SymbolE(int valorT, SymbolEp valorEp) {
-        super("E", 0); // Crear instància amb un valor fals
-        Integer valor;
+    public SymbolE(double valorT, SymbolEp valorEp) {
+        super("E", 0.0); // Crear instància amb un valor fals
+        Double valor;
         
         if ((valorEp == null) || (valorEp.isEmpty())) {
             valor = valorT;
         } else {
             switch (valorEp.getOperacio()) {
                 case ParserSym.ADD:
-                    valor = valorT + (Integer)valorEp.value;
+                    valor = valorT + (Double)valorEp.value;
                     break;
                 case ParserSym.SUB:
-                    valor = valorT - (Integer)valorEp.value;
+                    valor = valorT - (Double)valorEp.value;
                     break;
                 default:
-                    valor = 0;
+                    valor = 0.0;
             }
         }
         this.value = valor;
+    }
+    
+    /**
+     * construeix una variable E a partir del valor que es rep. Servei pes 
+     * cassos d'assignació
+     * @param valor el valor que té
+     */
+    public SymbolE(Double valor) {
+        super("E", valor); // Crear instància amb el valor rebut
+    }
+    
+    
+    /**
+     * construeix una variable Ep buida (en una derivació a lambda)
+     */
+    public SymbolE() {
+        super(); // Crear instància amb un valor fals
     }
 }

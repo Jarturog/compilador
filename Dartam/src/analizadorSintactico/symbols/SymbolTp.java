@@ -1,16 +1,15 @@
 /**
- * Assignatura 21742 - Compiladors I 
+ * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Computació 
- * Curs: 2018-2019
+ * Itinerari: Intel·ligència Artificial i Computació
  *
  * Professor: Pere Palmer
  */
-package jlex_cup_example.compiler_components.cup.symbols;
+package analizadorSintactico.Symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-import jlex_cup_example.compiler_components.cup.ParserSym;
 
+import analizadorSintactico.ParserSym;
 /**
  * Classe que implementa la variable Tp de la gramàtica
  * 
@@ -18,14 +17,12 @@ import jlex_cup_example.compiler_components.cup.ParserSym;
  */
 public class SymbolTp extends SymbolBase {    
     private int operacio;
-    private boolean empty;
     
     /**
      * construeix una variable Ep buida (en una derivació a lambda)
      */
     public SymbolTp() {
-        super("Tp", 0); // Crear instància amb un valor fals
-        this.empty = true;
+        super(); // Crear instància amb un valor fals
     }
     
     /**
@@ -36,11 +33,11 @@ public class SymbolTp extends SymbolBase {
      * @param valorF
      * @param valorEp 
      */  
-    public SymbolTp(int operacio, int valorF, SymbolTp valorTp) {
-        super("Tp", 0); // Crear instància amb un valor fals
+    public SymbolTp(int operacio, double valorF, SymbolTp valorTp) {
+        super("Tp", 0.0); // Crear instància amb un valor fals
         
         this.empty = false;
-        Integer valor;
+        Double valor;
         
         if ((valorTp == null) || (valorTp.isEmpty())) {
             valor = valorF;
@@ -56,19 +53,11 @@ public class SymbolTp extends SymbolBase {
                     valor = valorF % (Integer)valorTp.value;
                     break;
                 default:
-                    valor = 0;
+                    valor = 0.0;
             }
         }
         this.operacio = operacio;
         this.value = valor;
-    }
-
-    /**
-     * Mètode que permet determinar si la variable és buida (lambda)
-     * @return 
-     */
-    public boolean isEmpty() {
-        return this.empty;
     }
     
     /**

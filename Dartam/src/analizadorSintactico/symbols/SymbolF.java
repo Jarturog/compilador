@@ -1,12 +1,11 @@
 /**
- * Assignatura 21742 - Compiladors I 
+ * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Computació 
- * Curs: 2018-2019
+ * Itinerari: Intel·ligència Artificial i Computació
  *
  * Professor: Pere Palmer
  */
-package jlex_cup_example.compiler_components.cup.symbols;
+package analizadorSintactico.Symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
@@ -17,7 +16,11 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * @author Pere Palmer
  */
 public class SymbolF extends SymbolBase {
-    public SymbolF(int valor) {
+    public SymbolF(double valor) {
         super("F", valor);
+    }
+    
+    public SymbolF() {
+        super();
     }
 }
