@@ -3,10 +3,12 @@ package dartam;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.FileReader;
+import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.SymbolFactory;
 import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
 public class Dartam {
 
@@ -26,7 +28,7 @@ public class Dartam {
                 input = new InputStreamReader(System.in);
             }
             Scanner scanner = new Scanner(input);
-        
+
             SymbolFactory sf = new ComplexSymbolFactory();
             Parser parser = new Parser(scanner, sf);
             parser.parse();

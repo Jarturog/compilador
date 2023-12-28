@@ -9,7 +9,6 @@
 package analizadorLexico;
 
 import java.io.*;
-
 import java_cup.runtime.*;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -47,19 +46,22 @@ La línia anterior és una alternativa a la indicació element a element:
 %eofval}
 
 // Declaracions
+// sub quiere decir que es un lexema que forma parte de otro
+// val que comprende valores
+// op que es una operación
+// sim que es un símbolo
+// kw que es una palabra reservada (keyword)
 
-id		= [A-Za-z_][A-Za-z0-9_]*
+sub_digit   = [0-9]
+sub_letra   = [A-Za-z] // no confundir con carácter
+sub_signo   = [+|-]? 
+id          = ({sub_letra}|_)({sub_letra}|{sub_digit}|_)*
 
-digit19		= [1-9]
-digit10		= [0-9]
-digit2		= [0-1]
-digit8		= [0-7]
-digit16		= [0-9A-Fa-f]
-zerodigit	= 0
-tagbinari	= 0b
-taghexa		= 0x
-tagoctal	= 0o
-tagexponent	= [eE]
+//Descripción de digitos
+sub_base10  = {sub_signo}{sub_digit}+
+sub_binario = 0b[01]+
+sub_octal   = 0o[0-7]+
+sub_hex     = 0x[A-Fa-f0-9]+
 
 signe		= [\+|\-]?
 punt		= \.
