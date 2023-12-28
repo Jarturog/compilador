@@ -85,11 +85,11 @@ parser code {:
 scan with {:     next_token(); :}
 **/
 
-terminal    KW_MAIN, KW_CONST;
+terminal    KW_MAIN;
 terminal    KW_IF, KW_ELSE, KW_ELIF, KW_WHILEFOR, KW_DOLOOP, KW_SWITCH;
 terminal    OP_NEG, OP_OR, OP_AND;
-terminal    TYPE_DOUBLE, TYPE_INT, TYPE_CHAR, TYPE_BOOL, TYPE_VOID, TYPE_STRING;
-terminal    SYM_PARENIZQ, SYM_PARENDER, SYM_LLAVEIZQ, SYM_LLAVEER, SYM_BRACKETIZQ, SYM_BRACKETDER, SYM_ENDINSTR, SYM_COMA, SYM_COMILLASIMPLE, SYM_COMILLADOBLE;
+terminal    TYPE_DOUBLE, TYPE_INT, TYPE_CHAR, TYPE_BOOL, TYPE_VOID, TYPE_STRING, TYPE_CONST;
+terminal    SYM_PARENIZQ, SYM_PARENDER, SYM_LLAVEIZQ, SYM_LLAVEER, SYM_BRACKETIZQ, SYM_BRACKETDER, SYM_ENDINSTR, SYM_COMA, SYM_COMILLASIMPLE, SYM_COMILLADOBLE, SYM_ASIG;
 terminal    OP_SUM, OP_RES, OP_MUL, OP_DIV, OP_MOD, OP_EQ, OP_MAYOREQ, OP_MAYOR, OP_MENOREQ, OP_MENOR, OP_DIFERENT;
 
 terminal    String  ID;
@@ -131,3 +131,30 @@ non terminal SymbolFor          FOR;
 non terminal SymbolFuncCall     FUNCTION_CALL;
 non terminal SymbolParams       PARAMS, MORE_PARAMS;
 non terminal SymbolBase         HEADER_SEGMENT;
+
+precedence left  OP_MUL, OP_DIV, OP_MOD, OP_SUM, OP_RES;
+precedence left  OP_AND, OP_OR;
+
+start with OP;
+
+OP ::= ADD                                                              {: RESULT = new SymbolOp(ParserSym.KW_ADD); :}
+     | SUB                                                              {: RESULT = new SymbolOp(ParserSym.KW_SUB); :}
+     | PROD                                                             {: RESULT = new SymbolOp(ParserSym.KW_PROD); :}
+     | DIV                                                              {: RESULT = new SymbolOp(ParserSym.KW_DIV); :}
+     | MOD                                                              {: RESULT = new SymbolOp(ParserSym.KW_MOD); :}
+     | OR                                                               {: RESULT = new SymbolOp(ParserSym.KW_OR); :}
+     | AND                                                              {: RESULT = new SymbolOp(ParserSym.KW_AND); :}
+     | OP_REL:v                                                         {: RESULT = v; :}
+     ;
+OP_REL ::= IS_EQUAL                                                     {: RESULT = new SymbolOp(ParserSym.IS_EQUAL, true); :}
+         | BIGGER                                                       {: RESULT = new SymbolOp(ParserSym.BIGGER, true); :}
+         | BEQ                                                          {: RESULT = new SymbolOp(ParserSym.BEQ, true); :}
+         | LESSER                                                       {: RESULT = new SymbolOp(ParserSym.LESSER, true); :}
+         | LEQ                                                          {: RESULT = new SymbolOp(ParserSym.LEQ, true); :}
+         | NEQ                                                          {: RESULT = new SymbolOp(ParserSym.NEQ, true); :}
+         ;
+
+VALUE ::= VARIABLE:v                                                    {: RESULT = new SymbolValue(v, vxleft.getLine(), vxleft.getColumn()); :}
+        | FIXED_VALUE:v                                                 {: RESULT = new SymbolValue(v, vxleft.getLine(), vxleft.getColumn()); :}
+        | FUNCTION_CALL:v                                               {: RESULT = new SymbolValue(v, vxleft.getLine(), vxleft.getColumn()); :}
+        ;
