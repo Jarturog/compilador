@@ -1,11 +1,11 @@
 /**
- * Assignatura 21742 - Compiladors I 
- * Estudis: Grau en Informàtica 
- * Itinerari: Computació 
- * Curs: 2023-2024
- *
- * Equipo: Marta, Arturo y Dani
- */
+  * Assignatura 21742 - Compiladors I 
+  * Estudis: Grau en Informàtica 
+  * Itinerari: Computació 
+  * Curs: 2023-2024
+  *
+  * Equipo: Marta, Arturo y Dani
+*/
 package analizadorLexico;
 
 import java.io.*;
@@ -17,22 +17,21 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 import analizadorSintactico.ParserSym;
 
 %%
-/** **
-%standalone
- ** **/
+/****
+  %standalone
+****/
 
 /****
- Indicació de quin tipus d'analitzador sintàctic s'utilitzarà. En aquest cas 
- es fa ús de Java CUP.
- ****/
+  Indicació de quin tipus d'analitzador sintàctic s'utilitzarà. En aquest cas 
+  es fa ús de Java CUP.
+****/
 %cup
 /****
-La línia anterior és una alternativa a la indicació element a element:
+  La línia anterior és una alternativa a la indicació element a element:
 
-%implements java_cup.runtime.Scanner
-%function next_token
-%type java_cup.runtime.Symbol
-
+  %implements java_cup.runtime.Scanner
+  %function next_token
+  %type java_cup.runtime.Symbol
 ****/
 
 %public              // Per indicar que la classe és pública
@@ -55,14 +54,15 @@ La línia anterior és una alternativa a la indicació element a element:
 
 zerodigit	= 0
 
+// reutilizables
 sub_digit   = [0-9]
 sub_letra   = [A-Za-z] // no confundir con carácter
 sub_car     = {sub_digit}|{sub_letra}
 sub_signo   = [+|-]? 
-id          = ({sub_letra}|_)({sub_car}|_)*
 
-//Descripción de digitos
-val_decimal  = {sub_signo}{sub_digit}+
+// valores
+id          = ({sub_letra}|_)({sub_car}|_)*
+val_decimal = {sub_signo}{sub_digit}+
 val_binario = 0b[01]+
 val_octal   = 0o[0-7]+
 val_hex     = 0x[A-Fa-f0-9]+
@@ -71,7 +71,7 @@ val_prop    = {kw_true}|{kw_false}
 val_char    = {sym_comillaS}{sub_car}{sym_comillaS}
 val_cadena  = {sym_comillaD}{sub_car}*{sym_comillaD}
 
-// Símbolos
+// símbolos
 sym_parenIzq	= \(
 sym_parenDer	= \)
 sym_llaveIzq	= \{
@@ -83,7 +83,7 @@ sym_coma	= \,
 sym_comillaS = \'
 sym_comillaD = \"
 
-//Operadores
+// operadores
 op_eq       = \= 
 op_diferent = \/\= 
 op_mayor    = \>
@@ -102,7 +102,7 @@ op_mod      = \\
 op_neg      = \¬
 op_asig     = \:
 
-//Palabras reservadas
+// tipos (void es tipo de retorno pero no de variable)
 type_char      = "car"
 type_string    = "string"
 type_int       = "ent"
@@ -110,6 +110,7 @@ type_double    = "val_real"
 type_bool      = "prop"
 type_void      = "vacio"
 
+// palabras reservadas (const está entre type y kw)
 kw_const     = "inmut"  // inmutable
 kw_main      = "inicio"
 kw_if        = "si"
@@ -124,55 +125,55 @@ kw_false     = "falso"
 kw_in        = "enter"
 kw_out       = "show"
 
+// casos especiales
 espacioBlanco = [ \t]+
 finLinea = [\r\n]+
 comentarLinea  = "\/\/"
 comentarBloque = "#" // tanto para el inicio como para el final
 comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 
-
 // El següent codi es copiarà també, dins de la classe. És a dir, si es posa res
 // ha de ser en el format adient: mètodes, atributs, etc. 
 %{
-    /***
-       Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
-       aquest cas potser no és del tot necessari.
-     ***/
-     private String tokens = "", errores = "";
+/***
+  Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
+  aquest cas potser no és del tot necessari.
+***/
+private String tokens = "", errores = "";
 
-	public String getTokens(){
-		return tokens;
-	}
+public String getTokens(){
+  return tokens;
+}
 
-	public String getErrores(){
-		return errores;
-	}
+public String getErrores(){
+  return errores;
+}
 
-	private String errorToString(){
-		return "!!! Error léxico: Token " + yytext() + " no reconocido en la posición [línea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
-	}
-	
-    /**
-     Construcció d'un symbol sense atribut associat.
-     **/
-    private ComplexSymbol symbol(int type) {
-        // Sumar 1 per a que la primera línia i columna no sigui 0.
-        Location esquerra = new Location(yyline+1, yycolumn+1);
-        Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
+private String errorToString(){
+  return "!!! Error léxico: Token " + yytext() + " no reconocido en la posición [línea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+}
 
-        return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta);
-    }
-    
-    /**
-     Construcció d'un symbol amb un atribut associat.
-     **/
-    private Symbol symbol(int type, Object value) {
-        // Sumar 1 per a que la primera línia i columna no sigui 0.
-        Location esquerra = new Location(yyline+1, yycolumn+1);
-        Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
+/**
+  Construcció d'un symbol sense atribut associat.
+**/
+private ComplexSymbol symbol(int type) {
+  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  Location esquerra = new Location(yyline+1, yycolumn+1);
+  Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
 
-        return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
-    }
+  return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta);
+}
+
+/**
+  Construcció d'un symbol amb un atribut associat.
+**/
+private Symbol symbol(int type, Object value) {
+  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  Location esquerra = new Location(yyline+1, yycolumn+1);
+  Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
+
+  return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
+}
 %}
 
 /****************************************************************************/
@@ -183,8 +184,7 @@ comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 
 {zerodigit}              { return symbol(ParserSym.valor, 0.0); } // quitar en el futuro?
 
-//Operadores
-
+// operadores
 {op_sum}                    { tokens += "OP_SUM: "+yytext()+"\n"; return symbol(ParserSym.ADD); }
 {op_res}                    { tokens += "OP_RES: "+yytext()+"\n"; return symbol(ParserSym.SUB); }
 {op_mul}                    { tokens += "OP_MUL: "+yytext()+"\n"; return symbol(ParserSym.MUL); }
@@ -203,7 +203,7 @@ comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 {op_asig}                   { tokens += "OP_ASIG: "+yytext()+"\n"; return symbol(ParserSym.ASSIGN); }
 {op_swap}                   { tokens += "OP_SWAP: "+yytext()+"\n"; return symbol(ParserSym.SWAP); }
 
-// Types
+// tipos
 {type_double}           { tokens += "TYPE_DOUBLE: "+yytext()+"\n"; return symbol(ParserSym.DOUBLE); }
 {type_int}              { tokens += "TYPE_INT: "+yytext()+"\n"; return symbol(ParserSym.INT); }
 {type_char}             { tokens += "TYPE_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CHAR); }
@@ -211,7 +211,7 @@ comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 {type_void}             { tokens += "TYPE_VOID: "+yytext()+"\n"; return symbol(ParserSym.VOID); }
 {type_string}           { tokens += "TYPE_STRING: "+yytext()+"\n"; return symbol(ParserSym.STRING); }
 
-// Special characters
+// simbolos
 {sym_parenIzq}          { tokens += "SYM_LPAREN: "+yytext()+"\n"; return symbol(ParserSym.LPAREN); }
 {sym_parenDer}          { tokens += "SYM_RPAREN: "+yytext()+"\n"; return symbol(ParserSym.RPAREN); }
 {sym_llaveIzq}          { tokens += "SYM_LKEY: "+yytext()+"\n"; return symbol(ParserSym.LKEY); }
@@ -223,7 +223,7 @@ comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 {sym_comillaS}          { tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE); }
 {sym_comillaD}          { tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE); }
 
-// Palabras reservadas
+// keywords
 {kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.MAIN); }
 {kw_const}              { tokens += "KW_CONST: "+yytext()+"\n"; return symbol(ParserSym.CONST); }
 {kw_if}                 { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.IF); }
@@ -236,7 +236,7 @@ comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 {kw_in}                 { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.IN); }
 {kw_out}                { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.OUT); }
 
-// Non-reserved words
+// valores
 {val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
 {val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext().substring(2, yytext().length()),16)); }
 {val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext().substring(2, yytext().length()),8)); }
@@ -247,10 +247,10 @@ comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 {val_cadena}        { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext()); }
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
 
-{espacioBlanco}            { /* No fer res amb els espais */  }
-{comentario}                { /* No fer res amb els espais */  }
-{finLinea}                { tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }
-
-[^]					{ errores += errorToString(); System.err.println(errorToString()); return symbol(ParserSym.error); }
+// casos especiales
+{espacioBlanco}        { /* No fer res amb els espais */  }
+{comentario}           { /* No fer res amb els espais */  }
+{finLinea}             { tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }
+[^]				             { errores += errorToString(); System.err.println(errorToString()); return symbol(ParserSym.error); }
 
 /****************************************************************************/

@@ -391,45 +391,45 @@ public class Scanner implements java_cup.runtime.Scanner {
   private boolean zzEOFDone;
 
   /* user code: */
-    /***
-       Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
-       aquest cas potser no és del tot necessari.
-     ***/
-     private String tokens = "", errores = "";
+/***
+  Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
+  aquest cas potser no és del tot necessari.
+***/
+private String tokens = "", errores = "";
 
-	public String getTokens(){
-		return tokens;
-	}
+public String getTokens(){
+  return tokens;
+}
 
-	public String getErrores(){
-		return errores;
-	}
+public String getErrores(){
+  return errores;
+}
 
-	private String errorToString(){
-		return "!!! Error léxico: Token " + yytext() + " no reconocido en la posición [línea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
-	}
-	
-    /**
-     Construcció d'un symbol sense atribut associat.
-     **/
-    private ComplexSymbol symbol(int type) {
-        // Sumar 1 per a que la primera línia i columna no sigui 0.
-        Location esquerra = new Location(yyline+1, yycolumn+1);
-        Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
+private String errorToString(){
+  return "!!! Error léxico: Token " + yytext() + " no reconocido en la posición [línea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+}
 
-        return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta);
-    }
-    
-    /**
-     Construcció d'un symbol amb un atribut associat.
-     **/
-    private Symbol symbol(int type, Object value) {
-        // Sumar 1 per a que la primera línia i columna no sigui 0.
-        Location esquerra = new Location(yyline+1, yycolumn+1);
-        Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
+/**
+  Construcció d'un symbol sense atribut associat.
+**/
+private ComplexSymbol symbol(int type) {
+  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  Location esquerra = new Location(yyline+1, yycolumn+1);
+  Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
 
-        return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
-    }
+  return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta);
+}
+
+/**
+  Construcció d'un symbol amb un atribut associat.
+**/
+private Symbol symbol(int type, Object value) {
+  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  Location esquerra = new Location(yyline+1, yycolumn+1);
+  Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
+
+  return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
+}
 
 
   /**
