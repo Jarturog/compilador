@@ -25,7 +25,6 @@ public class Dartam {
                 System.out.print(">>> ");
                 input = new InputStreamReader(System.in);
             }
-            
             Scanner scanner = new Scanner(input);
         
             SymbolFactory sf = new ComplexSymbolFactory();
