@@ -5,7 +5,7 @@
  *
  * Professor: Pere Palmer
  */
-package analizadorSintactico.Symbols;
+package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
@@ -18,30 +18,10 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * @author Pere Palmer
  */
 public class SymbolBase extends ComplexSymbol {
-    private static int idAutoIncrement = 0;
-    protected boolean empty;
-    
+    private static int id = 0;
+
     public SymbolBase(String variable, Double valor) {
-        super(variable, idAutoIncrement++, valor);
-        this.empty = false;
+        super(variable, id++, valor);
     }
     
-    /**
-     * Constructor per crear una instància buida, com a conseqüència d'un error
-     * o una produció que deriva lambda.
-     */
-    public SymbolBase() {
-        super("", idAutoIncrement++);
-        empty = true;
-    }
-    
-    /**
-     * Mètode que permet determinar si la variable és buida (lambda) o bé perquè
-     * hi ha un error semàntic.
-     * @return true si és lambda/error false altrement
-     */
-    public boolean isEmpty() {
-        return empty;
-    }
-    
- }
+}

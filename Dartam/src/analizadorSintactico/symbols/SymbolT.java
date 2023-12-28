@@ -5,11 +5,11 @@
  *
  * Professor: Pere Palmer
  */
-package analizadorSintactico.Symbols;
+package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
-import analizadorSintactico.ParserSym;
+import compiler.sintactic.ParserSym;
 /**
  * Classe que implementa la variable T de la gramàtica
  * 
