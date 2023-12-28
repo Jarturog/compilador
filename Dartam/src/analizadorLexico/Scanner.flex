@@ -4,7 +4,7 @@
   * Itinerari: Computació 
   * Curs: 2023-2024
   *
-  * Equipo: Marta, Arturo y Dani
+  * Equipo: Arturo, Dani y Marta
 */
 package analizadorLexico;
 
@@ -90,10 +90,13 @@ op_mayor    = \>
 op_menor    = \<
 op_mayorEq  = (\>\=)|(\=\>)
 op_menorEq  = (\<\=)|(\=\<)
+op_inc      = \+\+
+op_dec      = \-\-
 op_sum      = \+
 op_res      = \-
 op_mul      = \*
 op_div      = \/
+op_pot      = \*\*
 op_porcent  = \%
 op_swap     = \<\>
 op_or       = \|
@@ -101,6 +104,15 @@ op_and      = &
 op_mod      = \\
 op_neg      = \¬
 op_asig     = \:
+op_and_asig = \&\:
+op_or_asig  = \|\:
+op_sum_asig = \+\:
+op_res_asig = \-\:
+op_mul_asig = \*\:
+op_div_asig = \/\:
+op_pot_asig = \*\*\:
+op_cond     = \?
+op_arrow    = \-\>
 
 // tipos (void es tipo de retorno pero no de variable)
 type_char      = "car"
@@ -117,6 +129,7 @@ kw_if        = "si"
 kw_elif      = "sino"
 kw_else      = "no"
 kw_switch    = "select"
+kw_case      = "caso"
 kw_while     = "loop"
 kw_doLoop    = "do"
 kw_return    = "pop" 
@@ -182,9 +195,18 @@ private Symbol symbol(int type, Object value) {
 // Regles/accions
 // És molt important l'ordre de les regles!!!
 
-{zerodigit}              { return symbol(ParserSym.valor, 0.0); } // quitar en el futuro?
+{zerodigit}              { return symbol(ParserSym.V_DOUBLE, 0.0); } // quitar en el futuro?
 
 // operadores
+{op_and_asig}               { tokens += "OP_AND_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.ANDA); }
+{op_or_asig}                { tokens += "OP_OR_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.ORA); }
+{op_sum_asig}               { tokens += "OP_SUM_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.ADDA); }
+{op_res_asig}               { tokens += "OP_RES_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.SUBA); }
+{op_mul_asig}               { tokens += "OP_MUL_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.MULA); }
+{op_div_asig}               { tokens += "OP_DIV_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.DIVA); }
+{op_pot_asig}               { tokens += "OP_POT_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.POTA); }
+{op_inc}                    { tokens += "OP_INC: "+yytext()+"\n"; return symbol(ParserSym.INC); }
+{op_dec}                    { tokens += "OP_DEC: "+yytext()+"\n"; return symbol(ParserSym.DEC); }
 {op_sum}                    { tokens += "OP_SUM: "+yytext()+"\n"; return symbol(ParserSym.ADD); }
 {op_res}                    { tokens += "OP_RES: "+yytext()+"\n"; return symbol(ParserSym.SUB); }
 {op_mul}                    { tokens += "OP_MUL: "+yytext()+"\n"; return symbol(ParserSym.MUL); }
@@ -196,12 +218,15 @@ private Symbol symbol(int type, Object value) {
 {op_menorEq}                { tokens += "OP_MENOREQ: "+yytext()+"\n"; return symbol(ParserSym.LEQ); }
 {op_menor}                  { tokens += "OP_MENOR: "+yytext()+"\n"; return symbol(ParserSym.LT); }
 {op_diferent}               { tokens += "OP_DIFERENT: "+yytext()+"\n"; return symbol(ParserSym.NEQ); }
+{op_pot}                    { tokens += "OP_POTENCIA: "+yytext()+"\n"; return symbol(ParserSym.POT); }
 {op_porcent}                { tokens += "OP_PORCENT: "+yytext()+"\n"; return symbol(ParserSym.PCT); }
 {op_neg}                    { tokens += "OP_NEG: "+yytext()+"\n"; return symbol(ParserSym.NOT); }
 {op_or}                     { tokens += "OP_OR: "+yytext()+"\n"; return symbol(ParserSym.OR); }
 {op_and}                    { tokens += "OP_AND: "+yytext()+"\n"; return symbol(ParserSym.AND); }
 {op_asig}                   { tokens += "OP_ASIG: "+yytext()+"\n"; return symbol(ParserSym.ASSIGN); }
 {op_swap}                   { tokens += "OP_SWAP: "+yytext()+"\n"; return symbol(ParserSym.SWAP); }
+{op_cond}                   { tokens += "OP_COND: "+yytext()+"\n"; return symbol(ParserSym.COND); }
+{op_arrow}                  { tokens += "OP_ARROW: "+yytext()+"\n"; return symbol(ParserSym.ARROW); }
 
 // tipos
 {type_double}           { tokens += "TYPE_DOUBLE: "+yytext()+"\n"; return symbol(ParserSym.DOUBLE); }
@@ -224,28 +249,29 @@ private Symbol symbol(int type, Object value) {
 {sym_comillaD}          { tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE); }
 
 // keywords
-{kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.MAIN); }
+{kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.KW_MAIN); }
 {kw_const}              { tokens += "KW_CONST: "+yytext()+"\n"; return symbol(ParserSym.CONST); }
-{kw_if}                 { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.IF); }
+{kw_if}                 { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.KW_IF); }
 {kw_elif}               { tokens += "KW_ELIF: "+yytext()+"\n"; return symbol(ParserSym.ELIF); }
-{kw_else}               { tokens += "KW_ELSE: "+yytext()+"\n"; return symbol(ParserSym.ELSE); }
-{kw_while}              { tokens += "KW_WHILE: "+yytext()+"\n"; return symbol(ParserSym.LOOP); }
+{kw_else}               { tokens += "KW_ELSE: "+yytext()+"\n"; return symbol(ParserSym.KW_ELSE); }
+{kw_while}              { tokens += "KW_WHILE: "+yytext()+"\n"; return symbol(ParserSym.KW_LOOP); }
 {kw_doLoop}             { tokens += "KW_DO: "+yytext()+"\n"; return symbol(ParserSym.DO); }
 {kw_switch}             { tokens += "KW_SWITCH: "+yytext()+"\n"; return symbol(ParserSym.SWITCH); }
-{kw_return}             { tokens += "KW_RETURN: "+yytext()+"\n"; return symbol(ParserSym.RETURN); }
-{kw_in}                 { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.IN); }
-{kw_out}                { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.OUT); }
+{kw_case}               { tokens += "KW_CASE: "+yytext()+"\n"; return symbol(ParserSym.CASE); }
+{kw_return}             { tokens += "KW_RETURN: "+yytext()+"\n"; return symbol(ParserSym.KW_RETURN); }
+{kw_in}                 { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.KW_IN); }
+{kw_out}                { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.KW_OUT); }
 
 // valores
-{val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
-{val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext().substring(2, yytext().length()),16)); }
-{val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext().substring(2, yytext().length()),8)); }
-{val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.valor, Integer.parseInt(yytext())); }
-{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.valor, Double.parseDouble(yytext())); }
-{val_char}          { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CHAR, yytext().charAt(0)); }
-{val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.BOOLEAN, yytext() == "cierto"); }
-{val_cadena}        { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext()); }
-{id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
+{val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.V_INT, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
+{val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.V_INT, Integer.parseInt(yytext().substring(2, yytext().length()),16)); }
+{val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.V_INT, Integer.parseInt(yytext().substring(2, yytext().length()),8)); }
+{val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.V_INT, Integer.parseInt(yytext())); }
+{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.V_INT, Double.parseDouble(yytext())); }
+{val_char}          { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.V_CHAR, yytext().charAt(0)); }
+{val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.V_BOOL, "cierto".equals(yytext())); }
+{val_cadena}        { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.V_STRING, yytext()); }
+{id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.V_ID, yytext()); }
 
 // casos especiales
 {espacioBlanco}        { /* No fer res amb els espais */  }
