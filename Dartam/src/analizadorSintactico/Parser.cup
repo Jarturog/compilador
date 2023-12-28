@@ -15,7 +15,7 @@ alternativament
  * Estudis: Grau en Informàtica 
  * Itinerari: Intel·ligència Artificial i Computació
  *
- * Equipo: Marta, Arturo, Dani
+ * Equipo: Dani, Arturo y Marta
  */
 package analizadorSintactico;
 
@@ -80,27 +80,60 @@ parser code {:
 
 :}
 
-/**
- ** També aquí es poden afegir accions a realitzar quan es requereix un token.
-scan with {:     next_token(); :}
+/****
+    També aquí es poden afegir accions a realitzar quan es requereix un token.
+    scan with {:     next_token(); :}
 **/
 
-terminal    KW_MAIN;
-terminal    KW_IF, KW_ELSE, KW_ELIF, KW_WHILEFOR, KW_DOLOOP, KW_SWITCH;
-terminal    OP_NEG, OP_OR, OP_AND;
-terminal    TYPE_DOUBLE, TYPE_INT, TYPE_CHAR, TYPE_BOOL, TYPE_VOID, TYPE_STRING, TYPE_CONST;
-terminal    SYM_PARENIZQ, SYM_PARENDER, SYM_LLAVEIZQ, SYM_LLAVEER, SYM_BRACKETIZQ, SYM_BRACKETDER, SYM_ENDINSTR, SYM_COMA, SYM_COMILLASIMPLE, SYM_COMILLADOBLE, SYM_ASIG;
-terminal    OP_SUM, OP_RES, OP_MUL, OP_DIV, OP_MOD, OP_EQ, OP_MAYOREQ, OP_MAYOR, OP_MENOREQ, OP_MENOR, OP_DIFERENT;
+terminal    INC, DEC, ADD, SUB, MUL, DIV, MOD;
+terminal    ADDA, SUBA, MULA, DIVA, POTA, ANDA, ORA;
+terminal    EQ, BEQ, BT, LEQ, LT, NEQ;
+terminal    AND, OR, NOT;
+terminal    ASSIGN, SWAP, PCT, POT, COND, ARROW;
+terminal    BOOL, INT, DOUBLE, CHAR, STRING, VOID;
+terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA, SQUOTE, DQUOTE, ENDLINE;
+terminal    KW_MAIN, CONST, KW_IF, ELIF, KW_ELSE, KW_LOOP, DO, SWITCH, KW_RETURN, KW_IN, KW_OUT, CASE;
 
-terminal    String  ID;
-terminal    Integer VAL_ENTERO;
-terminal    Double  VAL_REAL;
-//termianl    Boolean VAL_PROP; //Mirar!
-terminal    Character   VAL_CHAR;
-terminal    String  VAL_CADENA;
+terminal     String             V_ID, V_STRING;
+terminal     Boolean            V_BOOL;
+terminal     Integer            V_INT;
+terminal     Double             V_DOUBLE;
+terminal     Character          V_CHAR;
 
-//Prueba!!!!!
+non terminal SymbolBody         BODY;
+non terminal SymbolDecs         DECLARATIONS;
+non terminal SymbolDec          DECLARATION;
+non terminal SymbolDecCont      DECLARATION_COUNT;
+non terminal SymbolMain         MAIN;
+non terminal SymbolArgs         ARGS;
+non terminal SymbolArg          ARG;
+non terminal SymbolInstrs       INSTRUCTIONS;
+non terminal SymbolInstr        INSTRUCTION;
+non terminal SymbolFunc         FUNCTION;
 non terminal SymbolType         TYPE;
+non terminal SymbolVar          VARIABLE;
+non terminal SymbolAssign       ASSIGNATION;
+non terminal SymbolSwap         SYM_SWAP;
+non terminal SymbolReturn       RETURN;
+non terminal SymbolIn           IN;
+non terminal SymbolOut          OUT;
+non terminal SymbolOperation    OPERATION;
+non terminal SymbolOperand      OPERAND;
+non terminal SymbolValue        VALUE;
+non terminal SymbolOp           OP;
+non terminal SymbolIf           IF;
+non terminal SymbolElse         ELSE;
+non terminal SymbolLoop         LOOP;
+non terminal SymbolFuncCall     FUNCTION_CALL;
+non terminal SymbolParams       PARAMS;
 
-ADD ::= VAL_ENTERO:v1 OP_SUM VAL_ENTERO:v2                          {: RESULT = new SymbolAdd(v1,v2); :} 
-              ;
+// cosas que he quitado de Andreas:
+// non terminal Object             FIXED_VALUE;
+// non terminal SymbolArrSuff      ARRAY_SUFFIX;
+// non terminal SymbolList         LIST, CONT_LIST;
+// non terminal SymbolBase         HEADER_SEGMENT;
+
+precedence left MUL, DIV, MOD, ADD, SUB;
+precedence left AND, OR;
+
+OPERATION ::= V_INT:v1 OP V_INT:v2                          {: RESULT = new SymbolAdd(v1,v2); :} ;
