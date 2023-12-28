@@ -125,11 +125,13 @@ type_void      = "vacio"
 // palabras reservadas (const está entre type y kw)
 kw_const     = "inmut"  // inmutable
 kw_main      = "inicio"
+kw_args      = "argumentos"
 kw_if        = "si"
 kw_elif      = "sino"
 kw_else      = "no"
 kw_switch    = "select"
 kw_case      = "caso"
+kw_default   = "_"
 kw_while     = "loop"
 kw_doLoop    = "do"
 kw_return    = "pop" 
@@ -137,6 +139,8 @@ kw_true      = "cierto"
 kw_false     = "falso"
 kw_in        = "enter"
 kw_out       = "show"
+kw_read      = "from"
+kw_write     = "into"
 
 // casos especiales
 espacioBlanco = [ \t]+
@@ -250,6 +254,7 @@ private Symbol symbol(int type, Object value) {
 
 // keywords
 {kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.KW_MAIN); }
+{kw_args}               { tokens += "KW_ARGS: "+yytext()+"\n"; return symbol(ParserSym.KW_ARGS); }
 {kw_const}              { tokens += "KW_CONST: "+yytext()+"\n"; return symbol(ParserSym.CONST); }
 {kw_if}                 { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.KW_IF); }
 {kw_elif}               { tokens += "KW_ELIF: "+yytext()+"\n"; return symbol(ParserSym.ELIF); }
@@ -258,9 +263,12 @@ private Symbol symbol(int type, Object value) {
 {kw_doLoop}             { tokens += "KW_DO: "+yytext()+"\n"; return symbol(ParserSym.DO); }
 {kw_switch}             { tokens += "KW_SWITCH: "+yytext()+"\n"; return symbol(ParserSym.SWITCH); }
 {kw_case}               { tokens += "KW_CASE: "+yytext()+"\n"; return symbol(ParserSym.CASE); }
+{kw_default}            { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT); }
 {kw_return}             { tokens += "KW_RETURN: "+yytext()+"\n"; return symbol(ParserSym.KW_RETURN); }
 {kw_in}                 { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.KW_IN); }
 {kw_out}                { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.KW_OUT); }
+{kw_read}               { tokens += "KW_READ: "+yytext()+"\n"; return symbol(ParserSym.KW_READ); }
+{kw_write}              { tokens += "KW_WRITE: "+yytext()+"\n"; return symbol(ParserSym.KW_WRITE); }
 
 // valores
 {val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.V_INT, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
