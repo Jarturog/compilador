@@ -15,17 +15,13 @@ alternativament
  * Estudis: Grau en Informàtica 
  * Itinerari: Intel·ligència Artificial i Computació
  *
- * Equipo: Marta, Arturo y Dani
+ * Equipo: Marta, Arturo, Dani
  */
 package analizadorSintactico;
 
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-import java_cup.runtime.ComplexSymbolFactory.Location;
-
 import java_cup.runtime.*;
-
-import analizadorSintactico.Symbols.*;
-
+import analizadorSintactico.symbols.*;
 import java.io.PrintStream;
 import java.util.HashMap;
 
@@ -64,93 +60,23 @@ parser code {:
         }
     }
 
-
-    public void printUsage(PrintStream out) {
-        out.println("Calculadora 21780");
-        out.println("=================\n");
-        out.println("Utilització:\n------------");
-        out.println("\tEn mode interactiu, les instruccions han d'acabar en \";\"");
-        out.println("\tEn mode fitxer, el \";\" és opcional\n");
-
-        out.println("Comandes:\n---------");
-        out.println("\texit: acaba el programa");
-        out.println("\tvars: mostra valor de totes les variables utilitzades");
-        out.println("\thelp: mostra aquesta ajuda");
-        out.println("\nOperacions aritmètiques:\n------------------------");
-        
-        out.println("\tEs poden fer sumes, restes, productes, divisions, mòduls i inverses");
-        out.println("\t\t+ - * \\ % inv");
-        out.println("\tEs poden fer assignacions a variables (es declaren automàticament)");
-        out.println("\t\tvariable = valor");
-        out.println("\tEl format dels nombres pot ser: real o enter.");
-        out.println("\tEls enters es poden introduir en format decimal, binari, octal o hexadecimal");
-        out.println("\t\tLes següents expressions representen el mateix valor");
-        out.println("\t\t\t     binari: 0b1101");
-        out.println("\t\t\t      octal: 0o15");
-        out.println("\t\t\thexadecimal: 0xD");
-        out.println("\t\t\t    decimal: 13");
-        out.println("\t\t\t       real: 13.0");
-        out.println("\t\t\t       real: .130E2");
-
-        out.println();
-        out.println("\tans: recupera el darrer valor calculat\n");
-    }
+    /**
+     * Método al que se llama automáticamente ante algún error sintáctico 
+     * en el que ya no es posible una recuperación de errores.
+    **/ 
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+        System.out.println("Error síntactico irrecuperable en la Línea " + 
+        (s.left)+ " Columna "+s.right+". Componente " + s.value + 
+        " no reconocido."); 
+    }  
 
     /**
-     * Variable utilitzada per emmagatzemar el darrer valor calculat. 
-     * Val 0 inicialment
-     **/
-    private double ans = 0;
-    /**
-     * Indicador de si s'ha detectat un error semàntic (true) o no (false);
-     * Si una regla semàntica detecta un error, el notifica i posa el valor
-     * a true, això limita el funcionament fins acabar de processar l'entrada,
-     * moment en què es torna a posar a false.
-     **/
-    private boolean errorSemantic = false;
-
-
-    /**********************************************************************
-     * sobrecàrrega de mètodes per gestionar els errors que es localitzin *
-     **********************************************************************/
-
-    @Override
-    public void unrecovered_syntax_error(Symbol cur_token) throws Exception {
-        report_error("Error sintàctic catastròfic", cur_token);
-        done_parsing();        
-    }
-
-    @Override
-    public void syntax_error(Symbol cur_token) {
-        report_error("de sintaxis", cur_token);
-    }
-
-    @Override
-    public void report_error(String message, Object info) {
-        StringBuilder msg = new StringBuilder("ERROR");
-        if (info instanceof Symbol) {
-            ComplexSymbol token = (ComplexSymbol)info;
-            Location l = token.getLeft();
-            
-            if (l != null) {
-                msg.append(" (fila: ")
-                   .append(l.getLine())
-                   .append(", columna: ")
-                   .append(l.getColumn())
-                   .append(")");
-            }
-        }
-        msg.append(": ").append(message);
-        
-        System.err.println(msg);
-    }
-
-    @Override
-    public void report_fatal_error(String message, Object info) throws Exception {
-        report_error("Error catastròfic ("+message+")", info);
-        done_parsing();
-    }
-
+     * Método al que se llama automáticamente ante algún error sintactico.
+    **/ 
+    public void syntax_error(Symbol s){ 
+        System.out.println("Error Sintáctico en la Línea " + (s.left) +
+        " Columna "+s.right+ ". No se esperaba este componente: " +s.value+"."); 
+    } 
 
 :}
 
@@ -159,130 +85,76 @@ parser code {:
 scan with {:     next_token(); :}
 **/
 
-terminal String ID;
-terminal double  valor;
-terminal ADD, SUB, MUL, DIV, MOD, LParen, RParen, INV, ASSIGN;
-terminal EndCmd, EndCmdInteractive;
-terminal HELPCMD, QUITCMD, DUMPVARS;
-terminal ANS;
+terminal    KW_MAIN;
+terminal    KW_IF, KW_ELSE, KW_ELIF, KW_WHILEFOR, KW_DOLOOP, KW_SWITCH;
+terminal    OP_NEG, OP_OR, OP_AND;
+terminal    TYPE_DOUBLE, TYPE_INT, TYPE_CHAR, TYPE_BOOL, TYPE_VOID, TYPE_STRING, TYPE_CONST;
+terminal    SYM_PARENIZQ, SYM_PARENDER, SYM_LLAVEIZQ, SYM_LLAVEER, SYM_BRACKETIZQ, SYM_BRACKETDER, SYM_ENDINSTR, SYM_COMA, SYM_COMILLASIMPLE, SYM_COMILLADOBLE, SYM_ASIG;
+terminal    OP_SUM, OP_RES, OP_MUL, OP_DIV, OP_MOD, OP_EQ, OP_MAYOREQ, OP_MAYOR, OP_MENOREQ, OP_MENOR, OP_DIFERENT;
 
-non terminal  Line, Linep, Cmd, EndLine;
+terminal    String  ID;
+terminal    Integer VAL_ENTERO;
+terminal    Double  VAL_REAL;
+termianl    Boolean VAL_PROP;
+terminal    Character   VAL_CHAR;
+terminal    String  VAL_CADENA;
 
-non terminal  SymbolE   E;
-non terminal  SymbolEp  Ep;
-non terminal  SymbolT   T;
-non terminal  SymbolTp  Tp;
-non terminal  SymbolF   F;
+//Prueba!!!!!
+non terminal SymbolBody         BODY;
+non terminal SymbolDecs         DECLARATIONS;
+non terminal SymbolDec          DECLARATION;
+non terminal SymbolDecCont      CONT_DECLARATION;
+non terminal SymbolMain         MAIN;
+non terminal SymbolArgs         ARGS, MORE_ARGS;
+non terminal SymbolArg          ARG;
+non terminal SymbolInstrs       INSTRUCTIONS;
+non terminal SymbolInstr        INSTRUCTION;
+non terminal SymbolFunc         FUNCTION;
+non terminal SymbolType         TYPE;
+non terminal SymbolVar          VARIABLE;
+non terminal SymbolAssign       ASSIGNATION;
+non terminal SymbolSwap         SWAP;
+non terminal SymbolReturn       RETURN;
+non terminal SymbolIn           IN;
+non terminal SymbolOut          OUT;
+non terminal SymbolOperation    OPERATION;
+non terminal SymbolOperand      OPERAND;
+non terminal SymbolValue        VALUE;
+non terminal SymbolOp           OP, OP_REL;
+non terminal Object             FIXED_VALUE;
+non terminal SymbolArrSuff      ARRAY_SUFFIX;
+non terminal SymbolList         LIST, CONT_LIST;
+non terminal SymbolIf           IF;
+non terminal SymbolElse         ELSE;
+non terminal SymbolLoop         LOOP;
+non terminal SymbolFor          FOR;
+non terminal SymbolFuncCall     FUNCTION_CALL;
+non terminal SymbolParams       PARAMS, MORE_PARAMS;
+non terminal SymbolBase         HEADER_SEGMENT;
 
-precedence right ASSIGN; 
-precedence left  ADD, SUB;
-precedence left  MUL, DIV, MOD;
+precedence left  OP_MUL, OP_DIV, OP_MOD, OP_SUM, OP_RES;
+precedence left  OP_AND, OP_OR;
 
-start with Line;
+start with OP;
 
-Line ::=  Cmd Linep       {:  :}
+OP ::= ADD                                                              {: RESULT = new SymbolOp(ParserSym.KW_ADD); :}
+     | SUB                                                              {: RESULT = new SymbolOp(ParserSym.KW_SUB); :}
+     | PROD                                                             {: RESULT = new SymbolOp(ParserSym.KW_PROD); :}
+     | DIV                                                              {: RESULT = new SymbolOp(ParserSym.KW_DIV); :}
+     | MOD                                                              {: RESULT = new SymbolOp(ParserSym.KW_MOD); :}
+     | OR                                                               {: RESULT = new SymbolOp(ParserSym.KW_OR); :}
+     | AND                                                              {: RESULT = new SymbolOp(ParserSym.KW_AND); :}
+     | OP_REL:v                                                         {: RESULT = v; :}
      ;
+OP_REL ::= IS_EQUAL                                                     {: RESULT = new SymbolOp(ParserSym.IS_EQUAL, true); :}
+         | BIGGER                                                       {: RESULT = new SymbolOp(ParserSym.BIGGER, true); :}
+         | BEQ                                                          {: RESULT = new SymbolOp(ParserSym.BEQ, true); :}
+         | LESSER                                                       {: RESULT = new SymbolOp(ParserSym.LESSER, true); :}
+         | LEQ                                                          {: RESULT = new SymbolOp(ParserSym.LEQ, true); :}
+         | NEQ                                                          {: RESULT = new SymbolOp(ParserSym.NEQ, true); :}
+         ;
 
-Linep ::= EndLine Cmd Linep {:  :}
-     |                   {:  :}
-     ;
-
-EndLine ::= EndCmdInteractive EndCmd
-      | EndCmd
-      ;
-
-Cmd ::= E:v              {: 
-                            if (!errorSemantic) {
-                               System.out.print("Resultat: " + v.value+"\n>>> ");
-                               ans = (Double)v.value; // Recordar el valor
-                            } else {
-                               errorSemantic = false; // Desactivar l'estat d'error
-                               System.out.print("\n>>> ");
-                            }
-                          :}
-     | HELPCMD           {: printUsage(System.out); System.out.print("\n>>> "); :}
-     | QUITCMD           {: done_parsing();                                     :}
-     | DUMPVARS          {: printVars(System.out); System.out.print("\n>>> ");  :}
-     | error EndCmd      {: /* Si hi ha un error botar-se tota la línia de comanda  */
-                            /* En recuperar de l'error s'ha de continuar com si res */
-                            System.out.print("\n>>> ");
-                          :}
-     ;
-
-E ::=  T:v1 Ep:v2        {: if (errorSemantic) {
-                                RESULT = new SymbolE();
-                            } else {
-                                RESULT = new SymbolE((Double)v1.value, v2);
-                            }
-                          :}
-     ;
-
-Ep ::= ADD T:v1 Ep:v2    {: if (errorSemantic) {
-                                RESULT = new SymbolEp();
-                            } else {
-                                RESULT = new SymbolEp(ParserSym.ADD, (Double)v1.value, v2);
-                            }
-                          :}
-     | SUB T:v1 Ep:v2    {: if (errorSemantic) {
-                                RESULT = new SymbolEp();
-                            } else {
-                                RESULT = new SymbolEp(ParserSym.SUB, (Double)v1.value, v2);
-                            }
-                          :} 
-     |                   {: RESULT = new SymbolEp();                            :}
-     ;
-
-
-T ::=  F:v1 Tp:v2        {: if (errorSemantic) {
-                                RESULT = new SymbolT();
-                            } else {
-                                RESULT = new SymbolT((Double)v1.value, v2);     
-                            }
-                          :}
-     ;
-
-Tp ::= MUL F:v1 Tp:v2    {:  if (errorSemantic) {
-                                RESULT = new SymbolTp();
-                            } else {
-                                RESULT = new SymbolTp(ParserSym.MUL, (Double)v1.value, v2); 
-                            }
-                          :}
-     | DIV F:v1 Tp:v2    {:  if (errorSemantic) {
-                                RESULT = new SymbolTp();
-                            } else {
-                                RESULT = new SymbolTp(ParserSym.DIV, (Double)v1.value, v2);   
-                            }
-                          :}
-     | MOD F:v1 Tp:v2    {:  if (errorSemantic) {
-                                RESULT = new SymbolTp();
-                            } else {
-                                RESULT = new SymbolTp(ParserSym.MOD, (Double)v1.value, v2);   
-                            }
-                          :}
-     |                   {:  RESULT = new SymbolTp();                           :}
-     ;
-
-F ::= LParen E:v RParen  {: RESULT = new SymbolF((Double)v.value);              :}
-     | ID:v1 ASSIGN E:v2 {: 
-                            if (errorSemantic) {
-                                RESULT = new SymbolF();
-                            } else {
-                                addSymbol(v1, (Double)v2.value); 
-                                RESULT =  new SymbolF((Double)v2.value);  
-                            }
-                          :} 
-     | valor:v           {: RESULT = new SymbolF(v);                            :}
-     | ADD E:v           {: RESULT = new SymbolF((Double)v.value);  :}  
-     | SUB E:v           {: RESULT = new SymbolF(-1.0 * (Double)v.value); :}
-     | INV E:v           {: RESULT = new SymbolF(1.0 / (Double)v.value);        :}
-     | ID:v              {: Double value = getSymbolValue(v);
-                            if (value == null) {
-                                report_error("Undefined id \""+v+"\"", v);
-                                errorSemantic = true;
-                                RESULT = new SymbolF();
-                            } else {
-                                RESULT = new SymbolF(value);
-                            }
-                          :}
-     | ANS:v             {: RESULT = new SymbolF(ans);                          :}
-     ;
+VALUE ::= VARIABLE:v                                                    {: RESULT = new SymbolValue(v, vxleft.getLine(), vxleft.getColumn()); :}
+        | FIXED_VALUE:v                                                 {: RESULT = new SymbolValue(v, vxleft.getLine(), vxleft.getColumn()); :}
+        | FUNCTION_CALL:v                                               {: RESULT = new SymbolValue(v, vxleft.getLine(), vxleft.getColumn()); :}
+        ;
