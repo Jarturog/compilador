@@ -249,7 +249,7 @@ private Symbol symbol(int type, Object value) {
 
 // casos especiales
 {espacioBlanco}        { /* No fer res amb els espais */  }
-{comentario}           { /* No fer res amb els espais */  }
+{comentario}           { /* No fer res amb els comentaris */  }
 {finLinea}             { tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }
 [^]				             { errores += errorToString(); System.err.println(errorToString()); return symbol(ParserSym.error); }
 
