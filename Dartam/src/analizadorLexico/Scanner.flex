@@ -108,7 +108,7 @@ op_arrow    = \-\>
 type_char      = "car"
 type_string    = "string"
 type_int       = "ent"
-type_double    = "val_real"
+type_double    = "real"
 type_bool      = "prop"
 type_void      = "vacio"
 

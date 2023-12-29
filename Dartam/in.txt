@@ -1,1 +1,14 @@
-f vacio inicio(string[]argumentos){}
+inmut real k : 3 + 1;º
+
+f vacio inicio(string[]argumentos){
+	ent a: 1;
+	ent b: 2;
+	ent c: a + b;
+	string s: "oki";
+	prop OK: isOK(s);
+	pop;
+}
+
+f prop isOK(string s){
+	pop s="ok" ? true -> false;
+}
