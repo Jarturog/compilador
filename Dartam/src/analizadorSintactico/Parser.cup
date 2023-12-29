@@ -294,53 +294,54 @@ AS_OP ::= AS_ASSIGN
         | AS_ORA
         ;
 
-OPERAND ::= ATOMIC_EXPRESSION
-        | FCALL
-        | LPAREN OPERAND RPAREN
-        | UNARY_EXPRESSION
-        | BINARY_EXPRESSION
-        | CONDITIONAL_EXPRESSION
-        | OPERAND AUX_MEMBER LBRACKET OPERAND RBRACKET
-        | OPERAND OP_MEMBER ID
+OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et); :}
+        | FCALL:et                      {: RESULT = new SymbolOperand(et); :}
+        | LPAREN OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et); :}
+        | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et); :}
+        | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et); :}
+        | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et); :}
+        | OPERAND:arr AUX_MEMBER LBRACKET OPERAND:idx RBRACKET  {: RESULT = new SymbolOperand(arr, idx); :}
+        | OPERAND:tuple OP_MEMBER ID:member                     {: RESULT = new SymbolOperand(tuple, member); :}
         ;
 
-UNARY_EXPRESSION ::= UNARY_OPERATOR OPERAND
+UNARY_EXPRESSION ::= UNARY_OPERATOR:et OPERAND:op                       {: RESULT = new SymbolUnaryExpression(et, op); :}
         ;
 
-BINARY_EXPRESSION ::= OPERAND BINARY_OPERATOR OPERAND
+BINARY_EXPRESSION ::= OPERAND:op1 BINARY_OPERATOR:et OPERAND:op2        {: RESULT = new SymbolBinaryExpression(et, op1, op2); :}
         ;
 
-CONDITIONAL_EXPRESSION ::= OPERAND OP_COND OPERAND ARROW OPERAND
+CONDITIONAL_EXPRESSION ::= OPERAND:cond OP_COND OPERAND:op1 ARROW OPERAND:op2   {: RESULT = new SymbolConditionalExpression(cond, op1, op2);; :}
         ;
 
-ATOMIC_EXPRESSION ::= ID
-        | STRING
-        | BOOL
-        | INT
-        | DOUBLE
-        | CHAR
+ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et); :}
+        | STRING:et             {: RESULT = new SymbolAtomicExpression(et); :}
+        | BOOL:et               {: RESULT = new SymbolAtomicExpression(et); :}
+        | INT:et                {: RESULT = new SymbolAtomicExpression(et); :}
+        | DOUBLE:et             {: RESULT = new SymbolAtomicExpression(et); :}
+        | CHAR:et               {: RESULT = new SymbolAtomicExpression(et); :}
         ;
 
-BINARY_OPERATOR ::= OP_ADD
-        | OP_SUB
-        | OP_MUL
-        | OP_DIV
-        | OP_MOD
-        | OP_POT
-        | OP_EQ
-        | OP_BEQ
-        | OP_BT
-        | OP_LEQ
-        | OP_LT
-        | OP_NEQ
-        | OP_AND
-        | OP_OR
+BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et); :}
+        | OP_SUB:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_SUB, et); :}
+        | OP_MUL:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MUL, et); :}
+        | OP_DIV:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_DIV, et); :}
+        | OP_MOD:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MOD, et); :}
+        | OP_POT:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_POT, et); :}
+        | OP_EQ:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_EQ, et); :}
+        | OP_BEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BEQ, et); :}
+        | OP_BT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BT, et); :}
+        | OP_LEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LEQ, et); :}
+        | OP_LT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LT, et); :}
+        | OP_NEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_NEQ, et); :}
+        | OP_AND:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_AND, et); :}
+        | OP_OR:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_OR, et); :}
         ;
 
-UNARY_OPERATOR ::= OP_NOT
-        | OP_INC
-        | OP_DEC
-        | OP_PCT
+
+UNARY_OPERATOR ::= OP_NOT:et    {: RESULT = new SymbolUnaryOperator(ParserSym.OP_NOT, et); :}
+        | OP_INC:et             {: RESULT = new SymbolUnaryOperator(ParserSym.OP_INC, et); :}
+        | OP_DEC:et             {: RESULT = new SymbolUnaryOperator(ParserSym.OP_DEC, et); :}
+        | OP_PCT:et             {: RESULT = new SymbolUnaryOperator(ParserSym.OP_PCT, et); :}
         ;
 
 LOOP ::= KW_LOOP LOOP_COND LKEY BODY RKEY
