@@ -1,8 +1,8 @@
 
 /**
  * Assignatura 21780 - Compiladors
- * Estudis: Grau en Inform‡tica 
- * Itinerari: Intel∑ligËncia Artificial i ComputaciÛ
+ * Estudis: Grau en Inform√†tica 
+ * Itinerari: Intel¬∑lig√®ncia Artificial i Computaci√≥
  *
  * Equipo: Arturo, Dani y Marta
  */
@@ -12,9 +12,9 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
- * les varaibles de la gram‡tica.
+ * les variables de la gram√†tica.
  * 
- * B‡sicament contÈ un valor enter
+ * B√†sicament cont√© un valor enter
  */
 public class SymbolTypeRetorno extends ComplexSymbol {
     private static int id = 0;
