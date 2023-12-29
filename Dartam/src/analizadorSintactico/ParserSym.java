@@ -9,68 +9,71 @@ package analizadorSintactico;
 public class ParserSym {
   /* terminals */
   public static final int AS_SUBA = 11;
-  public static final int KW_ELIF = 50;
-  public static final int LKEY = 39;
-  public static final int LBRACKET = 41;
-  public static final int CHAR = 67;
-  public static final int KW_INT = 32;
-  public static final int KW_OUT = 57;
-  public static final int KW_DO = 53;
-  public static final int DOUBLE = 66;
-  public static final int LPAREN = 37;
-  public static final int KW_DOUBLE = 33;
+  public static final int KW_ELIF = 52;
+  public static final int LKEY = 40;
+  public static final int LBRACKET = 42;
+  public static final int CHAR = 70;
+  public static final int KW_INT = 33;
+  public static final int KW_OUT = 59;
+  public static final int KW_DO = 55;
+  public static final int DOUBLE = 69;
+  public static final int LPAREN = 38;
+  public static final int KW_CHAR = 35;
+  public static final int KW_DOUBLE = 34;
   public static final int OP_NOT = 25;
   public static final int OP_AND = 23;
-  public static final int KW_CHAR = 34;
-  public static final int INT = 65;
-  public static final int KW_CONST = 48;
+  public static final int INT = 68;
+  public static final int KW_CONST = 50;
   public static final int AS_ORA = 16;
-  public static final int KW_ARGS = 46;
-  public static final int KW_CASE = 60;
+  public static final int KW_TUPLE = 49;
+  public static final int KW_ARGS = 47;
+  public static final int KW_CASE = 62;
   public static final int OP_INC = 2;
-  public static final int RPAREN = 38;
+  public static final int AUX_MEMBER = 64;
+  public static final int RPAREN = 39;
   public static final int OP_DIV = 7;
   public static final int AS_MULA = 12;
-  public static final int BOOL = 64;
-  public static final int COMMA = 44;
-  public static final int KW_WRITE = 59;
+  public static final int BOOL = 67;
+  public static final int COMMA = 45;
+  public static final int KW_WRITE = 61;
   public static final int OP_SWAP = 26;
   public static final int OP_MUL = 6;
   public static final int OP_ADD = 4;
-  public static final int ID = 62;
-  public static final int KW_BOOL = 31;
+  public static final int ID = 65;
+  public static final int KW_BOOL = 32;
   public static final int OP_MOD = 8;
-  public static final int KW_RETURN = 55;
+  public static final int KW_RETURN = 57;
   public static final int OP_NEQ = 22;
-  public static final int KW_METHOD = 47;
+  public static final int KW_METHOD = 48;
   public static final int EOF = 0;
-  public static final int RBRACKET = 42;
-  public static final int KW_LOOP = 52;
-  public static final int RKEY = 40;
-  public static final int KW_MAIN = 45;
+  public static final int RBRACKET = 43;
+  public static final int KW_LOOP = 54;
+  public static final int RKEY = 41;
+  public static final int KW_MAIN = 46;
   public static final int error = 1;
   public static final int OP_LT = 21;
-  public static final int KW_IN = 56;
+  public static final int KW_IN = 58;
   public static final int OP_OR = 24;
+  public static final int OP_MEMBER = 31;
   public static final int AS_POTA = 14;
-  public static final int KW_SWITCH = 54;
-  public static final int KW_IF = 49;
+  public static final int KW_SWITCH = 56;
+  public static final int KW_IF = 51;
   public static final int OP_COND = 29;
   public static final int ARROW = 30;
-  public static final int KW_VOID = 36;
+  public static final int KW_VOID = 37;
   public static final int OP_LEQ = 20;
   public static final int AS_DIVA = 13;
   public static final int OP_DEC = 3;
   public static final int AS_ANDA = 15;
   public static final int OP_BT = 19;
-  public static final int KW_ELSE = 51;
-  public static final int KW_READ = 58;
-  public static final int KW_STRING = 35;
+  public static final int KW_ELSE = 53;
+  public static final int KW_READ = 60;
+  public static final int KW_STRING = 36;
   public static final int OP_SUB = 5;
-  public static final int ENDINSTR = 43;
+  public static final int ENDINSTR = 44;
   public static final int OP_EQ = 17;
-  public static final int STRING = 63;
-  public static final int KW_DEFAULT = 61;
+  public static final int STRING = 66;
+  public static final int KW_DEFAULT = 63;
   public static final int AS_ASSIGN = 9;
   public static final int OP_BEQ = 18;
   public static final int OP_PCT = 27;
@@ -108,6 +111,7 @@ public class ParserSym {
   "OP_POT",
   "OP_COND",
   "ARROW",
+  "OP_MEMBER",
   "KW_BOOL",
   "KW_INT",
   "KW_DOUBLE",
@@ -125,6 +129,7 @@ public class ParserSym {
   "KW_MAIN",
   "KW_ARGS",
   "KW_METHOD",
+  "KW_TUPLE",
   "KW_CONST",
   "KW_IF",
   "KW_ELIF",
@@ -139,6 +144,7 @@ public class ParserSym {
   "KW_WRITE",
   "KW_CASE",
   "KW_DEFAULT",
+  "AUX_MEMBER",
   "ID",
   "STRING",
   "BOOL",

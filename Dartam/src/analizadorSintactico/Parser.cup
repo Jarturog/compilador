@@ -114,10 +114,11 @@ terminal    OP_INC, OP_DEC, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD;
 terminal    AS_ASSIGN, AS_ADDA, AS_SUBA, AS_MULA, AS_DIVA, AS_POTA, AS_ANDA, AS_ORA;
 terminal    OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 terminal    OP_AND, OP_OR, OP_NOT;
-terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW;
+terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
 terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_STRING, KW_VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
-terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_IN, KW_OUT, KW_READ, KW_WRITE, KW_CASE, KW_DEFAULT;
+terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_IN, KW_OUT, KW_READ, KW_WRITE, KW_CASE, KW_DEFAULT;
+terminal    AUX_MEMBER;
 
 terminal    String              ID, STRING;
 terminal    Boolean             BOOL;
@@ -141,7 +142,6 @@ non terminal SymbolFCall FCALL;
 non terminal SymbolFName FNAME;
 non terminal SymbolSetParams SETPARAMS;
 non terminal SymbolOperandsLista OPERANDSLISTA;
-non terminal SymbolStandaloneOp STANDALONE_OP;
 non terminal SymbolReturn RETURN;
 non terminal SymbolSwap SWAP;
 non terminal SymbolAsigs ASIGS;
@@ -164,6 +164,7 @@ non terminal SymbolSwitch SWITCH;
 non terminal SymbolCaso CASO;
 non terminal SymbolPred PRED;
 non terminal S, S1, S2;
+non terminal SymbolDimensiones DIMENSIONES;
 
 // cosas que he quitado de Andreas:
 // non terminal Object             FIXED_VALUE;
@@ -177,13 +178,15 @@ precedence right OP_POT;
 precedence left OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 precedence left OP_AND, OP_OR;
 precedence right OP_COND;
+precedence left OP_MEMBER, AUX_MEMBER;
+
 
 S ::= S1 S
         | S2
         ;
 
 S1 ::= METHOD
-        | DECS ENDINSTR
+        | DECS
         ;
 
 S2 ::= MAIN
@@ -219,8 +222,16 @@ GETPARAMS ::= PARAM COMMA GETPARAMS
 PARAM ::= TIPO_VAR ID
         ;
 
-DECS ::= KW_CONST TIPO_VAR IDDECSLISTA
-        | TIPO_VAR IDDECSLISTA
+DECS ::= KW_CONST TIPO_VAR IDDECSLISTA ENDINSTR
+        | TIPO_VAR IDDECSLISTA ENDINSTR
+        | KW_CONST TIPO_VAR DIMENSIONES IDDECSLISTA ENDINSTR
+        | TIPO_VAR DIMENSIONES IDDECSLISTA ENDINSTR
+        | KW_TUPLE ID LKEY RKEY ENDINSTR
+        | KW_TUPLE ID LKEY IDDECSLISTA RKEY ENDINSTR
+        ;
+
+DIMENSIONES ::= LBRACKET OPERAND RBRACKET DIMENSIONES
+        | LBRACKET OPERAND RBRACKET
         ;
 
 IDDECSLISTA ::= ID ASIG COMMA IDDECSLISTA
@@ -238,7 +249,10 @@ ELEMENTO_METODO ::= INSTR
         ;
 
 INSTR ::= FCALL ENDINSTR
-        | STANDALONE_OP ENDINSTR
+        | RETURN
+        | DECS
+        | ASIGS
+        | SWAP 
         ;
 
 FCALL ::= FNAME LPAREN SETPARAMS RPAREN
@@ -259,20 +273,14 @@ OPERANDSLISTA ::= OPERAND COMMA OPERANDSLISTA
         | OPERAND
         ;
 
-STANDALONE_OP ::= RETURN
-        | DECS
-        | ASIGS
-        | SWAP 
+RETURN ::= KW_RETURN ENDINSTR
+        | KW_RETURN OPERAND ENDINSTR
         ;
 
-RETURN ::= KW_RETURN
-        | KW_RETURN OPERAND
+SWAP ::= OPERAND OP_SWAP OPERAND ENDINSTR
         ;
 
-SWAP ::= OPERAND OP_SWAP OPERAND
-        ;
-
-ASIGS ::= IDASIGLISTA
+ASIGS ::= IDASIGLISTA ENDINSTR
         ;
 
 IDASIGLISTA ::= ID AS_OP OPERAND COMMA IDASIGLISTA
@@ -289,12 +297,14 @@ AS_OP ::= AS_ASSIGN
         | AS_ORA
         ;
 
-OPERAND ::= FCALL
+OPERAND ::= ATOMIC_EXPRESSION
+        | FCALL
+        | LPAREN OPERAND RPAREN
         | UNARY_EXPRESSION
         | BINARY_EXPRESSION
         | CONDITIONAL_EXPRESSION
-        | ATOMIC_EXPRESSION
-        | LPAREN OPERAND RPAREN
+        | OPERAND AUX_MEMBER LBRACKET OPERAND RBRACKET
+        | OPERAND OP_MEMBER ID
         ;
 
 UNARY_EXPRESSION ::= UNARY_OPERATOR OPERAND

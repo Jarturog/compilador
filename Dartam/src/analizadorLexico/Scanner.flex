@@ -79,9 +79,10 @@ sym_llaveDer 	= \}
 sym_bracketIzq	= \[
 sym_bracketDer	= \]
 sym_endInstr    = \;
-sym_coma	= \,
+sym_coma	   = \,
 sym_comillaS = \'
 sym_comillaD = \"
+sym_punto    = \.
 
 // operadores
 op_eq       = \= 
@@ -142,6 +143,7 @@ kw_in        = "enter"
 kw_out       = "show"
 kw_read      = "from"
 kw_write     = "into"
+kw_tuple     = "tupla"
 
 // casos especiales
 espacioBlanco = [ \t]+
@@ -252,6 +254,7 @@ private Symbol symbol(int type, Object value) {
 {sym_coma}              { tokens += "SYM_COMMA: "+yytext()+"\n"; return symbol(ParserSym.COMMA); }
 {sym_comillaS}          {}//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE); }
 {sym_comillaD}          {}//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE); }
+{sym_punto}             { tokens += "SYM_PUNTO: "+yytext()+"\n"; return symbol(ParserSym.OP_MEMBER); }
 
 // keywords
 {kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.KW_MAIN); }
@@ -271,6 +274,7 @@ private Symbol symbol(int type, Object value) {
 {kw_out}                { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.KW_OUT); }
 {kw_read}               { tokens += "KW_READ: "+yytext()+"\n"; return symbol(ParserSym.KW_READ); }
 {kw_write}              { tokens += "KW_WRITE: "+yytext()+"\n"; return symbol(ParserSym.KW_WRITE); }
+{kw_tuple}              { tokens += "KW_TUPLE: "+yytext()+"\n"; return symbol(ParserSym.KW_TUPLE); }
 
 // valores
 {val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
