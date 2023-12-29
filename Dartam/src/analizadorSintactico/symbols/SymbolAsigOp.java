@@ -16,10 +16,10 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolAsOp extends ComplexSymbol {
+public class SymbolAsigOp extends ComplexSymbol {
     private static int id = 0;
 
-    public SymbolAsOp(String variable, Double valor) {
+    public SymbolAsigOp(String variable, Double valor) {
         super(variable, id++, valor);
     }
     
