@@ -202,8 +202,6 @@ private Symbol symbol(int type, Object value) {
 // Regles/accions
 // És molt important l'ordre de les regles!!!
 
-{zerodigit}              { return symbol(ParserSym.DOUBLE, 0.0); } // quitar en el futuro?
-
 // operadores
 {op_and_asig}               { tokens += "OP_AND_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ANDA); }
 {op_or_asig}                { tokens += "OP_OR_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ORA); }
