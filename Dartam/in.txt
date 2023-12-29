@@ -1,5 +1,1 @@
-f vacio inicio ( string [ ] argumentos )
-
-{
-
-}
+f vacio inicio(string[]argumentos){}

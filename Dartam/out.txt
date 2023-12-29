@@ -8,3 +8,4 @@ SYM_RBRACKET: ]
 KW_ARGS: argumentos
 SYM_RPAREN: )
 SYM_LKEY: {
+SYM_RKEY: }
