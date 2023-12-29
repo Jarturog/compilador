@@ -140,14 +140,14 @@ non terminal SymbolAsig ASIG;
 non terminal SymbolElementoMetodo ELEMENTO_METODO;
 non terminal SymbolInstr INSTR;
 non terminal SymbolFCall FCALL;
-non terminal SymbolFName FNAME;
+non terminal SymbolMethodName METHOD_NAME;
 non terminal SymbolSetParams SETPARAMS;
 non terminal SymbolOperandsLista OPERANDSLISTA;
 non terminal SymbolReturn RETURN;
 non terminal SymbolSwap SWAP;
 non terminal SymbolAsigs ASIGS;
 non terminal SymbolIDAsigLista IDASIGLISTA;
-non terminal SymbolAsOp AS_OP;
+non terminal SymbolAsigOp ASIG_OP;
 non terminal SymbolOperand OPERAND;
 non terminal SymbolUnaryExpression UNARY_EXPRESSION;
 non terminal SymbolBinaryExpression BINARY_EXPRESSION;
@@ -252,22 +252,22 @@ INSTR ::= FCALL ENDINSTR
         | SWAP
         ;
 
-FCALL ::= FNAME LPAREN SETPARAMS RPAREN
+FCALL ::= METHOD_NAME LPAREN SETPARAMS RPAREN
         ;
 
-FNAME ::= ID
-        | KW_IN
-        | KW_OUT
-        | KW_WRITE
-        | KW_READ
+METHOD_NAME ::= ID:et                   {: RESULT = new SymbolMethodName(ParserSym.ID, et); :}
+        | KW_IN:et                      {: RESULT = new SymbolMethodName(ParserSym.KW_IN, et); :}
+        | KW_OUT:et                     {: RESULT = new SymbolMethodName(ParserSym.KW_OUT, et); :}
+        | KW_WRITE:et                   {: RESULT = new SymbolMethodName(ParserSym.KW_WRITE, et); :}
+        | KW_READ:et                    {: RESULT = new SymbolMethodName(ParserSym.KW_READ, et); :}
         ;
 
-SETPARAMS ::= OPERANDSLISTA
-        |
+SETPARAMS ::= OPERANDSLISTA:et          {: RESULT = new SymbolSetParams(et); :}
+        |                               {: RESULT = new SymbolSetParams(); :}
         ;
 
-OPERANDSLISTA ::= OPERAND COMMA OPERANDSLISTA
-        | OPERAND
+OPERANDSLISTA ::= OPERAND:et COMMA OPERANDSLISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol); :}
+        | OPERAND:et                                    {: RESULT = new SymbolOperandsLista(et); :}
         ;
 
 RETURN ::= KW_RETURN ENDINSTR
@@ -280,18 +280,18 @@ SWAP ::= OPERAND OP_SWAP OPERAND ENDINSTR
 ASIGS ::= IDASIGLISTA ENDINSTR
         ;
 
-IDASIGLISTA ::= ID AS_OP OPERAND COMMA IDASIGLISTA
-        | ID AS_OP OPERAND
+IDASIGLISTA ::= ID ASIG_OP OPERAND COMMA IDASIGLISTA
+        | ID ASIG_OP OPERAND
         ;
 
-AS_OP ::= AS_ASSIGN
-        | AS_ADDA
-        | AS_SUBA
-        | AS_MULA
-        | AS_DIVA
-        | AS_POTA
-        | AS_ANDA
-        | AS_ORA
+ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.AS_ASSIGN, et); :}
+        | AS_ADDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ADDA, et); :}
+        | AS_SUBA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_SUBA, et); :}
+        | AS_MULA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_MULA, et); :}
+        | AS_DIVA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_DIVA, et); :}
+        | AS_POTA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_POTA, et); :}
+        | AS_ANDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ANDA, et); :}
+        | AS_ORA:et                     {: RESULT = new SymbolAsigOp(ParserSym.AS_ORA, et); :}
         ;
 
 OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et); :}
