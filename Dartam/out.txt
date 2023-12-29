@@ -1,0 +1,10 @@
+KW_METHOD: f
+TYPE_VOID: vacio
+KW_MAIN: inicio
+SYM_LPAREN: (
+TYPE_STRING: string
+SYM_LBRACKET: [
+SYM_RBRACKET: ]
+KW_ARGS: argumentos
+SYM_RPAREN: )
+SYM_LKEY: {

@@ -60,17 +60,6 @@ sub_letra   = [A-Za-z] // no confundir con carácter
 sub_car     = {sub_digit}|{sub_letra}
 sub_signo   = [+|-]? 
 
-// valores
-id          = ({sub_letra}|_)({sub_car}|_)*
-val_decimal = {sub_signo}{sub_digit}+
-val_binario = 0b[01]+
-val_octal   = 0o[0-7]+
-val_hex     = 0x[A-Fa-f0-9]+
-val_real    = {val_decimal}?\.{val_decimal}?([Ee]{val_decimal})?
-val_prop    = {kw_true}|{kw_false}
-val_char    = {sym_comillaS}{sub_car}{sym_comillaS}
-val_cadena  = {sym_comillaD}{sub_car}*{sym_comillaD}
-
 // símbolos
 sym_parenIzq	= \(
 sym_parenDer	= \)
@@ -144,6 +133,17 @@ kw_out       = "show"
 kw_read      = "from"
 kw_write     = "into"
 kw_tuple     = "tupla"
+
+// valores
+val_decimal = {sub_signo}{sub_digit}+
+val_binario = 0b[01]+
+val_octal   = 0o[0-7]+
+val_hex     = 0x[A-Fa-f0-9]+
+val_real    = {val_decimal}?\.{val_decimal}?([Ee]{val_decimal})?
+val_prop    = {kw_true}|{kw_false}
+val_char    = {sym_comillaS}{sub_car}{sym_comillaS}
+val_cadena  = {sym_comillaD}{sub_car}*{sym_comillaD}
+id          = ({sub_letra}|_)({sub_car}|_)*
 
 // casos especiales
 espacioBlanco = [ \t]+

@@ -19,8 +19,12 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 public class SymbolBody extends ComplexSymbol {
     private static int id = 0;
 
-    public SymbolBody(String variable, Double valor) {
-        super(variable, id++, valor);
+    public SymbolBody() {
+        super("body", id++, 0);
+    }
+    
+    public SymbolBody(SymbolElementoMetodo sem, SymbolBody sb) {
+        super("body", id++, 0);
     }
     
 }

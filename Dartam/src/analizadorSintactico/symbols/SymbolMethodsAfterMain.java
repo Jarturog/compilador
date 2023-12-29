@@ -19,8 +19,8 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 public class SymbolMethodsAfterMain extends ComplexSymbol {
     private static int id = 0;
 
-    public SymbolMethodsAfterMain(String variable, Double valor) {
-        super(variable, id++, valor);
+    public SymbolMethodsAfterMain(SymbolMain sm) {
+        super("sm", id++, 0);
     }
     
 }
