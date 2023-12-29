@@ -168,6 +168,7 @@ non terminal SymbolScript SCRIPT;
 non terminal SymbolMethodsBeforeMain SCRIPTBM;
 non terminal SymbolMethodsAfterMain SCRIPTAM;
 non terminal SymbolDimensiones DIMENSIONES;
+non terminal GETPARAMS2, VARIOS_IDS;
 
 precedence left OP_ADD, OP_SUB;
 precedence left OP_MUL, OP_DIV, OP_MOD;
@@ -178,6 +179,7 @@ precedence right OP_COND;
 precedence left OP_MEMBER, AUX_MEMBER;
 
 start with SCRIPT;
+
 SCRIPT ::= SCRIPTBM:et1 SCRIPT:et2      {: RESULT = new SymbolScript(et1, et2); :}
         | SCRIPTAM:et                   {: RESULT = new SymbolScript(et); :}
         ;
@@ -211,9 +213,12 @@ TIPO_VAR ::= KW_BOOL
         | KW_STRING
         ;
 
-GETPARAMS ::= PARAM COMMA GETPARAMS
-        | PARAM
+GETPARAMS ::= GETPARAMS2
         |
+        ;
+
+GETPARAMS2 ::= PARAM COMMA GETPARAMS2
+        | PARAM
         ;
 
 PARAM ::= TIPO_VAR:et1 ID:et2           {: RESULT = new SymbolParam(et1, et2); :}
@@ -223,12 +228,15 @@ DECS ::= KW_CONST TIPO_VAR IDDECSLISTA ENDINSTR
         | TIPO_VAR IDDECSLISTA ENDINSTR
         | KW_CONST TIPO_VAR DIMENSIONES IDDECSLISTA ENDINSTR
         | TIPO_VAR DIMENSIONES IDDECSLISTA ENDINSTR
-        | KW_TUPLE ID LKEY RKEY ENDINSTR
-        | KW_TUPLE ID LKEY IDDECSLISTA RKEY ENDINSTR
+        | KW_TUPLE ID LKEY VARIOS_IDS RKEY ENDINSTR
         ;
 
 DIMENSIONES ::= LBRACKET OPERAND RBRACKET DIMENSIONES
         | LBRACKET OPERAND RBRACKET
+        ;
+
+VARIOS_IDS ::= TIPO_VAR IDDECSLISTA ENDINSTR VARIOS_IDS
+        |
         ;
 
 IDDECSLISTA ::= ID ASIG COMMA IDDECSLISTA
@@ -311,7 +319,7 @@ BINARY_EXPRESSION ::= OPERAND:op1 BINARY_OPERATOR:et OPERAND:op2        {: RESUL
         ;
 
 CONDITIONAL_EXPRESSION ::= OPERAND:cond OP_COND OPERAND:op1 ARROW OPERAND:op2   {: RESULT = new SymbolConditionalExpression(cond, op1, op2);; :}
-        ;
+        ; 
 
 ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et); :}
         | STRING:et             {: RESULT = new SymbolAtomicExpression(et); :}
@@ -369,7 +377,7 @@ ELSE ::= KW_ELSE LKEY BODY RKEY
 SWITCH ::= KW_SWITCH OPERAND RKEY CASO PRED LKEY
         ;
 
-CASO ::= CASO KW_CASE ARROW BODY
+CASO ::= CASO KW_CASE OPERAND ARROW BODY
         |
         ;
 
