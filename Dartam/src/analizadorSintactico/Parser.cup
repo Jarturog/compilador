@@ -24,6 +24,7 @@ import java_cup.runtime.*;
 import analizadorSintactico.symbols.*;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java_cup.runtime.ComplexSymbolFactory.Location;
 
 class Parser;
 

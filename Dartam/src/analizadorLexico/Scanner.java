@@ -948,7 +948,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 87: break;
           case 14:
-            { return symbol(ParserSym.V_DOUBLE, 0.0);
+            { return symbol(ParserSym.DOUBLE, 0.0);
             }
           // fall through
           case 88: break;
