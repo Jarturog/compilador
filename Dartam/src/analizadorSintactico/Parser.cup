@@ -115,8 +115,8 @@ terminal    OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW;
 terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_STRING, KW_VOID;
-terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA, SQUOTE, DQUOTE, ENDLINE;
-terminal    KW_MAIN, KW_ARGS, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_IN, KW_OUT, KW_READ, KW_WRITE, KW_CASE, KW_DEFAULT;
+terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
+terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_IN, KW_OUT, KW_READ, KW_WRITE, KW_CASE, KW_DEFAULT;
 
 terminal    String              ID, STRING;
 terminal    Boolean             BOOL;
@@ -132,7 +132,6 @@ non terminal SymbolTypeVar TIPO_VAR;
 non terminal SymbolGetParams GETPARAMS;
 non terminal SymbolParam PARAM;
 non terminal SymbolDecs DECS;
-non terminal SymbolConst CONST;
 non terminal SymbolIDDecsLista IDDECSLISTA;
 non terminal SymbolAsig ASIG;
 non terminal SymbolElementoMetodo ELEMENTO_METODO;
@@ -161,7 +160,6 @@ non terminal SymbolElifs ELIFS;
 non terminal SymbolElif ELIF;
 non terminal SymbolElse ELSE;
 non terminal SymbolSwitch SWITCH;
-non terminal SymbolCasos CASOS;
 non terminal SymbolCaso CASO;
 non terminal SymbolPred PRED;
 non terminal S, S1, S2;
@@ -172,7 +170,12 @@ non terminal S, S1, S2;
 // non terminal SymbolList         LIST, CONT_LIST;
 // non terminal SymbolBase         HEADER_SEGMENT;
 
-precedence left OP_AND, OP_OR, OP_POT, OP_MUL, OP_DIV, OP_MOD, OP_ADD, OP_SUB;
+precedence left OP_ADD, OP_SUB;
+precedence left OP_MUL, OP_DIV, OP_MOD;
+precedence right OP_POT;
+precedence left OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
+precedence left OP_AND, OP_OR;
+precedence right OP_COND;
 
 S ::= S1 S
         | S2
@@ -189,7 +192,7 @@ S2 ::= MAIN
 MAIN ::= KW_MAIN LPAREN KW_CHAR LBRACKET RBRACKET LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY RKEY
         ;
 
-METHOD ::= TIPO_RETORNO ID LPAREN GETPARAMS RPAREN LKEY BODY RKEY
+METHOD ::= KW_METHOD TIPO_RETORNO ID LPAREN GETPARAMS RPAREN LKEY BODY RKEY
         ;
 
 BODY ::= ELEMENTO_METODO BODY
@@ -215,11 +218,8 @@ GETPARAMS ::= PARAM COMMA GETPARAMS
 PARAM ::= TIPO_VAR ID
         ;
 
-DECS ::= CONST TIPO_VAR IDDECSLISTA
-        ;
-
-CONST ::= KW_CONST
-        |
+DECS ::= KW_CONST TIPO_VAR IDDECSLISTA
+        | TIPO_VAR IDDECSLISTA
         ;
 
 IDDECSLISTA ::= ID ASIG COMMA IDDECSLISTA
@@ -357,14 +357,11 @@ ELSE ::= KW_ELSE LKEY BODY RKEY
         |
         ;
 
-SWITCH ::= KW_SWITCH OPERAND RKEY CASOS PRED LKEY
+SWITCH ::= KW_SWITCH OPERAND RKEY CASO PRED LKEY
         ;
 
-CASOS ::= CASO CASOS
-        | CASO
-        ;
-
-CASO ::= KW_CASE ARROW BODY
+CASO ::= CASO KW_CASE ARROW BODY
+        | 
         ;
 
 PRED ::= KW_CASE KW_DEFAULT ARROW BODY

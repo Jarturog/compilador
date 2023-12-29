@@ -126,6 +126,7 @@ type_void      = "vacio"
 kw_const     = "inmut"  // inmutable
 kw_main      = "inicio"
 kw_args      = "argumentos"
+kw_method    = "f"
 kw_if        = "si"
 kw_elif      = "sino"
 kw_else      = "no"
@@ -249,12 +250,13 @@ private Symbol symbol(int type, Object value) {
 {sym_bracketDer}        { tokens += "SYM_RBRACKET: "+yytext()+"\n"; return symbol(ParserSym.RBRACKET); }
 {sym_endInstr}          { tokens += "SYM_ENDINSTR: "+yytext()+"\n"; return symbol(ParserSym.ENDINSTR); }
 {sym_coma}              { tokens += "SYM_COMMA: "+yytext()+"\n"; return symbol(ParserSym.COMMA); }
-{sym_comillaS}          { tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE); }
-{sym_comillaD}          { tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE); }
+{sym_comillaS}          {}//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE); }
+{sym_comillaD}          {}//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE); }
 
 // keywords
 {kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.KW_MAIN); }
 {kw_args}               { tokens += "KW_ARGS: "+yytext()+"\n"; return symbol(ParserSym.KW_ARGS); }
+{kw_method}             { tokens += "KW_METHOD: "+yytext()+"\n"; return symbol(ParserSym.KW_METHOD); }
 {kw_const}              { tokens += "KW_CONST: "+yytext()+"\n"; return symbol(ParserSym.KW_CONST); }
 {kw_if}                 { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.KW_IF); }
 {kw_elif}               { tokens += "KW_ELIF: "+yytext()+"\n"; return symbol(ParserSym.KW_ELIF); }
@@ -284,7 +286,7 @@ private Symbol symbol(int type, Object value) {
 // casos especiales
 {espacioBlanco}        { /* No fer res amb els espais */  }
 {comentario}           { /* No fer res amb els comentaris */  }
-{finLinea}             { tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }
+{finLinea}             {}//{ tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }
 [^]				             { errores += errorToString(); System.err.println(errorToString()); return symbol(ParserSym.error); }
 
 /****************************************************************************/

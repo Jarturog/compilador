@@ -8,110 +8,112 @@ package analizadorSintactico;
 /** CUP generated class containing symbol constants. */
 public class ParserSym {
   /* terminals */
-  public static final int SUBA = 10;
+  public static final int AS_SUBA = 11;
+  public static final int KW_ELIF = 50;
   public static final int LKEY = 39;
   public static final int LBRACKET = 41;
-  public static final int POT = 28;
-  public static final int CONST = 49;
-  public static final int CHAR = 34;
-  public static final int KW_OUT = 58;
-  public static final int V_DOUBLE = 64;
-  public static final int CASE = 59;
-  public static final int DOUBLE = 33;
+  public static final int CHAR = 67;
+  public static final int KW_INT = 32;
+  public static final int KW_OUT = 57;
+  public static final int KW_DO = 53;
+  public static final int DOUBLE = 66;
   public static final int LPAREN = 37;
-  public static final int COND = 29;
-  public static final int INT = 32;
-  public static final int SQUOTE = 45;
+  public static final int KW_DOUBLE = 33;
+  public static final int OP_NOT = 25;
+  public static final int OP_AND = 23;
+  public static final int KW_CHAR = 34;
+  public static final int INT = 65;
+  public static final int KW_CONST = 48;
+  public static final int AS_ORA = 16;
+  public static final int KW_ARGS = 46;
+  public static final int KW_CASE = 60;
+  public static final int OP_INC = 2;
   public static final int RPAREN = 38;
-  public static final int MULA = 11;
-  public static final int NOT = 24;
-  public static final int AND = 22;
-  public static final int LT = 20;
-  public static final int OR = 23;
+  public static final int OP_DIV = 7;
+  public static final int AS_MULA = 12;
+  public static final int BOOL = 64;
   public static final int COMMA = 44;
-  public static final int BOOL = 31;
-  public static final int ENDLINE = 47;
-  public static final int INC = 2;
-  public static final int DIV = 7;
-  public static final int ORA = 15;
-  public static final int ASSIGN = 25;
-  public static final int V_CHAR = 65;
-  public static final int KW_RETURN = 56;
+  public static final int KW_WRITE = 59;
+  public static final int OP_SWAP = 26;
+  public static final int OP_MUL = 6;
+  public static final int OP_ADD = 4;
+  public static final int ID = 62;
+  public static final int KW_BOOL = 31;
+  public static final int OP_MOD = 8;
+  public static final int KW_RETURN = 55;
+  public static final int OP_NEQ = 22;
+  public static final int KW_METHOD = 47;
   public static final int EOF = 0;
-  public static final int DQUOTE = 46;
   public static final int RBRACKET = 42;
-  public static final int KW_LOOP = 53;
+  public static final int KW_LOOP = 52;
   public static final int RKEY = 40;
-  public static final int KW_MAIN = 48;
+  public static final int KW_MAIN = 45;
   public static final int error = 1;
-  public static final int KW_IN = 57;
-  public static final int MUL = 6;
-  public static final int ADD = 4;
-  public static final int BT = 18;
-  public static final int MOD = 8;
-  public static final int NEQ = 21;
-  public static final int POTA = 13;
-  public static final int VOID = 36;
-  public static final int KW_IF = 50;
-  public static final int EQ = 16;
-  public static final int SWITCH = 55;
-  public static final int V_INT = 63;
+  public static final int OP_LT = 21;
+  public static final int KW_IN = 56;
+  public static final int OP_OR = 24;
+  public static final int AS_POTA = 14;
+  public static final int KW_SWITCH = 54;
+  public static final int KW_IF = 49;
+  public static final int OP_COND = 29;
   public static final int ARROW = 30;
-  public static final int DIVA = 12;
-  public static final int V_BOOL = 62;
-  public static final int V_ID = 60;
-  public static final int ANDA = 14;
-  public static final int KW_ELSE = 52;
-  public static final int V_STRING = 61;
-  public static final int LEQ = 19;
+  public static final int KW_VOID = 36;
+  public static final int OP_LEQ = 20;
+  public static final int AS_DIVA = 13;
+  public static final int OP_DEC = 3;
+  public static final int AS_ANDA = 15;
+  public static final int OP_BT = 19;
+  public static final int KW_ELSE = 51;
+  public static final int KW_READ = 58;
+  public static final int KW_STRING = 35;
+  public static final int OP_SUB = 5;
   public static final int ENDINSTR = 43;
-  public static final int STRING = 35;
-  public static final int DEC = 3;
-  public static final int ADDA = 9;
-  public static final int SWAP = 26;
-  public static final int SUB = 5;
-  public static final int ELIF = 51;
-  public static final int DO = 54;
-  public static final int BEQ = 17;
-  public static final int PCT = 27;
+  public static final int OP_EQ = 17;
+  public static final int STRING = 63;
+  public static final int KW_DEFAULT = 61;
+  public static final int AS_ASSIGN = 9;
+  public static final int OP_BEQ = 18;
+  public static final int OP_PCT = 27;
+  public static final int AS_ADDA = 10;
+  public static final int OP_POT = 28;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
-  "INC",
-  "DEC",
-  "ADD",
-  "SUB",
-  "MUL",
-  "DIV",
-  "MOD",
-  "ADDA",
-  "SUBA",
-  "MULA",
-  "DIVA",
-  "POTA",
-  "ANDA",
-  "ORA",
-  "EQ",
-  "BEQ",
-  "BT",
-  "LEQ",
-  "LT",
-  "NEQ",
-  "AND",
-  "OR",
-  "NOT",
-  "ASSIGN",
-  "SWAP",
-  "PCT",
-  "POT",
-  "COND",
+  "OP_INC",
+  "OP_DEC",
+  "OP_ADD",
+  "OP_SUB",
+  "OP_MUL",
+  "OP_DIV",
+  "OP_MOD",
+  "AS_ASSIGN",
+  "AS_ADDA",
+  "AS_SUBA",
+  "AS_MULA",
+  "AS_DIVA",
+  "AS_POTA",
+  "AS_ANDA",
+  "AS_ORA",
+  "OP_EQ",
+  "OP_BEQ",
+  "OP_BT",
+  "OP_LEQ",
+  "OP_LT",
+  "OP_NEQ",
+  "OP_AND",
+  "OP_OR",
+  "OP_NOT",
+  "OP_SWAP",
+  "OP_PCT",
+  "OP_POT",
+  "OP_COND",
   "ARROW",
-  "BOOL",
-  "INT",
-  "DOUBLE",
-  "CHAR",
-  "STRING",
-  "VOID",
+  "KW_BOOL",
+  "KW_INT",
+  "KW_DOUBLE",
+  "KW_CHAR",
+  "KW_STRING",
+  "KW_VOID",
   "LPAREN",
   "RPAREN",
   "LKEY",
@@ -120,27 +122,29 @@ public class ParserSym {
   "RBRACKET",
   "ENDINSTR",
   "COMMA",
-  "SQUOTE",
-  "DQUOTE",
-  "ENDLINE",
   "KW_MAIN",
-  "CONST",
+  "KW_ARGS",
+  "KW_METHOD",
+  "KW_CONST",
   "KW_IF",
-  "ELIF",
+  "KW_ELIF",
   "KW_ELSE",
   "KW_LOOP",
-  "DO",
-  "SWITCH",
+  "KW_DO",
+  "KW_SWITCH",
   "KW_RETURN",
   "KW_IN",
   "KW_OUT",
-  "CASE",
-  "V_ID",
-  "V_STRING",
-  "V_BOOL",
-  "V_INT",
-  "V_DOUBLE",
-  "V_CHAR"
+  "KW_READ",
+  "KW_WRITE",
+  "KW_CASE",
+  "KW_DEFAULT",
+  "ID",
+  "STRING",
+  "BOOL",
+  "INT",
+  "DOUBLE",
+  "CHAR"
   };
 }
 

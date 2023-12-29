@@ -113,19 +113,20 @@ public class Scanner implements java_cup.runtime.Scanner {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\1\1\1\2\1\3\1\4\1\1\1\5\1\6"+
-    "\1\7\1\10\1\11\1\12\1\13\1\14\1\15\1\16"+
-    "\1\17\1\20\1\21\1\22\1\23\1\24\1\25\1\26"+
-    "\1\27\1\30\1\31\1\32\1\33\1\34\13\30\1\35"+
-    "\1\36\1\37\1\40\1\41\2\0\1\42\1\43\1\0"+
-    "\1\44\1\45\1\46\1\47\1\50\1\51\1\52\1\0"+
-    "\1\16\1\0\1\42\1\53\1\54\3\0\1\55\1\56"+
-    "\1\57\3\30\1\60\5\30\1\61\4\30\1\62\2\30"+
-    "\1\63\1\64\1\65\1\0\1\16\1\66\1\67\1\70"+
-    "\1\30\1\71\2\30\1\72\6\30\1\73\10\30\1\74"+
-    "\3\30\1\75\2\30\1\76\1\77\1\100\1\30\1\101"+
-    "\1\102\4\30\1\103\1\104\1\30\1\105\2\30\1\106"+
-    "\2\30\1\107\1\110\1\111\4\30\1\112\1\30\1\113";
+    "\1\0\1\1\1\2\2\3\1\1\1\4\1\5\1\3"+
+    "\1\6\1\7\1\10\1\11\1\12\1\13\1\14\1\15"+
+    "\1\16\1\17\1\20\1\21\1\22\1\23\1\24\1\25"+
+    "\1\26\1\27\1\30\1\31\1\32\4\26\1\33\6\26"+
+    "\1\34\1\35\1\36\1\37\1\40\2\0\1\41\1\42"+
+    "\1\0\1\43\1\44\1\45\1\46\1\47\1\50\1\51"+
+    "\1\0\1\14\1\0\1\41\1\52\1\53\3\0\1\54"+
+    "\1\55\1\56\3\26\1\57\5\26\1\60\4\26\1\61"+
+    "\2\26\1\62\1\63\1\64\1\0\1\14\1\65\1\66"+
+    "\1\67\1\26\1\70\2\26\1\71\6\26\1\72\10\26"+
+    "\1\73\3\26\1\74\2\26\1\75\1\76\1\77\1\26"+
+    "\1\100\1\101\4\26\1\102\1\103\1\26\1\104\2\26"+
+    "\1\105\2\26\1\106\1\107\1\110\4\26\1\111\1\26"+
+    "\1\112";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[151];
@@ -885,377 +886,372 @@ private Symbol symbol(int type, Object value) {
             { errores += errorToString(); System.err.println(errorToString()); return symbol(ParserSym.error);
             }
           // fall through
-          case 76: break;
+          case 75: break;
           case 2:
             { /* No fer res amb els espais */
             }
           // fall through
-          case 77: break;
+          case 76: break;
           case 3:
-            { tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE);
+            { 
             }
           // fall through
-          case 78: break;
+          case 77: break;
           case 4:
-            { tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE);
-            }
-          // fall through
-          case 79: break;
-          case 5:
             { tokens += "OP_PORCENT: "+yytext()+"\n"; return symbol(ParserSym.OP_PCT);
             }
           // fall through
-          case 80: break;
-          case 6:
+          case 78: break;
+          case 5:
             { tokens += "OP_AND: "+yytext()+"\n"; return symbol(ParserSym.OP_AND);
             }
           // fall through
-          case 81: break;
-          case 7:
-            { tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE);
-            }
-          // fall through
-          case 82: break;
-          case 8:
+          case 79: break;
+          case 6:
             { tokens += "SYM_LPAREN: "+yytext()+"\n"; return symbol(ParserSym.LPAREN);
             }
           // fall through
-          case 83: break;
-          case 9:
+          case 80: break;
+          case 7:
             { tokens += "SYM_RPAREN: "+yytext()+"\n"; return symbol(ParserSym.RPAREN);
             }
           // fall through
-          case 84: break;
-          case 10:
+          case 81: break;
+          case 8:
             { tokens += "OP_MUL: "+yytext()+"\n"; return symbol(ParserSym.OP_MUL);
             }
           // fall through
-          case 85: break;
-          case 11:
+          case 82: break;
+          case 9:
             { tokens += "OP_SUM: "+yytext()+"\n"; return symbol(ParserSym.OP_ADD);
             }
           // fall through
-          case 86: break;
-          case 12:
+          case 83: break;
+          case 10:
             { tokens += "SYM_COMMA: "+yytext()+"\n"; return symbol(ParserSym.COMMA);
             }
           // fall through
-          case 87: break;
-          case 13:
+          case 84: break;
+          case 11:
             { tokens += "OP_RES: "+yytext()+"\n"; return symbol(ParserSym.OP_SUB);
             }
           // fall through
-          case 88: break;
-          case 14:
+          case 85: break;
+          case 12:
             { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.INT, Double.parseDouble(yytext()));
             }
           // fall through
-          case 89: break;
-          case 15:
+          case 86: break;
+          case 13:
             { tokens += "OP_DIV: "+yytext()+"\n"; return symbol(ParserSym.OP_DIV);
             }
           // fall through
-          case 90: break;
-          case 16:
+          case 87: break;
+          case 14:
             { return symbol(ParserSym.V_DOUBLE, 0.0);
             }
           // fall through
-          case 91: break;
-          case 17:
+          case 88: break;
+          case 15:
             { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext()));
             }
           // fall through
-          case 92: break;
-          case 18:
+          case 89: break;
+          case 16:
             { tokens += "OP_ASIG: "+yytext()+"\n"; return symbol(ParserSym.AS_ASSIGN);
             }
           // fall through
-          case 93: break;
-          case 19:
+          case 90: break;
+          case 17:
             { tokens += "SYM_ENDINSTR: "+yytext()+"\n"; return symbol(ParserSym.ENDINSTR);
             }
           // fall through
-          case 94: break;
-          case 20:
+          case 91: break;
+          case 18:
             { tokens += "OP_MENOR: "+yytext()+"\n"; return symbol(ParserSym.OP_LT);
             }
           // fall through
-          case 95: break;
-          case 21:
+          case 92: break;
+          case 19:
             { tokens += "OP_EQ: "+yytext()+"\n"; return symbol(ParserSym.OP_EQ);
             }
           // fall through
-          case 96: break;
-          case 22:
+          case 93: break;
+          case 20:
             { tokens += "OP_MAYOR: "+yytext()+"\n"; return symbol(ParserSym.OP_BT);
             }
           // fall through
-          case 97: break;
-          case 23:
+          case 94: break;
+          case 21:
             { tokens += "OP_COND: "+yytext()+"\n"; return symbol(ParserSym.OP_COND);
             }
           // fall through
-          case 98: break;
-          case 24:
+          case 95: break;
+          case 22:
             { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext());
             }
           // fall through
-          case 99: break;
-          case 25:
+          case 96: break;
+          case 23:
             { tokens += "SYM_LBRACKET: "+yytext()+"\n"; return symbol(ParserSym.LBRACKET);
             }
           // fall through
-          case 100: break;
-          case 26:
+          case 97: break;
+          case 24:
             { tokens += "OP_MOD: "+yytext()+"\n"; return symbol(ParserSym.OP_MOD);
             }
           // fall through
-          case 101: break;
-          case 27:
+          case 98: break;
+          case 25:
             { tokens += "SYM_RBRACKET: "+yytext()+"\n"; return symbol(ParserSym.RBRACKET);
             }
           // fall through
-          case 102: break;
-          case 28:
+          case 99: break;
+          case 26:
             { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT);
             }
           // fall through
-          case 103: break;
-          case 29:
+          case 100: break;
+          case 27:
+            { tokens += "KW_METHOD: "+yytext()+"\n"; return symbol(ParserSym.KW_METHOD);
+            }
+          // fall through
+          case 101: break;
+          case 28:
             { tokens += "SYM_LKEY: "+yytext()+"\n"; return symbol(ParserSym.LKEY);
             }
           // fall through
-          case 104: break;
-          case 30:
+          case 102: break;
+          case 29:
             { tokens += "OP_OR: "+yytext()+"\n"; return symbol(ParserSym.OP_OR);
             }
           // fall through
-          case 105: break;
-          case 31:
+          case 103: break;
+          case 30:
             { tokens += "SYM_RKEY: "+yytext()+"\n"; return symbol(ParserSym.RKEY);
             }
           // fall through
-          case 106: break;
-          case 32:
+          case 104: break;
+          case 31:
             { tokens += "OP_NEG: "+yytext()+"\n"; return symbol(ParserSym.OP_NOT);
             }
           // fall through
-          case 107: break;
-          case 33:
+          case 105: break;
+          case 32:
             { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext());
             }
           // fall through
-          case 108: break;
-          case 34:
+          case 106: break;
+          case 33:
             { /* No fer res amb els comentaris */
             }
           // fall through
-          case 109: break;
-          case 35:
+          case 107: break;
+          case 34:
             { tokens += "OP_AND_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ANDA);
             }
           // fall through
-          case 110: break;
-          case 36:
+          case 108: break;
+          case 35:
             { tokens += "OP_POTENCIA: "+yytext()+"\n"; return symbol(ParserSym.OP_POT);
             }
           // fall through
-          case 111: break;
-          case 37:
+          case 109: break;
+          case 36:
             { tokens += "OP_MUL_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_MULA);
             }
           // fall through
-          case 112: break;
-          case 38:
+          case 110: break;
+          case 37:
             { tokens += "OP_INC: "+yytext()+"\n"; return symbol(ParserSym.OP_INC);
             }
           // fall through
-          case 113: break;
-          case 39:
+          case 111: break;
+          case 38:
             { tokens += "OP_SUM_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ADDA);
             }
           // fall through
-          case 114: break;
-          case 40:
+          case 112: break;
+          case 39:
             { tokens += "OP_DEC: "+yytext()+"\n"; return symbol(ParserSym.OP_DEC);
             }
           // fall through
-          case 115: break;
-          case 41:
+          case 113: break;
+          case 40:
             { tokens += "OP_RES_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_SUBA);
             }
           // fall through
-          case 116: break;
-          case 42:
+          case 114: break;
+          case 41:
             { tokens += "OP_ARROW: "+yytext()+"\n"; return symbol(ParserSym.ARROW);
             }
           // fall through
-          case 117: break;
-          case 43:
+          case 115: break;
+          case 42:
             { tokens += "OP_DIV_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_DIVA);
             }
           // fall through
-          case 118: break;
-          case 44:
+          case 116: break;
+          case 43:
             { tokens += "OP_DIFERENT: "+yytext()+"\n"; return symbol(ParserSym.OP_NEQ);
             }
           // fall through
-          case 119: break;
-          case 45:
+          case 117: break;
+          case 44:
             { tokens += "OP_MENOREQ: "+yytext()+"\n"; return symbol(ParserSym.OP_LEQ);
             }
           // fall through
-          case 120: break;
-          case 46:
+          case 118: break;
+          case 45:
             { tokens += "OP_SWAP: "+yytext()+"\n"; return symbol(ParserSym.OP_SWAP);
             }
           // fall through
-          case 121: break;
-          case 47:
+          case 119: break;
+          case 46:
             { tokens += "OP_MAYOREQ: "+yytext()+"\n"; return symbol(ParserSym.OP_BEQ);
             }
           // fall through
-          case 122: break;
-          case 48:
+          case 120: break;
+          case 47:
             { tokens += "KW_DO: "+yytext()+"\n"; return symbol(ParserSym.KW_DO);
             }
           // fall through
-          case 123: break;
-          case 49:
+          case 121: break;
+          case 48:
             { tokens += "KW_ELSE: "+yytext()+"\n"; return symbol(ParserSym.KW_ELSE);
             }
           // fall through
-          case 124: break;
-          case 50:
+          case 122: break;
+          case 49:
             { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.KW_IF);
             }
           // fall through
-          case 125: break;
-          case 51:
+          case 123: break;
+          case 50:
             { tokens += "OP_OR_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ORA);
             }
           // fall through
-          case 126: break;
-          case 52:
+          case 124: break;
+          case 51:
             { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CHAR, yytext().charAt(0));
             }
           // fall through
-          case 127: break;
-          case 53:
+          case 125: break;
+          case 52:
             { tokens += "OP_POT_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_POTA);
             }
           // fall through
-          case 128: break;
-          case 54:
+          case 126: break;
+          case 53:
             { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),2));
             }
           // fall through
-          case 129: break;
-          case 55:
+          case 127: break;
+          case 54:
             { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),8));
             }
           // fall through
-          case 130: break;
-          case 56:
+          case 128: break;
+          case 55:
             { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),16));
             }
           // fall through
-          case 131: break;
-          case 57:
+          case 129: break;
+          case 56:
             { tokens += "TYPE_CHAR: "+yytext()+"\n"; return symbol(ParserSym.KW_CHAR);
             }
           // fall through
-          case 132: break;
-          case 58:
+          case 130: break;
+          case 57:
             { tokens += "TYPE_INT: "+yytext()+"\n"; return symbol(ParserSym.KW_INT);
             }
           // fall through
-          case 133: break;
-          case 59:
+          case 131: break;
+          case 58:
             { tokens += "KW_RETURN: "+yytext()+"\n"; return symbol(ParserSym.KW_RETURN);
             }
           // fall through
-          case 134: break;
-          case 60:
+          case 132: break;
+          case 59:
             { tokens += "KW_CASE: "+yytext()+"\n"; return symbol(ParserSym.KW_CASE);
             }
           // fall through
-          case 135: break;
-          case 61:
+          case 133: break;
+          case 60:
             { tokens += "KW_READ: "+yytext()+"\n"; return symbol(ParserSym.KW_READ);
             }
           // fall through
-          case 136: break;
-          case 62:
+          case 134: break;
+          case 61:
             { tokens += "KW_WRITE: "+yytext()+"\n"; return symbol(ParserSym.KW_WRITE);
             }
           // fall through
-          case 137: break;
-          case 63:
+          case 135: break;
+          case 62:
             { tokens += "KW_WHILE: "+yytext()+"\n"; return symbol(ParserSym.KW_LOOP);
             }
           // fall through
-          case 138: break;
-          case 64:
+          case 136: break;
+          case 63:
             { tokens += "TYPE_BOOL: "+yytext()+"\n"; return symbol(ParserSym.KW_BOOL);
             }
           // fall through
-          case 139: break;
-          case 65:
+          case 137: break;
+          case 64:
             { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.KW_OUT);
             }
           // fall through
-          case 140: break;
-          case 66:
+          case 138: break;
+          case 65:
             { tokens += "KW_ELIF: "+yytext()+"\n"; return symbol(ParserSym.KW_ELIF);
             }
           // fall through
-          case 141: break;
-          case 67:
+          case 139: break;
+          case 66:
             { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.KW_IN);
             }
           // fall through
-          case 142: break;
-          case 68:
+          case 140: break;
+          case 67:
             { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.BOOL, "cierto".equals(yytext()));
             }
           // fall through
-          case 143: break;
-          case 69:
+          case 141: break;
+          case 68:
             { tokens += "KW_CONST: "+yytext()+"\n"; return symbol(ParserSym.KW_CONST);
             }
           // fall through
-          case 144: break;
-          case 70:
+          case 142: break;
+          case 69:
             { tokens += "TYPE_VOID: "+yytext()+"\n"; return symbol(ParserSym.KW_VOID);
             }
           // fall through
-          case 145: break;
-          case 71:
+          case 143: break;
+          case 70:
             { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.KW_MAIN);
             }
           // fall through
-          case 146: break;
-          case 72:
+          case 144: break;
+          case 71:
             { tokens += "KW_SWITCH: "+yytext()+"\n"; return symbol(ParserSym.KW_SWITCH);
             }
           // fall through
-          case 147: break;
-          case 73:
+          case 145: break;
+          case 72:
             { tokens += "TYPE_STRING: "+yytext()+"\n"; return symbol(ParserSym.KW_STRING);
             }
           // fall through
-          case 148: break;
-          case 74:
+          case 146: break;
+          case 73:
             { tokens += "TYPE_DOUBLE: "+yytext()+"\n"; return symbol(ParserSym.KW_DOUBLE);
             }
           // fall through
-          case 149: break;
-          case 75:
+          case 147: break;
+          case 74:
             { tokens += "KW_ARGS: "+yytext()+"\n"; return symbol(ParserSym.KW_ARGS);
             }
           // fall through
-          case 150: break;
+          case 148: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
