@@ -23,4 +23,12 @@ public class SymbolAsig extends ComplexSymbol {
         super(variable, id++, valor);
     }
     
+    public SymbolAsig(Object o) {
+        super("", id++, 0);
+    }
+    
+    public SymbolAsig() {
+        super("", id++, 0);
+    }
+    
 }

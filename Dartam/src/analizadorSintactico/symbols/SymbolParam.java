@@ -23,4 +23,12 @@ public class SymbolParam extends ComplexSymbol {
         super(variable, id++, valor);
     }
     
+    public SymbolParam(Object o) {
+        super("", id++, 0);
+    }
+    
+    public SymbolParam(Object o, Object o1) {
+        super("", id++, 0);
+    }
+    
 }

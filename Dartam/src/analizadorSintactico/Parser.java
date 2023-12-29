@@ -811,6 +811,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
+        if (cur_token.sym != ParserSym.error)
         report_error("Error Sintáctico en la Línea " + (cur_token.left) +
         " Columna "+cur_token.right+ ". No se esperaba este componente: " +cur_token.value+".", cur_token); 
     } 
@@ -996,7 +997,10 @@ class CUP$Parser$actions {
           case 11: // TIPO_RETORNO ::= TIPO_VAR 
             {
               SymbolTypeRetorno RESULT =null;
-
+		int etleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int etright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		SymbolTypeVar et = (SymbolTypeVar)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 RESULT = new SymbolTypeRetorno(et); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("TIPO_RETORNO",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1005,7 +1009,10 @@ class CUP$Parser$actions {
           case 12: // TIPO_RETORNO ::= KW_VOID 
             {
               SymbolTypeRetorno RESULT =null;
-
+		int etleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int etright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		Object et = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 RESULT = new SymbolTypeRetorno(et); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("TIPO_RETORNO",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1086,7 +1093,13 @@ class CUP$Parser$actions {
           case 21: // PARAM ::= TIPO_VAR ID 
             {
               SymbolParam RESULT =null;
-
+		int et1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int et1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		SymbolTypeVar et1 = (SymbolTypeVar)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		int et2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int et2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		String et2 = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 RESULT = new SymbolParam(et1, et2); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("PARAM",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1185,7 +1198,10 @@ class CUP$Parser$actions {
           case 32: // ASIG ::= AS_ASSIGN OPERAND 
             {
               SymbolAsig RESULT =null;
-
+		int etleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int etright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		SymbolOperand et = (SymbolOperand)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		 RESULT = new SymbolAsig(et); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ASIG",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1194,7 +1210,7 @@ class CUP$Parser$actions {
           case 33: // ASIG ::= 
             {
               SymbolAsig RESULT =null;
-
+		 RESULT = new SymbolAsig(); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ASIG",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

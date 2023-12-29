@@ -1,4 +1,4 @@
-inmut real k : 3 + 1;º
+inmut real k : 3 + 1;
 
 f vacio inicio(string[]argumentos){
 	ent a: 1;

@@ -23,4 +23,8 @@ public class SymbolTypeRetorno extends ComplexSymbol {
         super(variable, id++, valor);
     }
     
+    public SymbolTypeRetorno(Object o) {
+        super("", id++, 0);
+    }
+    
 }

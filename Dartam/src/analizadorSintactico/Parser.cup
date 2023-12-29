@@ -73,6 +73,7 @@ parser code {:
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
+        if (cur_token.sym != ParserSym.error)
         report_error("Error Sintáctico en la Línea " + (cur_token.left) +
         " Columna "+cur_token.right+ ". No se esperaba este componente: " +cur_token.value+".", cur_token); 
     } 
@@ -199,8 +200,8 @@ BODY ::= ELEMENTO_METODO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2); :}
         |                               {: RESULT = new SymbolBody(); :}
         ;
 
-TIPO_RETORNO ::= TIPO_VAR
-        | KW_VOID
+TIPO_RETORNO ::= TIPO_VAR:et            {: RESULT = new SymbolTypeRetorno(et); :}
+        | KW_VOID:et                    {: RESULT = new SymbolTypeRetorno(et); :}
         ;
 
 TIPO_VAR ::= KW_BOOL
@@ -215,7 +216,7 @@ GETPARAMS ::= PARAM COMMA GETPARAMS
         |
         ;
 
-PARAM ::= TIPO_VAR ID
+PARAM ::= TIPO_VAR:et1 ID:et2           {: RESULT = new SymbolParam(et1, et2); :}
         ;
 
 DECS ::= KW_CONST TIPO_VAR IDDECSLISTA ENDINSTR
@@ -234,8 +235,8 @@ IDDECSLISTA ::= ID ASIG COMMA IDDECSLISTA
         | ID ASIG
         ;
 
-ASIG ::= AS_ASSIGN OPERAND
-        |
+ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et); :}
+        |                       {: RESULT = new SymbolAsig(); :}
         ;
 
 ELEMENTO_METODO ::= INSTR
