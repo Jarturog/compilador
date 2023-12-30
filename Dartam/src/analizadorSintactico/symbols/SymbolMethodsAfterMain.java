@@ -14,13 +14,27 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * Reglas:
+ * 
+ * SCRIPTAM ::= MAIN:et 
+ *              | SCRIPTAM:et1 SCRIPTBM:et2
+ *              ;
  */
 public class SymbolMethodsAfterMain extends ComplexSymbol {
     private static int id = 0;
+    private SymbolMain main;
+    private SymbolMethodsAfterMain mam;
+    private SymbolMethodsBeforeMain mbm;
 
     public SymbolMethodsAfterMain(SymbolMain sm) {
-        super("sm", id++, 0);
+        super("sam", id++, 0);
+        this.main = sm;
+    }
+    
+    public SymbolMethodsAfterMain(SymbolMethodsAfterMain mam, SymbolMethodsBeforeMain mbm){
+        super("sam", id++, 0);
+        this.mam = mam;
+        this.mbm = mbm;
     }
     
 }

@@ -14,21 +14,31 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * REGLAS:
+ * 
+ * PARAM ::= TIPO_VAR:et1 ID:et2  
+ *         ;
  */
 public class SymbolParam extends ComplexSymbol {
     private static int id = 0;
+    private SymbolTypeVar tipo;
+    private String identificador;
 
-    public SymbolParam(String variable, Double valor) {
-        super(variable, id++, valor);
+    public SymbolParam(SymbolTypeVar tipo, String identificador){
+        super("param", id++, 0);
+        this.tipo = tipo;
+        this.identificador = identificador;
+    }
+
+    public SymbolTypeVar getTipo() {
+        return tipo;
+    }
+
+    public String getIdentificador() {
+        return identificador;
     }
     
-    public SymbolParam(Object o) {
-        super("", id++, 0);
-    }
     
-    public SymbolParam(Object o, Object o1) {
-        super("", id++, 0);
-    }
+    
     
 }

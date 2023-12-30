@@ -184,90 +184,92 @@ SCRIPT ::= SCRIPTBM:et1 SCRIPT:et2      {: RESULT = new SymbolScript(et1, et2); 
         | SCRIPTAM:et                   {: RESULT = new SymbolScript(et); :}
         ;
 
-SCRIPTBM ::= METHOD
-        | DECS
+SCRIPTBM ::= METHOD:et                  {: RESULT = new SymbolMethodsBeforeMain(et); :}
+        | DECS:et                       {: RESULT = new SymbolMethodsBeforeMain(et) :}
         ;
 
 SCRIPTAM ::= MAIN:et                    {: RESULT = new SymbolMethodsAfterMain(et); :}
-        | SCRIPTAM SCRIPTBM
+        | SCRIPTAM:et1 SCRIPTBM:et2     {: RESULT = new SymbolMethodsAfterMain(et1,et2); :}
         ;
 
 MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY:et RKEY {: RESULT = new SymbolMain(); :}
         ;
 
-METHOD ::= KW_METHOD TIPO_RETORNO ID LPAREN GETPARAMS RPAREN LKEY BODY RKEY
+METHOD ::= KW_METHOD TIPO_RETORNO:et1 ID:et2 LPAREN GETPARAMS:et3 RPAREN LKEY BODY:et4 RKEY             {: RESULT = new SymbolMethod(et1,et2,et3,et4) :}
         ;
 
 BODY ::= ELEMENTO_METODO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2); :}
         |                               {: RESULT = new SymbolBody(); :}
         ;
-
+                                        //NO SE COMO CAMBIAR ESTE....
 TIPO_RETORNO ::= TIPO_VAR:et            {: RESULT = new SymbolTypeRetorno(et); :}
         | KW_VOID:et                    {: RESULT = new SymbolTypeRetorno(et); :}
         ;
 
-TIPO_VAR ::= KW_BOOL
-        | KW_INT
-        | KW_DOUBLE
-        | KW_CHAR
-        | KW_STRING
+TIPO_VAR ::= KW_BOOL                    {: RESULT = new SymbolTypeVar(ParserSym.KW_BOOL); :}
+        | KW_INT                        {: RESULT = new SymbolTypeVar(ParserSym.KW_INT); :}
+        | KW_DOUBLE                     {: RESULT = new SymbolTypeVar(ParserSym.KW_DOUBLE); :}
+        | KW_CHAR                       {: RESULT = new SymbolTypeVar(ParserSym.KW_CHAR); :}
+        | KW_STRING                     {: RESULT = new SymbolTypeVar(ParserSym.KW_STRING); :}
         ;
 
-GETPARAMS ::= GETPARAMS2
+//NO SE COMO HACER ESTE EN CLASE SYMBOLGETPARAMS
+GETPARAMS ::= GETPARAMS2:et            {: RESULT = new SymbolGetParams(et) :}
         |
         ;
-
-GETPARAMS2 ::= PARAM COMMA GETPARAMS2
-        | PARAM
+//NO SE COMO HACER ESTE USANDO LA CLASE PARA CONSTRUCTOR
+GETPARAMS2 ::= PARAM:et1 COMMA GETPARAMS2:et2        {: :}
+        | PARAM:et                                  {: :}
         ;
 
 PARAM ::= TIPO_VAR:et1 ID:et2           {: RESULT = new SymbolParam(et1, et2); :}
         ;
 
-DECS ::= KW_CONST TIPO_VAR IDDECSLISTA ENDINSTR
-        | TIPO_VAR IDDECSLISTA ENDINSTR
-        | KW_CONST TIPO_VAR DIMENSIONES IDDECSLISTA ENDINSTR
-        | TIPO_VAR DIMENSIONES IDDECSLISTA ENDINSTR
-        | KW_TUPLE ID LKEY VARIOS_IDS RKEY ENDINSTR
+DECS ::= KW_CONST:et1 TIPO_VAR:et2 IDDECSLISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3); :}
+        | TIPO_VAR:et1 IDDECSLISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2); :}
+        | KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 IDDECSLISTA:et4 ENDINSTR {: RESULT = new SymbolDecs(true, et2, et3, et4); :}
+        | TIPO_VAR:et1 DIMENSIONES:et2 IDDECSLISTA:et3 ENDINSTR {: RESULT = new SymbolDecs(false, et1, et2, et3); :}
+        | KW_TUPLE:et1 ID:et2 LKEY VARIOS_IDS:et3 RKEY ENDINSTR {: RESULT = new SymbolDecs(et1, et2, et3); :} //NO SE COMO HACER ESTE EN CODIGO
         ;
 
-DIMENSIONES ::= LBRACKET OPERAND RBRACKET DIMENSIONES
-        | LBRACKET OPERAND RBRACKET
+DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2); :}
+        | LBRACKET OPERAND:et1 RBRACKET                         {: RESULT = new SymbolDimensiones(et1); :}
         ;
 
-VARIOS_IDS ::= TIPO_VAR IDDECSLISTA ENDINSTR VARIOS_IDS
+//NO SE COMO HACER ESTE
+VARIOS_IDS ::= TIPO_VAR:et1 IDDECSLISTA:et2 ENDINSTR VARIOS_IDS:et3         {: RESULT = :}
         |
         ;
 
-IDDECSLISTA ::= ID ASIG COMMA IDDECSLISTA
-        | ID ASIG
+IDDECSLISTA ::= ID:et1 ASIG:et2 COMMA IDDECSLISTA:et3       {: RESULT = new SymbolIDDecsLista(et1,et2,et3); :}
+        | ID:et1 ASIG:et2                                   {: RESULT = new SymbolIDDecsLista(et1,et2); :}
         ;
 
 ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et); :}
         |                       {: RESULT = new SymbolAsig(); :}
         ;
 
-ELEMENTO_METODO ::= INSTR
-        | LOOP
-        | IF
-        | SWITCH
+ELEMENTO_METODO ::= INSTR:et    {: RESULT = new SymbolElementoMetodo(et); :}
+        | LOOP:et               {: RESULT = new SymbolElementoMetodo(et); :}
+        | IF:et                 {: RESULT = new SymbolElementoMetodo(et); :}
+        | SWITCH:et             {: RESULT = new SymbolElementoMetodo(et); :}
         ;
 
-INSTR ::= FCALL ENDINSTR
-        | RETURN
-        | DECS
-        | ASIGS
-        | SWAP
+INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et); :} 
+        | RETURN:et            {: RESULT = new SymbolInstr(et); :}  //NO SE COMO HACER ESTE
+        | DECS:et              {: RESULT = new SymbolInstr(et); :}
+        | ASIGS:et             {: RESULT = new SymbolInstr(et); :}
+        | SWAP:et              {: RESULT = new SymbolInstr(et); :}
         ;
 
-FCALL ::= METHOD_NAME LPAREN SETPARAMS RPAREN
+FCALL ::= METHOD_NAME:et1 LPAREN SETPARAMS:et2 RPAREN   {: RESULT = new SymbolFCall(et1,et2); :}
         ;
 
-METHOD_NAME ::= ID:et                   {: RESULT = new SymbolMethodName(ParserSym.ID, et); :}
-        | KW_IN:et                      {: RESULT = new SymbolMethodName(ParserSym.KW_IN, et); :}
-        | KW_OUT:et                     {: RESULT = new SymbolMethodName(ParserSym.KW_OUT, et); :}
-        | KW_WRITE:et                   {: RESULT = new SymbolMethodName(ParserSym.KW_WRITE, et); :}
-        | KW_READ:et                    {: RESULT = new SymbolMethodName(ParserSym.KW_READ, et); :}
+METHOD_NAME ::= ID:et                   {: RESULT = new SymbolMethodName(ParserSym.ID); :}
+        | KW_IN:et                      {: RESULT = new SymbolMethodName(ParserSym.KW_IN); :}
+        | KW_OUT:et                     {: RESULT = new SymbolMethodName(ParserSym.KW_OUT); :}
+        | KW_WRITE:et                   {: RESULT = new SymbolMethodName(ParserSym.KW_WRITE); :}
+        | KW_READ:et                    {: RESULT = new SymbolMethodName(ParserSym.KW_READ); :}
         ;
 
 SETPARAMS ::= OPERANDSLISTA:et          {: RESULT = new SymbolSetParams(et); :}

@@ -14,21 +14,29 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * Reglas:
+ * 
+ * ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et); :}
+        |                       {: RESULT = new SymbolAsig(); :}
+        ;
  */
 public class SymbolAsig extends ComplexSymbol {
     private static int id = 0;
-
-    public SymbolAsig(String variable, Double valor) {
-        super(variable, id++, valor);
-    }
+    private SymbolOperand operando;
     
-    public SymbolAsig(Object o) {
-        super("", id++, 0);
+    public SymbolAsig(SymbolOperand operando){
+        super("asig", id++, 0);
+        this.operando = operando;
     }
     
     public SymbolAsig() {
         super("", id++, 0);
     }
+
+    public SymbolOperand getOperando() {
+        return operando;
+    }
+    
+    
     
 }

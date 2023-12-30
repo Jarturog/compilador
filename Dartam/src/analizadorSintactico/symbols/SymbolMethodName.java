@@ -14,13 +14,28 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * Reglas:
+ * METHOD_NAME ::= ID                   {: RESULT = new SymbolMethodName(ParserSym.ID); :}
+        | KW_IN:et                      {: RESULT = new SymbolMethodName(ParserSym.KW_IN); :}
+        | KW_OUT:et                     {: RESULT = new SymbolMethodName(ParserSym.KW_OUT); :}
+        | KW_WRITE:et                   {: RESULT = new SymbolMethodName(ParserSym.KW_WRITE); :}
+        | KW_READ:et                    {: RESULT = new SymbolMethodName(ParserSym.KW_READ); :}
+        ;
+ * 
  */
 public class SymbolMethodName extends ComplexSymbol {
     private static int id = 0;
+    private int methodName;
 
-    public SymbolMethodName(String variable, Double valor) {
-        super(variable, id++, valor);
+    public SymbolMethodName(int methodName) {
+        super("methodName", id++, 0);
+        this.methodName = methodName;
     }
+
+    public int getMethodName() {
+        return methodName;
+    }
+    
+    
     
 }

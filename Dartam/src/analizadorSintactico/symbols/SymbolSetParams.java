@@ -14,13 +14,25 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * REglas:
+ * 
+ * SETPARAMS ::= OPERANDSLISTA:et          {: RESULT = new SymbolSetParams(et); :}
+        |                               {: RESULT = new SymbolSetParams(); :}
+        ;
  */
 public class SymbolSetParams extends ComplexSymbol {
     private static int id = 0;
-
-    public SymbolSetParams(String variable, Double valor) {
-        super(variable, id++, valor);
+    private SymbolOperandsLista operandsLista;
+    
+    public SymbolSetParams(SymbolOperandsLista operandsLista) {
+        super("operandsLista", id++, 0);
+        this.operandsLista = operandsLista;
     }
+
+    public SymbolOperandsLista getOperandsLista() {
+        return operandsLista;
+    }
+    
+    
     
 }

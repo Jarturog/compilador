@@ -18,9 +18,27 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  */
 public class SymbolTypeVar extends ComplexSymbol {
     private static int id = 0;
-
-    public SymbolTypeVar(String variable, Double valor) {
-        super(variable, id++, valor);
+    private int tipo;
+    private int tipoBase;
+    
+    public SymbolTypeVar(int tipo) {
+        super("type", id++, 0);
+        this.tipo = tipo;
     }
+    
+    public SymbolTypeVar(int tipo, int tipoBase){
+        super("type", id++, 0);
+        this.tipo = tipo;
+        this.tipoBase = tipoBase;
+    }
+    
+    public boolean isTipo(int tipo){
+           return this.tipo == tipo;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+    
     
 }
