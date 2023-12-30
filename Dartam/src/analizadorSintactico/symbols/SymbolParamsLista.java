@@ -4,10 +4,18 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 /**
  *
  * @author jartu
  */
-public class SymbolParamsLista {
+public class SymbolParamsLista extends ComplexSymbol {
+    private static int id = 0;
+
+    public SymbolParamsLista(String variable, Double valor) {
+        super(variable, id++, valor);
+    }
     
 }

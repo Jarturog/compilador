@@ -35,6 +35,10 @@ public class SymbolBody extends ComplexSymbol {
         this.siguienteMetodo = sb;
     }
 
+    public SymbolBody(SymbolMetodoElemento et1, SymbolBody et2) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public SymbolElementoMetodo getMetodo() {
         return metodo;
     }

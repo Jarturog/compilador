@@ -8,6 +8,15 @@ package analizadorSintactico.symbols;
  *
  * @author jartu
  */
-public class SymbolParams {
+public class SymbolParams extends SymbolBase {
+    private static int id = 0;
+
+    public SymbolParams(String variable, Double valor) {
+        super(variable, valor);
+    }
+
+    public SymbolParams(SymbolParamsLista et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

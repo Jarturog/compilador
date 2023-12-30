@@ -22,5 +22,13 @@ public class SymbolOperandsLista extends ComplexSymbol {
     public SymbolOperandsLista(String variable, Double valor) {
         super(variable, id++, valor);
     }
+
+    public SymbolOperandsLista(SymbolOperand et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public SymbolOperandsLista(SymbolOperand et, SymbolOperandsLista ol) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

@@ -26,5 +26,13 @@ public class SymbolScript extends ComplexSymbol {
     public SymbolScript(SymbolScript script) {
         super("script", id++, 0);
     }
+
+    public SymbolScript(SymbolMain et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public SymbolScript(SymbolScriptElemento et1, SymbolScript et2) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

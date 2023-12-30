@@ -29,6 +29,10 @@ public class SymbolFCall extends ComplexSymbol {
         this.methodName = methodName;
     }
 
+    public SymbolFCall(SymbolMetodoNombre et1, SymbolOperandsLista et2) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public SymbolMetodoNombre getMethodName() {
         return methodName;
     }

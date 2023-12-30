@@ -34,5 +34,21 @@ public class SymbolMetodoElemento extends ComplexSymbol {
         super("sam", id++, 0);
         this.mam = mam;
     }
+
+    public SymbolMetodoElemento(SymbolSwitch et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public SymbolMetodoElemento(SymbolIf et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public SymbolMetodoElemento(SymbolLoop et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public SymbolMetodoElemento(SymbolInstr et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

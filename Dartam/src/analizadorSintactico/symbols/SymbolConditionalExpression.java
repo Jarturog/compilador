@@ -22,5 +22,9 @@ public class SymbolConditionalExpression extends ComplexSymbol {
     public SymbolConditionalExpression(String variable, Double valor) {
         super(variable, id++, valor);
     }
+
+    public SymbolConditionalExpression(SymbolOperand cond, SymbolOperand op1, SymbolOperand op2) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

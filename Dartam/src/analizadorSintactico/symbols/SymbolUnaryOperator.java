@@ -22,5 +22,9 @@ public class SymbolUnaryOperator extends ComplexSymbol {
     public SymbolUnaryOperator(String variable, Double valor) {
         super(variable, id++, valor);
     }
+
+    public SymbolUnaryOperator(int OP_PCT, Object et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

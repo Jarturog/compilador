@@ -22,5 +22,9 @@ public class SymbolBinaryOperator extends ComplexSymbol {
     public SymbolBinaryOperator(String variable, Double valor) {
         super(variable, id++, valor);
     }
+
+    public SymbolBinaryOperator(int OP_ADD, Object et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

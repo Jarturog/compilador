@@ -25,5 +25,9 @@ public class SymbolMain extends ComplexSymbol {
     public SymbolMain() {
         super("sb", id++, 0);
     }
+
+    public SymbolMain(SymbolMain et1, SymbolScriptElemento et2) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

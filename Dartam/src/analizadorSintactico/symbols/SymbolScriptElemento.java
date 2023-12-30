@@ -9,5 +9,13 @@ package analizadorSintactico.symbols;
  * @author jartu
  */
 public class SymbolScriptElemento {
+
+    public SymbolScriptElemento(SymbolDecs et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public SymbolScriptElemento(SymbolTipoRetorno et1) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

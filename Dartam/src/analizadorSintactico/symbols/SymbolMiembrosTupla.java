@@ -8,6 +8,11 @@ package analizadorSintactico.symbols;
  *
  * @author jartu
  */
-public class SymbolMiembrosTupla {
+public class SymbolMiembrosTupla extends SymbolBase {
+    private static int id = 0;
+
+    public SymbolMiembrosTupla (String variable, Double valor) {
+        super(variable, valor);
+    }
     
 }

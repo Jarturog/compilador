@@ -939,7 +939,7 @@ class CUP$Parser$actions {
 		int et4left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int et4right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		SymbolBody et4 = (SymbolBody)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 RESULT = new SymbolScriptElemento(et); 
+		 RESULT = new SymbolScriptElemento(et1); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("SCRIPT_ELEMENTO",37, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-8)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1002,7 +1002,7 @@ class CUP$Parser$actions {
           case 8: // MIEMBROS_TUPLA ::= DECS MIEMBROS_TUPLA 
             {
               SymbolMiembrosTupla RESULT =null;
-		 RESULT = 
+		  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("MIEMBROS_TUPLA",39, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1119,7 +1119,7 @@ class CUP$Parser$actions {
 		int etleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int etright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		SymbolParamsLista et = (SymbolParamsLista)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolParams(et); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("PARAMS",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1149,7 +1149,7 @@ class CUP$Parser$actions {
           case 22: // PARAMSLISTA ::= PARAM 
             {
               SymbolParamsLista RESULT =null;
-		 RESULT = new SymbolParam(et1, et2); 
+		  
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("PARAMSLISTA",6, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1506,7 +1506,7 @@ class CUP$Parser$actions {
 		int et1left = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int et1right = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		SymbolMetodoNombre et1 = (SymbolMetodoNombre)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
-		 RESULT = new SymbolFCall(et1,et2); 
+		 RESULT = new SymbolFCall(et1); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("FCALL",12, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

@@ -49,6 +49,10 @@ public class SymbolInstr extends ComplexSymbol {
         this.swap = swap;
     }
 
+    public SymbolInstr(SymbolReturn et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public SymbolFCall getFcall() {
         return fcall;
     }

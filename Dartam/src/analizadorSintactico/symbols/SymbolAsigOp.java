@@ -14,5 +14,9 @@ public class SymbolAsigOp extends SymbolBase {
     public SymbolAsigOp(String variable, Double valor) {
         super(variable, valor);
     }
+
+    public SymbolAsigOp(int AS_ORA, Object et) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }
