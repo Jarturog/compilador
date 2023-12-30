@@ -187,7 +187,7 @@ public class GeneradorCIntermedio {
         if(value != null){
             if(value.isConstant) {
                 Object v = value.getSemanticValue();
-                if(v instanceof Boolean) v = (Boolean) v ? Constants.TRUE : Constants.FALSE;
+                if(v instanceof Boolean) v = (Boolean) v ? VTEntry.TRUE : VTEntry.FALSE;
                 vte.initialValue = v.toString();
             } else {
                 generate(value);
@@ -420,7 +420,7 @@ public class GeneradorCIntermedio {
 
         int length = list.type.arrayLength;
         // We store the dimensions of the list inside of the variable table
-        if(vte != null && length != Constants.UNKNOWN){
+        if(vte != null && length != VTEntry.UNKNOWN){
             if(vte.dimensions.size() <= list.type.getArrayDepth()){
                 vte.dimensions.add(""+length);
             }
@@ -433,11 +433,11 @@ public class GeneradorCIntermedio {
         } else if(value.getSemanticValue() instanceof Character){
             char cVal = (Character) value.getSemanticValue();
             right = "" + (int) cVal; // We store ASCII value
-            getVar(currentDec).type = KW_CHARACTER;
+            getVar(currentDec).type = ParserSym.KW_CHAR;
         } else if(value.getSemanticValue() instanceof Boolean){
             boolean bVal = (Boolean) value.getSemanticValue();
             // We store true or false in bits, not in Boolean
-            right = "" + (bVal ? Constants.TRUE : Constants.FALSE);
+            right = "" + (bVal ? VTEntry.TRUE : VTEntry.FALSE);
         } else if(value.getSemanticValue() instanceof Integer){
             right = "" + (int) value.getSemanticValue();
         }
@@ -446,8 +446,8 @@ public class GeneradorCIntermedio {
         if(list.type.getArrayDepth() == 1){
             currentDecLength++;
             // We must store the generated values as an index of the first one, t.
-            int size = Constants.CHAR_BYTES;
-            if(value.type.isType(ParserSym.KW_INT)) size = Constants.INTEGER_BYTES;
+            int size = VTEntry.CHAR_BYTES;
+            if(value.type.isType(ParserSym.KW_INT)) size = VTEntry.INTEGER_BYTES;
             int displacement = currentDecLength * size;
             addInstruction(InstructionType.ind_ass, ""+displacement, right, getVar(currentDec).tName);
         }
@@ -527,18 +527,18 @@ public class GeneradorCIntermedio {
         } else if(value instanceof Integer){
             t = newVariable();
             addInstruction(InstructionType.copy, value.toString(), t);
-            //getVar(t).occupation = Constants.INTEGER_BYTES;
+            //getVar(t).occupation = VTEntry.INTEGER_BYTES;
         } else if(value instanceof Character){
             t = newVariable();
             char cVal = (Character) value;
             // We store the ASCII value
             addInstruction(InstructionType.copy, "" + (int) cVal, t);
-            getVar(t).type = KW_CHARACTER;
+            getVar(t).type = ParserSym.KW_CHAR;
         } else if(value instanceof Boolean){
             t = newVariable();
             boolean bVal = (Boolean) value;
             // We store true or false in bits, not in Boolean
-            addInstruction(InstructionType.copy, "" + (bVal ? Constants.TRUE : Constants.FALSE), t);
+            addInstruction(InstructionType.copy, "" + (bVal ? VTEntry.TRUE : VTEntry.FALSE), t);
         }
 
         if(!operand.isConstant && operand.isNegated()){
@@ -575,85 +575,85 @@ public class GeneradorCIntermedio {
         t = newVariable();
         String eTrue, eFalse;
         switch (op.operation) {
-            case Constants.ADD:
+            case VTEntry.ADD:
                 addInstruction(InstructionType.add, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.SUB:
+            case VTEntry.SUB:
                 addInstruction(InstructionType.sub, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.PROD:
+            case VTEntry.PROD:
                 addInstruction(InstructionType.prod, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.DIV:
+            case VTEntry.DIV:
                 addInstruction(InstructionType.div, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.MOD:
+            case VTEntry.MOD:
                 addInstruction(InstructionType.mod, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.OR:
+            case VTEntry.OR:
                 addInstruction(InstructionType.or, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.AND:    
+            case VTEntry.AND:    
                 addInstruction(InstructionType.and, lValue.reference, rValue.reference, t);
                 break;
-            case Constants.IS_EQUAL:
+            case VTEntry.IS_EQUAL:
                 eTrue = newTag();
                 eFalse = newTag();
                 addInstruction(InstructionType.if_EQ, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.FALSE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
                 addInstruction(InstructionType.go_to, eFalse);
                 addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.TRUE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
                 addInstruction(InstructionType.skip, eFalse);
                 break;
-            case Constants.BIGGER:
+            case VTEntry.BIGGER:
                 eTrue = newTag();
                 eFalse = newTag();
                 addInstruction(InstructionType.if_GT, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.FALSE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
                 addInstruction(InstructionType.go_to, eFalse);
                 addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.TRUE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
                 addInstruction(InstructionType.skip, eFalse);
                 break;
-            case Constants.BEQ:
+            case VTEntry.BEQ:
                 eTrue = newTag();
                 eFalse = newTag();
                 addInstruction(InstructionType.if_GE, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.FALSE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
                 addInstruction(InstructionType.go_to, eFalse);
                 addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.TRUE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
                 addInstruction(InstructionType.skip, eFalse);
                 break;
-            case Constants.LESSER:
+            case VTEntry.LESSER:
                 eTrue = newTag();
                 eFalse = newTag();
                 addInstruction(InstructionType.if_LT, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.FALSE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
                 addInstruction(InstructionType.go_to, eFalse);
                 addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.TRUE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
                 addInstruction(InstructionType.skip, eFalse);
                 break;
-            case Constants.LEQ:
+            case VTEntry.LEQ:
                 eTrue = newTag();
                 eFalse = newTag();
                 addInstruction(InstructionType.if_LE, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.FALSE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
                 addInstruction(InstructionType.go_to, eFalse);
                 addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.TRUE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
                 addInstruction(InstructionType.skip, eFalse);
                 break;
-            case Constants.NEQ:
+            case VTEntry.NEQ:
                 eTrue = newTag();
                 eFalse = newTag();
                 addInstruction(InstructionType.if_NE, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.FALSE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
                 addInstruction(InstructionType.go_to, eFalse);
                 addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+Constants.TRUE, t);
+                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
                 addInstruction(InstructionType.skip, eFalse);
                 break;
         }
@@ -689,7 +689,7 @@ public class GeneradorCIntermedio {
             SymbolTypeVar type = oper.type;
             // Since we need to know the dimensions of the arrays but parameters are not known in compilation time,
             // we pass them as parameters which the function's preamble will take care of during assembly code generation.
-            while(type != null && type.arrayLength != Constants.UNKNOWN) {
+            while(type != null && type.arrayLength != VTEntry.UNKNOWN) {
                 addInstruction(InstructionType.param_s, ""+type.arrayLength);
                 type = type.getBaseType();
             }
@@ -769,12 +769,12 @@ public class GeneradorCIntermedio {
         } else if(val instanceof Boolean) {
             boolean boolValue = (Boolean) val;
             t = newVariable();
-            addInstruction(InstructionType.copy, "" + (boolValue ? Constants.TRUE : Constants.FALSE), t);
+            addInstruction(InstructionType.copy, "" + (boolValue ? VTEntry.TRUE : VTEntry.FALSE), t);
         } else if(val instanceof Character) {
             char cValue = (Character) val;
             t = newVariable();
             addInstruction(InstructionType.copy, "" + cValue, t);
-            getVar(t).type = KW_CHARACTER;
+            getVar(t).type = ParserSym.KW_CHAR;
         }
         value.reference = t;
     }
@@ -792,9 +792,9 @@ public class GeneradorCIntermedio {
             dimensionsToCheck = vte.cloneDimensions();
             generate(arrSuff);
             String tSuffix = arrSuff.reference;
-            int nBytes = Constants.CHAR_BYTES;
+            int nBytes = VTEntry.CHAR_BYTES;
             if(vte.type == ParserSym.KW_INT){
-                nBytes = Constants.INTEGER_BYTES;
+                nBytes = VTEntry.INTEGER_BYTES;
             }
             // Here should go 
             // tn = tm - b 
