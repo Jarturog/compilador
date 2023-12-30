@@ -31,6 +31,10 @@ public class SymbolTypeVar extends ComplexSymbol {
         this.tipo = tipo;
         this.tipoBase = tipoBase;
     }
+
+    public SymbolTypeVar() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     public boolean isTipo(int tipo){
            return this.tipo == tipo;

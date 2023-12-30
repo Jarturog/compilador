@@ -9,6 +9,9 @@ import analizadorSintactico.symbols.SymbolTypeVar;
  */
 public class DescripcionSimbolo {
 
+    public static final int TYPE_ARRAY = Integer.MAX_VALUE;
+    public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
+    
     // The variable's type
     private SymbolTypeVar type; // Acts as the return type when a function.
     private Object value;
@@ -47,7 +50,7 @@ public class DescripcionSimbolo {
      * @param type
      */
     public void changeType(int type) {
-        if(type == KW_FUNCTION){
+        if(type == TYPE_FUNCTION){
             isFunction = true;
             nArgs = 0;
             this.type = new SymbolTypeVar();
@@ -61,32 +64,6 @@ public class DescripcionSimbolo {
 
     public Object getValue(){
         return value;
-    }
-
-    public int getType(){
-        if(isFunction) return KW_FUNCTION;
-        return type.getType();
-    }
-
-    // Array methods
-    public void changeBaseType(SymbolTypeVar baseType) {
-        type.setBaseType(baseType);
-    }
-
-    public SymbolTypeVar getBaseType() {
-        return type.getBaseType();
-    }
-
-    public int getDepth()  {
-        return type.getArrayDepth();
-    }
-
-    public void setLength(int length){
-        type.arrayLength = length;
-    }
-
-    public int getLength(){
-        return type.arrayLength;
     }
 
     // Function methods
@@ -124,7 +101,7 @@ public class DescripcionSimbolo {
 
     @Override
     public String toString(){
-        String sd = "[Type: " + (isFunction ? ParserSym.terminalNames[KW_FUNCTION] : type);
+        String sd = "[Type: " + (isFunction ? ParserSym.terminalNames[TYPE_FUNCTION] : type);
         if(isFunction) sd += " (Returns: " + type + ", args:" + args + ")";
         sd += "\n\tConstant: " + isConstant;
         if(isConstant) sd += "\n\tValue: " + value;

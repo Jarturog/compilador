@@ -29,9 +29,9 @@ public class GeneradorCMaquina {
     private boolean scanUsed = false;
 
     public GeneradorCMaquina(GeneradorCIntermedio c3a){
-        instructions = c3a.getInstructions();
-        variableTable = c3a.getVariableTable();
-        procedureTable = c3a.getProcedureTable();
+        instructions = null;//c3a.getInstructions();
+        variableTable = null;//c3a.getVariableTable();
+        procedureTable = null;//c3a.getProcedureTable();
         variableDictionary = new Hashtable<>();
         data = new ArrayList<>();
         text = new ArrayList<>();
@@ -39,14 +39,14 @@ public class GeneradorCMaquina {
     }
 
     public void generateCode(){
-        PTEntry pte;
+        PTEntry pte = new PTEntry();
         VTEntry vte;
         // Declarations initialization
         data.add("\tsection .data");
 
         for (String s : variableTable.keySet()) {
             vte = variableTable.get(s);
-            if(s.startsWith(GeneradorCIntermedio.DEF_FUNCTION)){
+            if(true){//s.startsWith(GeneradorCIntermedio.DEF_FUNCTION)){
                 String t = vte.tName;
                 switch(vte.type){
                     case ParserSym.KW_BOOL:
@@ -134,7 +134,7 @@ public class GeneradorCMaquina {
                     text.add("\tmov " + des + ",ebx");
                     break;
                 case call:
-                    pte = procedureTable.get(aLeft + GeneradorCIntermedio.DEF_FUNCTION);
+                    //pte = procedureTable.get(aLeft + GeneradorCIntermedio.DEF_FUNCTION);
                     text.add("\tpush rax");
                     text.add("\tcall " + pte.eStart);
                     text.add("\tpop rbx"); // We store return into rbx
@@ -305,7 +305,7 @@ public class GeneradorCMaquina {
                     // pmb: des
                     // Where des is the name of the function. As such, we should be able to find it in procedureTable
                     pteStack.push(currentPte);
-                    currentPte = procedureTable.get(aDes + GeneradorCIntermedio.DEF_FUNCTION);
+                    //currentPte = procedureTable.get(aDes + GeneradorCIntermedio.DEF_FUNCTION);
                     
                     break;
                 case point:
