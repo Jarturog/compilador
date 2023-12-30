@@ -15,11 +15,29 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * BÃ sicament contÃ© un valor enter
  */
-public class SymbolBase extends ComplexSymbol {
+public abstract class SymbolBase extends ComplexSymbol {
     private static int id = 0;
-
-    public SymbolBase(String name, Object value) {
+    private int linea;
+    private int columna;
+    
+    public SymbolBase(String name, Object value, int linea, int columna) {
         super(name, id++, value);
+        this.linea = linea;
+        this.columna = columna;
+    }
+    
+    public SymbolBase(String name, int linea, int columna) {
+        super(name, id++);
+        this.linea = linea;
+        this.columna = columna;
+    }
+    
+    public int getLinea() {
+        return linea;
+    }
+    
+    public int getColumna() {
+        return columna;
     }
     
 }

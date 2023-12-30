@@ -178,8 +178,8 @@ precedence left OP_MEMBER, AUX_MEMBER;
 
 start with SCRIPT;
 
-SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2      {: RESULT = new SymbolScript(et1, et2); :}
-        | MAIN:et                   {: RESULT = new SymbolScript(et); :}
+SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2       {: RESULT = new SymbolScript(et1, et2, et1left, et1right); :}
+        | MAIN:et                               {: RESULT = new SymbolScript(et, etleft, etright); :}
         ;
 
 SCRIPT_ELEMENTO ::= KW_METHOD TIPO_RETORNO:et1 ID:et2 LPAREN PARAMS:et3 RPAREN LKEY BODY:et4 RKEY                  {: RESULT = new SymbolScriptElemento(et1); :}

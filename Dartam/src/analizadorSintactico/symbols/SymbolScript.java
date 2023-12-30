@@ -16,23 +16,22 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolScript extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolScript extends SymbolBase {
 
-    public SymbolScript(SymbolMetodoElemento contenedorMain) {
-        super("script", id++, 0);
+    private SymbolScriptElemento elemento;
+    private SymbolScript siguienteElemento; // o main
+    
+    private SymbolMain main;
+    
+    public SymbolScript(SymbolScriptElemento e, SymbolScript s, int l, int c) {
+        super("script", 0, l, c);
+        elemento = e;
+        siguienteElemento = s;
     }
-
-    public SymbolScript(SymbolScript script) {
-        super("script", id++, 0);
-    }
-
-    public SymbolScript(SymbolMain et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public SymbolScript(SymbolScriptElemento et1, SymbolScript et2) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    
+    public SymbolScript(SymbolMain m, int l, int c) {
+        super("script", l, c);
+        main = m;
     }
     
 }

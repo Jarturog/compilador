@@ -906,7 +906,7 @@ class CUP$Parser$actions {
 		int et2left = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int et2right = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		SymbolScript et2 = (SymbolScript)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolScript(et1, et2); 
+		 RESULT = new SymbolScript(et1, et2, et1left, et1right); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("SCRIPT",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -918,7 +918,7 @@ class CUP$Parser$actions {
 		int etleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int etright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		SymbolMain et = (SymbolMain)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolScript(et); 
+		 RESULT = new SymbolScript(et, etleft, etright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("SCRIPT",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
