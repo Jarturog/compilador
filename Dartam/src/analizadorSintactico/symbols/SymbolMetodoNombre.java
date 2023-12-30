@@ -23,11 +23,11 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         ;
  * 
  */
-public class SymbolMethodName extends ComplexSymbol {
+public class SymbolMetodoNombre extends ComplexSymbol {
     private static int id = 0;
     private int methodName;
 
-    public SymbolMethodName(int methodName) {
+    public SymbolMetodoNombre(int methodName) {
         super("methodName", id++, 0);
         this.methodName = methodName;
     }

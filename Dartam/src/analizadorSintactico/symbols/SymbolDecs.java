@@ -27,13 +27,13 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 public class SymbolDecs extends ComplexSymbol {
     private static int id = 0;
     private boolean isConstante;
-    private SymbolTypeVar tipo;
+    private SymbolTipoVar tipo;
     private SymbolIDDecsLista iddecslista;
     private SymbolDimensiones dimensiones;
     private String identificador;
     private boolean isTupla;
     
-    public SymbolDecs(boolean constante, SymbolTypeVar tipo, SymbolIDDecsLista iddecslista) {
+    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista) {
         super("decs", id++, 0);
         this.isConstante = constante;
         this.isTupla = false;
@@ -42,7 +42,7 @@ public class SymbolDecs extends ComplexSymbol {
     }
     
     //KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 IDDECSLISTA:et4 
-    public SymbolDecs(boolean constante, SymbolTypeVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista){
+    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista){
         super("decs", id++, 0);
         this.isConstante = constante;
         this.isTupla = false;
@@ -60,7 +60,7 @@ public class SymbolDecs extends ComplexSymbol {
         return isConstante;
     }
 
-    public SymbolTypeVar getTipo() {
+    public SymbolTipoVar getTipo() {
         return tipo;
     }
 

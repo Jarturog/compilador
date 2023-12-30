@@ -21,16 +21,16 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  */
 public class SymbolParam extends ComplexSymbol {
     private static int id = 0;
-    private SymbolTypeVar tipo;
+    private SymbolTipoVar tipo;
     private String identificador;
 
-    public SymbolParam(SymbolTypeVar tipo, String identificador){
+    public SymbolParam(SymbolTipoVar tipo, String identificador){
         super("param", id++, 0);
         this.tipo = tipo;
         this.identificador = identificador;
     }
 
-    public SymbolTypeVar getTipo() {
+    public SymbolTipoVar getTipo() {
         return tipo;
     }
 

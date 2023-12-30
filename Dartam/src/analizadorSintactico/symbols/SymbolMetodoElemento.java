@@ -20,21 +20,19 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  *              | SCRIPTAM:et1 SCRIPTBM:et2
  *              ;
  */
-public class SymbolMethodsAfterMain extends ComplexSymbol {
+public class SymbolMetodoElemento extends ComplexSymbol {
     private static int id = 0;
     private SymbolMain main;
-    private SymbolMethodsAfterMain mam;
-    private SymbolMethodsBeforeMain mbm;
+    private SymbolMetodoElemento mam;
 
-    public SymbolMethodsAfterMain(SymbolMain sm) {
+    public SymbolMetodoElemento(SymbolMain sm) {
         super("sam", id++, 0);
         this.main = sm;
     }
     
-    public SymbolMethodsAfterMain(SymbolMethodsAfterMain mam, SymbolMethodsBeforeMain mbm){
+    public SymbolMetodoElemento(SymbolMetodoElemento mam){
         super("sam", id++, 0);
         this.mam = mam;
-        this.mbm = mbm;
     }
     
 }

@@ -8,19 +8,11 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-
-/**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
- * 
- * Bàsicament conté un valor enter
- */
-public class SymbolAsigOp extends ComplexSymbol {
+public class SymbolAsigOp extends SymbolBase {
     private static int id = 0;
 
     public SymbolAsigOp(String variable, Double valor) {
-        super(variable, id++, valor);
+        super(variable, valor);
     }
     
 }

@@ -3,7 +3,7 @@ package analizadorSemantico;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import java.util.Stack;
-import analizadorSintactico.symbols.SymbolTypeVar;
+import analizadorSintactico.symbols.SymbolTipoVar;
 /**
  * Class that represents a variable's description in the symbol table
  */
@@ -13,7 +13,7 @@ public class DescripcionSimbolo {
     public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
     
     // The variable's type
-    private SymbolTypeVar type; // Acts as the return type when a function.
+    private SymbolTipoVar type; // Acts as the return type when a function.
     private Object value;
 
     public int declaredLevel;
@@ -28,7 +28,7 @@ public class DescripcionSimbolo {
      * Creates an empty description
      */
     public DescripcionSimbolo(){
-        type = new SymbolTypeVar();
+        //type = new SymbolTypeVar();
         isConstant = false;
         isFunction = false;
     }
@@ -37,7 +37,7 @@ public class DescripcionSimbolo {
      * Changes the type of the variable to which this description is associated, given a symbol created by Parser.java.
      * @param type
      */
-    public void changeType(SymbolTypeVar type) {
+    public void changeType(SymbolTipoVar type) {
         this.type = type;
     }
 
@@ -53,7 +53,7 @@ public class DescripcionSimbolo {
         if(type == TYPE_FUNCTION){
             isFunction = true;
             nArgs = 0;
-            this.type = new SymbolTypeVar();
+            //this.type = new SymbolTypeVar();
             args = new ArrayList<>();
         }
     }
@@ -73,7 +73,7 @@ public class DescripcionSimbolo {
      * @param name
      * @param type
      */
-    public void addArgument(String name, SymbolTypeVar type) {
+    public void addArgument(String name, SymbolTipoVar type) {
         args.add(new Argument(name, type));
         nArgs++;
     }
@@ -82,20 +82,20 @@ public class DescripcionSimbolo {
         return nArgs;
     }
 
-    public Stack<SymbolTypeVar> getArgsTypes() {
-        Stack<SymbolTypeVar> types = new Stack<>();
+    public Stack<SymbolTipoVar> getArgsTypes() {
+        Stack<SymbolTipoVar> types = new Stack<>();
         for(Argument a : args){
             types.push(a.type);
         }
         return types;
     }
 
-    public void setReturnType(SymbolTypeVar returnType) {
+    public void setReturnType(SymbolTipoVar returnType) {
         if(!isFunction) throw new RuntimeException(" !! Compiler error");
         type = returnType;
     }
 
-    public SymbolTypeVar getReturnType() {
+    public SymbolTipoVar getReturnType() {
         return type;
     }
 
@@ -111,9 +111,9 @@ public class DescripcionSimbolo {
 
     private class Argument{
         public String name;
-        public SymbolTypeVar type;
+        public SymbolTipoVar type;
 
-        public Argument(String name, SymbolTypeVar type){
+        public Argument(String name, SymbolTipoVar type){
             this.name = name;
             this.type = type;
         }

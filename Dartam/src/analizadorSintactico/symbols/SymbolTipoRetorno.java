@@ -16,11 +16,15 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolGetParams extends ComplexSymbol {
+public class SymbolTipoRetorno extends ComplexSymbol {
     private static int id = 0;
 
-    public SymbolGetParams(String variable, Double valor) {
+    public SymbolTipoRetorno(String variable, Double valor) {
         super(variable, id++, valor);
+    }
+    
+    public SymbolTipoRetorno(Object o) {
+        super("", id++, 0);
     }
     
 }

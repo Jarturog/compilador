@@ -19,11 +19,11 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 public class SymbolScript extends ComplexSymbol {
     private static int id = 0;
 
-    public SymbolScript(SymbolMethodsAfterMain contenedorMain) {
+    public SymbolScript(SymbolMetodoElemento contenedorMain) {
         super("script", id++, 0);
     }
 
-    public SymbolScript(SymbolMethodsBeforeMain metodosDeclaraciones, SymbolScript script) {
+    public SymbolScript(SymbolScript script) {
         super("script", id++, 0);
     }
     

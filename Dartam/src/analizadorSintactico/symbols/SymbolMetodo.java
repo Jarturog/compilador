@@ -18,22 +18,22 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * METHOD ::= KW_METHOD TIPO_RETORNO:et1 ID:et2 LPAREN GETPARAMS:et3 RPAREN LKEY BODY:et4 RKEY
  */
-public class SymbolMethod extends ComplexSymbol {
+public class SymbolMetodo extends ComplexSymbol {
     private static int id = 0;
-    private SymbolTypeRetorno tipo;
+    private SymbolTipoRetorno tipo;
     private String nombreMetodo;
-    private SymbolGetParams parametros;
+//    private SymbolGetParams parametros;
     private SymbolBody cuerpo;
     
-    public SymbolMethod(SymbolTypeRetorno tipo, String nombreMetodo, SymbolGetParams parametros, SymbolBody cuerpo) {
+    public SymbolMetodo(SymbolTipoRetorno tipo, String nombreMetodo, Object parametros, SymbolBody cuerpo) {
         super("method", id++, 0);
         this.tipo = tipo;
         this.nombreMetodo = nombreMetodo;
-        this.parametros = parametros;
+        //this.parametros = parametros;
         this.cuerpo = cuerpo;
     }
 
-    public SymbolTypeRetorno getTipo() {
+    public SymbolTipoRetorno getTipo() {
         return tipo;
     }
 
@@ -41,20 +41,8 @@ public class SymbolMethod extends ComplexSymbol {
         return nombreMetodo;
     }
 
-    public SymbolGetParams getParametros() {
-        return parametros;
-    }
-
     public SymbolBody getCuerpo() {
         return cuerpo;
-    }
-    
-    public int getNumParametros(){
-        if(this.parametros != null){
-            return this.parametros.NumParametros();
-        }else{
-            return 0;
-        }
     }
     
 }

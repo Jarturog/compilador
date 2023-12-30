@@ -22,23 +22,17 @@ FCALL ::= METHOD_NAME:et1 LPAREN SETPARAMS:et2 RPAREN   {: RESULT = new SymbolFC
  */
 public class SymbolFCall extends ComplexSymbol {
     private static int id = 0;
-    private SymbolMethodName methodName;
-    private SymbolSetParams setparams;
+    private SymbolMetodoNombre methodName;
     
-    public SymbolFCall(SymbolMethodName methodName, SymbolSetParams setparams ) {
+    public SymbolFCall(SymbolMetodoNombre methodName) {
         super("fcall", id++, 0);
         this.methodName = methodName;
-        this.setparams = setparams;
     }
 
-    public SymbolMethodName getMethodName() {
+    public SymbolMetodoNombre getMethodName() {
         return methodName;
     }
 
-    public SymbolSetParams getSetparams() {
-        return setparams;
-    }
-    
     
     
 }

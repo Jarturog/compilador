@@ -33,7 +33,7 @@ public class SemanticAnalysis {
     private DescripcionSimbolo currentFunction;
     // When checking if a function's parameters are correct, we use this stack to store the declared function's types.
     // We use a stack because we will be taking elements out every time we process them.
-    private Stack<SymbolTypeVar> currentArgs;
+    private Stack<SymbolTipoVar> currentArgs;
     private boolean returnFound;
 
     private ArrayList<String> errors;

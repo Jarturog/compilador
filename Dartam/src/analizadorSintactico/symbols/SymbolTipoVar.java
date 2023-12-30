@@ -16,15 +16,30 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolTypeRetorno extends ComplexSymbol {
+public class SymbolTipoVar extends ComplexSymbol {
     private static int id = 0;
-
-    public SymbolTypeRetorno(String variable, Double valor) {
-        super(variable, id++, valor);
+    private int tipo;
+    private int tipoBase;
+    
+    public SymbolTipoVar(int tipo) {
+        super("type", id++, 0);
+        this.tipo = tipo;
     }
     
-    public SymbolTypeRetorno(Object o) {
-        super("", id++, 0);
+    public SymbolTipoVar(int tipo, int tipoBase){
+        super("type", id++, 0);
+        this.tipo = tipo;
+        this.tipoBase = tipoBase;
     }
+
+    
+    public boolean isTipo(int tipo){
+           return this.tipo == tipo;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
+    
     
 }
