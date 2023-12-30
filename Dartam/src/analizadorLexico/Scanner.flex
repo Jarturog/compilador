@@ -52,8 +52,6 @@ import analizadorSintactico.ParserSym;
 // sym que es un símbolo
 // kw que es una palabra reservada (keyword)
 
-zerodigit	= 0
-
 // reutilizables
 sub_digit   = [0-9]
 sub_letra   = [A-Za-z] // no confundir con carácter

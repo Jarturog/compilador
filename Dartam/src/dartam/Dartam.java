@@ -8,6 +8,10 @@ import java_cup.runtime.SymbolFactory;
 import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
+import analizadorSemantico.SemanticAnalysis;
+import genCodigoIntermedio.GeneradorCIntermedio;
+import genCodigoMaquina.GeneradorCMaquina;
+import optimizaciones.Optimizador;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -32,19 +36,21 @@ public class Dartam {
                 input = new InputStreamReader(System.in);
             }
             Scanner scanner = new Scanner(input);
-        
-            SymbolFactory sf = new ComplexSymbolFactory();
-            Parser parser = new Parser(scanner, sf);
-            parser.parse();
-            //SymbolScript result = (SymbolScript) parser.parse().value;
-
-            dump(outputPath, scanner.getTokens());
+            
+            // sintáctico
+            Parser parser = new Parser(scanner, new ComplexSymbolFactory());
+            SymbolScript script = (SymbolScript) parser.parse().value;
+            
+            //dump(outputPath, scanner.getTokens());
             System.out.println(scanner.getTokens());
             // Semantic analysis
-            
+            SemanticAnalysis sem = SemanticAnalysis(script);
             // Intermediate code generation
-            
+            GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
             // Machine code generation
+            GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
+            // Optimzaciones
+            Optimizador op = new Optimizador(); // pasar por parámetro codigomaQUINA
             
             System.out.println("DONE");
             
@@ -59,5 +65,9 @@ public class Dartam {
         FileWriter fileOut = new FileWriter(file);
         fileOut.write(content);
         fileOut.close();
+    }
+
+    private static SemanticAnalysis SemanticAnalysis(SymbolScript script) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
