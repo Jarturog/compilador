@@ -9,6 +9,7 @@ import java_cup.runtime.*;
 import analizadorSintactico.symbols.*;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.List;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -810,13 +811,16 @@ public class Parser extends java_cup.runtime.lr_parser {
   public int error_sym() {return 1;}
 
 
-
-/***
-    private Scanner scanner;
-    public Parser(Scanner scanner) { 
-        this.scanner = scanner;
+  /** Scan to get the next Symbol. */
+  public java_cup.runtime.Symbol scan()
+    throws java.lang.Exception
+    {
+ Symbol s = getScanner().next_token();
+return s; 
     }
-***/
+
+
+
     private HashMap<String, Double>tsymbols = new HashMap<>();
 
     public Double getSymbolValue(String id) {
@@ -840,10 +844,8 @@ public class Parser extends java_cup.runtime.lr_parser {
      * en el que ya no es posible una recuperación de errores.
     **/ 
     @Override
-    public void unrecovered_syntax_error(Symbol cur_token) throws java.lang.Exception{ 
-        report_error("Error síntactico irrecuperable en la Línea " + 
-        (cur_token.left)+ " Columna "+cur_token.right+". Componente " + cur_token.value + 
-        " no reconocido.", cur_token); 
+    public void unrecovered_syntax_error(Symbol cur_token) { 
+        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + cur_token.value);
         done_parsing();
     }  
 
@@ -852,34 +854,30 @@ public class Parser extends java_cup.runtime.lr_parser {
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
-        if (cur_token.sym != ParserSym.error)
-        report_error("Error Sintáctico en la Línea " + (cur_token.left) +
-        " Columna "+cur_token.right+ ". No se esperaba este componente: " +cur_token.value+".", cur_token); 
+        //if (cur_token.sym != ParserSym.error)
+        report_error("Error sintactico: ", cur_token);
     } 
 
     @Override
     public void report_error(String message, Object info) {
-        StringBuilder msg = new StringBuilder("ERROR");
-        if (info instanceof Symbol) {
-            ComplexSymbol token = (ComplexSymbol)info;
-            Location l = token.xleft;
-            
-            if (l != null) {
-                msg.append(" (fila: ")
-                   .append(l.getLine())
-                   .append(", columna: ")
-                   .append(l.getColumn())
-                   .append(")");
+        if (info instanceof ComplexSymbol token) {
+            List expected = expected_token_ids();
+            String tokens = "";
+            for (Object t : expected){
+                tokens += ParserSym.terminalNames[(int)t] + ", ";
             }
+            tokens = tokens.substring(0, tokens.length() - 2);
+            System.err.println(message + "Desde la linea " + token.xleft.getLine() + " y columna " + token.xleft.getColumn() + " hasta la linea " + token.xright.getLine() + " y columna " + token.xright.getColumn() + ". \n"
+                    + "Se esperaba algun lexema de los siguientes tipos: " + tokens + ".\n"
+                    + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
+        } else {
+            System.err.println(message + "No se esperaba este componente\n: " +cur_token.value+".");  
         }
-        msg.append(": ").append(message);
-        
-        System.err.println(msg);
     }
 
     @Override
     public void report_fatal_error(String message, Object info) throws Exception {
-        report_error("Error catastròfic ("+message+")", info);
+        report_error("Error fatal: " + message, info);
         done_parsing();
     }
 

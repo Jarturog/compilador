@@ -41,7 +41,12 @@ public class Dartam {
             
             // sintáctico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
-            SymbolScript script = (SymbolScript) parser.parse().value;
+            SymbolScript script;
+            try {
+                script = (SymbolScript) parser.parse().value;
+            } catch (NullPointerException e) { // análisis sintáctico ha ido mal
+                return;
+            }
             
             //dump(outputPath, scanner.getTokens());
             System.out.println(scanner.getTokens());
