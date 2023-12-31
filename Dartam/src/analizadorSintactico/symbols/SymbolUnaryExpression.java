@@ -8,23 +8,22 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
-
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolUnaryExpression extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolUnaryExpression extends SymbolBase {
+    
 
     public SymbolUnaryExpression(String variable, Double valor) {
-        super(variable, id++, valor);
+        super(variable);
     }
 
-    public SymbolUnaryExpression(SymbolUnaryOperator et, SymbolOperand op) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public SymbolUnaryExpression(SymbolLUnaryOperator et, SymbolOperand op) {
+        super("");
     }
+
     
 }

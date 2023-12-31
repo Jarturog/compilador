@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -21,7 +21,7 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         ;
  */
 public class SymbolIDDecsLista extends SymbolBase {
-    private static int id = 0;
+    
     private String identificador;
     private SymbolAsig asignacion;
     private SymbolIDDecsLista iddecslista;

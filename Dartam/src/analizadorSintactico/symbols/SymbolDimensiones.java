@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -21,17 +21,17 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  *
  */
 public class SymbolDimensiones extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolOperand operando;
     private SymbolDimensiones dimensiones;
             
     public SymbolDimensiones(SymbolOperand operando, int l , int r){
-        super("dimensiones", 0, l, r);
+        super("dimensiones", l, r);
         this.operando = operando;
     }
     
     public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones, int l, int r) {
-        super("dimensiones", 0, l, r);
+        super("dimensiones", l, r);
         this.operando = operando;
         this.dimensiones = dimensiones;
     }

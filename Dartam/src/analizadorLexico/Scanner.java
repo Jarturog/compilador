@@ -15,7 +15,7 @@ package analizadorLexico;
 import java.io.*;
 
 import java_cup.runtime.*;
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 import analizadorSintactico.ParserSym;

@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -16,31 +16,31 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolAtomicExpression extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolAtomicExpression extends SymbolBase {
+    
 
     public SymbolAtomicExpression(String variable, Double valor) {
-        super(variable, id++, valor);
+        super(variable);
     }
 
     public SymbolAtomicExpression(String et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolAtomicExpression(Character et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolAtomicExpression(Double et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolAtomicExpression(Integer et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolAtomicExpression(Boolean et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
     
 }

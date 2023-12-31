@@ -9,14 +9,14 @@
 package analizadorSintactico.symbols;
 
 public class SymbolAsigOp extends SymbolBase {
-    private static int id = 0;
+    
 
     public SymbolAsigOp(String variable, Double valor) {
-        super(variable, valor);
+        super(variable);
     }
 
     public SymbolAsigOp(int AS_ORA, Object et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
     
 }

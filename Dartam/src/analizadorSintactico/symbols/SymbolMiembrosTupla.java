@@ -15,32 +15,20 @@ MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMi
         ;
  */
 public class SymbolMiembrosTupla extends SymbolBase {
-    private static int id = 0;
-    private SymbolDecs decs;
-    private SymbolMiembrosTupla miembrosTupla;
+
+    public final SymbolDecs decs;
+    public final SymbolMiembrosTupla miembrosTupla;
     
     public SymbolMiembrosTupla(){
-        super("miembrosTupla", 0);
+        super("miembrosTupla");
+        decs = null;
+        miembrosTupla = null;
     }
     
-    public SymbolMiembrosTupla(SymbolDecs decs, SymbolMiembrosTupla miembrosTupla, int l, int r){
-        super("miembrosTupla", 0, l,r);
-        this.decs = decs;
-        this.miembrosTupla = miembrosTupla;
-    }
-    
-    
-    
-    /*public SymbolMiembrosTupla (String variable, Double valor) {
-        super(variable, valor);
-    }*/
-
-    public SymbolDecs getDecs() {
-        return decs;
+    public SymbolMiembrosTupla(SymbolDecs d, SymbolMiembrosTupla m, int l, int c){
+        super("miembrosTupla", l, c);
+        decs = d;
+        miembrosTupla = m;
     }
 
-    public SymbolMiembrosTupla getMiembrosTupla() {
-        return miembrosTupla;
-    }
-    
 }

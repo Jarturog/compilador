@@ -16,14 +16,14 @@ package analizadorSintactico.symbols;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolBinaryExpression extends SymbolBase {
+public class SymbolLUnaryOperator extends SymbolBase {
     
 
-    public SymbolBinaryExpression(String variable, Double valor) {
+    public SymbolLUnaryOperator(String variable, Double valor) {
         super(variable);
     }
 
-    public SymbolBinaryExpression(SymbolBinaryOperator et, SymbolOperand op1, SymbolOperand op2) {
+    public SymbolLUnaryOperator(int OP_PCT, Object et) {
         super("");
     }
     

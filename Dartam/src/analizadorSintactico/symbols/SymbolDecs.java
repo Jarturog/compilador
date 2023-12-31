@@ -9,7 +9,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -26,7 +26,7 @@ DECS ::= KW_CONST:et1 TIPO_VAR:et2 ID_DECS_LISTA:et3 ENDINSTR     {: RESULT = ne
         ;
  */
 public class SymbolDecs extends SymbolBase {
-    private static int id = 0;
+    
     private boolean isConstante;
     private SymbolTipoVar tipo;
     private SymbolIDDecsLista iddecslista;
@@ -35,7 +35,7 @@ public class SymbolDecs extends SymbolBase {
     private boolean isTupla;
     
     public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista, int l, int r) {
-        super("decs", 0, l, r);
+        super("decs", l, r);
         this.isConstante = constante;
         this.isTupla = false;
         this.tipo = tipo;
@@ -44,17 +44,21 @@ public class SymbolDecs extends SymbolBase {
     
     //KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 IDDECSLISTA:et4 
     public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista, int l, int r){
-        super("decs", 0, l,r);
+        super("decs", l,r);
         this.isConstante = constante;
         this.isTupla = false;
         this.tipo = tipo;
         this.dimensiones = dimensiones;
         this.iddecslista = iddecslista;
     }
+
+    public SymbolDecs(Object et1, String et2, SymbolIDDecsLista et3, boolean b, int et1left, int et1right) {
+        super("");
+    }
     
     // | KW_TUPLE:et1 ID:et2 LKEY VARIOS_IDS:et3 RKEY ENDINSTR {: RESULT = new SymbolDecs(et1, et2, et3); :}
     //public SymbolDecs(String id,){
-    //    super("decs", 0 , l, r);
+    //    super("decs" , l, r);
     //    this.
     //}
 

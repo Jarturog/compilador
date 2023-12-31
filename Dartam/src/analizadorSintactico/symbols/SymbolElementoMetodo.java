@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -23,30 +23,30 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         ;
 
  */
-public class SymbolElementoMetodo extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolElementoMetodo extends SymbolBase {
+    
     private SymbolInstr instruccion;
     private SymbolLoop insLoop;
     private SymbolIf    insIf;
     private SymbolSwitch insSwitch;
     
     public SymbolElementoMetodo(SymbolInstr instruccion) {
-        super("elementoMetodo", id++, 0);
+        super("elementoMetodo");
         this.instruccion = instruccion;
     }
     
     public SymbolElementoMetodo(SymbolLoop insLoop) {
-        super("elementoMetodo", id++, 0);
+        super("elementoMetodo");
         this.insLoop = insLoop;
     }
     
     public SymbolElementoMetodo(SymbolIf insIf) {
-        super("elementoMetodo", id++, 0);
+        super("elementoMetodo");
         this.insIf = insIf;
     }
     
     public SymbolElementoMetodo(SymbolSwitch insSwitch) {
-        super("elementoMetodo", id++, 0);
+        super("elementoMetodo");
         this.insSwitch = insSwitch;
     }
 

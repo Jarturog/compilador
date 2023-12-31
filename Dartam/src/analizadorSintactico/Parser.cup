@@ -19,11 +19,12 @@ alternativament
  */
 package analizadorSintactico;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 import java_cup.runtime.*;
 import analizadorSintactico.symbols.*;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 class Parser;
@@ -153,7 +154,8 @@ non terminal SymbolBinaryExpression BINARY_EXPRESSION;
 non terminal SymbolConditionalExpression CONDITIONAL_EXPRESSION;
 non terminal SymbolAtomicExpression ATOMIC_EXPRESSION;
 non terminal SymbolBinaryOperator BINARY_OPERATOR;
-non terminal SymbolUnaryOperator UNARY_OPERATOR;
+non terminal SymbolLUnaryOperator L_UNARY_OPERATOR;
+non terminal SymbolRUnaryOperator R_UNARY_OPERATOR;
 non terminal SymbolLoop LOOP;
 non terminal SymbolLoopCond LOOP_COND;
 non terminal SymbolIf IF;
@@ -168,11 +170,14 @@ non terminal SymbolScriptElemento SCRIPT_ELEMENTO;
 non terminal SymbolDimensiones DIMENSIONES;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
 
+
 precedence left OP_ADD, OP_SUB;
 precedence left OP_MUL, OP_DIV, OP_MOD;
 precedence right OP_POT;
 precedence left OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 precedence left OP_AND, OP_OR;
+precedence left OP_PCT;
+precedence nonassoc OP_INC, OP_DEC; // si conflicto -> error
 precedence right OP_COND;
 precedence left OP_MEMBER, AUX_MEMBER;
 
@@ -182,13 +187,13 @@ SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2       {: RESULT = new SymbolScript(et1
         | MAIN:et                               {: RESULT = new SymbolScript(et, etleft, etright); :}
         ;
 
-SCRIPT_ELEMENTO ::= KW_METHOD TIPO_RETORNO:et1 ID:et2 LPAREN PARAMS:et3 RPAREN LKEY BODY:et4 RKEY                  {: RESULT = new SymbolScriptElemento(et1, et1left, et1right); :}
-        | DECS:et                       {: RESULT = new SymbolScriptElemento(et, etleft, etright); :}
-        | KW_TUPLE ID:et1 LKEY MIEMBROS_TUPLA:et2 RKEY ENDINSTR {: RESULT = new Symbol(true, et1,et2, et1left, et1right); :}
+SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAREN LKEY BODY:et5 RKEY   {: RESULT = new SymbolScriptElemento(et2, et3, et4, et5, et1left, et1right); :}
+        | DECS:et                                                       {: RESULT = new SymbolScriptElemento(et, etleft, etright); :}
+        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY ENDINSTR     {: RESULT = new SymbolScriptElemento(et2, et3, et1left, et1right); :}
         ;
 
 TIPO_RETORNO ::= TIPO_VAR:et            {: RESULT = new SymbolTipoRetorno(et, etleft, etright); :}
-        | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(true, etleft, etright); :} //Revisar
+        | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(ParserSym.KW_VOID, etleft, etright); :}
         ;
 
 MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMiembrosTupla(et1,et2, et1left, et1right); :}
@@ -203,11 +208,11 @@ BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1
         |                               {: RESULT = new SymbolBody(); :}
         ;
                                         
-TIPO_VAR ::= KW_BOOL                    {: RESULT = new SymbolTipoVar(ParserSym.KW_BOOL); :}
-        | KW_INT                        {: RESULT = new SymbolTipoVar(ParserSym.KW_INT); :}
-        | KW_DOUBLE                     {: RESULT = new SymbolTipoVar(ParserSym.KW_DOUBLE); :}
-        | KW_CHAR                       {: RESULT = new SymbolTipoVar(ParserSym.KW_CHAR); :}
-        | KW_STRING                     {: RESULT = new SymbolTipoVar(ParserSym.KW_STRING); :}
+TIPO_VAR ::= KW_BOOL:et                    {: RESULT = new SymbolTipoVar(ParserSym.KW_BOOL, etleft, etright); :}
+        | KW_INT:et                        {: RESULT = new SymbolTipoVar(ParserSym.KW_INT, etleft, etright); :}
+        | KW_DOUBLE:et                     {: RESULT = new SymbolTipoVar(ParserSym.KW_DOUBLE, etleft, etright); :}
+        | KW_CHAR:et                       {: RESULT = new SymbolTipoVar(ParserSym.KW_CHAR, etleft, etright); :}
+        | KW_STRING:et                     {: RESULT = new SymbolTipoVar(ParserSym.KW_STRING, etleft, etright); :}
         ;
 
 
@@ -215,8 +220,8 @@ PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolPara
         |                                             {: RESULT = new SymbolParams(); :}
         ;
 
-PARAMSLISTA ::= PARAM:et1 COMMA PARAMSLISTA:et2           {: RESULT = new ParamsLista(et1, et2, et1left, et1right); :}
-        | PARAM:et                           {: RESULT = new ParamsLista(et, etleft, etright); :}
+PARAMSLISTA ::= PARAM:et1 COMMA PARAMSLISTA:et2           {: RESULT = new SymbolParamsLista(et1, et2, et1left, et1right); :}
+        | PARAM:et                           {: RESULT = new SymbolParamsLista(et, etleft, etright); :}
         ;
 
 PARAM ::= TIPO_VAR:et1 ID:et2                   {: RESULT = new SymbolParam(et1,et2, et1left, et1right); :}
@@ -305,7 +310,8 @@ OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et); :}
         | OPERAND:tuple OP_MEMBER ID:member                     {: RESULT = new SymbolOperand(tuple, member); :}
         ;
 
-UNARY_EXPRESSION ::= UNARY_OPERATOR:et OPERAND:op                       {: RESULT = new SymbolUnaryExpression(et, op); :}
+UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et OPERAND:op                       {: RESULT = new SymbolUnaryExpression(et, op); :}
+        | OPERAND:op R_UNARY_OPERATOR:et
         ;
 
 BINARY_EXPRESSION ::= OPERAND:op1 BINARY_OPERATOR:et OPERAND:op2        {: RESULT = new SymbolBinaryExpression(et, op1, op2); :}
@@ -339,10 +345,14 @@ BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.O
         ;
 
 
-UNARY_OPERATOR ::= OP_NOT:et    {: RESULT = new SymbolUnaryOperator(ParserSym.OP_NOT, et); :}
-        | OP_INC:et             {: RESULT = new SymbolUnaryOperator(ParserSym.OP_INC, et); :}
-        | OP_DEC:et             {: RESULT = new SymbolUnaryOperator(ParserSym.OP_DEC, et); :}
-        | OP_PCT:et             {: RESULT = new SymbolUnaryOperator(ParserSym.OP_PCT, et); :}
+L_UNARY_OPERATOR ::= OP_NOT:et    {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_NOT, et); :}
+        | OP_INC:et             {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_INC, et); :}
+        | OP_DEC:et             {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_DEC, et); :}
+        ;
+
+R_UNARY_OPERATOR ::= OP_PCT:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_PCT, et); :}
+        | OP_INC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_INC, et); :}
+        | OP_DEC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_DEC, et); :}
         ;
 
 LOOP ::= KW_LOOP LOOP_COND LKEY BODY RKEY

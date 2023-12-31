@@ -14,20 +14,20 @@ package analizadorSintactico.symbols;
 
  */
 public class SymbolParams extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolParamsLista pl;
     
     public SymbolParams(SymbolParamsLista pl, int l, int r) {
-        super("params", 0 , l , r);
+        super("params" , l , r);
         this.pl = pl;
     }
     
     public SymbolParams(){
-        super("params", 0);
+        super("");
     }
 
     /*public SymbolParams(SymbolParamsLista et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }*/
 
     public SymbolParamsLista getPl() {

@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -21,7 +21,7 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         ;
  */
 public class SymbolAsig extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolOperand operando;
     
     public SymbolAsig(SymbolOperand operando, int l, int r){
@@ -30,7 +30,7 @@ public class SymbolAsig extends SymbolBase {
     }
     
     public SymbolAsig() {
-        super("asig", 0);
+        super("asig");
     }
 
     public SymbolOperand getOperando() {

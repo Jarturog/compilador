@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -16,19 +16,17 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Bàsicament conté un valor enter
  */
-public class SymbolOperandsLista extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolOperandsLista extends SymbolBase {
+    
 
     public SymbolOperandsLista(String variable, Double valor) {
-        super(variable, id++, valor);
+        super(variable);
     }
 
     public SymbolOperandsLista(SymbolOperand et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    super("");}
 
     public SymbolOperandsLista(SymbolOperand et, SymbolOperandsLista ol) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    super("");}
     
 }

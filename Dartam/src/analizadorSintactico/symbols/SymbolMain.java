@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -17,22 +17,22 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * Bàsicament conté un valor enter
  */
 public class SymbolMain extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolBody sb;
     private SymbolMain sm;
     private SymbolScriptElemento se;
 
     public SymbolMain(SymbolBody sb, int l, int r) {
-        super("sb", 0, r, r);
+        super("sb", r, r);
         this.sb = sb;
     }
     
     public SymbolMain() {
-        super("sb",0);
+        super("sb");
     }
 
     public SymbolMain(SymbolMain et1, SymbolScriptElemento et2, int l, int r) {
-        super("sb", 0, l, r);
+        super("sb", l, r);
         this.sm = et1;
         this.se = et2;
     }

@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -22,35 +22,35 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         | SWAP:et              {: RESULT = new SymbolInstr(et); :}
         ;
  */
-public class SymbolInstr extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolInstr extends SymbolBase {
+    
     private SymbolFCall fcall;
     private SymbolDecs decs;
     private SymbolAsigs asigs;
     private SymbolSwap swap;
     
     public SymbolInstr(SymbolFCall fcall) {
-        super("instruccion", id++, 0);
+        super("instruccion");
         this.fcall = fcall;
     }
     
     public SymbolInstr(SymbolDecs decs) {
-        super("instruccion", id++, 0);
+        super("instruccion");
         this.decs = decs;
     }
     
     public SymbolInstr(SymbolAsigs asigs) {
-        super("instruccion", id++, 0);
+        super("instruccion");
         this.asigs = asigs;
     }
     
     public SymbolInstr(SymbolSwap swap) {
-        super("instruccion", id++, 0);
+        super("instruccion");
         this.swap = swap;
     }
 
     public SymbolInstr(SymbolReturn et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolFCall getFcall() {

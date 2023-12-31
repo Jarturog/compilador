@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -18,15 +18,15 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * METHOD ::= KW_METHOD TIPO_RETORNO:et1 ID:et2 LPAREN GETPARAMS:et3 RPAREN LKEY BODY:et4 RKEY
  */
-public class SymbolMetodo extends ComplexSymbol {
-    private static int id = 0;
+public class SymbolMetodo extends SymbolBase {
+    
     private SymbolTipoRetorno tipo;
     private String nombreMetodo;
 //    private SymbolGetParams parametros;
     private SymbolBody cuerpo;
     
     public SymbolMetodo(SymbolTipoRetorno tipo, String nombreMetodo, Object parametros, SymbolBody cuerpo) {
-        super("method", id++, 0);
+        super("method");
         this.tipo = tipo;
         this.nombreMetodo = nombreMetodo;
         //this.parametros = parametros;

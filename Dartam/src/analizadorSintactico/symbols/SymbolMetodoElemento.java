@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -22,34 +22,50 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         | SWITCH:et             {: RESULT = new SymbolMetodoElemento(et, etleft, etright); :}
  */
 public class SymbolMetodoElemento extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolMain main;
     private SymbolMetodoElemento mam;
 
     public SymbolMetodoElemento(SymbolMain sm) {
-        super("sam", id++, 0);
+        super("sam");
         this.main = sm;
     }
     
     public SymbolMetodoElemento(SymbolMetodoElemento mam){
-        super("sam", id++, 0);
+        super("sam");
         this.mam = mam;
     }
 
     public SymbolMetodoElemento(SymbolSwitch et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolMetodoElemento(SymbolIf et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolMetodoElemento(SymbolLoop et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
     }
 
     public SymbolMetodoElemento(SymbolInstr et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        super("");
+    }
+
+    public SymbolMetodoElemento(SymbolInstr et, int etleft, int etright) {
+        super("");
+    }
+
+    public SymbolMetodoElemento(SymbolLoop et, int etleft, int etright) {
+        super("");
+    }
+
+    public SymbolMetodoElemento(SymbolIf et, int etleft, int etright) {
+        super("");
+    }
+
+    public SymbolMetodoElemento(SymbolSwitch et, int etleft, int etright) {
+        super("");
     }
     
 }

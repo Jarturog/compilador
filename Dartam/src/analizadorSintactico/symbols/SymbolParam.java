@@ -8,7 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
@@ -22,7 +22,7 @@ PARAM ::= TIPO_VAR:et1 ID:et2                   {: RESULT = new SymbolParam(et1,
         ;
  */
 public class SymbolParam extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolTipoVar tipo;
     private SymbolDimensiones dim;
     private boolean isTuple;
@@ -30,24 +30,27 @@ public class SymbolParam extends SymbolBase {
     private String identificador2;
 
     public SymbolParam(SymbolTipoVar tipo, String identificador, int l, int r){
-        super("param", 0, l,r);
+        super("param", l,r);
         this.tipo = tipo;
         this.identificador1 = identificador;
     }
     
     public SymbolParam(SymbolTipoVar tipo, SymbolDimensiones dim,  String identificador, int l, int r){
-        super("param", 0, l,r);
+        super("param", l,r);
         this.tipo = tipo;
         this.dim = dim;
         this.identificador1 = identificador;
     }
     
     public SymbolParam(boolean isTuple, String identificador1 ,String identificador2, int l, int r){
-        super("param", 0, l,r);
+        super("param", l,r);
         this.isTuple = true;
         this.identificador1 = identificador1;
         this.identificador2 = identificador2;
     }
+
+    public SymbolParam(boolean b, Object et1, String et2, int et1left, int et1right) {
+    super("");}
     
     public SymbolTipoVar getTipo() {
         return tipo;

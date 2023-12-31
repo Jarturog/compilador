@@ -5,7 +5,7 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory;
-import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+
 
 /**
  *
@@ -16,17 +16,17 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
         ;
  */
 public class SymbolParamsLista extends SymbolBase {
-    private static int id = 0;
+    
     private SymbolParam param;
     private SymbolParamsLista pl;
     
     public SymbolParamsLista(SymbolParam param, int l , int r) {
-        super("paramsLista", 0 , l , r);
+        super("paramsLista" , l , r);
         this.param = param;
     }
     
     public SymbolParamsLista(SymbolParam param, SymbolParamsLista pl, int l , int r) {
-        super("paramsLista", 0 , l , r);
+        super("paramsLista" , l , r);
         this.param = param;
         this.pl = pl;
     }

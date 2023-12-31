@@ -18,75 +18,44 @@ package analizadorSintactico.symbols;
  */
 public class SymbolScriptElemento extends SymbolBase{
     
-    private SymbolTipoRetorno tipoRetorno;
-    private String identificador;
-    private SymbolParams parametros;
-    private SymbolBody cuerpo;
-    private SymbolDecs declaraciones;
-    private boolean isTupla;
-    private SymbolMiembrosTupla miembrosTupla;
+    // metodo y tupla
+    public final String idTuplaMetodo;
+    // metodo
+    public final SymbolTipoRetorno tipoRetorno;
+    public final SymbolParams parametros;
+    public final SymbolBody cuerpo;
+    // tupla
+    public final SymbolMiembrosTupla miembrosTupla;
+    // declaraciones
+    public final SymbolDecs declaraciones;
     
-    public SymbolScriptElemento(SymbolTipoRetorno tipoRetorno, String identificador, SymbolParams parametros, int l, int r){
-        super("scriptElemento", 0, l,r);
-        this.tipoRetorno = tipoRetorno;
-        this.identificador = identificador;
-        this.parametros = parametros;
-    }
-    
-    /**
-     * | DECS:et                       {: RESULT = new SymbolScriptElemento(et, etleft, etright); :}
-        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY ENDINSTR {: RESULT = new Symbol(et1,et2,et3, et1left, et1right); :}
-        
-     */
-    public SymbolScriptElemento(SymbolDecs decs, int l, int r){
-        super("scriptElemento", 0 , l,r);
-        this.declaraciones = decs;
+    public SymbolScriptElemento(SymbolTipoRetorno tipo, String id, SymbolParams p, SymbolBody b, int l, int c) {
+        super("scriptElemento", l, c);
+        tipoRetorno = tipo;
+        idTuplaMetodo = id;
+        parametros = p;
+        cuerpo = b;
+        miembrosTupla = null;
+        declaraciones = null;
     }
     
-    public SymbolScriptElemento(boolean isTupla, String id, SymbolMiembrosTupla miem, int l, int r){
-        super("scriptElemento", 0, l,r);
-        this.identificador = id;
-        this.isTupla = isTupla;
-        this.miembrosTupla = miem;
+    public SymbolScriptElemento(String id, SymbolMiembrosTupla m, int l, int c) {
+        super("scriptElemento", l, c);
+        tipoRetorno = null;
+        idTuplaMetodo = id;
+        parametros = null;
+        cuerpo = null;
+        miembrosTupla = m;
+        declaraciones = null;
     }
     
-    
-    
-    /*
-    public SymbolScriptElemento(SymbolDecs et) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public SymbolScriptElemento(SymbolTipoRetorno et1) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    */
-
-    public SymbolTipoRetorno getTipoRetorno() {
-        return tipoRetorno;
-    }
-
-    public String getIdentificador() {
-        return identificador;
-    }
-
-    public SymbolParams getParametros() {
-        return parametros;
-    }
-
-    public SymbolBody getCuerpo() {
-        return cuerpo;
-    }
-
-    public SymbolDecs getDeclaraciones() {
-        return declaraciones;
-    }
-
-    public boolean isIsTupla() {
-        return isTupla;
-    }
-
-    public SymbolMiembrosTupla getMiembrosTupla() {
-        return miembrosTupla;
+    public SymbolScriptElemento(SymbolDecs decs, int l, int c){
+        super("scriptElemento", l, c);
+        tipoRetorno = null;
+        idTuplaMetodo = null;
+        parametros = null;
+        cuerpo = null;
+        miembrosTupla = null;
+        declaraciones = decs;
     }
 }
