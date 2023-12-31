@@ -16,13 +16,29 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * SWAP ::= OPERAND:et1 OP_SWAP OPERAND:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
+        ;
+
  */
 public class SymbolSwap extends SymbolBase {
     
+    private SymbolOperand op1;
+    private SymbolOperand op2;
 
-    public SymbolSwap(String variable, Double valor) {
-        super(variable);
+    public SymbolSwap(SymbolOperand op1, SymbolOperand op2, Location l, Location r) {
+        super("swap", 0 , l ,r );
+        this.op1 = op1;
+        this.op2 = op2;
     }
+
+    public SymbolOperand getOp1() {
+        return op1;
+    }
+
+    public SymbolOperand getOp2() {
+        return op2;
+    }
+    
+    
     
 }

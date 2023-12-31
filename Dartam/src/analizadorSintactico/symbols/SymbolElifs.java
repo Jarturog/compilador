@@ -16,13 +16,32 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * 
+ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(et1, et2, et1xleft, et1xright); :}
+        |                                           {: RESULT = new SymbolElifs(); :}
+        ;
  */
 public class SymbolElifs extends SymbolBase {
-    
+    private SymbolElif elif;
+    private SymbolElifs elifs;
 
-    public SymbolElifs(String variable, Double valor) {
-        super(variable);
+    public SymbolElifs() {
+        super("elif");
     }
+    
+    public SymbolElifs(SymbolElif elif, SymbolElifs elifs, Location l, Location r){
+        super("elif", 0, l, r);
+        this.elif = elif;
+        this.elifs = elifs;
+    }
+
+    public SymbolElif getElif() {
+        return elif;
+    }
+
+    public SymbolElifs getElifs() {
+        return elifs;
+    }
+    
     
 }

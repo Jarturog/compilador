@@ -16,13 +16,21 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramatica.
  * 
- * Basicament conte un valor enter
+ * ASIGS ::= ID_ASIG_LISTA:et ENDINSTR         {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+        ;
  */
 public class SymbolAsigs extends SymbolBase {
-    
+    private SymbolIDAsigLista idAL;
 
-    public SymbolAsigs(String variable, Double valor) {
-        super(variable);
+    public SymbolAsigs(SymbolIDAsigLista idAL, Location l, Location r) {
+        super("asigs", 0, l , r);
+        this.idAL = idAL;
     }
+
+    public SymbolIDAsigLista getIdAL() {
+        return idAL;
+    }
+    
+    
     
 }

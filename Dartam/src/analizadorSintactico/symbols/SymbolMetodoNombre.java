@@ -29,8 +29,8 @@ public class SymbolMetodoNombre extends SymbolBase {
     
     private int methodName;
 
-    public SymbolMetodoNombre(int methodName) {
-        super("methodName");
+    public SymbolMetodoNombre(int methodName, Location l , Location r) {
+        super("methodName", 0, l,r);
         this.methodName = methodName;
     }
 

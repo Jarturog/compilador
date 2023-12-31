@@ -16,13 +16,20 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * PRED ::= KW_CASE KW_DEFAULT ARROW BODY:et            {: RESULT = new Symbol(et, etxleft, etxright); :}
+        ;
  */
 public class SymbolPred extends SymbolBase {
-    
+    private SymbolBody b;
 
-    public SymbolPred(String variable, Double valor) {
-        super(variable);
+    public SymbolPred(SymbolBody b, Location l, Location r) {
+        super("pred", 0 , l ,r );
+        this.b = b;
     }
+
+    public SymbolBody getB() {
+        return b;
+    }
+    
     
 }

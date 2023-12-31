@@ -16,13 +16,42 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}
+        | DECS:et1 ENDINSTR OPERAND:et2 ENDINSTR OPERAND:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}
+        ;
+
  */
 public class SymbolLoopCond extends SymbolBase {
-    
+    private SymbolOperand op1;
+    private SymbolDecs decs;
+    private SymbolOperand op2;
 
-    public SymbolLoopCond(String variable, Double valor) {
-        super(variable);
+    public SymbolLoopCond(SymbolOperand op1, Location l, Location r) {
+        super("loopCond", 0 ,l ,r);
+        this.op1 = op1;
     }
+    
+    public SymbolLoopCond(SymbolDecs decs, SymbolOperand op1, SymbolOperand op2, Location l, Location r) {
+        super("loopCond", 0 ,l ,r);
+        this.op1 = op1;
+        this.op2 = op2;
+        this.decs = decs;
+    }
+
+    public SymbolOperand getOp1() {
+        return op1;
+    }
+
+    public SymbolDecs getDecs() {
+        return decs;
+    }
+
+    public SymbolOperand getOp2() {
+        return op2;
+    }
+    
+    
+    
+    
     
 }

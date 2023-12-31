@@ -19,14 +19,16 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Basicament conte un valor enter
  */
 public class SymbolBinaryOperator extends SymbolBase {
+    private int operador;
     
-
+    
     public SymbolBinaryOperator(String variable, Double valor) {
         super(variable);
     }
 
-    public SymbolBinaryOperator(int OP_ADD, Object et) {
-        super("");
+    public SymbolBinaryOperator(int op, Object et, Location l, Location r) {
+        super("binaryOperator", 0 ,l, r);
+        this.operador = op;
     }
     
 }

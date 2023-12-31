@@ -14,17 +14,25 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et1 OPERAND:et2                       {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
+        | OPERAND:et1 R_UNARY_OPERATOR:et2                                  {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
+        ;
  */
 public class SymbolUnaryExpression extends SymbolBase {
+    private SymbolLUnaryOperator luo;
+    private SymbolRUnaryOperator ruo;
+    private SymbolOperand op;
     
-
-    public SymbolUnaryExpression(String variable, Double valor) {
-        super(variable);
+    public SymbolUnaryExpression(SymbolLUnaryOperator luo, SymbolOperand op, Location l, Location r) {
+        super("unaryExpression", 0 , l , r);
+        this.luo = luo;
+        this.op = op;
     }
 
-    public SymbolUnaryExpression(SymbolLUnaryOperator et, SymbolOperand op) {
-        super("");
+    public SymbolUnaryExpression(SymbolOperand op, SymbolRUnaryOperator ruo, Location l, Location r) {
+        super("unaryExpression", 0 , l , r);
+        this.ruo = ruo;
+        this.op = op;
     }
 
     

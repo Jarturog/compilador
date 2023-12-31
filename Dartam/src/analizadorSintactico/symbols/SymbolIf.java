@@ -16,13 +16,40 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * 
+IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          
+* {: RESULT = new SymbolIf(et1, et2, et3, et4, et1xleft, et1xright); :}
+        ;
  */
 public class SymbolIf extends SymbolBase {
-    
+    private SymbolOperand op;
+    private SymbolBody cuerpo;
+    private SymbolElifs elifs;
+    private SymbolElse els;
 
-    public SymbolIf(String variable, Double valor) {
-        super(variable);
+    public SymbolIf(SymbolOperand op, SymbolBody cuerpo, SymbolElifs elifs, SymbolElse els, Location l, Location r) {
+        super("if", 0 ,l , r);
+        this.op = op;
+        this.cuerpo = cuerpo;
+        this.elifs = elifs;
+        this.els = els;
     }
+
+    public SymbolOperand getOp() {
+        return op;
+    }
+
+    public SymbolBody getCuerpo() {
+        return cuerpo;
+    }
+
+    public SymbolElifs getElifs() {
+        return elifs;
+    }
+
+    public SymbolElse getEls() {
+        return els;
+    }
+    
     
 }

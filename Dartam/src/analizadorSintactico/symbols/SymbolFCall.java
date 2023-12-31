@@ -19,26 +19,35 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Reglas:
  * 
  * 
-FCALL ::= METHOD_NAME:et1 LPAREN SETPARAMS:et2 RPAREN   {: RESULT = new SymbolFCall(et1,et2); :}
+FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new SymbolFCall(et1, et2, et1xleft, et1xright); :}
+        | METODO_NOMBRE:et1 LPAREN RPAREN   {: RESULT = new SymbolFCall(et1, et1xleft, et1xright); :}
+        ;
         ;
  */
 public class SymbolFCall extends SymbolBase {
-    
+   
     private SymbolMetodoNombre methodName;
+    private SymbolOperandsLista operandsLista;
     
-    public SymbolFCall(SymbolMetodoNombre methodName) {
-        super("fcall");
+    public SymbolFCall(SymbolMetodoNombre methodName, Location l, Location r) {
+        super("fcall", 0 ,l ,r);
         this.methodName = methodName;
     }
 
-    public SymbolFCall(SymbolMetodoNombre et1, SymbolOperandsLista et2) {
-        super("");
+    public SymbolFCall(SymbolMetodoNombre et1, SymbolOperandsLista et2, Location l, Location r) {
+        super("fcall", 0, l ,r );
+        this.methodName = et1;
+        this.operandsLista = et2;
     }
 
     public SymbolMetodoNombre getMethodName() {
         return methodName;
     }
 
+    public SymbolOperandsLista getOperandsLista() {
+        return operandsLista;
+    }
+    
     
     
 }

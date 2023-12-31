@@ -16,17 +16,39 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * 
+BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESULT = new SymbolBinaryExpression(et1, et2, et3, et1xleft, et1xright); :}
+        ;
+
  */
 public class SymbolBinaryExpression extends SymbolBase {
-    
+    private SymbolOperand op1;
+    private SymbolBinaryOperator bop;
+    private SymbolOperand op2;
 
-    public SymbolBinaryExpression(String variable, Double valor) {
+    /*public SymbolBinaryExpression(String variable, Double valor) {
         super(variable);
+    }*/
+
+    public SymbolBinaryExpression(SymbolOperand op1, SymbolBinaryOperator bop,  SymbolOperand op2, Location l , Location r) {
+        super("binaryExpression", 0 , l , r);
+        this.op1 = op1;
+        this.bop = bop;
+        this.op2 = op2;
     }
 
-    public SymbolBinaryExpression(SymbolBinaryOperator et, SymbolOperand op1, SymbolOperand op2) {
-        super("");
+    public SymbolOperand getOp1() {
+        return op1;
     }
+
+    public SymbolBinaryOperator getBop() {
+        return bop;
+    }
+
+    public SymbolOperand getOp2() {
+        return op2;
+    }
+    
+    
     
 }

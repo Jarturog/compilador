@@ -16,13 +16,25 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * ELSE ::= KW_ELSE LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(et, etxleft, etxright); :}
+        |                                           {: RESULT = new SymbolElse(); :}
+        ;
  */
 public class SymbolElse extends SymbolBase {
-    
+    private SymbolBody cuerpo;
 
-    public SymbolElse(String variable, Double valor) {
-        super(variable);
+    public SymbolElse() {
+        super("else");
+    }
+    
+    public SymbolElse(SymbolBody b, Location l, Location r){
+        super("else", 0 ,l ,r);
+        this.cuerpo = b;
+        
+    }
+
+    public SymbolBody getCuerpo() {
+        return cuerpo;
     }
     
 }

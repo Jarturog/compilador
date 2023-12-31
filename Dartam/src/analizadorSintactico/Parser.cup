@@ -252,135 +252,136 @@ METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft
         | SWITCH:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
         ;
 
-INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et); :} 
-        | RETURN:et            {: RESULT = new SymbolInstr(et); :}  //NO SE COMO HACER ESTE
-        | DECS:et              {: RESULT = new SymbolInstr(et); :}
-        | ASIGS:et             {: RESULT = new SymbolInstr(et); :}
-        | SWAP:et              {: RESULT = new SymbolInstr(et); :}
+INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
+        | RETURN:et            {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
+        | DECS:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | ASIGS:et             {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | SWAP:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
         ;
 
-FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new SymbolFCall(et1,et2); :}
-        | METODO_NOMBRE:et1 LPAREN RPAREN   {: RESULT = new SymbolFCall(et1); :}
+FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new SymbolFCall(et1, et2, et1xleft, et1xright); :}
+        | METODO_NOMBRE:et1 LPAREN RPAREN   {: RESULT = new SymbolFCall(et1, et1xleft, et1xright); :}
         ;
 
-METODO_NOMBRE ::= ID:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.ID); :}
-        | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN); :}
-        | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT); :}
-        | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE); :}
-        | KW_READ:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.KW_READ); :}
+METODO_NOMBRE ::= ID:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.ID, etxleft, etxright); :}
+        | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, etxleft, etxright); :}
+        | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, etxleft, etxright); :}
+        | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, etxleft, etxright); :}
+        | KW_READ:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, etxleft, etxright); :}
         ;
 
-OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol); :}
-        | OPERAND:et                                    {: RESULT = new SymbolOperandsLista(et); :}
+OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol, etxleft, etxright); :}
+        | OPERAND:et                                    {: RESULT = new SymbolOperandsLista(et, etxleft, etxright); :}
         ;
 
-RETURN ::= KW_RETURN ENDINSTR
-        | KW_RETURN OPERAND ENDINSTR
+RETURN ::= KW_RETURN ENDINSTR                               {: :} //Con este que hacemos?
+        | KW_RETURN OPERAND:et ENDINSTR                     {: RESULT = new SymbolReturn(et, etxleft, etxright); :}
         ;
 
-SWAP ::= OPERAND OP_SWAP OPERAND ENDINSTR
+SWAP ::= OPERAND:et1 OP_SWAP OPERAND:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
         ;
 
-ASIGS ::= ID_ASIG_LISTA ENDINSTR
+ASIGS ::= ID_ASIG_LISTA:et ENDINSTR         {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
         ;
 
-ID_ASIG_LISTA ::= ID ASIG_OP OPERAND COMMA ID_ASIG_LISTA
-        | ID ASIG_OP OPERAND
+ID_ASIG_LISTA ::= ID:et1 ASIG_OP OPERAND:et2 COMMA ID_ASIG_LISTA:et3    {: RESULT = new SymbolIDAsigLista(et1, et2, et3, et1xleft, et1xright); :}
+        | ID:et1 ASIG_OP OPERAND:et2                                    {: RESULT = new SymbolIDAsigLista(et1, et2, et1xleft, et1xright); :}
         ;
 
-ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.AS_ASSIGN, et); :}
-        | AS_ADDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ADDA, et); :}
-        | AS_SUBA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_SUBA, et); :}
-        | AS_MULA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_MULA, et); :}
-        | AS_DIVA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_DIVA, et); :}
-        | AS_POTA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_POTA, et); :}
-        | AS_ANDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ANDA, et); :}
-        | AS_ORA:et                     {: RESULT = new SymbolAsigOp(ParserSym.AS_ORA, et); :}
+ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.AS_ASSIGN, et, etxleft, etxright); :}
+        | AS_ADDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ADDA, et, etxleft, etxright); :}
+        | AS_SUBA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_SUBA, et, etxleft, etxright); :}
+        | AS_MULA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_MULA, et, etxleft, etxright); :}
+        | AS_DIVA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_DIVA, et, etxleft, etxright); :}
+        | AS_POTA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_POTA, et, etxleft, etxright); :}
+        | AS_ANDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ANDA, et, etxleft, etxright); :}
+        | AS_ORA:et                     {: RESULT = new SymbolAsigOp(ParserSym.AS_ORA, et, etxleft, etxright); :}
         ;
 
-OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et); :}
-        | FCALL:et                      {: RESULT = new SymbolOperand(et); :}
-        | LPAREN OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et); :}
-        | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et); :}
-        | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et); :}
-        | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et); :}
-        | OPERAND:arr AUX_MEMBER LBRACKET OPERAND:idx RBRACKET  {: RESULT = new SymbolOperand(arr, idx); :}
-        | OPERAND:tuple OP_MEMBER ID:member                     {: RESULT = new SymbolOperand(tuple, member); :}
+OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | FCALL:et                      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | LPAREN OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | OPERAND:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET  {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
+        | OPERAND:et1 OP_MEMBER ID:et2                     {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
         ;
 
-UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et OPERAND:op                       {: RESULT = new SymbolUnaryExpression(et, op); :}
-        | OPERAND:op R_UNARY_OPERATOR:et
+UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et1 OPERAND:et2                       {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
+        | OPERAND:et1 R_UNARY_OPERATOR:et2                                  {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
         ;
 
-BINARY_EXPRESSION ::= OPERAND:op1 BINARY_OPERATOR:et OPERAND:op2        {: RESULT = new SymbolBinaryExpression(et, op1, op2); :}
+BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESULT = new SymbolBinaryExpression(et1, et2, et3, et1xleft, et1xright); :}
         ;
 
-CONDITIONAL_EXPRESSION ::= OPERAND:cond OP_COND OPERAND:op1 ARROW OPERAND:op2   {: RESULT = new SymbolConditionalExpression(cond, op1, op2);; :}
+CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {: RESULT = new SymbolConditionalExpression(et1, et2, et3, et1xleft, et1xright);; :}
         ; 
 
-ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et); :}
-        | STRING:et             {: RESULT = new SymbolAtomicExpression(et); :}
-        | BOOL:et               {: RESULT = new SymbolAtomicExpression(et); :}
-        | INT:et                {: RESULT = new SymbolAtomicExpression(et); :}
-        | DOUBLE:et             {: RESULT = new SymbolAtomicExpression(et); :}
-        | CHAR:et               {: RESULT = new SymbolAtomicExpression(et); :}
+//REVISAR ESTO
+ATOMIC_EXPRESSION ::= ID:et     {: RESULT = et; :}
+        | STRING:et             {: RESULT = et; :}
+        | BOOL:et               {: RESULT = et; :}
+        | INT:et                {: RESULT = et; :}
+        | DOUBLE:et             {: RESULT = et; :}
+        | CHAR:et               {: RESULT = et; :}
         ;
 
-BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et); :}
-        | OP_SUB:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_SUB, et); :}
-        | OP_MUL:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MUL, et); :}
-        | OP_DIV:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_DIV, et); :}
-        | OP_MOD:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MOD, et); :}
-        | OP_POT:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_POT, et); :}
-        | OP_EQ:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_EQ, et); :}
-        | OP_BEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BEQ, et); :}
-        | OP_BT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BT, et); :}
-        | OP_LEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LEQ, et); :}
-        | OP_LT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LT, et); :}
-        | OP_NEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_NEQ, et); :}
-        | OP_AND:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_AND, et); :}
-        | OP_OR:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_OR, et); :}
+BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et, etxleft, etxright); :}
+        | OP_SUB:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_SUB, et, etxleft, etxright); :}
+        | OP_MUL:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MUL, et, etxleft, etxright); :}
+        | OP_DIV:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_DIV, et, etxleft, etxright); :}
+        | OP_MOD:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MOD, et, etxleft, etxright); :}
+        | OP_POT:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_POT, et, etxleft, etxright); :}
+        | OP_EQ:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_EQ, et, etxleft, etxright); :}
+        | OP_BEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BEQ, et, etxleft, etxright); :}
+        | OP_BT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BT, et, etxleft, etxright); :}
+        | OP_LEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LEQ, et, etxleft, etxright); :}
+        | OP_LT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LT, et, etxleft, etxright); :}
+        | OP_NEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_NEQ, et, etxleft, etxright); :}
+        | OP_AND:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_AND, et, etxleft, etxright); :}
+        | OP_OR:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_OR, et, etxleft, etxright); :}
         ;
 
 
-L_UNARY_OPERATOR ::= OP_NOT:et    {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_NOT, et); :}
-        | OP_INC:et             {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_INC, et); :}
-        | OP_DEC:et             {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_DEC, et); :}
+L_UNARY_OPERATOR ::= OP_NOT:et    {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_NOT, et , etxleft, etxright); :}
+        | OP_INC:et             {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_INC, et , etxleft, etxright); :}
+        | OP_DEC:et             {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_DEC, et , etxleft, etxright); :}
         ;
 
-R_UNARY_OPERATOR ::= OP_PCT:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_PCT, et); :}
-        | OP_INC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_INC, et); :}
-        | OP_DEC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_DEC, et); :}
+R_UNARY_OPERATOR ::= OP_PCT:et  {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_PCT, et, etxleft, etxright); :}
+        | OP_INC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_INC, et, etxleft, etxright); :}
+        | OP_DEC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_DEC, et, etxleft, etxright); :}
         ;
 
-LOOP ::= KW_LOOP LOOP_COND LKEY BODY RKEY
-        | KW_DO LKEY BODY RKEY LOOP_COND ENDINSTR
+LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(ParserSym.KW_LOOP, et2, et3, et1xleft, et1xright); :}
+        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(ParserSym.KW_DO, et2, et3, et1xleft, et1xright); :}
         ;
 
-LOOP_COND ::= OPERAND
-        | DECS ENDINSTR OPERAND ENDINSTR OPERAND
+LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}
+        | DECS:et1 ENDINSTR OPERAND:et2 ENDINSTR OPERAND:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}
         ;
 
-IF ::= KW_IF OPERAND LKEY BODY RKEY ELIFS ELSE
+IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          {: RESULT = new SymbolIf(et1, et2, et3, et4, et1xleft, et1xright); :}
         ;
 
-ELIFS ::= ELIF ELIFS
-        |
+ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(et1, et2, et1xleft, et1xright); :}
+        |                                           {: RESULT = new SymbolElifs(); :}
         ;
 
-ELIF ::= KW_ELIF OPERAND LKEY BODY RKEY
+ELIF ::= KW_ELIF OPERAND:et1 LKEY BODY:et2 RKEY     {: RESULT = new SymbolElif(et1, et2, et1xleft, et1xright); :}
         ;
 
-ELSE ::= KW_ELSE LKEY BODY RKEY
-        |
+ELSE ::= KW_ELSE LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(et, etxleft, etxright); :}
+        |                                           {: RESULT = new SymbolElse(); :}
         ;
 
-SWITCH ::= KW_SWITCH OPERAND RKEY CASO PRED LKEY
+SWITCH ::= KW_SWITCH OPERAND:et1 RKEY CASO:et2 PRED:et3 LKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
+        ;   
+
+CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft et1xright); :}
+        |                                            {: RESULT = new SymbolCaso(); :}
         ;
 
-CASO ::= CASO KW_CASE OPERAND ARROW BODY
-        |
-        ;
-
-PRED ::= KW_CASE KW_DEFAULT ARROW BODY
+PRED ::= KW_CASE KW_DEFAULT ARROW BODY:et            {: RESULT = new SymbolPred(et, etxleft, etxright); :}
         ;

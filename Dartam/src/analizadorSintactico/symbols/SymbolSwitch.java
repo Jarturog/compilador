@@ -14,13 +14,33 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
  * 
- * Bàsicament conté un valor enter
+ * SWITCH ::= KW_SWITCH OPERAND:et1 RKEY CASO:et2 PRED:et3 LKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
+        ;
  */
 public class SymbolSwitch extends SymbolBase {
+    private SymbolOperand op;
+    private SymbolCaso caso;
+    private SymbolPred pred;
     
 
-    public SymbolSwitch(String variable, Double valor) {
-        super(variable);
+    public SymbolSwitch(SymbolOperand op, SymbolCaso caso, SymbolPred pred, Location l, Location r) {
+        super("switch", 0, l, r);
+        this.op = op;
+        this.caso = caso;
+        this.pred = pred;
+        
+    }
+
+    public SymbolOperand getOp() {
+        return op;
+    }
+
+    public SymbolCaso getCaso() {
+        return caso;
+    }
+
+    public SymbolPred getPred() {
+        return pred;
     }
     
 }

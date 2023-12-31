@@ -31,28 +31,28 @@ public class SymbolInstr extends SymbolBase {
     private SymbolAsigs asigs;
     private SymbolSwap swap;
     
-    public SymbolInstr(SymbolFCall fcall) {
-        super("instruccion");
+    public SymbolInstr(SymbolFCall fcall, Location l, Location r) {
+        super("instruccion", 0, l,r);
         this.fcall = fcall;
     }
     
-    public SymbolInstr(SymbolDecs decs) {
-        super("instruccion");
+    public SymbolInstr(SymbolDecs decs,  Location l, Location r) {
+        super("instruccion", 0, l, r);
         this.decs = decs;
     }
     
-    public SymbolInstr(SymbolAsigs asigs) {
-        super("instruccion");
+    public SymbolInstr(SymbolAsigs asigs,  Location l, Location r) {
+        super("instruccion", 0 , l , r);
         this.asigs = asigs;
     }
     
-    public SymbolInstr(SymbolSwap swap) {
-        super("instruccion");
+    public SymbolInstr(SymbolSwap swap,  Location l, Location r) {
+        super("instruccion", 0 , l , r);
         this.swap = swap;
     }
 
-    public SymbolInstr(SymbolReturn et) {
-        super("");
+    public SymbolInstr(SymbolReturn et, Location l, Location r) {
+        super("instruccion", 0 ,l ,r);
     }
 
     public SymbolFCall getFcall() {
