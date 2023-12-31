@@ -30,8 +30,10 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 class Parser;
 
-scan with {: Symbol s = getScanner().next_token();
-return s; :};
+scan with {: 
+    ComplexSymbol s = (ComplexSymbol) getScanner().next_token();
+    return s;
+:};
 
 /**
  ** Aquí es podria posar un codi 'ad hoc' però en aquest cas no és necessari.

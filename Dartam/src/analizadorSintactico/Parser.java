@@ -815,8 +815,10 @@ public class Parser extends java_cup.runtime.lr_parser {
   public java_cup.runtime.Symbol scan()
     throws java.lang.Exception
     {
- Symbol s = getScanner().next_token();
-return s; 
+ 
+    ComplexSymbol s = (ComplexSymbol) getScanner().next_token();
+    return s;
+
     }
 
 
