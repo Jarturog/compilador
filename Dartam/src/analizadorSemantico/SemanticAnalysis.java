@@ -70,7 +70,7 @@ public class SemanticAnalysis {
         if (s.tipoRetorno != null) { // definición metodo
             d.changeValue(s.tipoRetorno);
             d.changeValue(s.parametros);
-            d.changeValue(s.cuerpo);
+            d.changeValue(s.cuerpo); // está mal lo sé
             tablaSimbolos.insertVariable(s.idTuplaMetodo, d);
             return;
         }
