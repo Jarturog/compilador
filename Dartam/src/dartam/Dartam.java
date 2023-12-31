@@ -14,6 +14,7 @@ import genCodigoMaquina.GeneradorCMaquina;
 import optimizaciones.Optimizador;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.ClassCastException;
 
 public class Dartam {
 
@@ -44,7 +45,7 @@ public class Dartam {
             SymbolScript script;
             try {
                 script = (SymbolScript) parser.parse().value;
-            } catch (NullPointerException e) { // análisis sintáctico ha ido mal
+            } catch (NullPointerException | ClassCastException e) { // análisis sintáctico ha ido mal o no se ha encontrado main
                 return;
             }
             

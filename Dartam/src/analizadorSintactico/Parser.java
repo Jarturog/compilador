@@ -847,7 +847,12 @@ public class Parser extends java_cup.runtime.lr_parser {
     **/ 
     @Override
     public void unrecovered_syntax_error(Symbol cur_token) { 
-        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + cur_token.value);
+        String causa = "" + cur_token.value;
+        if (cur_token.sym == ParserSym.EOF) {
+            causa = "No se ha encontrado metodo main. Sintaxis: \n"+
+                "f void inicio(string[]argumentos){ # codigo # }\n";
+        }
+        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + causa);
         done_parsing();
     }  
 
@@ -856,12 +861,15 @@ public class Parser extends java_cup.runtime.lr_parser {
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
-        //if (cur_token.sym != ParserSym.error)
+        
         report_error("Error sintactico: ", cur_token);
     } 
 
     @Override
     public void report_error(String message, Object info) {
+        if (cur_token.sym == ParserSym.EOF) {
+            return;
+        }
         if (info instanceof ComplexSymbol token) {
             List expected = expected_token_ids();
             String tokens = "";

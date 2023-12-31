@@ -64,7 +64,12 @@ parser code {:
     **/ 
     @Override
     public void unrecovered_syntax_error(Symbol cur_token) { 
-        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + cur_token.value);
+        String causa = "" + cur_token.value;
+        if (cur_token.sym == ParserSym.EOF) {
+            causa = "No se ha encontrado metodo main. Sintaxis: \n"+
+                "f void inicio(string[]argumentos){ # codigo # }\n";
+        }
+        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + causa);
         done_parsing();
     }  
 
@@ -73,12 +78,15 @@ parser code {:
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
-        //if (cur_token.sym != ParserSym.error)
+        
         report_error("Error sintactico: ", cur_token);
     } 
 
     @Override
     public void report_error(String message, Object info) {
+        if (cur_token.sym == ParserSym.EOF) {
+            return;
+        }
         if (info instanceof ComplexSymbol token) {
             List expected = expected_token_ids();
             String tokens = "";
@@ -102,11 +110,6 @@ parser code {:
     }
 
 :}
-
-/****
-    També aquí es poden afegir accions a realitzar quan es requereix un token.
-    scan with {:     next_token(); :}
-**/
 
 terminal    OP_INC, OP_DEC, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD;
 terminal    AS_ASSIGN, AS_ADDA, AS_SUBA, AS_MULA, AS_DIVA, AS_POTA, AS_ANDA, AS_ORA;
