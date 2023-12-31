@@ -866,10 +866,11 @@ return s;
             for (Object t : expected){
                 tokens += ParserSym.terminalNames[(int)t] + ", ";
             }
-            tokens = tokens.substring(0, tokens.length() - 2);
+            if (!tokens.isEmpty()) {
+                tokens = "Se esperaba algun lexema de los siguientes tipos: " + tokens.substring(0, tokens.length() - 2) + ".\n";
+            }
             System.err.println(message + "Desde la linea " + token.xleft.getLine() + " y columna " + token.xleft.getColumn() + " hasta la linea " + token.xright.getLine() + " y columna " + token.xright.getColumn() + ". \n"
-                    + "Se esperaba algun lexema de los siguientes tipos: " + tokens + ".\n"
-                    + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
+                    + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
         } else {
             System.err.println(message + "No se esperaba este componente\n: " +cur_token.value+".");  
         }
