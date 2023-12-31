@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -26,14 +28,14 @@ public class SymbolIDDecsLista extends SymbolBase {
     private SymbolAsig asignacion;
     private SymbolIDDecsLista iddecslista;
     
-    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, int l , int r){
+    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, Location l, Location r){
         super("iddecslista",0, l, r);
         this.identificador = identificador;
         this.asignacion = asignacion;
     }
     
     
-    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, SymbolIDDecsLista iddecslista, int l, int r){
+    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, SymbolIDDecsLista iddecslista, Location l, Location r){
         super("iddecslista",0, l, r);
         this.identificador = identificador;
         this.asignacion = asignacion;

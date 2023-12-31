@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -25,12 +27,12 @@ public class SymbolDimensiones extends SymbolBase {
     private SymbolOperand operando;
     private SymbolDimensiones dimensiones;
             
-    public SymbolDimensiones(SymbolOperand operando, int l , int r){
+    public SymbolDimensiones(SymbolOperand operando, Location l, Location r){
         super("dimensiones", l, r);
         this.operando = operando;
     }
     
-    public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones, int l, int r) {
+    public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones, Location l, Location r) {
         super("dimensiones", l, r);
         this.operando = operando;
         this.dimensiones = dimensiones;

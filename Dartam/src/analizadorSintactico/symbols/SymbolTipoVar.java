@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 /**
  * Classe que implementa la classe base a partir de la que s'implementen totes
  * les variables de la gramàtica.
@@ -18,8 +20,8 @@ public class SymbolTipoVar extends SymbolBase {
     
     public final int tipo;
 
-    public SymbolTipoVar(Integer tipo, int l, int c) {
-        super("tipo", tipo, l, c);
+    public SymbolTipoVar(Integer tipo, Location l, Location r) {
+        super("tipo", tipo, l, r);
         this.tipo = tipo;
     }
 }

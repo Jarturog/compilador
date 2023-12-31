@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -52,19 +54,19 @@ public class SymbolMetodoElemento extends SymbolBase {
         super("");
     }
 
-    public SymbolMetodoElemento(SymbolInstr et, int etleft, int etright) {
+    public SymbolMetodoElemento(SymbolInstr et, Location l, Location r) {
         super("");
     }
 
-    public SymbolMetodoElemento(SymbolLoop et, int etleft, int etright) {
+    public SymbolMetodoElemento(SymbolLoop et, Location l, Location r) {
         super("");
     }
 
-    public SymbolMetodoElemento(SymbolIf et, int etleft, int etright) {
+    public SymbolMetodoElemento(SymbolIf et, Location l, Location r) {
         super("");
     }
 
-    public SymbolMetodoElemento(SymbolSwitch et, int etleft, int etright) {
+    public SymbolMetodoElemento(SymbolSwitch et, Location l, Location r) {
         super("");
     }
     

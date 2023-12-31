@@ -26,7 +26,9 @@ public class Dartam {
     public static void main(String[] args) {
         Reader input;
         // cutre lo de abajo
-        args = new String[1]; args[0] = inputPath;
+        args = new String[1];
+        inputPath = "1.txt";
+        args[0] = inputPath;
         try {
             if (args.length > 0) {
                 input = new FileReader(args[0]);
@@ -44,7 +46,7 @@ public class Dartam {
             //dump(outputPath, scanner.getTokens());
             System.out.println(scanner.getTokens());
             // Semantic analysis
-            SemanticAnalysis sem = SemanticAnalysis(script);
+            SemanticAnalysis sem = new SemanticAnalysis(script);
             // Intermediate code generation
             GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
             // Machine code generation

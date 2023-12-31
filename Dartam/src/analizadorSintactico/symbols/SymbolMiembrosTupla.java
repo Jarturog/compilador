@@ -4,6 +4,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 /**
  *
  * @author jartu
@@ -25,8 +27,8 @@ public class SymbolMiembrosTupla extends SymbolBase {
         miembrosTupla = null;
     }
     
-    public SymbolMiembrosTupla(SymbolDecs d, SymbolMiembrosTupla m, int l, int c){
-        super("miembrosTupla", l, c);
+    public SymbolMiembrosTupla(SymbolDecs d, SymbolMiembrosTupla m, Location l, Location r){
+        super("miembrosTupla", l, r);
         decs = d;
         miembrosTupla = m;
     }

@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -24,7 +26,7 @@ public class SymbolAsig extends SymbolBase {
     
     private SymbolOperand operando;
     
-    public SymbolAsig(SymbolOperand operando, int l, int r){
+    public SymbolAsig(SymbolOperand operando, Location l, Location r){
         super("asig",0, l, r);
         this.operando = operando;
     }

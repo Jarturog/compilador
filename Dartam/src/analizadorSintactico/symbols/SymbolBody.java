@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -29,13 +31,13 @@ public class SymbolBody extends SymbolBase {
         super("body");
     }
     
-    public SymbolBody(SymbolElementoMetodo sem, SymbolBody sb, int l, int r) {
+    public SymbolBody(SymbolElementoMetodo sem, SymbolBody sb, Location l, Location r) {
         super("body", l, r);
         this.metodo = sem;
         this.siguienteMetodo = sb;
     }
 
-    public SymbolBody(SymbolMetodoElemento et1, SymbolBody et2, int et1left, int et1right) {
+    public SymbolBody(SymbolMetodoElemento et1, SymbolBody et2, Location l, Location r) {
         super("");
     }
 

@@ -7,6 +7,9 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
 /**
@@ -17,31 +20,24 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  */
 public abstract class SymbolBase extends ComplexSymbol {
     private static int id = 0;
-    private int linea;
-    private int columna;
+    public final Location leftPos;
+    public final Location rightPos;
     
     public SymbolBase(String name){
         super(name, id++);
+        leftPos = null;
+        rightPos = null;
     }
     
-    public SymbolBase(String name, Object value, int linea, int columna) {
+    public SymbolBase(String name, Object value, Location left, Location right) {
         super(name, id++, value);
-        this.linea = linea;
-        this.columna = columna;
+        leftPos = left;
+        rightPos = right;
     }
     
-    public SymbolBase(String name, int linea, int columna) {
+    public SymbolBase(String name, Location left, Location right) {
         super(name, id++);
-        this.linea = linea;
-        this.columna = columna;
+        leftPos = left;
+        rightPos = right;
     }
-    
-    public int getLinea() {
-        return linea;
-    }
-    
-    public int getColumna() {
-        return columna;
-    }
-    
 }

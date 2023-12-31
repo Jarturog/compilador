@@ -4,6 +4,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 import java_cup.runtime.ComplexSymbolFactory;
 
 
@@ -20,12 +22,12 @@ public class SymbolParamsLista extends SymbolBase {
     private SymbolParam param;
     private SymbolParamsLista pl;
     
-    public SymbolParamsLista(SymbolParam param, int l , int r) {
+    public SymbolParamsLista(SymbolParam param, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
     }
     
-    public SymbolParamsLista(SymbolParam param, SymbolParamsLista pl, int l , int r) {
+    public SymbolParamsLista(SymbolParam param, SymbolParamsLista pl, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
         this.pl = pl;

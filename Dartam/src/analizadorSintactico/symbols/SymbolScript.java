@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 /**
  * SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2       {: RESULT = new SymbolScript(et1, et2, et1left, et1right); :}
         | MAIN:et                               {: RESULT = new SymbolScript(et, etleft, etright); :}
@@ -20,15 +22,15 @@ public class SymbolScript extends SymbolBase {
     
     public final SymbolMain main;
     
-    public SymbolScript(SymbolScriptElemento e, SymbolScript s, int l, int c) {
-        super("script", l, c);
+    public SymbolScript(SymbolScriptElemento e, SymbolScript s, Location l, Location r) {
+        super("script", l, r);
         main = null;
         elemento = e;
         siguienteElemento = s;
     }
     
-    public SymbolScript(SymbolMain m, int l, int c) {
-        super("script", l, c);
+    public SymbolScript(SymbolMain m, Location l, Location r) {
+        super("script", l, r);
         main = m;
         elemento = null;
         siguienteElemento = null;

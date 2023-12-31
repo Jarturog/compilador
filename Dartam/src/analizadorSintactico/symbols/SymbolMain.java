@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -22,7 +24,7 @@ public class SymbolMain extends SymbolBase {
     private SymbolMain sm;
     private SymbolScriptElemento se;
 
-    public SymbolMain(SymbolBody sb, int l, int r) {
+    public SymbolMain(SymbolBody sb, Location l, Location r) {
         super("sb", r, r);
         this.sb = sb;
     }
@@ -31,7 +33,7 @@ public class SymbolMain extends SymbolBase {
         super("sb");
     }
 
-    public SymbolMain(SymbolMain et1, SymbolScriptElemento et2, int l, int r) {
+    public SymbolMain(SymbolMain et1, SymbolScriptElemento et2, Location l, Location r) {
         super("sb", l, r);
         this.sm = et1;
         this.se = et2;

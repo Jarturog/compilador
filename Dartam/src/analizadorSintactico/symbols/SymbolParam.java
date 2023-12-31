@@ -8,6 +8,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -29,27 +31,27 @@ public class SymbolParam extends SymbolBase {
     private String identificador1;
     private String identificador2;
 
-    public SymbolParam(SymbolTipoVar tipo, String identificador, int l, int r){
+    public SymbolParam(SymbolTipoVar tipo, String identificador, Location l, Location r){
         super("param", l,r);
         this.tipo = tipo;
         this.identificador1 = identificador;
     }
     
-    public SymbolParam(SymbolTipoVar tipo, SymbolDimensiones dim,  String identificador, int l, int r){
+    public SymbolParam(SymbolTipoVar tipo, SymbolDimensiones dim,  String identificador, Location l, Location r){
         super("param", l,r);
         this.tipo = tipo;
         this.dim = dim;
         this.identificador1 = identificador;
     }
     
-    public SymbolParam(boolean isTuple, String identificador1 ,String identificador2, int l, int r){
+    public SymbolParam(boolean isTuple, String identificador1 ,String identificador2, Location l, Location r){
         super("param", l,r);
         this.isTuple = true;
         this.identificador1 = identificador1;
         this.identificador2 = identificador2;
     }
 
-    public SymbolParam(boolean b, Object et1, String et2, int et1left, int et1right) {
+    public SymbolParam(boolean b, Object et1, String et2, Location l, Location r) {
     super("");}
     
     public SymbolTipoVar getTipo() {

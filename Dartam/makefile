@@ -26,7 +26,7 @@ generate_scanner:
 	java -jar lib$(B)JFlex$(B)jflex-1.9.1.jar src$(B)analizadorLexico$(B)Scanner.flex
 
 generate_parser:
-	java -jar lib$(B)JavaCUP$(B)java-cup-11b.jar -parser analizadorSintactico.Parser -symbols analizadorSintactico.Yytoken -destdir src$(B)analizadorSintactico src$(B)analizadorSintactico$(B)Parser.cup
+	java -jar lib$(B)JavaCUP$(B)java-cup-11b.jar -parser analizadorSintactico.Parser -symbols analizadorSintactico.Yytoken -destdir src$(B)analizadorSintactico -locations src$(B)analizadorSintactico$(B)Parser.cup
 
 clean:
 	$(RM) $(CUP_DIR)$(B)*.java $(CUP_DIR)$(B)*.class $(CUP_DIR)$(B)sym.java

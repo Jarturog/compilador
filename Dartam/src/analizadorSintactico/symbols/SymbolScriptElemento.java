@@ -4,6 +4,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 /**
  *
  * @author jartu
@@ -29,8 +31,8 @@ public class SymbolScriptElemento extends SymbolBase{
     // declaraciones
     public final SymbolDecs declaraciones;
     
-    public SymbolScriptElemento(SymbolTipoRetorno tipo, String id, SymbolParams p, SymbolBody b, int l, int c) {
-        super("scriptElemento", l, c);
+    public SymbolScriptElemento(SymbolTipoRetorno tipo, String id, SymbolParams p, SymbolBody b, Location l, Location r) {
+        super("scriptElemento", l, r);
         tipoRetorno = tipo;
         idTuplaMetodo = id;
         parametros = p;
@@ -39,8 +41,8 @@ public class SymbolScriptElemento extends SymbolBase{
         declaraciones = null;
     }
     
-    public SymbolScriptElemento(String id, SymbolMiembrosTupla m, int l, int c) {
-        super("scriptElemento", l, c);
+    public SymbolScriptElemento(String id, SymbolMiembrosTupla m, Location l, Location r) {
+        super("scriptElemento", l, r);
         tipoRetorno = null;
         idTuplaMetodo = id;
         parametros = null;
@@ -49,8 +51,8 @@ public class SymbolScriptElemento extends SymbolBase{
         declaraciones = null;
     }
     
-    public SymbolScriptElemento(SymbolDecs decs, int l, int c){
-        super("scriptElemento", l, c);
+    public SymbolScriptElemento(SymbolDecs decs, Location l, Location r){
+        super("scriptElemento", l, r);
         tipoRetorno = null;
         idTuplaMetodo = null;
         parametros = null;

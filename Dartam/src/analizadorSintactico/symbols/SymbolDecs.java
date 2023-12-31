@@ -9,6 +9,8 @@
  */
 package analizadorSintactico.symbols;
 
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 
 
 /**
@@ -34,7 +36,7 @@ public class SymbolDecs extends SymbolBase {
     private String identificador;
     private boolean isTupla;
     
-    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista, int l, int r) {
+    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista, Location l, Location r) {
         super("decs", l, r);
         this.isConstante = constante;
         this.isTupla = false;
@@ -43,7 +45,7 @@ public class SymbolDecs extends SymbolBase {
     }
     
     //KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 IDDECSLISTA:et4 
-    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista, int l, int r){
+    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista, Location l, Location r){
         super("decs", l,r);
         this.isConstante = constante;
         this.isTupla = false;
@@ -52,7 +54,7 @@ public class SymbolDecs extends SymbolBase {
         this.iddecslista = iddecslista;
     }
 
-    public SymbolDecs(Object et1, String et2, SymbolIDDecsLista et3, boolean b, int et1left, int et1right) {
+    public SymbolDecs(Object et1, String et2, SymbolIDDecsLista et3, boolean b, Location l, Location r) {
         super("");
     }
     
