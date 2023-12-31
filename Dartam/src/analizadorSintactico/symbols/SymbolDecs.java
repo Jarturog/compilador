@@ -17,14 +17,15 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Reglas:
  * 
- * DECS ::= KW_CONST:et1 TIPO_VAR:et2 IDDECSLISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3); :}
-        | TIPO_VAR:et1 IDDECSLISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(et1,et2); :}
-        | KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 IDDECSLISTA:et4 ENDINSTR {: RESULT = new SymbolDecs(true, et2, et3, et4); :}
-        | TIPO_VAR:et1 DIMENSIONES:et2 IDDECSLISTA:et3 ENDINSTR {: RESULT = new SymbolDecs(false, et1, et2, et3); :}
-        | KW_TUPLE:et1 ID:et2 LKEY VARIOS_IDS:et3 RKEY ENDINSTR {: RESULT = new SymbolDecs(et1, et2, et3); :}
+ *
+DECS ::= KW_CONST:et1 TIPO_VAR:et2 ID_DECS_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1left, et1right); :}
+        | TIPO_VAR:et1 ID_DECS_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1left, et1right); :}
+        | KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 ID_DECS_LISTA:et4 ENDINSTR {: RESULT = new SymbolDecs(true, et2, et3, et4, et1left, et1right); :}
+        | TIPO_VAR:et1 DIMENSIONES:et2 ID_DECS_LISTA:et3 ENDINSTR {: RESULT = new SymbolDecs(false, et1, et2, et3, et1left, et1right); :}
+        | KW_TUPLE:et1 ID:et2 ID_DECS_LISTA:et3 ENDINSTR          {: RESULT = new SymbolDecs(et1, et2, et3, true, et1left, et1right); :} // 
         ;
  */
-public class SymbolDecs extends ComplexSymbol {
+public class SymbolDecs extends SymbolBase {
     private static int id = 0;
     private boolean isConstante;
     private SymbolTipoVar tipo;
@@ -33,8 +34,8 @@ public class SymbolDecs extends ComplexSymbol {
     private String identificador;
     private boolean isTupla;
     
-    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista) {
-        super("decs", id++, 0);
+    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista, int l, int r) {
+        super("decs", 0, l, r);
         this.isConstante = constante;
         this.isTupla = false;
         this.tipo = tipo;
@@ -42,8 +43,8 @@ public class SymbolDecs extends ComplexSymbol {
     }
     
     //KW_CONST:et1 TIPO_VAR:et2 DIMENSIONES:et3 IDDECSLISTA:et4 
-    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista){
-        super("decs", id++, 0);
+    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolDimensiones dimensiones, SymbolIDDecsLista iddecslista, int l, int r){
+        super("decs", 0, l,r);
         this.isConstante = constante;
         this.isTupla = false;
         this.tipo = tipo;
@@ -52,8 +53,9 @@ public class SymbolDecs extends ComplexSymbol {
     }
     
     // | KW_TUPLE:et1 ID:et2 LKEY VARIOS_IDS:et3 RKEY ENDINSTR {: RESULT = new SymbolDecs(et1, et2, et3); :}
-    //public SymbolDecs(){
-    //    
+    //public SymbolDecs(String id,){
+    //    super("decs", 0 , l, r);
+    //    this.
     //}
 
     public boolean isIsConstante() {

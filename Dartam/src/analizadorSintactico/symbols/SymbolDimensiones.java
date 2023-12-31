@@ -15,23 +15,23 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * les variables de la gramàtica.
  * 
  * REGLAS: 
- * DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2); :}
-        | LBRACKET OPERAND:et1 RBRACKET                         {: RESULT = new SymbolDimensiones(et1); :}
+ * DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2, et1left, et1right); :}
+        | LBRACKET OPERAND:et1 RBRACKET                         {: RESULT = new SymbolDimensiones(et1, et1left, et1right); :}
         ;
  *
  */
-public class SymbolDimensiones extends ComplexSymbol {
+public class SymbolDimensiones extends SymbolBase {
     private static int id = 0;
     private SymbolOperand operando;
     private SymbolDimensiones dimensiones;
             
-    public SymbolDimensiones(SymbolOperand operando){
-        super("dimensiones", id++, 0);
+    public SymbolDimensiones(SymbolOperand operando, int l , int r){
+        super("dimensiones", 0, l, r);
         this.operando = operando;
     }
     
-    public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones) {
-        super("dimensiones", id++, 0);
+    public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones, int l, int r) {
+        super("dimensiones", 0, l, r);
         this.operando = operando;
         this.dimensiones = dimensiones;
     }

@@ -16,21 +16,21 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Reglas:
  * 
- * ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et); :}
+ * ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et, etleft, etright); :}
         |                       {: RESULT = new SymbolAsig(); :}
         ;
  */
-public class SymbolAsig extends ComplexSymbol {
+public class SymbolAsig extends SymbolBase {
     private static int id = 0;
     private SymbolOperand operando;
     
-    public SymbolAsig(SymbolOperand operando){
-        super("asig", id++, 0);
+    public SymbolAsig(SymbolOperand operando, int l, int r){
+        super("asig",0, l, r);
         this.operando = operando;
     }
     
     public SymbolAsig() {
-        super("", id++, 0);
+        super("asig", 0);
     }
 
     public SymbolOperand getOperando() {

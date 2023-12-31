@@ -7,16 +7,32 @@ package analizadorSintactico.symbols;
 /**
  *
  * @author jartu
+ * 
+ * PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etleft, etright); :}   
+        |                                             {: RESULT = new SymbolParams(); :}
+        ;
+
  */
 public class SymbolParams extends SymbolBase {
     private static int id = 0;
-
-    public SymbolParams(String variable, Double valor) {
-        super(variable, valor);
+    private SymbolParamsLista pl;
+    
+    public SymbolParams(SymbolParamsLista pl, int l, int r) {
+        super("params", 0 , l , r);
+        this.pl = pl;
+    }
+    
+    public SymbolParams(){
+        super("params", 0);
     }
 
-    public SymbolParams(SymbolParamsLista et) {
+    /*public SymbolParams(SymbolParamsLista et) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }*/
+
+    public SymbolParamsLista getPl() {
+        return pl;
     }
+    
     
 }

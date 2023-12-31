@@ -20,24 +20,25 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  *        |
  *        ;
  */
-public class SymbolBody extends ComplexSymbol {
+public class SymbolBody extends SymbolBase {
     private static int id = 0;
     private SymbolElementoMetodo metodo;
     private SymbolBody  siguienteMetodo; 
 
     public SymbolBody() {
-        super("body", id++, 0);
+        super("body", 0);
     }
     
-    public SymbolBody(SymbolElementoMetodo sem, SymbolBody sb) {
-        super("body", id++, 0);
+    public SymbolBody(SymbolElementoMetodo sem, SymbolBody sb, int l, int r) {
+        super("body", 0, l, r);
         this.metodo = sem;
         this.siguienteMetodo = sb;
     }
 
+    /*
     public SymbolBody(SymbolMetodoElemento et1, SymbolBody et2) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    }*/
 
     public SymbolElementoMetodo getMetodo() {
         return metodo;

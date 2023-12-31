@@ -16,25 +16,25 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  * 
  * Reglas
  * 
- * IDDECSLISTA ::= ID:et1 ASIG:et2 COMMA IDDECSLISTA:et3       {: RESULT = new SymbolIDDecsLista(et1,et2,et3); :}
-        | ID:et1 ASIG:et2                                   {: RESULT = new SymbolIDDecsLista(et1,et2); :}
+ * ID_DECS_LISTA ::= ID:et1 ASIG:et2 COMMA ID_DECS_LISTA:et3       {: RESULT = new SymbolIDDecsLista(et1,et2,et3, et1left, et1right); :}
+        | ID:et1 ASIG:et2                                   {: RESULT = new SymbolIDDecsLista(et1,et2, et1left, et1right); :}
         ;
  */
-public class SymbolIDDecsLista extends ComplexSymbol {
+public class SymbolIDDecsLista extends SymbolBase {
     private static int id = 0;
     private String identificador;
     private SymbolAsig asignacion;
     private SymbolIDDecsLista iddecslista;
     
-    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion){
-        super("iddecslista", id++, 0);
+    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, int l , int r){
+        super("iddecslista",0, l, r);
         this.identificador = identificador;
         this.asignacion = asignacion;
     }
     
     
-    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, SymbolIDDecsLista iddecslista){
-        super("iddecslista", id++, 0);
+    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, SymbolIDDecsLista iddecslista, int l, int r){
+        super("iddecslista",0, l, r);
         this.identificador = identificador;
         this.asignacion = asignacion;
         this.iddecslista = iddecslista;

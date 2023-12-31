@@ -20,6 +20,10 @@ public abstract class SymbolBase extends ComplexSymbol {
     private int linea;
     private int columna;
     
+    public SymbolBase(String variable, Object value){
+        super(variable, id++, value);
+    }
+    
     public SymbolBase(String name, Object value, int linea, int columna) {
         super(name, id++, value);
         this.linea = linea;
