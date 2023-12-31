@@ -32,7 +32,7 @@ public class SymbolScriptElemento extends SymbolBase{
     public final SymbolDecs declaraciones;
     
     public SymbolScriptElemento(SymbolTipoRetorno tipo, String id, SymbolParams p, SymbolBody b, Location l, Location r) {
-        super("scriptElemento", l, r);
+        super("scriptElementoMetodo", l, r);
         tipoRetorno = tipo;
         idTuplaMetodo = id;
         parametros = p;
@@ -42,7 +42,7 @@ public class SymbolScriptElemento extends SymbolBase{
     }
     
     public SymbolScriptElemento(String id, SymbolMiembrosTupla m, Location l, Location r) {
-        super("scriptElemento", l, r);
+        super("scriptElementoTupla", l, r);
         tipoRetorno = null;
         idTuplaMetodo = id;
         parametros = null;
@@ -52,7 +52,7 @@ public class SymbolScriptElemento extends SymbolBase{
     }
     
     public SymbolScriptElemento(SymbolDecs decs, Location l, Location r){
-        super("scriptElemento", l, r);
+        super("scriptElementoDeclaracion", l, r);
         tipoRetorno = null;
         idTuplaMetodo = null;
         parametros = null;

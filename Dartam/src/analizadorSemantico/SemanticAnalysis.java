@@ -27,7 +27,7 @@ import analizadorSintactico.symbols.*;
 
 public class SemanticAnalysis {
     
-    public TablaSimbolos TablaSimbolos;
+    public TablaSimbolos tablaSimbolos;
 
     // Description to the function in which we are currently.
     private DescripcionSimbolo currentFunction;
@@ -40,12 +40,66 @@ public class SemanticAnalysis {
     public boolean thereIsError = false;
 
     public SemanticAnalysis(SymbolScript script){
-        TablaSimbolos = new TablaSimbolos();
+        tablaSimbolos = new TablaSimbolos();
         errors = new ArrayList<>();
+        ArrayList<SymbolScriptElemento> elementosScript = new ArrayList<>();
+        int idxMain;
+        
+        for (idxMain = 0; script.elemento != null; idxMain++) {
+            elementosScript.add(script.elemento);
+            script = script.siguienteElemento;
+        }
+        SymbolMain main = script.main;
+        while (main.elemento != null) {
+            elementosScript.add(idxMain, main.elemento);
+            main = main.main;
+        }
+        for (SymbolScriptElemento s : elementosScript) {
+            procesarElementoScript(s);
+        }
+        // main.procesar();
+        
         /*SymbolDecs decs = body.getDeclarations();
         if(decs != null) manage(decs);
         SymbolMain main = body.getMain();
         manage(main);*/
+    }
+    
+    private void procesarElementoScript(SymbolScriptElemento s){
+        DescripcionSimbolo d = new DescripcionSimbolo(); 
+        if (s.tipoRetorno != null) { // definición metodo
+            d.changeValue(s.tipoRetorno);
+            d.changeValue(s.parametros);
+            d.changeValue(s.cuerpo);
+            tablaSimbolos.insertVariable(s.idTuplaMetodo, d);
+            return;
+        }
+        if (s.idTuplaMetodo != null) { // declaración tupla
+            d.changeValue(s.miembrosTupla);
+            tablaSimbolos.insertVariable(s.idTuplaMetodo, d);
+            return;
+        }
+        // declaraciones variables y constantes
+        SymbolDecs decs = s.declaraciones;
+        if (decs.idTupla != null) { // variable tipo tupla
+            tablaSimbolos.insertVariable(decs.idTupla, d);
+            return;
+        }
+        // variables tipo primitivas y array
+        SymbolIDDecsLista declaracion = decs.iddecslista;
+        while (declaracion.siguienteDeclaracion != null) {
+            procesarDeclaracion(declaracion);
+            declaracion = declaracion.siguienteDeclaracion;
+        }
+        procesarDeclaracion(declaracion);
+    }
+    
+    private void procesarDeclaracion(SymbolIDDecsLista dec) {
+        DescripcionSimbolo d = new DescripcionSimbolo(); 
+        if (dec.asignacion != null) {
+            d.changeValue(dec.asignacion.operando);
+        }
+        tablaSimbolos.insertVariable(dec.id, d);
     }
 
     public String getErrors(){

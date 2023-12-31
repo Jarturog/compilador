@@ -24,7 +24,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolAsig extends SymbolBase {
     
-    private SymbolOperand operando;
+    public final SymbolOperand operando;
     
     public SymbolAsig(SymbolOperand operando, Location l, Location r){
         super("asig",0, l, r);
@@ -33,12 +33,7 @@ public class SymbolAsig extends SymbolBase {
     
     public SymbolAsig() {
         super("asig");
+        operando = null;
     }
 
-    public SymbolOperand getOperando() {
-        return operando;
-    }
-    
-    
-    
 }

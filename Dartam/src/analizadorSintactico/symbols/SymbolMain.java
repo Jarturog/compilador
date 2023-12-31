@@ -13,30 +13,29 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
- * 
- * Bàsicament conté un valor enter
+ * MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY:et RKEY  
+        | MAIN:et1 SCRIPT_ELEMENTO:et2     
+        ;
  */
 public class SymbolMain extends SymbolBase {
     
-    private SymbolBody sb;
-    private SymbolMain sm;
-    private SymbolScriptElemento se;
+    // body main
+    public final SymbolBody body;
+    // hay más elementos
+    public final SymbolMain main;
+    public final SymbolScriptElemento elemento;
 
-    public SymbolMain(SymbolBody sb, Location l, Location r) {
-        super("sb", r, r);
-        this.sb = sb;
-    }
-    
-    public SymbolMain() {
-        super("sb");
+    public SymbolMain(SymbolBody b, Location l, Location r) {
+        super("main", r, r);
+        body = b;
+        main = null;
+        elemento = null;
     }
 
-    public SymbolMain(SymbolMain et1, SymbolScriptElemento et2, Location l, Location r) {
-        super("sb", l, r);
-        this.sm = et1;
-        this.se = et2;
+    public SymbolMain(SymbolMain m, SymbolScriptElemento e, Location l, Location r) {
+        super("elementoDespuesDeMain", l, r);
+        body = null;
+        main = m;
+        elemento = e;
     }
-    
 }

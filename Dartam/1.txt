@@ -1,1 +1,5 @@
+ent a;
+prop b;
 f vacio inicio(string[]argumentos){ # codigo # }
+ent c;
+prop d;
