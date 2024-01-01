@@ -29,6 +29,12 @@ public abstract class SymbolBase extends ComplexSymbol {
         rightPos = null;
     }
     
+    public SymbolBase(String name, Object value){
+        super(name, id++, value);
+        leftPos = null;
+        rightPos = null;
+    }
+    
     public SymbolBase(String name, Object value, Location left, Location right) {
         super(name, id++, value);
         leftPos = left;

@@ -207,11 +207,11 @@ BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1
         |                               {: RESULT = new SymbolBody(); :}
         ;
                                         
-TIPO_VAR ::= KW_BOOL:et                    {: RESULT = new SymbolTipoVar(ParserSym.KW_BOOL, etxleft, etxright); :}
-        | KW_INT:et                        {: RESULT = new SymbolTipoVar(ParserSym.KW_INT, etxleft, etxright); :}
-        | KW_DOUBLE:et                     {: RESULT = new SymbolTipoVar(ParserSym.KW_DOUBLE, etxleft, etxright); :}
-        | KW_CHAR:et                       {: RESULT = new SymbolTipoVar(ParserSym.KW_CHAR, etxleft, etxright); :}
-        | KW_STRING:et                     {: RESULT = new SymbolTipoVar(ParserSym.KW_STRING, etxleft, etxright); :}
+TIPO_VAR ::= KW_BOOL                    {: RESULT = new SymbolTipoVar(ParserSym.KW_BOOL); :}
+        | KW_INT                        {: RESULT = new SymbolTipoVar(ParserSym.KW_INT); :}
+        | KW_DOUBLE                     {: RESULT = new SymbolTipoVar(ParserSym.KW_DOUBLE); :}
+        | KW_CHAR                       {: RESULT = new SymbolTipoVar(ParserSym.KW_CHAR); :}
+        | KW_STRING                     {: RESULT = new SymbolTipoVar(ParserSym.KW_STRING); :}
         ;
 
 
