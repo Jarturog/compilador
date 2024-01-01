@@ -130,9 +130,9 @@ terminal    Character           CHAR;
 non terminal SymbolBody BODY;
 non terminal SymbolMain MAIN;
 non terminal SymbolTipoRetorno TIPO_RETORNO;
-non terminal SymbolTipoVar TIPO_VAR;
+non terminal SymbolTipoPrimitivo TIPO_PRIMITIVO;
+non terminal SymbolTipo TIPO;
 non terminal SymbolParams PARAMS;
-non terminal SymbolParam PARAM;
 non terminal SymbolParamsLista PARAMSLISTA;
 non terminal SymbolDecs DECS;
 non terminal SymbolIDDecsLista ID_DECS_LISTA;
@@ -191,7 +191,7 @@ SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAR
         | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY ENDINSTR     {: RESULT = new SymbolScriptElemento(et2, et3, et1xleft, et1xright); :}
         ;
 
-TIPO_RETORNO ::= TIPO_VAR:et            {: RESULT = new SymbolTipoRetorno(et, etxleft, etxright); :}
+TIPO_RETORNO ::= TIPO:et            {: RESULT = new SymbolTipoRetorno(et, etxleft, etxright); :}
         | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(etxleft, etxright); :}
         ;
 
@@ -206,32 +206,29 @@ MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RP
 BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1xleft, et1xright); :}
         |                               {: RESULT = new SymbolBody(); :}
         ;
-                                        
-TIPO_VAR ::= KW_BOOL                    {: RESULT = new SymbolTipoVar(ParserSym.KW_BOOL); :}
-        | KW_INT                        {: RESULT = new SymbolTipoVar(ParserSym.KW_INT); :}
-        | KW_DOUBLE                     {: RESULT = new SymbolTipoVar(ParserSym.KW_DOUBLE); :}
-        | KW_CHAR                       {: RESULT = new SymbolTipoVar(ParserSym.KW_CHAR); :}
-        | KW_STRING                     {: RESULT = new SymbolTipoVar(ParserSym.KW_STRING); :}
+
+TIPO ::= TIPO_PRIMITIVO
+        | TIPO_PRIMITIVO DIMENSIONES
+        | KW_TUPLE ID
         ;
 
+TIPO_PRIMITIVO ::= KW_BOOL                    {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_BOOL); :}
+        | KW_INT                        {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_INT); :}
+        | KW_DOUBLE                     {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_DOUBLE); :}
+        | KW_CHAR                       {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_CHAR); :}
+        | KW_STRING                     {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_STRING); :}
+        ;
 
 PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etxleft, etxright); :}   
         |                                             {: RESULT = new SymbolParams(); :}
         ;
 
-PARAMSLISTA ::= PARAM:et1 COMMA PARAMSLISTA:et2           {: RESULT = new SymbolParamsLista(et1, et2, et1xleft, et1xright); :}
-        | PARAM:et                           {: RESULT = new SymbolParamsLista(et, etxleft, etxright); :}
+PARAMSLISTA ::= TIPO:et1 ID COMMA PARAMSLISTA:et2           {: RESULT = new SymbolParamsLista(et1, et2, et1xleft, et1xright); :}
+        | TIPO:et ID                          {: RESULT = new SymbolParamsLista(et, etxleft, etxright); :}
         ;
 
-PARAM ::= TIPO_VAR:et1 ID:et2                   {: RESULT = new SymbolParam(et1,et2, et1xleft, et1xright); :}
-        | TIPO_VAR:et1 DIMENSIONES:et2 ID:et3   {: RESULT = new SymbolParam(et1,et2,et3, et1xleft, et1xright); :}
-        | KW_TUPLE:et1 ID:et2 ID:et3            {: RESULT = new SymbolParam(true,et1,et2, et1xleft, et1xright); :}
-        ;
-
-DECS ::= KW_CONST:et1 TIPO_VAR:et2 ID_DECS_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}
-        | TIPO_VAR:et1 ID_DECS_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
-        | TIPO_VAR:et1 DIMENSIONES:et2 ID_DECS_LISTA:et3 ENDINSTR {: RESULT = new SymbolDecs(et1, et2, et3, et1xleft, et1xright); :}
-        | KW_TUPLE:et1 ID:et2 ID_DECS_LISTA:et3 ENDINSTR          {: RESULT = new SymbolDecs(et1, et2, et3, et1xleft, et1xright); :} //REVISAR 
+DECS ::= KW_CONST:et1 TIPO:et2 ID_DECS_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}
+        | TIPO:et1 ID_DECS_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
         ; // tuplas no pueden ser constantes
 
 DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2, et1xleft, et1xright); :}

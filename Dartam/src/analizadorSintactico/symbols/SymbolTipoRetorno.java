@@ -19,9 +19,9 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolTipoRetorno extends SymbolBase {
-    public final SymbolTipoVar tipo;
+    public final SymbolTipo tipo;
     
-    public SymbolTipoRetorno(SymbolTipoVar t, Location l, Location r){
+    public SymbolTipoRetorno(SymbolTipo t, Location l, Location r){
         super("tipoRetornoVar", l, r);
         tipo = t;
     }
