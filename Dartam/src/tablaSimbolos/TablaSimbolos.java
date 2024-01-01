@@ -29,6 +29,10 @@ public class TablaSimbolos {
     public class Entrada{
             public String nombreVariable;
             public SimboloDescripcion descripcion;
+            public int next;
+            public int np;
+            public int d;
+            public String idcamp;
             public Entrada(String n, SimboloDescripcion d){
                 this.nombreVariable = n;
                 this.descripcion = d;
@@ -92,10 +96,109 @@ public class TablaSimbolos {
                    iterador.remove();
                }
            }
-       }
-      
+       }  
     }
     
+    public void ponerCampo(String idr, String idc, int dCamp) throws Exception {
+        SimboloDescripcion d = td.get(idr);
+        if(d.getTipo() != Constantes.TIPO_TUPLA){
+            throw new Exception("Error, no es una tupla!");
+        }else{
+            int i = d.first;
+            while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+                i = te.get(i).next;
+            }
+            
+            if(i != 0){
+                throw new Exception("Ya hay un campo con el mismo error");
+            }
+            
+            int idxe = ta.get(this.n);
+            idxe += 1;
+            ta.set(this.n, idxe);
+            te.get(idxe).np = -1;
+            te.get(idxe).d = dCamp;
+            te.get(idxe).next = td.get(idr).first;
+            td.get(idr).first = idxe;
+        }
+        
+    }
+    
+    public Entrada consultaCamp(String idr, String idc) throws Exception{
+        SimboloDescripcion d = td.get(idr);
+        if (d.getTipo() != Constantes.TIPO_TUPLA){
+            throw new Exception("No es una tupla");
+        }else{
+            int i = d.first;
+            while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+                i = te.get(i).next;
+            }
+            
+            if(i != 0){
+                return te.get(i);
+            }else{
+                return null;
+            }
+        }
+    }
+    
+    
+/*    public void salirBloque(){
+        int idxi = ta.get(this.n);
+        idxi -= 1;
+        int idxf = ta.get(this.n);
+        while(idxi > idxf){
+            if(te.get(idxi).np != -1){
+                String id = te.get(idxi).nombreVariable;
+                SimboloDescripcion sd = td.get(id);
+                sd.setNivel(te.get(idxi).np);
+                //Poner toda la descripcion en td?
+                sd.first = te.get(idxi).next;
+            }
+            idxi = idxi - 1;
+        }
+            
+    }*/
+    
+    public void ponerIndice(String id, SimboloDescripcion d) throws Exception{
+        SimboloDescripcion da = td.get(id);
+        if(da.getTipo() != Constantes.TIPO_ARRAY){
+            throw new Exception("No es un array");
+        }
+        
+        int idxe = da.first;
+        int idxep = 0;
+        while(idxe != 0){
+            idxep = idxe;
+            idxe = te.get(idxe).next;
+        }
+        
+        idxe = ta.get(this.n);
+        idxe += 1;
+        ta.set(n, idxe);
+        Entrada ent = te.get(idxe);
+        ent.idcamp = "";
+        ent.np = -1;
+        ent.descripcion = d;
+        if(idxep == 0){
+            td.get(id).first = idxe;
+        }else{
+            te.get(idxep).next = idxe;
+        }
+    }
+    
+    
+    public int first(String id) throws Exception{
+        SimboloDescripcion sd = td.get(id);
+        if(sd.getTipo() != Constantes.TIPO_ARRAY){
+            
+        }
+    }
+    
+    
+    
+    
+
     
     
 }
