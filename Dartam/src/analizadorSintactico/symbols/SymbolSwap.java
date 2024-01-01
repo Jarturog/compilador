@@ -22,23 +22,12 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolSwap extends SymbolBase {
     
-    public final SymbolOperand op1;
-    public final SymbolOperand op2;
+    public final String op1, op2;
 
-    public SymbolSwap(SymbolOperand op1, SymbolOperand op2, Location l, Location r) {
+    public SymbolSwap(String op1, String op2, Location l, Location r) {
         super("swap", 0 , l ,r );
         this.op1 = op1;
         this.op2 = op2;
     }
 
-    public SymbolOperand getOp1() {
-        return op1;
-    }
-
-    public SymbolOperand getOp2() {
-        return op2;
-    }
-    
-    
-    
 }

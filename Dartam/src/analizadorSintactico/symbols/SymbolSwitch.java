@@ -18,29 +18,17 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolSwitch extends SymbolBase {
-    public final SymbolOperand op;
+    public final SymbolOperand cond;
     public final SymbolCaso caso;
     public final SymbolPred pred;
     
 
     public SymbolSwitch(SymbolOperand op, SymbolCaso caso, SymbolPred pred, Location l, Location r) {
         super("switch", 0, l, r);
-        this.op = op;
+        this.cond = op;
         this.caso = caso;
         this.pred = pred;
         
-    }
-
-    public SymbolOperand getOp() {
-        return op;
-    }
-
-    public SymbolCaso getCaso() {
-        return caso;
-    }
-
-    public SymbolPred getPred() {
-        return pred;
     }
     
 }

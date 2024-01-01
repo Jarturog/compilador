@@ -29,10 +29,4 @@ public class SymbolReturn extends SymbolBase {
         this.op = op;
     }
 
-    public SymbolOperand getOp() {
-        return op;
-    }
-    
-    
-    
 }

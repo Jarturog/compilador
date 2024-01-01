@@ -22,38 +22,29 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
  */
 public class SymbolLoopCond extends SymbolBase {
-    public final SymbolOperand op1;
+    public final SymbolOperand cond;
     public final SymbolDecs decs;
     public final SymbolOperand op2;
+    private final boolean isFor;
 
     public SymbolLoopCond(SymbolOperand op1, Location l, Location r) {
         super("loopCond", 0 ,l ,r);
-        this.op1 = op1;
+        this.cond = op1;
         this.decs = null;
         this.op2 = null;
+        isFor = false;
     }
     
     public SymbolLoopCond(SymbolDecs decs, SymbolOperand op1, SymbolOperand op2, Location l, Location r) {
         super("loopCond", 0 ,l ,r);
-        this.op1 = op1;
+        this.cond = op1;
         this.op2 = op2;
         this.decs = decs;
+        isFor = true;
     }
 
-    public SymbolOperand getOp1() {
-        return op1;
+    public boolean isFor() {
+        return isFor;
     }
-
-    public SymbolDecs getDecs() {
-        return decs;
-    }
-
-    public SymbolOperand getOp2() {
-        return op2;
-    }
-    
-    
-    
-    
     
 }

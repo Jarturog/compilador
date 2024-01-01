@@ -21,35 +21,30 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolLoop extends SymbolBase {
-    private int tipoLoop;
+
     public final SymbolLoopCond loopCond;
     public final SymbolBody cuerpo;
+    private final boolean isDoWhile;
 
-    public SymbolLoop(int tipoLoop, SymbolLoopCond loopCond, SymbolBody b, Location l, Location r){
-        super("loop", 0, l ,r);
-        this.tipoLoop = tipoLoop;
+    public SymbolLoop(SymbolLoopCond loopCond, SymbolBody b, Location l, Location r){
+        super("loop", l ,r);
         this.loopCond = loopCond;
         this.cuerpo = b;
+        isDoWhile = false;
     }
     
-    public SymbolLoop(int tipoLoop,SymbolBody b,SymbolLoopCond loopCond,  Location l, Location r){
-        super("loop", 0, l ,r);
-        this.tipoLoop = tipoLoop;
+    public SymbolLoop(SymbolBody b, SymbolLoopCond loopCond,  Location l, Location r){
+        super("loop", l ,r);
         this.loopCond = loopCond;
         this.cuerpo = b;
-    }
-
-    public int getTipoLoop() {
-        return tipoLoop;
-    }
-
-    public SymbolLoopCond getLoopCond() {
-        return loopCond;
-    }
-
-    public SymbolBody getCuerpo() {
-        return cuerpo;
+        isDoWhile = true;
     }
     
-
+    public boolean isDoWhile(){
+        return isDoWhile;
+    }
+    
+    public boolean isFor(){
+        return loopCond.isFor();
+    }
 }

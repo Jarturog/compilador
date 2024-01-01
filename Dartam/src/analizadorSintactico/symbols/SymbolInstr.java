@@ -30,6 +30,7 @@ public class SymbolInstr extends SymbolBase {
     public final SymbolDecs decs;
     public final SymbolAsigs asigs;
     public final SymbolSwap swap;
+    public final SymbolReturn ret;
     
     public SymbolInstr(SymbolFCall fcall, Location l, Location r) {
         super("instruccion", 0, l,r);
@@ -37,6 +38,7 @@ public class SymbolInstr extends SymbolBase {
         this.decs = null;
         this.asigs = null;
         this.swap = null;
+        this.ret = null;
     }
     
     public SymbolInstr(SymbolDecs decs,  Location l, Location r) {
@@ -45,6 +47,7 @@ public class SymbolInstr extends SymbolBase {
         this.fcall = null;
         this.asigs = null;
         this.swap = null;
+        this.ret = null;
     }
     
     public SymbolInstr(SymbolAsigs asigs,  Location l, Location r) {
@@ -53,6 +56,7 @@ public class SymbolInstr extends SymbolBase {
         this.decs = null;
         this.fcall = null;
         this.swap = null;
+        this.ret = null;
     }
     
     public SymbolInstr(SymbolSwap swap,  Location l, Location r) {
@@ -61,6 +65,7 @@ public class SymbolInstr extends SymbolBase {
         this.decs = null;
         this.fcall = null;
         this.asigs = null;
+        this.ret = null;
     }
 
     public SymbolInstr(SymbolReturn et, Location l, Location r) {
@@ -69,23 +74,26 @@ public class SymbolInstr extends SymbolBase {
         this.fcall = null;
         this.asigs = null;
         this.swap = null;
-    }
-
-    public SymbolFCall getFcall() {
-        return fcall;
-    }
-
-    public SymbolDecs getDecs() {
-        return decs;
-    }
-
-    public SymbolAsigs getAsigs() {
-        return asigs;
-    }
-
-    public SymbolSwap getSwap() {
-        return swap;
+        this.ret = et;
     }
     
+    public static final String FCALL = "f", DECS = "d", ASIGS = "a", SWAP = "s", RET = "r";
     
+    /**
+     * fcall, decs, asigs, swap, return
+     * @return f, d, a, s or r
+     */
+    public String getTipo() {
+        if (fcall != null) {
+            return FCALL;
+        } else if (decs != null) {
+            return DECS;
+        } else if (asigs != null) {
+            return ASIGS;
+        } else if (swap != null) {
+            return SWAP;
+        } else {
+            return RET;
+        }
+    }
 }

@@ -20,22 +20,22 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 public class SymbolMain extends SymbolBase {
     
     // body main
-    public final SymbolBody body;
+    public final SymbolBody main;
     // hay más elementos
-    public final SymbolMain main;
+    public final SymbolMain siguienteElemento;
     public final SymbolScriptElemento elemento;
 
     public SymbolMain(SymbolBody b, Location l, Location r) {
         super("main", r, r);
-        body = b;
-        main = null;
+        main = b;
+        siguienteElemento = null;
         elemento = null;
     }
 
     public SymbolMain(SymbolMain m, SymbolScriptElemento e, Location l, Location r) {
         super("elementoDespuesDeMain", l, r);
-        body = null;
-        main = m;
+        main = null;
+        siguienteElemento = m;
         elemento = e;
     }
 }

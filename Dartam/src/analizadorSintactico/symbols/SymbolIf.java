@@ -22,34 +22,17 @@ IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4
         ;
  */
 public class SymbolIf extends SymbolBase {
-    public final SymbolOperand op;
+    public final SymbolOperand cond;
     public final SymbolBody cuerpo;
     public final SymbolElifs elifs;
     public final SymbolElse els;
 
     public SymbolIf(SymbolOperand op, SymbolBody cuerpo, SymbolElifs elifs, SymbolElse els, Location l, Location r) {
         super("if", 0 ,l , r);
-        this.op = op;
+        this.cond = op;
         this.cuerpo = cuerpo;
         this.elifs = elifs;
         this.els = els;
     }
-
-    public SymbolOperand getOp() {
-        return op;
-    }
-
-    public SymbolBody getCuerpo() {
-        return cuerpo;
-    }
-
-    public SymbolElifs getElifs() {
-        return elifs;
-    }
-
-    public SymbolElse getEls() {
-        return els;
-    }
-    
     
 }

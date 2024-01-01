@@ -20,16 +20,10 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolPred extends SymbolBase {
-    public final SymbolBody b;
+    public final SymbolBody cuerpo;
 
     public SymbolPred(SymbolBody b, Location l, Location r) {
         super("pred", 0 , l ,r );
-        this.b = b;
+        this.cuerpo = b;
     }
-
-    public SymbolBody getB() {
-        return b;
-    }
-    
-    
 }

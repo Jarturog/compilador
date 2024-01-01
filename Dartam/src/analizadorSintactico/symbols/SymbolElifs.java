@@ -37,13 +37,4 @@ public class SymbolElifs extends SymbolBase {
         this.elifs = elifs;
     }
 
-    public SymbolElif getElif() {
-        return elif;
-    }
-
-    public SymbolElifs getElifs() {
-        return elifs;
-    }
-    
-    
 }

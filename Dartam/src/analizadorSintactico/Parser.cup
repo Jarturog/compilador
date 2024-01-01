@@ -192,7 +192,7 @@ SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAR
         ;
 
 TIPO_RETORNO ::= TIPO_VAR:et            {: RESULT = new SymbolTipoRetorno(et, etxleft, etxright); :}
-        | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(ParserSym.KW_VOID, etxleft, etxright); :}
+        | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(etxleft, etxright); :}
         ;
 
 MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMiembrosTupla(et1,et2, et1xleft, et1xright); :}
@@ -263,11 +263,11 @@ FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new S
         | METODO_NOMBRE:et1 LPAREN RPAREN   {: RESULT = new SymbolFCall(et1, et1xleft, et1xright); :}
         ;
 
-METODO_NOMBRE ::= ID:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.ID, etxleft, etxright); :}
-        | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, etxleft, etxright); :}
-        | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, etxleft, etxright); :}
-        | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, etxleft, etxright); :}
-        | KW_READ:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, etxleft, etxright); :}
+METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(ParserSym.ID, et, etxleft, etxright); :}
+        | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, et, etxleft, etxright); :}
+        | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, et, etxleft, etxright); :}
+        | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, et, etxleft, etxright); :}
+        | KW_READ:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, et, etxleft, etxright); :}
         ;
 
 OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol, etxleft, etxright); :}
@@ -278,7 +278,7 @@ RETURN ::= KW_RETURN ENDINSTR                               {: :} //Con este que
         | KW_RETURN OPERAND:et ENDINSTR                     {: RESULT = new SymbolReturn(et, etxleft, etxright); :}
         ;
 
-SWAP ::= OPERAND:et1 OP_SWAP OPERAND:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
+SWAP ::= ID:et1 OP_SWAP ID:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
         ;
 
 ASIGS ::= ID_ASIG_LISTA:et ENDINSTR         {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
@@ -353,8 +353,8 @@ R_UNARY_OPERATOR ::= OP_PCT:et  {: RESULT = new SymbolRUnaryOperator(ParserSym.O
         | OP_DEC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_DEC, et, etxleft, etxright); :}
         ;
 
-LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(ParserSym.KW_LOOP, et2, et3, et1xleft, et1xright); :}
-        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(ParserSym.KW_DO, et2, et3, et1xleft, et1xright); :}
+LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
         ;
 
 LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}

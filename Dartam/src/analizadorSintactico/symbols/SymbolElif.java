@@ -22,22 +22,13 @@ ELIF ::= KW_ELIF OPERAND:et1 LKEY BODY:et2 RKEY     {: RESULT = new SymbolElif(e
  */
 public class SymbolElif extends SymbolBase {
     
-    public final SymbolOperand op;
+    public final SymbolOperand cond;
     public final SymbolBody cuerpo;
     
     public SymbolElif(SymbolOperand op, SymbolBody b, Location l, Location r){
         super("elif", 0 ,l ,r);
-        this.op = op;
+        this.cond = op;
         this.cuerpo = b;
     }
-
-    public SymbolOperand getOp() {
-        return op;
-    }
-
-    public SymbolBody getCuerpo() {
-        return cuerpo;
-    }
-    
     
 }

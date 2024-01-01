@@ -27,17 +27,12 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolMetodoNombre extends SymbolBase {
     
-    private int methodName;
+    public final Integer methodName;
 
-    public SymbolMetodoNombre(int methodName, Location l , Location r) {
-        super("methodName", 0, l,r);
+    public SymbolMetodoNombre(int methodName, Object et, Location l , Location r) {
+        super("methodName", et, l,r);
         this.methodName = methodName;
     }
 
-    public int getMethodName() {
-        return methodName;
-    }
-    
-    
     
 }

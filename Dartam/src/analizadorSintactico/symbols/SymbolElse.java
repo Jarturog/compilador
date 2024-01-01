@@ -33,9 +33,5 @@ public class SymbolElse extends SymbolBase {
         this.cuerpo = b;
         
     }
-
-    public SymbolBody getCuerpo() {
-        return cuerpo;
-    }
     
 }

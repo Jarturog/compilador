@@ -21,7 +21,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 public class SymbolScriptElemento extends SymbolBase{
     
     // metodo y tupla
-    public final String idTuplaMetodo;
+    public final String id;
     // metodo
     public final SymbolTipoRetorno tipoRetorno;
     public final SymbolParams parametros;
@@ -34,7 +34,7 @@ public class SymbolScriptElemento extends SymbolBase{
     public SymbolScriptElemento(SymbolTipoRetorno tipo, String id, SymbolParams p, SymbolBody b, Location l, Location r) {
         super("scriptElementoMetodo", l, r);
         tipoRetorno = tipo;
-        idTuplaMetodo = id;
+        this.id = id;
         parametros = p;
         cuerpo = b;
         miembrosTupla = null;
@@ -44,7 +44,7 @@ public class SymbolScriptElemento extends SymbolBase{
     public SymbolScriptElemento(String id, SymbolMiembrosTupla m, Location l, Location r) {
         super("scriptElementoTupla", l, r);
         tipoRetorno = null;
-        idTuplaMetodo = id;
+        this.id = id;
         parametros = null;
         cuerpo = null;
         miembrosTupla = m;
@@ -54,12 +54,14 @@ public class SymbolScriptElemento extends SymbolBase{
     public SymbolScriptElemento(SymbolDecs decs, Location l, Location r){
         super("scriptElementoDeclaracion", l, r);
         tipoRetorno = null;
-        idTuplaMetodo = null;
+        id = null;
         parametros = null;
         cuerpo = null;
         miembrosTupla = null;
         declaraciones = decs;
     }
+
+    public static final String DECS = "d", METODO = "m", TUPLA = "t";
     
     /**
      * 
@@ -67,11 +69,11 @@ public class SymbolScriptElemento extends SymbolBase{
      */
     public String getTipo() {
         if (declaraciones != null) {
-            return "d";
+            return DECS;
         } else if (tipoRetorno != null) {
-            return "m";
+            return METODO;
         } else {
-            return "t";
+            return TUPLA;
         }
     }
 }

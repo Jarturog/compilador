@@ -25,57 +25,59 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolMetodoElemento extends SymbolBase {
     
-    public final SymbolInstr instruccion;
-    public final SymbolLoop insLoop;
-    public final SymbolIf    insIf;
-    public final SymbolSwitch insSwitch;
+    public final SymbolInstr  instruccion;
+    public final SymbolLoop   loop;
+    public final SymbolIf     iff;
+    public final SymbolSwitch sw;
     
     public SymbolMetodoElemento(SymbolInstr instruccion, Location l, Location r) {
         super("elementoMetodo");
         this.instruccion = instruccion;
-        this.insLoop = null;
-        this.insIf = null;
-        this.insSwitch = null;
+        this.loop = null;
+        this.iff = null;
+        this.sw = null;
     }
     
     public SymbolMetodoElemento(SymbolLoop insLoop, Location l, Location r) {
         super("elementoMetodo");
-        this.insLoop = insLoop;
+        this.loop = insLoop;
         this.instruccion = null;
-        this.insIf = null;
-        this.insSwitch = null;
+        this.iff = null;
+        this.sw = null;
     }
     
     public SymbolMetodoElemento(SymbolIf insIf, Location l, Location r) {
         super("elementoMetodo");
-        this.insIf = insIf;
+        this.iff = insIf;
         this.instruccion = null;
-        this.insLoop = null;
-        this.insSwitch = null;
+        this.loop = null;
+        this.sw = null;
     }
     
     public SymbolMetodoElemento(SymbolSwitch insSwitch, Location l, Location r) {
         super("elementoMetodo");
-        this.insSwitch = insSwitch;
+        this.sw = insSwitch;
         this.instruccion = null;
-        this.insLoop = null;
-        this.insIf = null;
+        this.loop = null;
+        this.iff = null;
     }
 
-    public SymbolInstr getInstruccion() {
-        return instruccion;
-    }
+    public static final String INSTR = "i", IF = "c", LOOP = "l", SWITCH = "s";
 
-    public SymbolLoop getInsLoop() {
-        return insLoop;
-    }
-
-    public SymbolIf getInsIf() {
-        return insIf;
-    }
-
-    public SymbolSwitch getInsSwitch() {
-        return insSwitch;
+    /**
+     * instrucción, if, loop, switch
+     * @return i, c, l or s
+     */
+    public String getTipo() {
+        if (instruccion != null) {
+            return INSTR;
+        } else if (iff != null) {
+            return IF;
+        } else if (loop != null) {
+            return LOOP;
+        } else {
+            return SWITCH;
+        }
     }
     
 }
