@@ -1459,7 +1459,7 @@ class CUP$Parser$actions {
 		Location etxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xleft;
 		Location etxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xright;
 		String et = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolMetodoNombre(ParserSym.ID, etxleft, etxright); 
+		 RESULT = new SymbolMetodoNombre(ParserSym.ID, et, etxleft, etxright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("METODO_NOMBRE",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1471,7 +1471,7 @@ class CUP$Parser$actions {
 		Location etxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xleft;
 		Location etxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xright;
 		Object et = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, etxleft, etxright); 
+		 RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, et, etxleft, etxright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("METODO_NOMBRE",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1483,7 +1483,7 @@ class CUP$Parser$actions {
 		Location etxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xleft;
 		Location etxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xright;
 		Object et = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, etxleft, etxright); 
+		 RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, et, etxleft, etxright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("METODO_NOMBRE",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1495,7 +1495,7 @@ class CUP$Parser$actions {
 		Location etxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xleft;
 		Location etxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xright;
 		Object et = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, etxleft, etxright); 
+		 RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, et, etxleft, etxright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("METODO_NOMBRE",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1507,7 +1507,7 @@ class CUP$Parser$actions {
 		Location etxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xleft;
 		Location etxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xright;
 		Object et = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, etxleft, etxright); 
+		 RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, et, etxleft, etxright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("METODO_NOMBRE",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
