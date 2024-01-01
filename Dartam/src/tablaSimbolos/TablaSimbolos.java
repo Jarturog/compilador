@@ -191,11 +191,27 @@ public class TablaSimbolos {
     public int first(String id) throws Exception{
         SimboloDescripcion sd = td.get(id);
         if(sd.getTipo() != Constantes.TIPO_ARRAY){
-            
+            throw new Exception("No es un ");
         }
+        return sd.first;
+    }
+    
+    public int next(int idx) throws Exception{
+        int ent = te.get(idx).next;
+        if(ent == 0){
+            throw new Exception("Error al conseguir la sigueinte dimension");
+        }
+        return ent;
+    }
+    
+    public boolean last(int idx){
+        return te.get(idx).next == 0;
     }
     
     
+    public SimboloDescripcion consulta(int idx){
+        return te.get(idx).descripcion;
+    }
     
     
 
