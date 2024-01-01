@@ -3,7 +3,7 @@ package analizadorSemantico;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import java.util.Stack;
-import analizadorSintactico.symbols.SymbolTipoVar;
+import analizadorSintactico.symbols.SymbolTipoPrimitivo;
 /**
  * Class that represents a variable's description in the symbol table
  */
@@ -13,7 +13,7 @@ public class DescripcionSimbolo {
     public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
     
     // The variable's type
-    private SymbolTipoVar type; // Acts as the return type when a function.
+    private SymbolTipoPrimitivo type; // Acts as the return type when a function.
     private Object value;
 
     public int declaredLevel;
@@ -37,7 +37,7 @@ public class DescripcionSimbolo {
      * Changes the type of the variable to which this description is associated, given a symbol created by Parser.java.
      * @param type
      */
-    public void changeType(SymbolTipoVar type) {
+    public void changeType(SymbolTipoPrimitivo type) {
         this.type = type;
     }
 
@@ -73,7 +73,7 @@ public class DescripcionSimbolo {
      * @param name
      * @param type
      */
-    public void addArgument(String name, SymbolTipoVar type) {
+    public void addArgument(String name, SymbolTipoPrimitivo type) {
         args.add(new Argument(name, type));
         nArgs++;
     }
@@ -82,20 +82,20 @@ public class DescripcionSimbolo {
         return nArgs;
     }
 
-    public Stack<SymbolTipoVar> getArgsTypes() {
-        Stack<SymbolTipoVar> types = new Stack<>();
+    public Stack<SymbolTipoPrimitivo> getArgsTypes() {
+        Stack<SymbolTipoPrimitivo> types = new Stack<>();
         for(Argument a : args){
             types.push(a.type);
         }
         return types;
     }
 
-    public void setReturnType(SymbolTipoVar returnType) {
+    public void setReturnType(SymbolTipoPrimitivo returnType) {
         if(!isFunction) throw new RuntimeException(" !! Compiler error");
         type = returnType;
     }
 
-    public SymbolTipoVar getReturnType() {
+    public SymbolTipoPrimitivo getReturnType() {
         return type;
     }
 
@@ -111,9 +111,9 @@ public class DescripcionSimbolo {
 
     private class Argument{
         public String name;
-        public SymbolTipoVar type;
+        public SymbolTipoPrimitivo type;
 
-        public Argument(String name, SymbolTipoVar type){
+        public Argument(String name, SymbolTipoPrimitivo type){
             this.name = name;
             this.type = type;
         }

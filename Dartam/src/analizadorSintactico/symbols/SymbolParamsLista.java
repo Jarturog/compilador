@@ -19,22 +19,22 @@ import java_cup.runtime.ComplexSymbolFactory;
  */
 public class SymbolParamsLista extends SymbolBase {
     
-    public final SymbolParam param;
+    public final SymbolTipo param;
     public final SymbolParamsLista pl;
     
-    public SymbolParamsLista(SymbolParam param, Location l, Location r) {
+    public SymbolParamsLista(SymbolTipo param, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
         this.pl = null;
     }
     
-    public SymbolParamsLista(SymbolParam param, SymbolParamsLista pl, Location l, Location r) {
+    public SymbolParamsLista(SymbolTipo param, SymbolParamsLista pl, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
         this.pl = pl;
     }
 
-    public SymbolParam getParam() {
+    public SymbolTipo getParam() {
         return param;
     }
 

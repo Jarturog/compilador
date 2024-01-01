@@ -35,7 +35,7 @@ public class SemanticAnalysis {
     private DescripcionSimbolo metodoActualmenteSiendoTratado;
     // When checking if a function's parameters are correct, we use this stack to store the declared function's types.
     // We use a stack because we will be taking elements out every time we process them.
-    private Stack<SymbolTipoVar> currentArgs;
+    private Stack<SymbolTipoPrimitivo> currentArgs;
     private boolean returnFound;
 
     private ArrayList<String> errors;
@@ -151,6 +151,10 @@ public class SemanticAnalysis {
             case SymbolInstr.RET -> procesarReturn(instr.ret);
             case SymbolInstr.SWAP -> procesarSwap(instr.swap);
         }
+    }
+    
+    private void procesarAsignaciones(SymbolAsigs asigs) {
+        return;
     }
     
     private void procesarLlamadaFuncion(SymbolFCall fcall) {
@@ -281,6 +285,8 @@ public class SemanticAnalysis {
     private Object procesarOperando(SymbolOperand op) {
         return null; // DescripcionSimbolo a; a.getValue();
     }
+
+    
 
     
 }

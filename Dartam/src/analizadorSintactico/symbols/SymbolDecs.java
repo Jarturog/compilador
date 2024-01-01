@@ -31,7 +31,7 @@ public class SymbolDecs extends SymbolBase {
     
     // compartido por primitivas, arrays y tuplas
     public final SymbolIDDecsLista iddecslista;
-    public final SymbolTipoVar tipo;
+    public final SymbolTipo tipo;
     // primitiva
     public final boolean isConst;
     // array
@@ -40,7 +40,7 @@ public class SymbolDecs extends SymbolBase {
     public final String idTupla;
     
     // primitiva
-    public SymbolDecs(boolean constante, SymbolTipoVar tipo, SymbolIDDecsLista iddecslista, Location l, Location r) {
+    public SymbolDecs(boolean constante, SymbolTipo tipo, SymbolIDDecsLista iddecslista, Location l, Location r) {
         super("decPrim", l, r);
         idTupla = null;
         isConst = constante;
@@ -48,25 +48,5 @@ public class SymbolDecs extends SymbolBase {
         dimensiones = null;
         this.iddecslista = iddecslista;
     }
-    
-    // array
-    public SymbolDecs(SymbolTipoVar tipo, SymbolDimensiones dim, SymbolIDDecsLista iddecslista, Location l, Location r){
-        super("decArr", l, r);
-        idTupla = null;
-        isConst = false;
-        this.tipo = tipo;
-        dimensiones = dim;
-        this.iddecslista = iddecslista;
-    }
 
-    // tupla
-    public SymbolDecs(Object et1, String id, SymbolIDDecsLista et3, Location l, Location r) {
-        super("decTupla", l, r);
-        idTupla = id;
-        isConst = false;
-        tipo = null;
-        dimensiones = null;
-        iddecslista = null;
-    }
-    
 }
