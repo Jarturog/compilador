@@ -1,119 +1,222 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package analizadorSemantico;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/**
+ *
+ * @author dasad
+ */
 public class TablaSimbolos {
+    private HashMap<String, SimboloDescripcion> td; //Nuestra tabla de simbolos
+    private int n; //Nivel actual
+    private ArrayList<Integer> ta; //Tabla de ambitos
+    private ArrayList<Entrada>  te;
     
-    // The main structure of the symbol table is a HashMap of the information of each symbol.
-    private HashMap<String, DescripcionSimbolo> TablaSimbolos;
-
-    private int currentLevel;
-    private ArrayList<Integer> ambitsTable;
-    private ArrayList<TableEntry> expansionTable;
-
     public TablaSimbolos(){
-        TablaSimbolos = new HashMap<>();
-        currentLevel = 0;
-        ambitsTable = new ArrayList<>();
-        ambitsTable.add(currentLevel, 0);
-        expansionTable = new ArrayList<>();
+        n = 0;
+        td = new HashMap();
+        ta = new ArrayList();
+        te = new ArrayList();
+        ta.add(n, 0);
     }
-
+    //Clase entrada usado para la tabla de expansión!
+    public class Entrada{
+            public String nombreVariable;
+            public SimboloDescripcion descripcion;
+            public int next;
+            public int np;
+            public int d;
+            public String idcamp;
+            public Entrada(String n, SimboloDescripcion d){
+                this.nombreVariable = n;
+                this.descripcion = d;
+            }
+    }
+    
     /**
-     * Inserts the variable to the TablaSimbolos. Variable must be unique in the current level, otherwise SemanticException is thrown.
-     * @param variable
-     * @param desc
-     * @throws SemanticException
+     * Vaciamos las tablas
      */
-    public void insertVariable(String variable, DescripcionSimbolo desc) {
-        // We search for the string (which functions as the hashmap key) in the symbol table
-        DescripcionSimbolo oldVarDesc = TablaSimbolos.get(variable);
-        if(oldVarDesc != null){
-            //if(oldVarDesc.declaredLevel == currentLevel) throw new SemanticException("Variable '" + variable + "' already declared in this level");
-            // We add the old obscured variable to the expansion table.
-            int idxe = ambitsTable.get(currentLevel); // idxe = ambitsTable[currentLevel]
-            idxe++;
-            ambitsTable.set(currentLevel, idxe); // ambitsTable[currentLevel] = idxe
-            expansionTable.add(new TableEntry(variable, oldVarDesc)); // expansionTable[idxe] = description of the obscured variable
+    public void vaciar(){
+        this.n = 0;
+        this.td = new HashMap();
+        this.ta = new ArrayList();
+        this.te = new ArrayList();
+        //ta.add(n, 0);
+        //this.n += 1;
+        //ta.add(n,0);
+    }
+    
+    public void poner(String id, SimboloDescripcion d) throws Exception{
+        //Comprobamos si existe dentro de la tabla de descriptores
+        SimboloDescripcion sd = td.get(id);
+        if(sd != null){ //Existe actualmente
+            if(sd.getNivel() == n){ //Error
+                throw new Exception("Error!"); //Cambiar luego
+            }
+            //Si no estan declaradas al mismo nivel
+            int indice = ta.get(n) + 1;
+            ta.set(n,indice);
+            te.add(new Entrada(id, sd)); //Ya que existia de antes, pero ahora a otro nivel
         }
-        desc.declaredLevel = currentLevel;
-        TablaSimbolos.put(variable, desc);
+        d.setNivel(n);
+        td.put(id, d); //Actualizamos la tabla de descriciones
     }
-
-    public DescripcionSimbolo getDescription(String variable) {
-        return TablaSimbolos.get(variable);
-    }
-
-    public void empty(){
-        currentLevel = 0;
-        TablaSimbolos.clear();
-        ambitsTable.clear();
-        expansionTable.clear();
-    }
-
-    public void enterBlock(){
-        int prevAmbit = ambitsTable.get(currentLevel);
-        currentLevel++;
-        ambitsTable.add(prevAmbit);
-    }
-
-    public void exitBlock() {
-        //if(LenguaG.DEBUGGING) System.out.println(this);
-
-        //if(currentLevel == 0) throw new CompilerException(" !!! Compiler error !!! Tried to exit last block in symbol table.");
-        int to = ambitsTable.get(currentLevel); // Finishing index: indicates the last variable added to the expansion table.
-        ambitsTable.remove(currentLevel);       // we decrement the current level
-        currentLevel--;
-        int from = ambitsTable.get(currentLevel); // Starting index: first variable added to the expansion table in this level
-        for(TableEntry te : expansionTable.subList(from, to)){
-            TablaSimbolos.replace(te.variable, te.desc); // We restore the previous value
-        }
-        expansionTable.subList(from, to).clear(); // We clear the expansion table
+    
+    public void entraBloque(){
+        this.n += 1;
+        int valor = ta.get(n-1);
+        ta.add(valor);
         
-        // Removal of symbols from the previous level
-        Iterator<HashMap.Entry<String, DescripcionSimbolo>> it = TablaSimbolos.entrySet().iterator();
-        while(it.hasNext()){
-            if(it.next().getValue().declaredLevel > currentLevel) it.remove();
+    }
+    
+    public void salirBloque() throws Exception{
+       if(this.n == 0){ //Error grave del compilador
+           throw new Exception("Error grave del compilador"); //Cambiar mas adelante
+       }else{
+           int lini = ta.get(this.n);
+           ta.remove(this.n); //Esto revisarlo
+           this.n -= 1;
+           int lfi = ta.get(this.n);
+           
+           //Recorremos la tabla de expansión y replazamos dentro de la tabla de descripciones
+           for(Entrada entrada: te.subList(lini, lini)){
+               td.replace(entrada.nombreVariable, entrada.descripcion);
+           }
+           te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
+           
+           Iterator<HashMap.Entry<String, SimboloDescripcion>> iterador = td.entrySet().iterator();
+           while(iterador.hasNext()){
+               if(iterador.next().getValue().getNivel() > n){
+                   iterador.remove();
+               }
+           }
+       }  
+    }
+    
+    public void ponerCampo(String idr, String idc, int dCamp) throws Exception {
+        SimboloDescripcion d = td.get(idr);
+        if(d.getTipo() != Constantes.TIPO_TUPLA){
+            throw new Exception("Error, no es una tupla!");
+        }else{
+            int i = d.first;
+            while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+                i = te.get(i).next;
+            }
+            
+            if(i != 0){
+                throw new Exception("Ya hay un campo con el mismo error");
+            }
+            
+            int idxe = ta.get(this.n);
+            idxe += 1;
+            ta.set(this.n, idxe);
+            te.get(idxe).np = -1;
+            te.get(idxe).d = dCamp;
+            te.get(idxe).next = td.get(idr).first;
+            td.get(idr).first = idxe;
+        }
+        
+    }
+    
+    public Entrada consultaCamp(String idr, String idc) throws Exception{
+        SimboloDescripcion d = td.get(idr);
+        if (d.getTipo() != Constantes.TIPO_TUPLA){
+            throw new Exception("No es una tupla");
+        }else{
+            int i = d.first;
+            while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+                i = te.get(i).next;
+            }
+            
+            if(i != 0){
+                return te.get(i);
+            }else{
+                return null;
+            }
         }
     }
-
-    @Override
-    public String toString(){
-        String st = "Current level: " + currentLevel + "\n\n";
-        //st += "Symbol Table: " + TablaSimbolos.toString() + "\n";
-        st += "Symbol Table: \n";
-        StringBuilder sb = new StringBuilder();
-        Iterator<HashMap.Entry<String, DescripcionSimbolo>> it = TablaSimbolos.entrySet().iterator();
-        while(it.hasNext()){
-            HashMap.Entry<String, DescripcionSimbolo> next = it.next();
-            sb.append(next.getKey());
-            sb.append(":\n\t");
-            sb.append(next.getValue());
-            sb.append("\n");
+    
+    
+/*    public void salirBloque(){
+        int idxi = ta.get(this.n);
+        idxi -= 1;
+        int idxf = ta.get(this.n);
+        while(idxi > idxf){
+            if(te.get(idxi).np != -1){
+                String id = te.get(idxi).nombreVariable;
+                SimboloDescripcion sd = td.get(id);
+                sd.setNivel(te.get(idxi).np);
+                //Poner toda la descripcion en td?
+                sd.first = te.get(idxi).next;
+            }
+            idxi = idxi - 1;
         }
-        st += sb + "\n";
-        st += "Ambit table:" + ambitsTable.toString() + "\n";
-        st += "Expansion table:" + expansionTable.toString() + "\n";
-        return st;
+            
+    }*/
+    
+    public void ponerIndice(String id, SimboloDescripcion d) throws Exception{
+        SimboloDescripcion da = td.get(id);
+        if(da.getTipo() != Constantes.TIPO_ARRAY){
+            throw new Exception("No es un array");
+        }
+        
+        int idxe = da.first;
+        int idxep = 0;
+        while(idxe != 0){
+            idxep = idxe;
+            idxe = te.get(idxe).next;
+        }
+        
+        idxe = ta.get(this.n);
+        idxe += 1;
+        ta.set(n, idxe);
+        Entrada ent = te.get(idxe);
+        ent.idcamp = "";
+        ent.np = -1;
+        ent.descripcion = d;
+        if(idxep == 0){
+            td.get(id).first = idxe;
+        }else{
+            te.get(idxep).next = idxe;
+        }
+    }
+    
+    
+    public int first(String id) throws Exception{
+        SimboloDescripcion sd = td.get(id);
+        if(sd.getTipo() != Constantes.TIPO_ARRAY){
+            throw new Exception("No es un ");
+        }
+        return sd.first;
+    }
+    
+    public int next(int idx) throws Exception{
+        int ent = te.get(idx).next;
+        if(ent == 0){
+            throw new Exception("Error al conseguir la sigueinte dimension");
+        }
+        return ent;
+    }
+    
+    public boolean last(int idx){
+        return te.get(idx).next == 0;
+    }
+    
+    
+    public SimboloDescripcion consulta(int idx){
+        return te.get(idx).descripcion;
+    }
+    
+    public posaparam(){
+        
     }
 
-    // private class to simplify entry to expansion table.
-    private class TableEntry {
-        String variable;
-        DescripcionSimbolo desc;
-
-        public TableEntry(String variable, DescripcionSimbolo desc){
-            this.variable = variable;
-            this.desc = desc;
-        }
-
-        @Override
-        public String toString(){
-            String te = "Variable: " + variable + "\n";
-            te += "Description: " + desc + "\n";
-            return te;
-        }
-    }
+    
+    
 }
