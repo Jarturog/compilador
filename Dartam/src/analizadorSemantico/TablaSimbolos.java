@@ -213,8 +213,37 @@ public class TablaSimbolos {
         return te.get(idx).descripcion;
     }
     
-    public posaparam(){
+    public void posaparam(String idpr, String idparam, SimboloDescripcion d) throws Exception{
+        SimboloDescripcion des = td.get(idpr);
+        if(des.getTipo() != Constantes.TIPO_FUNCTION){
+            throw new Exception("Error, no es una funcion");
+        }
         
+        int idxe = td.get(idpr).first;
+        int idxep = 0;
+        while(idxe != 0 && te.get(idxe).nombreVariable.equals(idparam)){
+            idxep = idxe;
+            idxe = te.get(idxe).next;
+        }
+        
+        if(idxe != 0){
+            throw new Exception("Error, ya hay un parametro con el mismo nombre");
+        }
+        
+        idxe = ta.get(this.n);
+        idxe = idxe + 1;
+        ta.set(this.n, idxe);
+        Entrada ent = te.get(idxe);
+        ent.idcamp = idparam;
+        ent.np = -1;
+        ent.descripcion = d;
+        ent.next = 0;
+        if(idxep == 0){
+            td.get(idpr).first = idxe;
+        }else{
+            te.get(idxep).next = idxe;
+        }
+         
     }
 
     
