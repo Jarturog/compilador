@@ -22,8 +22,8 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolSwap extends SymbolBase {
     
-    private SymbolOperand op1;
-    private SymbolOperand op2;
+    public final SymbolOperand op1;
+    public final SymbolOperand op2;
 
     public SymbolSwap(SymbolOperand op1, SymbolOperand op2, Location l, Location r) {
         super("swap", 0 , l ,r );

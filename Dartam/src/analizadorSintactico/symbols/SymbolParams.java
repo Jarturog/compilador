@@ -17,7 +17,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolParams extends SymbolBase {
     
-    private SymbolParamsLista pl;
+    public final SymbolParamsLista pl;
     
     public SymbolParams(SymbolParamsLista pl, Location l, Location r) {
         super("params" , l , r);
@@ -26,6 +26,7 @@ public class SymbolParams extends SymbolBase {
     
     public SymbolParams(){
         super("");
+        this.pl = null;
     }
 
     /*public SymbolParams(SymbolParamsLista et) {

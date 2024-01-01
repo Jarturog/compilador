@@ -24,38 +24,19 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolBody extends SymbolBase {
     
-    private SymbolElementoMetodo metodo;
-    private SymbolBody  siguienteMetodo; 
+    public final SymbolMetodoElemento metodo;
+    public final SymbolBody  siguienteMetodo; 
 
     public SymbolBody() {
         super("body");
+        this.metodo = null;
+        this.siguienteMetodo = null;
     }
     
-    public SymbolBody(SymbolElementoMetodo sem, SymbolBody sb, Location l, Location r) {
+    public SymbolBody(SymbolMetodoElemento sem, SymbolBody sb, Location l, Location r) {
         super("body", l, r);
         this.metodo = sem;
         this.siguienteMetodo = sb;
     }
-
-    public SymbolBody(SymbolMetodoElemento et1, SymbolBody et2, Location l, Location r) {
-        super("");
-    }
-
-    /*
-    public SymbolBody(SymbolMetodoElemento et1, SymbolBody et2) {
-        super("");
-    }*/
-
-    public SymbolElementoMetodo getMetodo() {
-        return metodo;
-    }
-
-    public SymbolBody getSiguienteMetodo() {
-        return siguienteMetodo;
-    }
-
-    
-    
-    
     
 }

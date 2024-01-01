@@ -22,10 +22,10 @@ IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4
         ;
  */
 public class SymbolIf extends SymbolBase {
-    private SymbolOperand op;
-    private SymbolBody cuerpo;
-    private SymbolElifs elifs;
-    private SymbolElse els;
+    public final SymbolOperand op;
+    public final SymbolBody cuerpo;
+    public final SymbolElifs elifs;
+    public final SymbolElse els;
 
     public SymbolIf(SymbolOperand op, SymbolBody cuerpo, SymbolElifs elifs, SymbolElse els, Location l, Location r) {
         super("if", 0 ,l , r);

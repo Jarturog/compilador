@@ -25,16 +25,18 @@ PARAM ::= TIPO_VAR:et1 ID:et2                   {: RESULT = new SymbolParam(et1,
  */
 public class SymbolParam extends SymbolBase {
     
-    private SymbolTipoVar tipo;
-    private SymbolDimensiones dim;
+    public final SymbolTipoVar tipo;
+    public final SymbolDimensiones dim;
     private boolean isTuple;
-    private String identificador1;
-    private String identificador2;
+    public final String identificador1;
+    public final String identificador2;
 
     public SymbolParam(SymbolTipoVar tipo, String identificador, Location l, Location r){
         super("param", l,r);
         this.tipo = tipo;
         this.identificador1 = identificador;
+        this.dim = null;
+        this.identificador2 = null;
     }
     
     public SymbolParam(SymbolTipoVar tipo, SymbolDimensiones dim,  String identificador, Location l, Location r){
@@ -42,6 +44,7 @@ public class SymbolParam extends SymbolBase {
         this.tipo = tipo;
         this.dim = dim;
         this.identificador1 = identificador;
+        this.identificador2 = null;
     }
     
     public SymbolParam(boolean isTuple, String identificador1 ,String identificador2, Location l, Location r){
@@ -49,10 +52,16 @@ public class SymbolParam extends SymbolBase {
         this.isTuple = true;
         this.identificador1 = identificador1;
         this.identificador2 = identificador2;
+        this.dim = null;
+        this.tipo = null;
     }
 
     public SymbolParam(boolean b, Object et1, String et2, Location l, Location r) {
-    super("");}
+    super("");this.dim = null;
+        this.tipo = null;
+        this.identificador2 = null;
+        this.identificador1 = null;
+}
     
     public SymbolTipoVar getTipo() {
         return tipo;

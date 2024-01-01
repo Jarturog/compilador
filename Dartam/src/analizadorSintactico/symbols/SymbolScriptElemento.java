@@ -60,4 +60,18 @@ public class SymbolScriptElemento extends SymbolBase{
         miembrosTupla = null;
         declaraciones = decs;
     }
+    
+    /**
+     * 
+     * @return d, m or t
+     */
+    public String getTipo() {
+        if (declaraciones != null) {
+            return "d";
+        } else if (tipoRetorno != null) {
+            return "m";
+        } else {
+            return "t";
+        }
+    }
 }

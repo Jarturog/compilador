@@ -22,8 +22,8 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolOperandsLista extends SymbolBase {
     
-    private SymbolOperand operand;
-    private SymbolOperandsLista operandsLista;
+    public final SymbolOperand operand;
+    public final SymbolOperandsLista operandsLista;
     
     public SymbolOperandsLista(SymbolOperand op, SymbolOperandsLista opl, Location l, Location r) {
         super("operandsLista",0, l, r);
@@ -34,6 +34,7 @@ public class SymbolOperandsLista extends SymbolBase {
     public SymbolOperandsLista(SymbolOperand et, Location l, Location r) {
         super("operandsLista", 0 , l , r);
         this.operand = et;
+        this.operandsLista = null;
     }
 
     public SymbolOperand getOperand() {

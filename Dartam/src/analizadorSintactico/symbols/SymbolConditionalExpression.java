@@ -22,9 +22,9 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
  */
 public class SymbolConditionalExpression extends SymbolBase {
-    private SymbolOperand op1;
-    private SymbolOperand op2;
-    private SymbolOperand op3;
+    public final SymbolOperand op1;
+    public final SymbolOperand op2;
+    public final SymbolOperand op3;
 
     /*public SymbolConditionalExpression(String variable, Double valor) {
         super(variable);

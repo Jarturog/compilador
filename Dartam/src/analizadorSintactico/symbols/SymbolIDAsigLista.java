@@ -23,9 +23,9 @@ ID_ASIG_LISTA ::= ID:et1 ASIG_OP OPERAND:et2 COMMA ID_ASIG_LISTA:et3    {: RESUL
  */
 public class SymbolIDAsigLista extends SymbolBase {
     
-    private String id;
-    private SymbolOperand op;
-    private SymbolIDAsigLista idAL;
+    public final String id;
+    public final SymbolOperand op;
+    public final SymbolIDAsigLista idAL;
 
     public SymbolIDAsigLista(String id, SymbolOperand op, SymbolIDAsigLista al, Location l, Location r) {
         super("idAsigLista", 0 , l ,r);
@@ -38,5 +38,6 @@ public class SymbolIDAsigLista extends SymbolBase {
         super("idAsigLista", 0, l, r);
         this.id= id;
         this.op = op;
+        this.idAL = null;
     }
 }

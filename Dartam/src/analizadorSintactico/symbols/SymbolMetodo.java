@@ -22,10 +22,10 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolMetodo extends SymbolBase {
     
-    private SymbolTipoRetorno tipo;
+    public final SymbolTipoRetorno tipo;
     private String nombreMetodo;
-//    private SymbolGetParams parametros;
-    private SymbolBody cuerpo;
+//    public final SymbolGetParams parametros;
+    public final SymbolBody cuerpo;
     
     public SymbolMetodo(SymbolTipoRetorno tipo, String nombreMetodo, Object parametros, SymbolBody cuerpo) {
         super("method");

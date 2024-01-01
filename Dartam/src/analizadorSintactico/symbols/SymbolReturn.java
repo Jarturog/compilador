@@ -22,7 +22,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolReturn extends SymbolBase {
     
-    private SymbolOperand op;
+    public final SymbolOperand op;
     
     public SymbolReturn(SymbolOperand op, Location l, Location r){
         super("operand", 0, l , r);

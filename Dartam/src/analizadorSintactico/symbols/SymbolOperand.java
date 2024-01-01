@@ -27,28 +27,49 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolOperand extends SymbolBase {
-    private SymbolAtomicExpression aex;
-    private SymbolFCall fcall;
-    private SymbolOperand op1;
-    private SymbolOperand op2;
-    private SymbolUnaryExpression uex;
-    private SymbolBinaryExpression bex;
-    private SymbolConditionalExpression cex;
-    private String id;
+    public final SymbolAtomicExpression aex;
+    public final SymbolFCall fcall;
+    public final SymbolOperand op1;
+    public final SymbolOperand op2;
+    public final SymbolUnaryExpression uex;
+    public final SymbolBinaryExpression bex;
+    public final SymbolConditionalExpression cex;
+    public final String id;
 
     public SymbolOperand(String variable, Double valor) {
         super(variable);
+        this.aex = null;
+        this.fcall = null;
+        this.op1 = null;
+        this.op2 = null;
+        this.uex = null;
+        this.bex = null;
+        this.cex = null;
+        this.id = null;
     }
 
     public SymbolOperand(SymbolBinaryExpression et, Location l , Location r) {
         super("operand", 0 ,l , r);
         this.bex = et;
+        this.aex = null;
+        this.fcall = null;
+        this.op1 = null;
+        this.op2 = null;
+        this.uex = null;
+        this.cex = null;
+        this.id = null;
     }
 
     public SymbolOperand(SymbolOperand arr, SymbolOperand idx, Location l, Location r) {
         super("operand", 0 ,l ,r );
         this.op1 = arr;
         this.op2 = idx;
+        this.aex = null;
+        this.fcall = null;
+        this.uex = null;
+        this.bex = null;
+        this.cex = null;
+        this.id = null;
   
     }
 
@@ -56,32 +77,73 @@ public class SymbolOperand extends SymbolBase {
         super("operand", 0 ,l ,r );
         this.op1 = tuple;
         this.id= member;
+        this.aex = null;
+        this.fcall = null;
+        this.op2 = null;
+        this.uex = null;
+        this.bex = null;
+        this.cex = null;
     }
 
     public SymbolOperand(SymbolUnaryExpression et, Location l, Location r) {
         super("operand", 0 ,l , r);
         this.uex = et;
+        this.aex = null;
+        this.fcall = null;
+        this.op1 = null;
+        this.op2 = null;
+        this.bex = null;
+        this.cex = null;
+        this.id = null;
     }
     
 
     public SymbolOperand(SymbolOperand et, Location l, Location r) {
         super("operand", 0 , l , r);
         this.op1 = et;
+        this.aex = null;
+        this.fcall = null;
+        this.op2 = null;
+        this.uex = null;
+        this.bex = null;
+        this.cex = null;
+        this.id = null;
     }
 
     public SymbolOperand(SymbolFCall et, Location l, Location r) {
         super("operand", 0 , l , r);
         this.fcall = et;
+        this.aex = null;
+        this.op1 = null;
+        this.op2 = null;
+        this.uex = null;
+        this.bex = null;
+        this.cex = null;
+        this.id = null;
     }
 
     public SymbolOperand(SymbolAtomicExpression et, Location l, Location r) {
         super("operand", 0, l , r);
         this.aex = et;
+        this.fcall = null;
+        this.op1 = null;
+        this.op2 = null;
+        this.uex = null;
+        this.bex = null;
+        this.cex = null;
+        this.id = null;
     }
 
     public SymbolOperand(SymbolConditionalExpression et, Location l , Location r) {
         super("operand", 0, l ,r);
         this.cex = et;
+        this.aex = null;
+        this.fcall = null;
+        this.op1 = null;
+        this.op2 = null;
+        this.uex = null;
+        this.bex = null;
+        this.id = null;
     }
 
     public SymbolAtomicExpression getAex() {

@@ -20,7 +20,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolPred extends SymbolBase {
-    private SymbolBody b;
+    public final SymbolBody b;
 
     public SymbolPred(SymbolBody b, Location l, Location r) {
         super("pred", 0 , l ,r );

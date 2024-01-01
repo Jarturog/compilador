@@ -26,12 +26,13 @@ FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new S
  */
 public class SymbolFCall extends SymbolBase {
    
-    private SymbolMetodoNombre methodName;
-    private SymbolOperandsLista operandsLista;
+    public final SymbolMetodoNombre methodName;
+    public final SymbolOperandsLista operandsLista;
     
     public SymbolFCall(SymbolMetodoNombre methodName, Location l, Location r) {
         super("fcall", 0 ,l ,r);
         this.methodName = methodName;
+        this.operandsLista = null;
     }
 
     public SymbolFCall(SymbolMetodoNombre et1, SymbolOperandsLista et2, Location l, Location r) {

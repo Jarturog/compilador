@@ -22,12 +22,15 @@ CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(
         ;
  */
 public class SymbolCaso extends SymbolBase {
-    private SymbolCaso caso;
-    private SymbolOperand op;
-    private SymbolBody b;
+    public final SymbolCaso caso;
+    public final SymbolOperand op;
+    public final SymbolBody b;
 
     public SymbolCaso() {
         super("caso");
+        this.caso = null;
+        this.op = null;
+        this.b = null;
     }
     
     public SymbolCaso(SymbolCaso caso, SymbolOperand op, SymbolBody b, Location l , Location r){

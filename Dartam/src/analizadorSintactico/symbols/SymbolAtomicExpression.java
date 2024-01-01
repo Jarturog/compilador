@@ -25,23 +25,23 @@ public class SymbolAtomicExpression extends SymbolBase {
         super(variable);
     }
 
-    public SymbolAtomicExpression(String et) {
+    public SymbolAtomicExpression(String et, Location l, Location r) {
         super("");
     }
 
-    public SymbolAtomicExpression(Character et) {
+    public SymbolAtomicExpression(Character et, Location l, Location r) {
         super("");
     }
 
-    public SymbolAtomicExpression(Double et) {
+    public SymbolAtomicExpression(Double et, Location l, Location r) {
         super("");
     }
 
-    public SymbolAtomicExpression(Integer et) {
+    public SymbolAtomicExpression(Integer et, Location l, Location r) {
         super("");
     }
 
-    public SymbolAtomicExpression(Boolean et) {
+    public SymbolAtomicExpression(Boolean et, Location l, Location r) {
         super("");
     }
     

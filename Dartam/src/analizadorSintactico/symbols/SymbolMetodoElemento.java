@@ -25,49 +25,57 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolMetodoElemento extends SymbolBase {
     
-    private SymbolMain main;
-    private SymbolMetodoElemento mam;
-
-    public SymbolMetodoElemento(SymbolMain sm) {
-        super("sam");
-        this.main = sm;
+    public final SymbolInstr instruccion;
+    public final SymbolLoop insLoop;
+    public final SymbolIf    insIf;
+    public final SymbolSwitch insSwitch;
+    
+    public SymbolMetodoElemento(SymbolInstr instruccion, Location l, Location r) {
+        super("elementoMetodo");
+        this.instruccion = instruccion;
+        this.insLoop = null;
+        this.insIf = null;
+        this.insSwitch = null;
     }
     
-    public SymbolMetodoElemento(SymbolMetodoElemento mam){
-        super("sam");
-        this.mam = mam;
+    public SymbolMetodoElemento(SymbolLoop insLoop, Location l, Location r) {
+        super("elementoMetodo");
+        this.insLoop = insLoop;
+        this.instruccion = null;
+        this.insIf = null;
+        this.insSwitch = null;
+    }
+    
+    public SymbolMetodoElemento(SymbolIf insIf, Location l, Location r) {
+        super("elementoMetodo");
+        this.insIf = insIf;
+        this.instruccion = null;
+        this.insLoop = null;
+        this.insSwitch = null;
+    }
+    
+    public SymbolMetodoElemento(SymbolSwitch insSwitch, Location l, Location r) {
+        super("elementoMetodo");
+        this.insSwitch = insSwitch;
+        this.instruccion = null;
+        this.insLoop = null;
+        this.insIf = null;
     }
 
-    public SymbolMetodoElemento(SymbolSwitch et) {
-        super("");
+    public SymbolInstr getInstruccion() {
+        return instruccion;
     }
 
-    public SymbolMetodoElemento(SymbolIf et) {
-        super("");
+    public SymbolLoop getInsLoop() {
+        return insLoop;
     }
 
-    public SymbolMetodoElemento(SymbolLoop et) {
-        super("");
+    public SymbolIf getInsIf() {
+        return insIf;
     }
 
-    public SymbolMetodoElemento(SymbolInstr et) {
-        super("");
-    }
-
-    public SymbolMetodoElemento(SymbolInstr et, Location l, Location r) {
-        super("");
-    }
-
-    public SymbolMetodoElemento(SymbolLoop et, Location l, Location r) {
-        super("");
-    }
-
-    public SymbolMetodoElemento(SymbolIf et, Location l, Location r) {
-        super("");
-    }
-
-    public SymbolMetodoElemento(SymbolSwitch et, Location l, Location r) {
-        super("");
+    public SymbolSwitch getInsSwitch() {
+        return insSwitch;
     }
     
 }

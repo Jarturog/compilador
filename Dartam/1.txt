@@ -1,5 +1,5 @@
 ent a;
 prop b;
-f vacio inicio(string[]argumentos){ # codigo # }
+f vacio inicio(string[]argumentos){ ent e; }
 ent c;
 prop d;

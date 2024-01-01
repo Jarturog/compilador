@@ -44,6 +44,17 @@ public class SymbolTipoVar extends SymbolBase {
         this.profundidadArray = 0;
     }
     
+    public SymbolTipoVar(Integer tipo, Location l, Location r) {
+        super("tipoVar", l, r);
+        this.tipo = tipo;
+        this.tipoBase = tipoBase;
+        //Añadir tipo array
+        //if(tipo != ParserSym.TIPO_ARRAY){
+        //    
+        //}
+        this.profundidadArray = 0;
+    }
+    
     public SymbolTipoVar(int tipo){
         super("tipoVar", 0);
         this.tipo = tipo;

@@ -22,11 +22,13 @@ ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(
         ;
  */
 public class SymbolElifs extends SymbolBase {
-    private SymbolElif elif;
-    private SymbolElifs elifs;
+    public final SymbolElif elif;
+    public final SymbolElifs elifs;
 
     public SymbolElifs() {
         super("elif");
+        this.elif = null;
+        this.elifs = null;
     }
     
     public SymbolElifs(SymbolElif elif, SymbolElifs elifs, Location l, Location r){

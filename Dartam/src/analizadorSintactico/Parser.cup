@@ -318,13 +318,12 @@ BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESU
 CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {: RESULT = new SymbolConditionalExpression(et1, et2, et3, et1xleft, et1xright);; :}
         ; 
 
-//REVISAR ESTO
-ATOMIC_EXPRESSION ::= ID:et     {: RESULT = et; :}
-        | STRING:et             {: RESULT = et; :}
-        | BOOL:et               {: RESULT = et; :}
-        | INT:et                {: RESULT = et; :}
-        | DOUBLE:et             {: RESULT = et; :}
-        | CHAR:et               {: RESULT = et; :}
+ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | STRING:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | BOOL:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | INT:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | DOUBLE:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | CHAR:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         ;
 
 BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et, etxleft, etxright); :}
@@ -379,7 +378,7 @@ ELSE ::= KW_ELSE LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(e
 SWITCH ::= KW_SWITCH OPERAND:et1 RKEY CASO:et2 PRED:et3 LKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
         ;   
 
-CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft et1xright); :}
+CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft, et1xright); :}
         |                                            {: RESULT = new SymbolCaso(); :}
         ;
 

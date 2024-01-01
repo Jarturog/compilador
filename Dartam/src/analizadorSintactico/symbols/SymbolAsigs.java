@@ -20,7 +20,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolAsigs extends SymbolBase {
-    private SymbolIDAsigLista idAL;
+    public final SymbolIDAsigLista idAL;
 
     public SymbolAsigs(SymbolIDAsigLista idAL, Location l, Location r) {
         super("asigs", 0, l , r);

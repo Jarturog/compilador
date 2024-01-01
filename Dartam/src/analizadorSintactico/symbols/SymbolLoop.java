@@ -22,8 +22,8 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolLoop extends SymbolBase {
     private int tipoLoop;
-    private SymbolLoopCond loopCond;
-    private SymbolBody cuerpo;
+    public final SymbolLoopCond loopCond;
+    public final SymbolBody cuerpo;
 
     public SymbolLoop(int tipoLoop, SymbolLoopCond loopCond, SymbolBody b, Location l, Location r){
         super("loop", 0, l ,r);

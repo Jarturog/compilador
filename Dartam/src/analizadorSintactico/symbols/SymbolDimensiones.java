@@ -24,12 +24,13 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolDimensiones extends SymbolBase {
     
-    private SymbolOperand operando;
-    private SymbolDimensiones dimensiones;
+    public final SymbolOperand operando;
+    public final SymbolDimensiones dimensiones;
             
     public SymbolDimensiones(SymbolOperand operando, Location l, Location r){
         super("dimensiones", l, r);
         this.operando = operando;
+        this.dimensiones = null;
     }
     
     public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones, Location l, Location r) {

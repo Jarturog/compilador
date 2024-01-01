@@ -21,10 +21,11 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolElse extends SymbolBase {
-    private SymbolBody cuerpo;
+    public final SymbolBody cuerpo;
 
     public SymbolElse() {
         super("else");
+        this.cuerpo = null;
     }
     
     public SymbolElse(SymbolBody b, Location l, Location r){

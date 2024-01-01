@@ -24,6 +24,8 @@ import analizadorSintactico.symbols.SymbolReturn;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSintactico.symbols.SymbolSwap;
 import analizadorSintactico.symbols.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SemanticAnalysis {
     
@@ -39,48 +41,67 @@ public class SemanticAnalysis {
     private ArrayList<String> errors;
     public boolean thereIsError = false;
 
+    public String getErrors(){
+        String s = "";
+        for(String e : errors){
+            s += e + "\n";
+        }
+        return s;
+    }
+
+    private void reportError(String errorMessage, int line, int column){
+        thereIsError = true;
+        errorMessage = " !! Semantic error: " + errorMessage + " at position [line: " + line + ", column: " + column + "]";
+        System.err.println(errorMessage);
+        errors.add(errorMessage);
+    }
+    
     public SemanticAnalysis(SymbolScript script){
         tablaSimbolos = new TablaSimbolos();
         errors = new ArrayList<>();
-        ArrayList<SymbolScriptElemento> elementosScript = new ArrayList<>();
-        int idxMain;
-        
-        for (idxMain = 0; script.elemento != null; idxMain++) {
-            elementosScript.add(script.elemento);
+        ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
+        ArrayList<SymbolScriptElemento> tuplas = new ArrayList<>();
+        ArrayList<SymbolScriptElemento> metodos = new ArrayList<>();
+        int idMidDecs = 0, idMidTuplas = 0, idMidMetodos = 0;
+        SymbolScriptElemento elem = script.elemento;
+        while (elem != null) {
+            switch (elem.getTipo()) {
+                case "d" -> { declaraciones.add(elem.declaraciones); idMidDecs++; }
+                case "t" -> { tuplas.add(elem); idMidTuplas++; }
+                case "m" -> { metodos.add(elem); idMidMetodos++; }
+            }
             script = script.siguienteElemento;
+            elem = script.elemento;
         }
         SymbolMain main = script.main;
-        while (main.elemento != null) {
-            elementosScript.add(idxMain, main.elemento);
+        elem = main.elemento;
+        while (elem != null) {
+            switch (elem.getTipo()) {
+                case "d" -> declaraciones.add(idMidDecs, elem.declaraciones);
+                case "t" -> tuplas.add(idMidTuplas, elem);
+                case "m" -> metodos.add(idMidMetodos, elem);
+            }
             main = main.main;
+            elem = main.elemento;
         }
-        for (SymbolScriptElemento s : elementosScript) {
-            procesarElementoScript(s);
+        if (main.body == null) { // main vacío
+            return;
         }
-        // main.procesar();
-        
-        /*SymbolDecs decs = body.getDeclarations();
-        if(decs != null) manage(decs);
-        SymbolMain main = body.getMain();
-        manage(main);*/
+        for (SymbolDecs decs : declaraciones) {
+            procesarDeclaraciones(decs);
+        }
+        for (SymbolScriptElemento tupla : tuplas) {
+            procesarDeclaracionTupla(tupla);
+        }
+        for (SymbolScriptElemento metodo : metodos) {
+            procesarDefinicionMetodo(metodo);
+        }
+        procesarMain(main.body);
     }
     
-    private void procesarElementoScript(SymbolScriptElemento s){
+    private void procesarDeclaraciones(SymbolDecs decs) {
         DescripcionSimbolo d = new DescripcionSimbolo(); 
-        if (s.tipoRetorno != null) { // definición metodo
-            d.changeValue(s.tipoRetorno);
-            d.changeValue(s.parametros);
-            d.changeValue(s.cuerpo); // está mal lo sé
-            tablaSimbolos.insertVariable(s.idTuplaMetodo, d);
-            return;
-        }
-        if (s.idTuplaMetodo != null) { // declaración tupla
-            d.changeValue(s.miembrosTupla);
-            tablaSimbolos.insertVariable(s.idTuplaMetodo, d);
-            return;
-        }
         // declaraciones variables y constantes
-        SymbolDecs decs = s.declaraciones;
         if (decs.idTupla != null) { // variable tipo tupla
             tablaSimbolos.insertVariable(decs.idTupla, d);
             return;
@@ -101,20 +122,30 @@ public class SemanticAnalysis {
         }
         tablaSimbolos.insertVariable(dec.id, d);
     }
-
-    public String getErrors(){
-        String s = "";
-        for(String e : errors){
-            s += e + "\n";
-        }
-        return s;
+        
+    private void procesarBody(SymbolBody body) {
+        
     }
 
-    private void reportError(String errorMessage, int line, int column){
-        thereIsError = true;
-        errorMessage = " !! Semantic error: " + errorMessage + " at position [line: " + line + ", column: " + column + "]";
-        System.err.println(errorMessage);
-        errors.add(errorMessage);
+    private void procesarDefinicionMetodo(SymbolScriptElemento metodo) {
+        DescripcionSimbolo d = new DescripcionSimbolo(); 
+        d.changeValue(metodo.tipoRetorno);
+        d.changeValue(metodo.parametros);
+        d.changeValue(metodo.cuerpo); // está mal lo sé
+        tablaSimbolos.insertVariable(metodo.idTuplaMetodo, d);
+    }
+
+    
+
+    private void procesarDeclaracionTupla(SymbolScriptElemento tupla) {
+        DescripcionSimbolo d = new DescripcionSimbolo(); 
+        d.changeValue(tupla.miembrosTupla);
+        tablaSimbolos.insertVariable(tupla.idTuplaMetodo, d);
+    }
+    
+    private void procesarMain(SymbolBody body) {
+        // tratamiento
+        procesarBody(body);
     }
 
 }

@@ -22,9 +22,9 @@ BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESU
 
  */
 public class SymbolBinaryExpression extends SymbolBase {
-    private SymbolOperand op1;
-    private SymbolBinaryOperator bop;
-    private SymbolOperand op2;
+    public final SymbolOperand op1;
+    public final SymbolBinaryOperator bop;
+    public final SymbolOperand op2;
 
     /*public SymbolBinaryExpression(String variable, Double valor) {
         super(variable);

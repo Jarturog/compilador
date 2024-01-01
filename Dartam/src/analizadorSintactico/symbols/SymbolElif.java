@@ -22,8 +22,8 @@ ELIF ::= KW_ELIF OPERAND:et1 LKEY BODY:et2 RKEY     {: RESULT = new SymbolElif(e
  */
 public class SymbolElif extends SymbolBase {
     
-    private SymbolOperand op;
-    private SymbolBody cuerpo;
+    public final SymbolOperand op;
+    public final SymbolBody cuerpo;
     
     public SymbolElif(SymbolOperand op, SymbolBody b, Location l, Location r){
         super("elif", 0 ,l ,r);
