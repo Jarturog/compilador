@@ -38,5 +38,15 @@ public class SymbolBody extends SymbolBase {
         this.metodo = sem;
         this.siguienteMetodo = sb;
     }
+
+    public SymbolMetodoElemento getMetodo() {
+        return metodo;
+    }
+
+    public SymbolBody getSiguienteMetodo() {
+        return siguienteMetodo;
+    }
+    
+    
     
 }

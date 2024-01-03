@@ -35,5 +35,19 @@ public class SymbolScript extends SymbolBase {
         elemento = null;
         siguienteElemento = null;
     }
+
+    public SymbolScriptElemento getElemento() {
+        return elemento;
+    }
+
+    public SymbolScript getSiguienteElemento() {
+        return siguienteElemento;
+    }
+
+    public SymbolMain getMain() {
+        return main;
+    }
+    
+    
     
 }

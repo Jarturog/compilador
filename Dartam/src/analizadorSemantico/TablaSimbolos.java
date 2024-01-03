@@ -16,7 +16,7 @@ public class TablaSimbolos {
     private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private int n; //Nivel actual
     private ArrayList<Integer> ta; //Tabla de ambitos
-    private ArrayList<Entrada>  te;
+    private ArrayList<Entrada>  te; //Table de expansion
     
     public TablaSimbolos(){
         n = 0;

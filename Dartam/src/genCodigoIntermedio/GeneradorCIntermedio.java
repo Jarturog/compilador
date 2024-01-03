@@ -39,7 +39,73 @@ public class GeneradorCIntermedio {
         currentSublevel = 0;
         currentDecLength = -1;
     }
-/*
+    
+    private String newVariable(){
+        String t = "t" + numT++;
+        VTEntry vte = new VTEntry(t);
+        variableTable.put(currentFunction + currentSublevel + t, vte);
+        if(currentProcTable != null) currentProcTable.variableTable.put(currentSublevel + t, vte);
+        return t;
+    }
+
+    private String newTag(){
+        return "e" + numE++;
+    }
+
+    private VTEntry getVar(String t){
+        VTEntry vte = variableTable.get(currentFunction + currentSublevel + t);
+        int i = currentSublevel-1;
+
+        // We check up until -1 since parameters are in sublevel -1
+        while(vte == null && i >= -1) {
+            vte = variableTable.get(currentFunction + i-- + t);
+        }
+        if(vte == null) {
+            vte = variableTable.get(DEF_FUNCTION + 0 + t);
+        }
+        return vte;
+    }
+
+    private void removeVar(String t){
+        VTEntry vte = variableTable.remove(currentFunction + currentSublevel + t);
+        int i = currentSublevel-1;
+        while(vte == null && i >= 0) {
+            vte = variableTable.remove(currentFunction + i-- + t);
+        }
+        if(vte == null) {
+            vte = variableTable.remove(DEF_FUNCTION + 0 + t);
+        }
+    }
+    
+    private void replaceVarTableKey(String oldKey, String newKey){
+        VTEntry vte = getVar(oldKey);
+        removeVar(oldKey);
+        variableTable.put(currentFunction + currentSublevel + newKey, vte);
+    }
+
+    private String createProcTableEntry(String procName){
+        String internalFunctionName = procName + DEF_FUNCTION;
+        PTEntry pte = new PTEntry();
+        pte.eStart = newTag();
+        procedureTable.put(internalFunctionName, pte);
+        return internalFunctionName;
+    }
+
+    private void addInstruction(InstructionType instruction, String left, String right, String destination){
+        Instruction i = new Instruction(instruction, left, right, destination);
+        c3a.add(i);
+    }
+    
+    private void addInstruction(InstructionType instruction, String left, String destination){
+        Instruction i = new Instruction(instruction, left, destination);
+        c3a.add(i);
+    }
+    
+    private void addInstruction(InstructionType instruction, String destination){
+        Instruction i = new Instruction(instruction, destination);
+        c3a.add(i);
+    }
+
     public Hashtable<String, VTEntry> getVariableTable(){
         return variableTable;
     }
@@ -51,50 +117,54 @@ public class GeneradorCIntermedio {
     public ArrayList<Instruction> getInstructions(){
         return c3a;
     }
-
-
-    public void generate(SymbolBody body){
-        // No code is generated here, equal to its semantic.generate() equivalent
-        SymbolDecs decs = body.getDeclarations();
-        if(decs != null) generate(decs);
-        SymbolMain main = body.getMain();
-        generate(main);
-
-        for (String s : procedureTable.keySet()) {
+    
+    public void generate(SymbolScript s){
+        SymbolScriptElemento se = s.getElemento();
+        if(se != null){
+            generate(se); //Generamos el siguiente elemento
+        }
+        
+        SymbolScript s2 = s.getSiguienteElemento();
+        while(s2 != null){
+            generate(s2);
+            s2 = s2.getSiguienteElemento();
+        }
+        
+        for (String nombre : procedureTable.keySet()){
             PTEntry pte = procedureTable.get(s);
-            // We clean the procedure table to ease its use during machine code generation
             pte.prepareForMachineCode();
         }
     }
-
-    private void generate(SymbolArg arg){
-        String t = newVariable();
-        VTEntry vte = getVar(t);
-        replaceVarTableKey(t, arg.identifier);
-        currentProcTable.params.add(t);
-
-        SymbolTypeVar type = arg.getType();
-        while(type.isType(KW_ARRAY)){
-            vte.dimensions.add(newVariable());
-            type = type.getBaseType();
-        }
-
-        if(LenguaG.DEBUGGING) {
-            System.out.println("Parameter for " + currentFunction + ": " + arg.identifier + " -> " + t);
-            System.out.println("Dimensions: " + vte.dimensions);
-        }
-        arg.reference = t;
+    
+    public void generate(SymbolScriptElemento se){
+        //TODO
     }
-
-    private void generate(SymbolArgs args){
-        // SymbolArg
-        // currentSublevel = -1;
-        generate(args.getArg());
-        SymbolArgs next = args.getNext();
-        if(next != null) generate(next);
-        // currentSublevel = 0;
+    
+    private void generate(SymbolParams p){
+        generate(p.getPl()); //Generamos la lista de parametros
     }
-
+    
+    public void generate(SymbolParamsLista pl){
+        currentSublevel = -1;
+        generate(pl.getParam()); //Primer parametro de la lista
+        
+        SymbolParamsLista aux = pl.getPl(); //Comprobamos si tiene mas
+        while(pl.getPl() != null){ //Tenemos otro parametro
+            String t = newVariable();
+            VTEntry vte = getVar(t);
+            replaceVarTableKey(t, aux.getParam().identificador1);
+            currentProcTable.params.add(t);
+            
+            SymbolTipoPrimitivo tipo = aux.getParam().getTipo();
+            while(tipo.isTipo(ParserSym.LBRACKET)){
+                vte.dimensions.add(newVariable());
+                tipo = tipo.getTipoBase();
+            }       
+        }
+    }
+    
+    /*
+   
 
     private void generate(SymbolArrSuff arrSuff){
         // if first 
