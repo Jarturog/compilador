@@ -76,51 +76,51 @@ public class TablaSimbolos {
     }
     
     public void salirBloque() throws Exception{
-       if(this.n == 0){ //Error grave del compilador
-           throw new Exception("Error grave del compilador"); //Cambiar mas adelante
-       }else{
-           int lini = ta.get(this.n);
-           ta.remove(this.n); //Esto revisarlo
-           this.n -= 1;
-           int lfi = ta.get(this.n);
-           
-           //Recorremos la tabla de expansión y replazamos dentro de la tabla de descripciones
-           for(Entrada entrada: te.subList(lini, lini)){
-               td.replace(entrada.nombreVariable, entrada.descripcion);
-           }
-           te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
-           
-           Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
-           while(iterador.hasNext()){
-               if(iterador.next().getValue().getNivel() > n){
-                   iterador.remove();
-               }
-           }
-       }  
+        if(this.n == 0){ //Error grave del compilador
+            throw new Exception("Error grave del compilador"); //Cambiar mas adelante
+        }
+        int lini = ta.get(this.n);
+        ta.remove(this.n); //Esto revisarlo
+        this.n -= 1;
+        int lfi = ta.get(this.n);
+
+        //Recorremos la tabla de expansión y replazamos dentro de la tabla de descripciones
+        for(Entrada entrada: te.subList(lini, lini)){
+            td.replace(entrada.nombreVariable, entrada.descripcion);
+        }
+        te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
+
+        Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
+        while(iterador.hasNext()){
+            if(iterador.next().getValue().getNivel() > n){
+                iterador.remove();
+            }
+        }
+
     }
     
     public void ponerCampo(String idr, String idc, int dCamp) throws Exception {
         DescripcionSimbolo d = td.get(idr);
         if(!d.isTupla()){
             throw new Exception("Error, no es una tupla!");
-        }else{
-            int i = d.first;
-            while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
-                i = te.get(i).next;
-            }
-            
-            if(i != 0){
-                throw new Exception("Ya hay un campo con el mismo error");
-            }
-            
-            int idxe = ta.get(this.n);
-            idxe += 1;
-            ta.set(this.n, idxe);
-            te.get(idxe).np = -1;
-            te.get(idxe).d = dCamp;
-            te.get(idxe).next = td.get(idr).first;
-            td.get(idr).first = idxe;
         }
+        int i = d.first;
+        while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+            i = te.get(i).next;
+        }
+
+        if(i != 0){
+            throw new Exception("Ya hay un campo con el mismo error");
+        }
+
+        int idxe = ta.get(this.n);
+        idxe += 1;
+        ta.set(this.n, idxe);
+        te.get(idxe).np = -1;
+        te.get(idxe).d = dCamp;
+        te.get(idxe).next = td.get(idr).first;
+        td.get(idr).first = idxe;
+        
         
     }
     
@@ -248,6 +248,10 @@ public class TablaSimbolos {
 
     public DescripcionSimbolo getDescription(String variable) {
         return td.get(variable);
+    }
+    
+    public boolean contains(String variable) {
+        return td.containsKey(variable);
     }
 
     

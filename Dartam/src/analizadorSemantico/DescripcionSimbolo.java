@@ -8,6 +8,7 @@ import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  *
@@ -16,13 +17,12 @@ import java.util.HashMap;
 public class DescripcionSimbolo {
     
     private SymbolTipo tipo;
-    private Object valor;
-    
+
     private int nivel;
-    private int isConstante;
+    private boolean isConstante, valorAsignado;
 
     private ArrayList<Parametro> parametros;
-    private HashMap<Parametro, Boolean> miembros;
+    private HashMap<DescripcionSimbolo, Boolean> miembros;
     private ArrayList<Integer> dimensiones;
 
     public int first;
@@ -40,8 +40,50 @@ public class DescripcionSimbolo {
         }
     }
     
+    /**
+     * Main
+     */
     public DescripcionSimbolo(){
-        //this.tipo = new SymbolTipo();
+        tipo = null;
+    }
+    
+    /**
+     * Primitiva
+     */
+    public DescripcionSimbolo(SymbolTipo t, boolean isConst){
+        tipo = t;
+        isConstante = isConst;
+    }
+    
+    /**
+     * Primitiva
+     */
+    public DescripcionSimbolo(SymbolTipo t, boolean isConst, boolean v){
+        tipo = t;
+        isConstante = isConst;
+        valorAsignado = v;
+    }
+    
+    /**
+     * Array
+     */
+    public DescripcionSimbolo(SymbolTipo t, ArrayList<Integer> dim){
+        tipo = t;
+        dimensiones = dim;
+    }
+    
+    /**
+     * Tupla
+     */
+    public DescripcionSimbolo(Set<DescripcionSimbolo> m){
+        miembros = (HashMap<DescripcionSimbolo, Boolean>) m;
+    }
+    
+    /**
+     * Función
+     */
+    public DescripcionSimbolo(SymbolTipo tipoRetorno){
+        tipo = tipoRetorno;
     }
     
     public void cambiarTipo(SymbolTipo t){
@@ -53,14 +95,6 @@ public class DescripcionSimbolo {
             //this.tipo = new SymbolTipo();
             this.parametros = new ArrayList<>();
         }
-    }
-    
-    public void setValor(Object v){
-        this.valor = v;
-    }
-    
-    public Object getValor(){
-        return this.valor;
     }
     
     public int getTipo(){
@@ -109,7 +143,7 @@ public class DescripcionSimbolo {
         return new ArrayList<>(parametros);
     }
     
-    public HashMap<Parametro, Boolean> getTiposMiembros() {
+    public HashMap<DescripcionSimbolo, Boolean> getTiposMiembros() {
         return new HashMap<>(miembros);
     }
     
