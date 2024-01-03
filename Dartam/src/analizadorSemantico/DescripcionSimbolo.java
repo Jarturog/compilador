@@ -25,11 +25,8 @@ public class DescripcionSimbolo {
     private HashMap<DescripcionSimbolo, Boolean> miembros;
     private ArrayList<Integer> dimensiones;
 
-<<<<<<< HEAD
-    public int first;   
-=======
+
     public int first;
->>>>>>> 9709cf6f56724064d27c488cd4baa0216c9dff63
     public int next;    //Apuntador al siguiente campo de una tupla
     public String idcamp;   //Identificador del campo de la tupla
     
