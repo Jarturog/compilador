@@ -7,6 +7,7 @@ package analizadorSemantico;
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -20,7 +21,8 @@ public class DescripcionSimbolo {
     private int nivel;
     private int isConstante;
 
-    private ArrayList<Parametro> parametros, miembros;
+    private ArrayList<Parametro> parametros;
+    private HashMap<Parametro, Boolean> miembros;
     private ArrayList<Integer> dimensiones;
 
     public int first;
@@ -103,12 +105,12 @@ public class DescripcionSimbolo {
         return parametros.size();
     }
     
-    public ArrayList<SymbolTipo> getTiposParametros(){
-        ArrayList<SymbolTipo> al = new ArrayList<>();
-        for(int i = 0; i< this.parametros.size(); i++){
-            al.add(this.parametros.get(i).tipo);
-        }
-        return al;
+    public ArrayList<Parametro> getTiposParametros(){
+        return new ArrayList<>(parametros);
+    }
+    
+    public HashMap<Parametro, Boolean> getTiposMiembros() {
+        return new HashMap<>(miembros);
     }
     
     public void setTipoRetorno(SymbolTipo tv) throws Exception{

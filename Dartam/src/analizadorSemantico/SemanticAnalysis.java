@@ -24,6 +24,7 @@ import analizadorSintactico.symbols.SymbolReturn;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSintactico.symbols.SymbolSwap;
 import analizadorSintactico.symbols.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,11 +157,35 @@ public class SemanticAnalysis {
     private void procesarAsignaciones(SymbolAsigs asigs) {
 
         do {
-            DescripcionSimbolo d = tablaSimbolos.getDescription(asigs.id);
+            SymbolAsig asig = asigs.asig;
+            DescripcionSimbolo d = tablaSimbolos.getDescription(asig.id);
             if (d == null) {
+                // error, no encontrado
+            } else if (d.isArray() || d.isFunction() || d.isTupla()) {
+                // error, asignación no permitida
+            }
+            Object valor = procesarOperando(asig.valor);
+            if (valor == null){
                 // error
-            } else if (d)
-            SymbolOperand op = asigs.valor;
+            }
+            switch (asig.getTipo()) {
+                case PRIMITIVA -> {
+                    if ((Object)d.getTipo() != valor) {
+                        // error se asigna tipo diferente
+                    }
+                    
+                }
+                case ARRAY -> {
+                
+                }
+                case TUPLA -> {
+                    HashMap<DescripcionSimbolo.Parametro, Boolean> tiposMiembros = d.getTiposMiembros();
+                }
+            }
+            if (!asig.operacion.isBasicAsig() && d.getValor() == null) {
+                // error operando con variable sin valor
+            }
+            
             asigs = asigs.siguienteAsig;
         } while (asigs != null);
         
@@ -172,9 +197,9 @@ public class SemanticAnalysis {
         if (!ds.isFunction()) {
             // error
         }
-        ArrayList<SymbolTipo> params = ds.getTiposParametros();
+        ArrayList<DescripcionSimbolo.Parametro> params = ds.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
-        for (SymbolTipo tipoParam : params) {
+        for (DescripcionSimbolo.Parametro tipoParam : params) {
             if (opLista == null) {
                 // error, hay más operandos que parámetros
             }

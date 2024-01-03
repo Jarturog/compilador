@@ -13,32 +13,25 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 /**
- * ASIGS ::= ID:et1 ASIG_OP OPERAND:et2 COMMA ASIGS:et3    {: RESULT = new SymbolAsigs(et1, et2, et3, et1xleft, et1xright); :}
-        | ID:et1 ASIG_OP OPERAND:et2 ENDINSTR                                    {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
-        ;
-
+    ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
+            | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+            ;
  */
 public class SymbolAsigs extends SymbolBase {
     
-    public final String id;
-    public final SymbolAsigOp operacion;
-    public final SymbolOperand valor;
+    public final SymbolAsig asig;
     public final SymbolAsigs siguienteAsig;
 
-    public SymbolAsigs(String id, SymbolAsigOp o, SymbolOperand op, SymbolAsigs al, Location l, Location r) {
+    public SymbolAsigs(SymbolAsig asig, SymbolAsigs al, Location l, Location r) {
         super("idAsigLista", l ,r);
-        this.id=  id;
-        this.valor = op;
+        this.asig = asig;
         this.siguienteAsig = al;
-        operacion = o;
     }
     
-    public SymbolAsigs(String id, SymbolAsigOp o, SymbolOperand op, Location l , Location r){
+    public SymbolAsigs(SymbolAsig asig, Location l , Location r){
         super("idAsigLista", l, r);
-        this.id= id;
-        this.valor = op;
+        this.asig = asig;
         this.siguienteAsig = null;
-        operacion = o;
     }
     
     
