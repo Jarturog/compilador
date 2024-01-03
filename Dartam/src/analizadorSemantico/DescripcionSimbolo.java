@@ -1,132 +1,138 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
-import java.util.Stack;
-import analizadorSintactico.symbols.SymbolTipoPrimitivo;
-import analizadorSintactico.symbols.SymbolTipoRetorno;
+
 /**
- * Class that represents a variable's description in the symbol table
+ *
+ * @author dasad
  */
 public class DescripcionSimbolo {
-
-    public static final int TYPE_ARRAY = Integer.MAX_VALUE;
-    public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
     
-    // The variable's type
-    private SymbolTipo type; // Acts as the return type when a function.
-    private Object value;
-
-    public int declaredLevel;
-    public boolean isConstant;
-
-    // Function information
-    private ArrayList<Argument> args; // arguments are name and type
-
-    // Tuple information
-    private ArrayList<Object> miembros;
+    private SymbolTipo tipo;
+    private Object valor;
     
-    // Array information
-    private ArrayList<Object> dimensiones;
+    private int nivel;
+    private int isConstante;
 
-    /**
-     * Creates an empty description
-     */
+    private ArrayList<Parametro> parametros, miembros;
+    private ArrayList<Integer> dimensiones;
+
+    public int first;
+    public int next;
+    public String idcamp;
+    
+    public int dcamp; //Desplazamiento dentro del array
+    public class Parametro{
+        public String nombre;
+        public SymbolTipo tipo;
+        
+        public Parametro(String nombre, SymbolTipo tipo){
+            this.nombre = nombre;
+            this.tipo = tipo;
+        }
+    }
+    
     public DescripcionSimbolo(){
-        //type = new SymbolTypeVar();
-        isConstant = false;
+        //this.tipo = new SymbolTipo();
     }
-
-    /**
-     * Changes the type of the variable to which this description is associated, given a symbol created by Parser.java.
-     * @param type
-     */
-    public void changeType(SymbolTipo type) {
-        this.type = type;
+    
+    public void cambiarTipo(SymbolTipo t){
+        this.tipo = t;
     }
-
-    /**
-     * Changes the type of the variable to which this description is associated, given the value of Constants.
-     * If given TYPE_ARRAY, baseType and depth will be set to void and 0, respectively, so those should be set afterwards
-     * using changeBaseType() and changeDepth().
-     * Likewise, nArgs, returnType and args will be set to 0, void and an empty HashMap, respectively. 
-     * Use addArgument() and setReturnType() to change them.
-     * @param type
-     */
-    public void changeType(int type) {
-        if(type == TYPE_FUNCTION){
-            //this.type = new SymbolTypeVar();
-            args = new ArrayList<>();
-        }
-    }
-
-    public void changeValue(Object value){
-        this.value = value;
-    }
-
-    public Object getValue(){
-        return value;
-    }
-
-    // Function methods
-
-    /**
-     * Adds the param of the given type to the parameters of the function, incrementing nArgs
-     * @param name
-     * @param type
-     */
-    public void addArgument(String name, SymbolTipoPrimitivo type) {
-        args.add(new Argument(name, type));
-    }
-
-    public int getNArgs() {
-        return args.size();
-    }
-
-    public Stack<SymbolTipoPrimitivo> getArgsTypes() {
-        Stack<SymbolTipoPrimitivo> types = new Stack<>();
-        for(Argument a : args){
-            types.push(a.type);
-        }
-        return types;
-    }
-
-    public void setReturnType(SymbolTipoRetorno returnType) {
-        if(!isFunction()) throw new RuntimeException(" !! Compiler error");
-        type = returnType.tipo;
-    }
-
-    public SymbolTipo getReturnType() {
-        return type;
-    }
-
-    @Override
-    public String toString(){
-        String sd = "[Type: " + (isFunction() ? ParserSym.terminalNames[TYPE_FUNCTION] : type);
-        if(isFunction()) sd += " (Returns: " + type + ", args:" + args + ")";
-        sd += "\n\tConstant: " + isConstant;
-        if(isConstant) sd += "\n\tValue: " + value;
-        sd += "\n\tDeclared level: " + declaredLevel + "]";
-        return sd;
-    }
-
-    private class Argument{
-        public String name;
-        public SymbolTipoPrimitivo type;
-
-        public Argument(String name, SymbolTipoPrimitivo type){
-            this.name = name;
-            this.type = type;
-        }
-
-        @Override
-        public String toString(){
-            return type + " " + name;
+    
+    public void cambiarTipo(int t){
+        if(t == ParserSym.KW_METHOD){
+            //this.tipo = new SymbolTipo();
+            this.parametros = new ArrayList<>();
         }
     }
     
-    public boolean isFunction(){
-        return args != null;
+    public void setValor(Object v){
+        this.valor = v;
     }
+    
+    public Object getValor(){
+        return this.valor;
+    }
+    
+    public int getTipo(){
+        if(isFunction()){
+            return ParserSym.KW_METHOD;
+        }else{
+            return -1;//tipo.getTipo();
+        }
+    }
+    
+    //Array
+    public void setTipoBase(SymbolTipo base){
+        //tipo.setTipoBase(base);
+    }
+    
+    public SymbolTipo getTipoBase(){
+        return null;//tipo.getTipoBase();
+    }
+    
+    public int getProfundidad(){
+        return -1;//tipo.getProfundidadArray();
+    }
+    
+    public void setTamañoArray(int n){
+       //tipo.setTamañoArray(n);
+    }
+    
+    public int getNivel(){
+        return this.nivel;
+    }
+    
+    public void setNivel(int n){
+        this.nivel = n;
+    }
+    
+    //Funciones
+    public void añadirParametro(String n, SymbolTipo t){
+        parametros.add(new Parametro(n,t));
+    }
+    
+    public int getNumeroParametros(){
+        return parametros.size();
+    }
+    
+    public ArrayList<SymbolTipo> getTiposParametros(){
+        ArrayList<SymbolTipo> al = new ArrayList<>();
+        for(int i = 0; i< this.parametros.size(); i++){
+            al.add(this.parametros.get(i).tipo);
+        }
+        return al;
+    }
+    
+    public void setTipoRetorno(SymbolTipo tv) throws Exception{
+        if(!this.isFunction()){
+           throw new Exception("Error");
+        }else{
+            this.tipo = tv;
+        }
+    }
+    
+    public SymbolTipo getTipoRetorno(){
+        return this.tipo;
+    }
+    
+    public boolean isFunction() {
+        return parametros != null;
+    }
+    
+    public boolean isArray() {
+        return dimensiones != null;
+    }
+    
+    public boolean isTupla() {
+        return miembros != null;
+    }
+    
 }

@@ -13,7 +13,7 @@ import java.util.Iterator;
  * @author dasad
  */
 public class TablaSimbolos {
-    private HashMap<String, SimboloDescripcion> td; //Nuestra tabla de simbolos
+    private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private int n; //Nivel actual
     private ArrayList<Integer> ta; //Tabla de ambitos
     private ArrayList<Entrada>  te;
@@ -28,12 +28,12 @@ public class TablaSimbolos {
     //Clase entrada usado para la tabla de expansión!
     public class Entrada{
             public String nombreVariable;
-            public SimboloDescripcion descripcion;
+            public DescripcionSimbolo descripcion;
             public int next;
             public int np;
             public int d;
             public String idcamp;
-            public Entrada(String n, SimboloDescripcion d){
+            public Entrada(String n, DescripcionSimbolo d){
                 this.nombreVariable = n;
                 this.descripcion = d;
             }
@@ -52,12 +52,12 @@ public class TablaSimbolos {
         //ta.add(n,0);
     }
     
-    public void poner(String id, SimboloDescripcion d) throws Exception{
+    public void poner(String id, DescripcionSimbolo d) {
         //Comprobamos si existe dentro de la tabla de descriptores
-        SimboloDescripcion sd = td.get(id);
+        DescripcionSimbolo sd = td.get(id);
         if(sd != null){ //Existe actualmente
             if(sd.getNivel() == n){ //Error
-                throw new Exception("Error!"); //Cambiar luego
+                //throw new Exception("Error!"); //Cambiar luego
             }
             //Si no estan declaradas al mismo nivel
             int indice = ta.get(n) + 1;
@@ -90,7 +90,7 @@ public class TablaSimbolos {
            }
            te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
            
-           Iterator<HashMap.Entry<String, SimboloDescripcion>> iterador = td.entrySet().iterator();
+           Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
            while(iterador.hasNext()){
                if(iterador.next().getValue().getNivel() > n){
                    iterador.remove();
@@ -100,8 +100,8 @@ public class TablaSimbolos {
     }
     
     public void ponerCampo(String idr, String idc, int dCamp) throws Exception {
-        SimboloDescripcion d = td.get(idr);
-        if(d.getTipo() != Constantes.TIPO_TUPLA){
+        DescripcionSimbolo d = td.get(idr);
+        if(!d.isTupla()){
             throw new Exception("Error, no es una tupla!");
         }else{
             int i = d.first;
@@ -125,8 +125,8 @@ public class TablaSimbolos {
     }
     
     public Entrada consultaCamp(String idr, String idc) throws Exception{
-        SimboloDescripcion d = td.get(idr);
-        if (d.getTipo() != Constantes.TIPO_TUPLA){
+        DescripcionSimbolo d = td.get(idr);
+        if (!d.isTupla()){
             throw new Exception("No es una tupla");
         }else{
             int i = d.first;
@@ -160,9 +160,9 @@ public class TablaSimbolos {
             
     }*/
     
-    public void ponerIndice(String id, SimboloDescripcion d) throws Exception{
-        SimboloDescripcion da = td.get(id);
-        if(da.getTipo() != Constantes.TIPO_ARRAY){
+    public void ponerIndice(String id, DescripcionSimbolo d) throws Exception{
+        DescripcionSimbolo da = td.get(id);
+        if(!da.isArray()){
             throw new Exception("No es un array");
         }
         
@@ -189,8 +189,8 @@ public class TablaSimbolos {
     
     
     public int first(String id) throws Exception{
-        SimboloDescripcion sd = td.get(id);
-        if(sd.getTipo() != Constantes.TIPO_ARRAY){
+        DescripcionSimbolo sd = td.get(id);
+        if(!sd.isArray()){
             throw new Exception("No es un ");
         }
         return sd.first;
@@ -209,13 +209,13 @@ public class TablaSimbolos {
     }
     
     
-    public SimboloDescripcion consulta(int idx){
+    public DescripcionSimbolo consulta(int idx){
         return te.get(idx).descripcion;
     }
     
-    public void posaparam(String idpr, String idparam, SimboloDescripcion d) throws Exception{
-        SimboloDescripcion des = td.get(idpr);
-        if(des.getTipo() != Constantes.TIPO_FUNCTION){
+    public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception{
+        DescripcionSimbolo des = td.get(idpr);
+        if(!des.isFunction()){
             throw new Exception("Error, no es una funcion");
         }
         
@@ -246,6 +246,9 @@ public class TablaSimbolos {
          
     }
 
-    
+    public DescripcionSimbolo getDescription(String variable) {
+        return td.get(variable);
+    }
+
     
 }

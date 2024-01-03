@@ -95,13 +95,13 @@ public class SemanticAnalysis {
         }
         for (SymbolScriptElemento metodo : metodos) {
             DescripcionSimbolo d = new DescripcionSimbolo();
-            tablaSimbolos.insertVariable(metodo.id, d);
+            tablaSimbolos.poner(metodo.id, d);
         }
         for (SymbolScriptElemento metodo : metodos) {
             procesarDefinicionMetodo(metodo);
         }
         DescripcionSimbolo d = new DescripcionSimbolo();
-        tablaSimbolos.insertVariable(ParserSym.terminalNames[ParserSym.KW_MAIN], d);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.KW_MAIN], d);
         procesarMain(scriptMainYElementos.main);
     }
     
@@ -109,7 +109,7 @@ public class SemanticAnalysis {
         DescripcionSimbolo d = new DescripcionSimbolo(); 
         // declaraciones variables y constantes
         if (decs.idTupla != null) { // variable tipo tupla
-            tablaSimbolos.insertVariable(decs.idTupla, d);
+            tablaSimbolos.poner(decs.idTupla, d);
             return;
         }
         // variables tipo primitivas y array
@@ -124,9 +124,9 @@ public class SemanticAnalysis {
     private void procesarDeclaracion(SymbolIDDecsLista dec) {
         DescripcionSimbolo d = new DescripcionSimbolo(); 
         if (dec.asignacion != null) {
-            d.changeValue(dec.asignacion.operando);
+            d.setValor(dec.asignacion.operando);
         }
-        tablaSimbolos.insertVariable(dec.id, d);
+        tablaSimbolos.poner(dec.id, d);
     }
         
     private void procesarBody(SymbolBody body) {
@@ -162,7 +162,7 @@ public class SemanticAnalysis {
     }
     
     private void procesarReturn(SymbolReturn ret) {
-        SymbolTipoRetorno tipo = metodoActualmenteSiendoTratado.getReturnType();
+        SymbolTipo tipo = metodoActualmenteSiendoTratado.getTipoRetorno();
         SymbolOperand op = ret.op;
         if (op == null) {
             if (tipo.tipo == null) {
@@ -189,7 +189,7 @@ public class SemanticAnalysis {
         if (ds2 == null) {
             
         }
-        if (ds1.getValue() != ds2.getValue()) {
+        if (ds1.getValor() != ds2.getValor()) {
             
         }
     }
@@ -257,10 +257,10 @@ public class SemanticAnalysis {
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) {
         metodoActualmenteSiendoTratado = tablaSimbolos.getDescription(metodo.id);
         DescripcionSimbolo d = new DescripcionSimbolo(); 
-        d.changeValue(metodo.tipoRetorno);
-        d.changeValue(metodo.parametros);
-        d.changeValue(metodo.cuerpo); // está mal lo sé
-        tablaSimbolos.insertVariable(metodo.id, d);
+        d.setValor(metodo.tipoRetorno);
+        d.setValor(metodo.parametros);
+        d.setValor(metodo.cuerpo); // está mal lo sé
+        tablaSimbolos.poner(metodo.id, d);
         procesarBody(metodo.cuerpo);
     }
 
@@ -268,8 +268,8 @@ public class SemanticAnalysis {
 
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) {
         DescripcionSimbolo d = new DescripcionSimbolo(); 
-        d.changeValue(tupla.miembrosTupla);
-        tablaSimbolos.insertVariable(tupla.id, d);
+        d.setValor(tupla.miembrosTupla);
+        tablaSimbolos.poner(tupla.id, d);
     }
     
     private void procesarMain(SymbolBody body) {
@@ -283,7 +283,7 @@ public class SemanticAnalysis {
      * @return 
      */
     private Object procesarOperando(SymbolOperand op) {
-        return null; // DescripcionSimbolo a; a.getValue();
+        return null; // DescripcionSimbolo a; a.getValor();
     }
 
     
