@@ -25,17 +25,17 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 public class SymbolDecAsigLista extends SymbolBase {
     
     public final String id;
-    public final SymbolAsig asignacion;
+    public final SymbolAsigBasico asignacion;
     public final SymbolDecAsigLista siguienteDeclaracion;
     
-    public SymbolDecAsigLista(String identificador, SymbolAsig asignacion, Location l, Location r){
+    public SymbolDecAsigLista(String identificador, SymbolAsigBasico asignacion, Location l, Location r){
         super("iddecslista", l, r);
         id = identificador;
         this.asignacion = asignacion;
         siguienteDeclaracion = null;
     }
     
-    public SymbolDecAsigLista(String identificador, SymbolAsig asignacion, SymbolDecAsigLista iddecslista, Location l, Location r){
+    public SymbolDecAsigLista(String identificador, SymbolAsigBasico asignacion, SymbolDecAsigLista iddecslista, Location l, Location r){
         super("iddecslista", l, r);
         id = identificador;
         this.asignacion = asignacion;

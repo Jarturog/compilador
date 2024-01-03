@@ -279,13 +279,13 @@ RETURN ::= KW_RETURN ENDINSTR                               {: :} //Con este que
 SWAP ::= ID:et1 OP_SWAP ID:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
         ;
 
-ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et3, et4, et1xleft, et1xright); :}
-        | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et1, et2, et3, et1xleft, et1xright); :}
+ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
+        | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
         ;
 
-ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                                  {: RESULT = new SymbolAsig(et, aop, val); :}
-        | OPERAND:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
-        | OPERAND:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val                          {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
+ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                                  {: RESULT = new SymbolAsig(et, aop, val, etxleft, etxright); :}
+        | ID:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
+        | ID:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val                          {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
         ;
 
 ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.AS_ASSIGN, et, etxleft, etxright); :}
