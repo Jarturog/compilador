@@ -26,8 +26,8 @@ public class DescripcionSimbolo {
     private ArrayList<Integer> dimensiones;
 
     public int first;
-    public int next;
-    public String idcamp;
+    public int next;    //Apuntador al siguiente campo de una tupla
+    public String idcamp;   //Identificador del campo de la tupla
     
     public int dcamp; //Desplazamiento dentro del array
     public class Parametro{
