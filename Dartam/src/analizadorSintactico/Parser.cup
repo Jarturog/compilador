@@ -207,13 +207,13 @@ BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1
         |                               {: RESULT = new SymbolBody(); :}
         ;
 
-TIPO ::= TIPO_PRIMITIVO
-        | TIPO_PRIMITIVO DIMENSIONES
-        | KW_TUPLE ID
-        | KW_TUPLE ID DIMENSIONES
+TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, txleft, txright); :}
+        | TIPO_PRIMITIVO:t DIMENSIONES:d        {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
+        | KW_TUPLE:t ID:i                       {: RESULT = new SymbolTipo(i, txleft, txright); :}
+        | KW_TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
         ;
 
-TIPO_PRIMITIVO ::= KW_BOOL                    {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_BOOL); :}
+TIPO_PRIMITIVO ::= KW_BOOL              {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_BOOL); :}
         | KW_INT                        {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_INT); :}
         | KW_DOUBLE                     {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_DOUBLE); :}
         | KW_CHAR                       {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_CHAR); :}

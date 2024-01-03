@@ -28,7 +28,11 @@ public class TablaSimbolos {
     
     //Clase entrada usado para la tabla de expansión!
     public class Entrada{
+<<<<<<< HEAD
             public String nombreVariable; //Identificador
+=======
+            public String nombreVariable; // Identificador
+>>>>>>> 9709cf6f56724064d27c488cd4baa0216c9dff63
             public DescripcionSimbolo descripcion;
             public int d;
             public Entrada(String n, DescripcionSimbolo d){
@@ -51,7 +55,10 @@ public class TablaSimbolos {
         //ta.add(n,0);
     }
     
+<<<<<<< HEAD
     
+=======
+>>>>>>> 9709cf6f56724064d27c488cd4baa0216c9dff63
     /**
      * Ponemos un elemento dentro de la tabla de simbolos 
      */
@@ -99,6 +106,7 @@ public class TablaSimbolos {
     }
     
     public void salirBloque() throws Exception{
+<<<<<<< HEAD
        if(this.n == 0){ //Error grave del compilador
            throw new Exception("Error grave del compilador"); //Cambiar mas adelante
        }else{
@@ -124,6 +132,33 @@ public class TablaSimbolos {
                }
            }
        }  
+=======
+        if(this.n == 0){ //Error grave del compilador
+            throw new Exception("Error grave del compilador"); //Cambiar mas adelante
+        }
+        int lini = ta.get(this.n);
+        ta.remove(this.n); //Esto revisarlo
+        this.n -= 1;
+        int lfi = ta.get(this.n);
+        
+        //Pasamos todas las declaraciones anteriores a la td
+        for(Entrada entrada: te.subList(lfi, lini)){
+            if(entrada.descripcion.getNivel() != -1){ //Si es -1, es una entrada que no se mete en la tabla de descriptores
+                td.replace(entrada.nombreVariable, entrada.descripcion);
+            }
+        }
+        te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
+        
+        //Vaciamos entradas del nivel del bloque del que salimos
+        Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
+        while(iterador.hasNext()){
+            //Si son de un nivel de profundidad superior, se quita
+            if(iterador.next().getValue().getNivel() > this.n){
+                iterador.remove();
+            }
+        }
+
+>>>>>>> 9709cf6f56724064d27c488cd4baa0216c9dff63
     }
     
     //idr es la tupla
@@ -132,6 +167,7 @@ public class TablaSimbolos {
         DescripcionSimbolo d = td.get(idr);
         if(!d.isTupla()){
             throw new Exception("Error, no es una tupla!");
+<<<<<<< HEAD
         }else{
             int i = d.first;
             
@@ -153,14 +189,35 @@ public class TablaSimbolos {
             te.get(idxe).descripcion.setNivel(-1);
             te.get(idxe).descripcion.next = td.get(idr).first;
             td.get(idr).first = idxe;
+=======
+        }
+        int i = d.first;
+        
+        //Buscamos dentro una variable con el mismo nombre dentro de la tupla
+        while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+            i = te.get(i).descripcion.next;
+>>>>>>> 9709cf6f56724064d27c488cd4baa0216c9dff63
         }
         
+        //Si hemos salido o porque no hay mas variables, o hemos encontrado una con el mismo nombre
+        if(i != 0){
+            throw new Exception("Ya hay un campo con el mismo identificador");
+        }
+        
+        int idxe = ta.get(this.n);
+        idxe += 1;
+        te.get(idxe).descripcion = dCamp; 
+        te.get(idxe).descripcion.setNivel(-1);
+        te.get(idxe).descripcion.next = td.get(idr).first;
+        ta.set(this.n, idxe);;
+        td.get(idr).first = idxe;
     }
     
     public Entrada consultaCamp(String idr, String idc) throws Exception{
         DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
         if (!d.isTupla()){
             throw new Exception("No es una tupla");
+<<<<<<< HEAD
         }else{
             int i = d.first;
             while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
@@ -172,7 +229,20 @@ public class TablaSimbolos {
             }else{
                 return null;
             }
+=======
+>>>>>>> 9709cf6f56724064d27c488cd4baa0216c9dff63
         }
+        int i = d.first;
+        while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
+            i = te.get(i).descripcion.next;
+        }
+        
+        if(i != 0){
+            return te.get(i);
+        }else{
+            return null;
+        }
+        
     }
     
     
@@ -281,6 +351,10 @@ public class TablaSimbolos {
 
     public DescripcionSimbolo getDescription(String variable) {
         return td.get(variable);
+    }
+    
+    public boolean contains(String variable) {
+        return td.containsKey(variable);
     }
 
     

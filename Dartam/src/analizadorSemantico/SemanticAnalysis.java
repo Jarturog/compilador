@@ -95,7 +95,7 @@ public class SemanticAnalysis {
             procesarDeclaracionTupla(tupla);
         }
         for (SymbolScriptElemento metodo : metodos) {
-            DescripcionSimbolo d = new DescripcionSimbolo();
+            DescripcionSimbolo d = new DescripcionSimbolo(metodo.tipoRetorno.tipo);
             tablaSimbolos.poner(metodo.id, d);
         }
         for (SymbolScriptElemento metodo : metodos) {
@@ -107,27 +107,46 @@ public class SemanticAnalysis {
     }
     
     private void procesarDeclaraciones(SymbolDecs decs) {
-        DescripcionSimbolo d = new DescripcionSimbolo(); 
-        // declaraciones variables y constantes
-        if (decs.idTupla != null) { // variable tipo tupla
-            tablaSimbolos.poner(decs.idTupla, d);
-            return;
+        SymbolDecAsigLista dec = decs.iddecslista;
+        while (dec != null) {
+            procesarDeclaracion(dec.id, 
+                    (dec.asignacion == null) ? null : dec.asignacion.operando, 
+                    decs.isConst, 
+                    decs.tipo);
+            dec = dec.siguienteDeclaracion;
         }
-        // variables tipo primitivas y array
-        SymbolDecAsigLista declaracion = decs.iddecslista;
-        while (declaracion.siguienteDeclaracion != null) {
-            procesarDeclaracion(declaracion);
-            declaracion = declaracion.siguienteDeclaracion;
-        }
-        procesarDeclaracion(declaracion);
     }
     
-    private void procesarDeclaracion(SymbolDecAsigLista dec) {
-        DescripcionSimbolo d = new DescripcionSimbolo(); 
-        if (dec.asignacion != null) {
-            d.setValor(dec.asignacion.operando);
+    private void procesarDeclaracion(String id, SymbolOperand valorAsignado, boolean isConst, SymbolTipo tipo) {
+        if (tipo.isArray()) {
+            if (isConst) {
+                // error
+            }
+            if (valorAsignado != null) {
+                // error
+            }
+            // array...
+        } else if (tipo.isTupla()) {
+            if (isConst) {
+                // error
+            }
+            if (valorAsignado != null) {
+                // error
+            }
+            // tupla...
+        } else {
+            if (tablaSimbolos.contains(id)) {
+                // error
+            }
+            Object tipoValor = procesarOperando(valorAsignado);
+            if (tipoValor == null){
+                // error
+            } else if (tipoValor != tipo) {
+                // error
+            }
+            DescripcionSimbolo d = new DescripcionSimbolo(tipo, isConst, valorAsignado != null);
+            tablaSimbolos.poner(id, d);
         }
-        tablaSimbolos.poner(dec.id, d);
     }
         
     private void procesarBody(SymbolBody body) {
@@ -179,10 +198,10 @@ public class SemanticAnalysis {
                 
                 }
                 case TUPLA -> {
-                    HashMap<DescripcionSimbolo.Parametro, Boolean> tiposMiembros = d.getTiposMiembros();
+                    //HashMap<DescripcionSimbolo.Parametro, Boolean> tiposMiembros = d.getTiposMiembros();
                 }
             }
-            if (!asig.operacion.isBasicAsig() && d.getValor() == null) {
+            if (!asig.operacion.isBasicAsig() ){//&& d.getValor() == null) {
                 // error operando con variable sin valor
             }
             
@@ -245,9 +264,9 @@ public class SemanticAnalysis {
         if (ds2 == null) {
             
         }
-        if (ds1.getValor() != ds2.getValor()) {
+        //if (ds1.getValor() != ds2.getValor()) {
             
-        }
+        //}
     }
     
     /**
@@ -313,9 +332,9 @@ public class SemanticAnalysis {
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) {
         metodoActualmenteSiendoTratado = tablaSimbolos.getDescription(metodo.id);
         DescripcionSimbolo d = new DescripcionSimbolo(); 
-        d.setValor(metodo.tipoRetorno);
-        d.setValor(metodo.parametros);
-        d.setValor(metodo.cuerpo); // está mal lo sé
+//        d.setValor(metodo.tipoRetorno);
+//        d.setValor(metodo.parametros);
+//        d.setValor(metodo.cuerpo); // está mal lo sé
         tablaSimbolos.poner(metodo.id, d);
         procesarBody(metodo.cuerpo);
     }
@@ -324,7 +343,7 @@ public class SemanticAnalysis {
 
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) {
         DescripcionSimbolo d = new DescripcionSimbolo(); 
-        d.setValor(tupla.miembrosTupla);
+//        d.setValor(tupla.miembrosTupla);
         tablaSimbolos.poner(tupla.id, d);
     }
     
