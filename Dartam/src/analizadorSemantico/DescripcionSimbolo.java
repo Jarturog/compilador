@@ -1,9 +1,11 @@
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
+import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.Stack;
 import analizadorSintactico.symbols.SymbolTipoPrimitivo;
+import analizadorSintactico.symbols.SymbolTipoRetorno;
 /**
  * Class that represents a variable's description in the symbol table
  */
@@ -13,16 +15,20 @@ public class DescripcionSimbolo {
     public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
     
     // The variable's type
-    private SymbolTipoPrimitivo type; // Acts as the return type when a function.
+    private SymbolTipo type; // Acts as the return type when a function.
     private Object value;
 
     public int declaredLevel;
     public boolean isConstant;
 
     // Function information
-    private boolean isFunction;
-    private int nArgs;
     private ArrayList<Argument> args; // arguments are name and type
+
+    // Tuple information
+    private ArrayList<Object> miembros;
+    
+    // Array information
+    private ArrayList<Object> dimensiones;
 
     /**
      * Creates an empty description
@@ -30,14 +36,13 @@ public class DescripcionSimbolo {
     public DescripcionSimbolo(){
         //type = new SymbolTypeVar();
         isConstant = false;
-        isFunction = false;
     }
 
     /**
      * Changes the type of the variable to which this description is associated, given a symbol created by Parser.java.
      * @param type
      */
-    public void changeType(SymbolTipoPrimitivo type) {
+    public void changeType(SymbolTipo type) {
         this.type = type;
     }
 
@@ -51,8 +56,6 @@ public class DescripcionSimbolo {
      */
     public void changeType(int type) {
         if(type == TYPE_FUNCTION){
-            isFunction = true;
-            nArgs = 0;
             //this.type = new SymbolTypeVar();
             args = new ArrayList<>();
         }
@@ -75,11 +78,10 @@ public class DescripcionSimbolo {
      */
     public void addArgument(String name, SymbolTipoPrimitivo type) {
         args.add(new Argument(name, type));
-        nArgs++;
     }
 
     public int getNArgs() {
-        return nArgs;
+        return args.size();
     }
 
     public Stack<SymbolTipoPrimitivo> getArgsTypes() {
@@ -90,19 +92,19 @@ public class DescripcionSimbolo {
         return types;
     }
 
-    public void setReturnType(SymbolTipoPrimitivo returnType) {
-        if(!isFunction) throw new RuntimeException(" !! Compiler error");
-        type = returnType;
+    public void setReturnType(SymbolTipoRetorno returnType) {
+        if(!isFunction()) throw new RuntimeException(" !! Compiler error");
+        type = returnType.tipo;
     }
 
-    public SymbolTipoPrimitivo getReturnType() {
+    public SymbolTipo getReturnType() {
         return type;
     }
 
     @Override
     public String toString(){
-        String sd = "[Type: " + (isFunction ? ParserSym.terminalNames[TYPE_FUNCTION] : type);
-        if(isFunction) sd += " (Returns: " + type + ", args:" + args + ")";
+        String sd = "[Type: " + (isFunction() ? ParserSym.terminalNames[TYPE_FUNCTION] : type);
+        if(isFunction()) sd += " (Returns: " + type + ", args:" + args + ")";
         sd += "\n\tConstant: " + isConstant;
         if(isConstant) sd += "\n\tValue: " + value;
         sd += "\n\tDeclared level: " + declaredLevel + "]";
@@ -122,5 +124,9 @@ public class DescripcionSimbolo {
         public String toString(){
             return type + " " + name;
         }
+    }
+    
+    public boolean isFunction(){
+        return args != null;
     }
 }
