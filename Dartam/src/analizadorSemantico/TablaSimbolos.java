@@ -13,8 +13,8 @@ import java.util.Iterator;
  * @author dasad
  */
 public class TablaSimbolos {
-    private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private int n; //Nivel actual
+    private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private ArrayList<Integer> ta; //Tabla de ambitos
     private ArrayList<Entrada>  te; //Table de expansion
     
@@ -25,14 +25,12 @@ public class TablaSimbolos {
         te = new ArrayList();
         ta.add(n, 0);
     }
+    
     //Clase entrada usado para la tabla de expansión!
     public class Entrada{
-            public String nombreVariable;
+            public String nombreVariable; //Identificador
             public DescripcionSimbolo descripcion;
-            public int next;
-            public int np;
             public int d;
-            public String idcamp;
             public Entrada(String n, DescripcionSimbolo d){
                 this.nombreVariable = n;
                 this.descripcion = d;
@@ -40,39 +38,64 @@ public class TablaSimbolos {
     }
     
     /**
-     * Vaciamos las tablas
+     * Vaciamos todas las tablas y ponemos a n = 1
      */
     public void vaciar(){
-        this.n = 0;
+        this.n = 0; //Nivel actual
         this.td = new HashMap();
         this.ta = new ArrayList();
         this.te = new ArrayList();
+        
         //ta.add(n, 0);
         //this.n += 1;
         //ta.add(n,0);
     }
     
-    public void poner(String id, DescripcionSimbolo d) {
+    
+    /**
+     * Ponemos un elemento dentro de la tabla de simbolos 
+     */
+    public void poner(String id, DescripcionSimbolo d) throws Exception{
         //Comprobamos si existe dentro de la tabla de descriptores
+        
         DescripcionSimbolo sd = td.get(id);
+        
         if(sd != null){ //Existe actualmente
-            if(sd.getNivel() == n){ //Error
-                //throw new Exception("Error!"); //Cambiar luego
+            if(sd.getNivel() == this.n){ //Si ya hay uno al mismo nivel error
+                throw new Exception("Ya existe una entrada con el mismo nombre en el mismo nivel");
             }
+            
             //Si no estan declaradas al mismo nivel
-            int indice = ta.get(n) + 1;
+            int indice = ta.get(this.n) + 1;
             ta.set(n,indice);
             te.add(new Entrada(id, sd)); //Ya que existia de antes, pero ahora a otro nivel
         }
-        d.setNivel(n);
-        td.put(id, d); //Actualizamos la tabla de descriciones
+        
+        //Ya sea si no existia el simbolo, como si ha sido movido el actual de td
+        //Actualizamos la tabla de descriciones
+        d.setNivel(this.n);
+        td.put(id, d);
     }
     
+    /**
+     * Entramos a un nuevo bloque de codigo 
+     * EJ:
+     *      int a = 0;
+     *      ->
+     *      if(){...}
+     * -----------------
+     *      int a = 0;
+     *      if(){ 
+     *          ->
+     *      }
+     */
     public void entraBloque(){
-        this.n += 1;
+        this.n += 1; //Actualizamos el nivel
         int valor = ta.get(n-1);
-        ta.add(valor);
         
+        //ta valdrá lo mismo que la entrada anterior
+        //A medida que se añadan simbolos este valor ta variara
+        ta.add(valor);
     }
     
     public void salirBloque() throws Exception{
@@ -84,56 +107,66 @@ public class TablaSimbolos {
            this.n -= 1;
            int lfi = ta.get(this.n);
            
-           //Recorremos la tabla de expansión y replazamos dentro de la tabla de descripciones
-           for(Entrada entrada: te.subList(lini, lini)){
-               td.replace(entrada.nombreVariable, entrada.descripcion);
-           }
+           //Pasamos todas las declaraciones anteriores a la td
+           for(Entrada entrada: te.subList(lfi, lini)){
+               if(entrada.descripcion.getNivel() != -1){ //Si es -1, es una entrada que no se mete en la tabla de descriptores
+                    td.replace(entrada.nombreVariable, entrada.descripcion);
+               }
+            }
            te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
            
+           //Vaciamos entradas del nivel del bloque del que salimos
            Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
            while(iterador.hasNext()){
-               if(iterador.next().getValue().getNivel() > n){
+               //Si son de un nivel de profundidad superior, se quita
+               if(iterador.next().getValue().getNivel() > this.n){
                    iterador.remove();
                }
            }
        }  
     }
     
-    public void ponerCampo(String idr, String idc, int dCamp) throws Exception {
+    //idr es la tupla
+    //idc es el campo de la tupla
+    public void ponerCampo(String idr, String idc, DescripcionSimbolo dCamp) throws Exception {
         DescripcionSimbolo d = td.get(idr);
         if(!d.isTupla()){
             throw new Exception("Error, no es una tupla!");
         }else{
             int i = d.first;
+            
+            //Buscamos dentro una variable con el mismo nombre dentro de la tupla
             while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
-                i = te.get(i).next;
+                i = te.get(i).descripcion.next;
             }
             
+            //Si hemos salido o porque no hay mas variables, o hemos encontrado una con el mismo nombre
             if(i != 0){
-                throw new Exception("Ya hay un campo con el mismo error");
+                throw new Exception("Ya hay un campo con el mismo identificador");
             }
-            
-            int idxe = ta.get(this.n);
-            idxe += 1;
-            ta.set(this.n, idxe);
-            te.get(idxe).np = -1;
-            te.get(idxe).d = dCamp;
-            te.get(idxe).next = td.get(idr).first;
+         
+            int idxe = ta.get(this.n) + 1;
+            ta.set(this.n, idxe); //
+       
+            te.add(new Entrada(idc, dCamp));
+            te.get(idxe).descripcion = dCamp; 
+            te.get(idxe).descripcion.setNivel(-1);
+            te.get(idxe).descripcion.next = td.get(idr).first;
             td.get(idr).first = idxe;
         }
         
     }
     
     public Entrada consultaCamp(String idr, String idc) throws Exception{
-        DescripcionSimbolo d = td.get(idr);
+        DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
         if (!d.isTupla()){
             throw new Exception("No es una tupla");
         }else{
             int i = d.first;
             while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
-                i = te.get(i).next;
+                i = te.get(i).descripcion.next;
             }
-            
+          
             if(i != 0){
                 return te.get(i);
             }else{
@@ -209,7 +242,7 @@ public class TablaSimbolos {
     }
     
     
-    public DescripcionSimbolo consulta(int idx){
+    public DescripcionSimbolo consulta(String s){
         return te.get(idx).descripcion;
     }
     
