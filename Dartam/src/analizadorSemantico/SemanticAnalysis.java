@@ -113,7 +113,7 @@ public class SemanticAnalysis {
             return;
         }
         // variables tipo primitivas y array
-        SymbolIDDecsLista declaracion = decs.iddecslista;
+        SymbolDecAsigLista declaracion = decs.iddecslista;
         while (declaracion.siguienteDeclaracion != null) {
             procesarDeclaracion(declaracion);
             declaracion = declaracion.siguienteDeclaracion;
@@ -121,7 +121,7 @@ public class SemanticAnalysis {
         procesarDeclaracion(declaracion);
     }
     
-    private void procesarDeclaracion(SymbolIDDecsLista dec) {
+    private void procesarDeclaracion(SymbolDecAsigLista dec) {
         DescripcionSimbolo d = new DescripcionSimbolo(); 
         if (dec.asignacion != null) {
             d.setValor(dec.asignacion.operando);
@@ -154,11 +154,42 @@ public class SemanticAnalysis {
     }
     
     private void procesarAsignaciones(SymbolAsigs asigs) {
-        return;
+
+        do {
+            DescripcionSimbolo d = tablaSimbolos.getDescription(asigs.id);
+            if (d == null) {
+                // error
+            } else if (d)
+            SymbolOperand op = asigs.valor;
+            asigs = asigs.siguienteAsig;
+        } while (asigs != null);
+        
     }
     
     private void procesarLlamadaFuncion(SymbolFCall fcall) {
-        return;//fcall.methodName
+        String nombre = (String) fcall.methodName.value;
+        DescripcionSimbolo ds = tablaSimbolos.getDescription(nombre);
+        if (!ds.isFunction()) {
+            // error
+        }
+        ArrayList<SymbolTipo> params = ds.getTiposParametros();
+        SymbolOperandsLista opLista = fcall.operandsLista;
+        for (SymbolTipo tipoParam : params) {
+            if (opLista == null) {
+                // error, hay más operandos que parámetros
+            }
+            SymbolOperand op = opLista.operand;
+            Object tipoOp = procesarOperando(op);
+            
+            if (tipoOp != tipoParam) {
+                // error
+            }
+            opLista = opLista.operandsLista;
+        }
+        if (opLista != null) {
+            // error, hay más parámetros que operandos
+        }
+        
     }
     
     private void procesarReturn(SymbolReturn ret) {

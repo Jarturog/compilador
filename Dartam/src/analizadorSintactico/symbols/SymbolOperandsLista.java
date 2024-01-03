@@ -36,15 +36,5 @@ public class SymbolOperandsLista extends SymbolBase {
         this.operand = et;
         this.operandsLista = null;
     }
-
-    public SymbolOperand getOperand() {
-        return operand;
-    }
-
-    public SymbolOperandsLista getOperandsLista() {
-        return operandsLista;
-    }
-
-    
     
 }

@@ -22,20 +22,20 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         | ID:et1 ASIG:et2                                   {: RESULT = new SymbolIDDecsLista(et1,et2, et1left, et1right); :}
         ;
  */
-public class SymbolIDDecsLista extends SymbolBase {
+public class SymbolDecAsigLista extends SymbolBase {
     
     public final String id;
     public final SymbolAsig asignacion;
-    public final SymbolIDDecsLista siguienteDeclaracion;
+    public final SymbolDecAsigLista siguienteDeclaracion;
     
-    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, Location l, Location r){
+    public SymbolDecAsigLista(String identificador, SymbolAsig asignacion, Location l, Location r){
         super("iddecslista", l, r);
         id = identificador;
         this.asignacion = asignacion;
         siguienteDeclaracion = null;
     }
     
-    public SymbolIDDecsLista(String identificador, SymbolAsig asignacion, SymbolIDDecsLista iddecslista, Location l, Location r){
+    public SymbolDecAsigLista(String identificador, SymbolAsig asignacion, SymbolDecAsigLista iddecslista, Location l, Location r){
         super("iddecslista", l, r);
         id = identificador;
         this.asignacion = asignacion;

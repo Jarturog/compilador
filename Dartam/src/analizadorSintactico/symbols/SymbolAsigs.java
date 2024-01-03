@@ -13,22 +13,32 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramatica.
- * 
- * ASIGS ::= ID_ASIG_LISTA:et ENDINSTR         {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+ * ASIGS ::= ID:et1 ASIG_OP OPERAND:et2 COMMA ASIGS:et3    {: RESULT = new SymbolAsigs(et1, et2, et3, et1xleft, et1xright); :}
+        | ID:et1 ASIG_OP OPERAND:et2 ENDINSTR                                    {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
         ;
+
  */
 public class SymbolAsigs extends SymbolBase {
-    public final SymbolIDAsigLista idAL;
+    
+    public final String id;
+    public final SymbolAsigOp operacion;
+    public final SymbolOperand valor;
+    public final SymbolAsigs siguienteAsig;
 
-    public SymbolAsigs(SymbolIDAsigLista idAL, Location l, Location r) {
-        super("asigs", 0, l , r);
-        this.idAL = idAL;
+    public SymbolAsigs(String id, SymbolAsigOp o, SymbolOperand op, SymbolAsigs al, Location l, Location r) {
+        super("idAsigLista", l ,r);
+        this.id=  id;
+        this.valor = op;
+        this.siguienteAsig = al;
+        operacion = o;
     }
-
-    public SymbolIDAsigLista getIdAL() {
-        return idAL;
+    
+    public SymbolAsigs(String id, SymbolAsigOp o, SymbolOperand op, Location l , Location r){
+        super("idAsigLista", l, r);
+        this.id= id;
+        this.valor = op;
+        this.siguienteAsig = null;
+        operacion = o;
     }
     
     

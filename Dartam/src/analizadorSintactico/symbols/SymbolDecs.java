@@ -30,7 +30,7 @@ DECS ::= KW_CONST:et1 TIPO_VAR:et2 ID_DECS_LISTA:et3 ENDINSTR     {: RESULT = ne
 public class SymbolDecs extends SymbolBase {
     
     // compartido por primitivas, arrays y tuplas
-    public final SymbolIDDecsLista iddecslista;
+    public final SymbolDecAsigLista iddecslista;
     public final SymbolTipo tipo;
     // primitiva
     public final boolean isConst;
@@ -40,7 +40,7 @@ public class SymbolDecs extends SymbolBase {
     public final String idTupla;
     
     // primitiva
-    public SymbolDecs(boolean constante, SymbolTipo tipo, SymbolIDDecsLista iddecslista, Location l, Location r) {
+    public SymbolDecs(boolean constante, SymbolTipo tipo, SymbolDecAsigLista iddecslista, Location l, Location r) {
         super("decPrim", l, r);
         idTupla = null;
         isConst = constante;

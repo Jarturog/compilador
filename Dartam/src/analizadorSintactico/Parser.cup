@@ -135,7 +135,8 @@ non terminal SymbolTipo TIPO;
 non terminal SymbolParams PARAMS;
 non terminal SymbolParamsLista PARAMSLISTA;
 non terminal SymbolDecs DECS;
-non terminal SymbolIDDecsLista ID_DECS_LISTA;
+non terminal SymbolDecAsigLista DEC_ASIG_LISTA;
+non terminal SymbolAsigBasico ASIG_BASICO;
 non terminal SymbolAsig ASIG;
 non terminal SymbolMetodoElemento METODO_ELEMENTO;
 non terminal SymbolInstr INSTR;
@@ -145,7 +146,6 @@ non terminal SymbolOperandsLista OPERANDS_LISTA;
 non terminal SymbolReturn RETURN;
 non terminal SymbolSwap SWAP;
 non terminal SymbolAsigs ASIGS;
-non terminal SymbolIDAsigLista ID_ASIG_LISTA;
 non terminal SymbolAsigOp ASIG_OP;
 non terminal SymbolOperand OPERAND;
 non terminal SymbolUnaryExpression UNARY_EXPRESSION;
@@ -210,6 +210,7 @@ BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1
 TIPO ::= TIPO_PRIMITIVO
         | TIPO_PRIMITIVO DIMENSIONES
         | KW_TUPLE ID
+        | KW_TUPLE ID DIMENSIONES
         ;
 
 TIPO_PRIMITIVO ::= KW_BOOL                    {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_BOOL); :}
@@ -227,20 +228,20 @@ PARAMSLISTA ::= TIPO:et1 ID COMMA PARAMSLISTA:et2           {: RESULT = new Symb
         | TIPO:et ID                          {: RESULT = new SymbolParamsLista(et, etxleft, etxright); :}
         ;
 
-DECS ::= KW_CONST:et1 TIPO:et2 ID_DECS_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}
-        | TIPO:et1 ID_DECS_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
-        ; // tuplas no pueden ser constantes
+DECS ::= KW_CONST:et1 TIPO:et2 DEC_ASIG_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}
+        | TIPO:et1 DEC_ASIG_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
+        ; 
 
 DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2, et1xleft, et1xright); :}
         | LBRACKET OPERAND:et1 RBRACKET                         {: RESULT = new SymbolDimensiones(et1, et1xleft, et1xright); :}
         ;
 
-ID_DECS_LISTA ::= ID:et1 ASIG:et2 COMMA ID_DECS_LISTA:et3       {: RESULT = new SymbolIDDecsLista(et1,et2,et3, et1xleft, et1xright); :}
-        | ID:et1 ASIG:et2                                   {: RESULT = new SymbolIDDecsLista(et1,et2, et1xleft, et1xright); :}
+DEC_ASIG_LISTA ::= ID:et1 ASIG_BASICO:et2 COMMA DEC_ASIG_LISTA:et3       {: RESULT = new SymbolDecAsigLista(et1,et2,et3, et1xleft, et1xright); :}
+        | ID:et1 ASIG_BASICO:et2                                   {: RESULT = new SymbolDecAsigLista(et1,et2, et1xleft, et1xright); :}
         ;
 
-ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et, etxleft, etxright); :}
-        |                       {: RESULT = new SymbolAsig(); :}
+ASIG_BASICO ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsigBasico(et, etxleft, etxright); :}
+        |                       {: RESULT = new SymbolAsigBasico(); :}
         ;
 
 METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
@@ -278,11 +279,13 @@ RETURN ::= KW_RETURN ENDINSTR                               {: :} //Con este que
 SWAP ::= ID:et1 OP_SWAP ID:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
         ;
 
-ASIGS ::= ID_ASIG_LISTA:et ENDINSTR         {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et3, et4, et1xleft, et1xright); :}
+        | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et1, et2, et3, et1xleft, et1xright); :}
         ;
 
-ID_ASIG_LISTA ::= ID:et1 ASIG_OP OPERAND:et2 COMMA ID_ASIG_LISTA:et3    {: RESULT = new SymbolIDAsigLista(et1, et2, et3, et1xleft, et1xright); :}
-        | ID:et1 ASIG_OP OPERAND:et2                                    {: RESULT = new SymbolIDAsigLista(et1, et2, et1xleft, et1xright); :}
+ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                                  {: RESULT = new SymbolAsig(et, aop, val); :}
+        | OPERAND:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
+        | OPERAND:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val                          {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
         ;
 
 ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.AS_ASSIGN, et, etxleft, etxright); :}

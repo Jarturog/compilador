@@ -13,13 +13,9 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
- * 
- * Reglas:
- * 
- * ASIG ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsig(et, etleft, etright); :}
-        |                       {: RESULT = new SymbolAsig(); :}
+ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                                  {: RESULT = new SymbolAsig(et, aop, val); :}
+        | OPERAND:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
+        | OPERAND:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val                          {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
         ;
  */
 public class SymbolAsig extends SymbolBase {
