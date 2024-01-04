@@ -215,34 +215,44 @@ public class TablaSimbolos {
         
         int idxe = da.first;
         int idxep = 0;
+        
         while(idxe != 0){
             idxep = idxe;
             idxe = te.get(idxe).next;
         }
         
-        idxe = ta.get(this.n);
-        idxe += 1;
-        ta.set(n, idxe);
+        idxe = ta.get(this.n) + 1; 
+        ta.set(n, idxe); //Elemento nuevo dentro de la tabla de expansion, actualizamos contador
+        
         Entrada ent = te.get(idxe);
-        ent.idcamp = "";
+        ent.idcamp = ""; //No tiene identificador ya que será un valor unicamente o referencia a un valor
         ent.np = -1;
         ent.descripcion = d;
-        if(idxep == 0){
+        ent.next = 0;   //Si es el primer elemento no tendrá siguiente
+        
+        if(idxep == 0){ //Si es el primer indice
             td.get(id).first = idxe;
-        }else{
-            te.get(idxep).next = idxe;
+        }else{  //En el caso de que haya mas indices, es decir mas elementeos lo actualizamos
+            ent.next = idxe;
         }
+        
+        te.add(ent); //Finalmente añadimos la entrada a la tabla de expansion
     }
     
-    
+    /*
+        Método auxiliar por si necesitamos saber si es el primer indice
+    */
     public int first(String id) throws Exception{
         DescripcionSimbolo sd = td.get(id);
         if(!sd.isArray()){
-            throw new Exception("No es un ");
+            throw new Exception("No es un array el elemento");
         }
         return sd.first;
     }
     
+    /*
+        Método auxiliar para saber el siguiente indice
+    */
     public int next(int idx) throws Exception{
         int ent = te.get(idx).next;
         if(ent == 0){
@@ -251,18 +261,19 @@ public class TablaSimbolos {
         return ent;
     }
     
+    /*
+        Metodo auxiliar para saber si es el ultimo indice
+    */
     public boolean last(int idx){
         return te.get(idx).next == 0;
     }
     
-    
-    public DescripcionSimbolo consulta(String s){
-        for (Entrada e : te) {
-            if (e.nombreVariable.equals(s)) {
-                return e.descripcion;
-            }
-        }
-        return null;
+    /*
+        Mñetodo para consultar una indice dentro de un array, en teoría mandara
+        la descripcion de dicho elemento
+    */
+    public DescripcionSimbolo consulta(int idx){
+        return te.get(idx).descripcion;
     }
     
     public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception{
