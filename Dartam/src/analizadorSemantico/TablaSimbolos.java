@@ -224,19 +224,18 @@ public class TablaSimbolos {
         idxe = ta.get(this.n) + 1; 
         ta.set(n, idxe); //Elemento nuevo dentro de la tabla de expansion, actualizamos contador
         
-        Entrada ent = te.get(idxe);
+        Entrada ent = new Entrada("", d); //No tienen nombre las entradas de valores de indices
+        
         ent.idcamp = ""; //No tiene identificador ya que será un valor unicamente o referencia a un valor
-        ent.np = -1;
-        ent.descripcion = d;
+        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
         ent.next = 0;   //Si es el primer elemento no tendrá siguiente
         
         if(idxep == 0){ //Si es el primer indice
             td.get(id).first = idxe;
         }else{  //En el caso de que haya mas indices, es decir mas elementeos lo actualizamos
-            ent.next = idxe;
+            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte al nuevo
         }
-        
-        te.add(ent); //Finalmente añadimos la entrada a la tabla de expansion
+        te.add(idxe, ent); //Finalmente añadimos la entrada a la tabla de expansion
     }
     
     /*
@@ -276,6 +275,13 @@ public class TablaSimbolos {
         return te.get(idx).descripcion;
     }
     
+    
+    
+    /*
+        Metodo para poner parametros de una función dentro del la tabla de simbolors
+        idpr es el nombre de la funcion, idparam el nombre del parametro
+        y necesitamos la descripcion de dicho parameto
+    */
     public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception{
         DescripcionSimbolo des = td.get(idpr);
         if(!des.isFunction()){
@@ -293,20 +299,21 @@ public class TablaSimbolos {
             throw new Exception("Error, ya hay un parametro con el mismo nombre");
         }
         
-        idxe = ta.get(this.n);
-        idxe = idxe + 1;
-        ta.set(this.n, idxe);
-        Entrada ent = te.get(idxe);
+        idxe = ta.get(this.n) + 1;
+        ta.set(this.n, idxe); //Hemos actualizado al tabla de expansion con una nueva entrada
+        
+        Entrada ent = new Entrada(idparam, d);
         ent.idcamp = idparam;
-        ent.np = -1;
-        ent.descripcion = d;
+        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
         ent.next = 0;
+        
         if(idxep == 0){
             td.get(idpr).first = idxe;
         }else{
-            te.get(idxep).next = idxe;
+            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
         }
-         
+        
+        te.add(idxe, ent);
     }
 
     public boolean contains(String variable) {
