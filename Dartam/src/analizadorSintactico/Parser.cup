@@ -199,7 +199,7 @@ MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMi
         |                                              {:  RESULT = new SymbolMiembrosTupla(); :}
         ;
 
-MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(et, etxleft, etxright); :}
+MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS:args RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, args, et, posxleft, posxright); :}
         | MAIN:et1 SCRIPT_ELEMENTO:et2     {: RESULT = new SymbolMain(et1,et2, et1xleft, et1xright); :}
         ;
 

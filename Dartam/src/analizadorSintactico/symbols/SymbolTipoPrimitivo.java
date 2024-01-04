@@ -24,7 +24,7 @@ public class SymbolTipoPrimitivo extends SymbolBase {
 
     public SymbolTipoPrimitivo(Object tipo, Location l, Location r) {
         super("tipoVar", tipo, l, r);
-        this.tipo = (String) tipo;
+        this.tipo = ((String) tipo).toUpperCase();
     }
 
     public String getTipo() {

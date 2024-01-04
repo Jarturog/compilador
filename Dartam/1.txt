@@ -1,5 +1,3 @@
-string a : "aString";
+inmut ent b;
 prop b;
-f vacio inicio(string[]argumentos){ ent e; }
-ent c;
-prop d;
+f vacio inicio(string[]argumentos){ car b; }

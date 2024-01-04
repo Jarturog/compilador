@@ -11,22 +11,7 @@ import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import analizadorSintactico.symbols.SymbolBase;
-import analizadorSintactico.symbols.SymbolBody;
-import analizadorSintactico.symbols.SymbolDecs;
-import analizadorSintactico.symbols.SymbolElse;
-import analizadorSintactico.symbols.SymbolIf;
-import analizadorSintactico.symbols.SymbolInstr;
-import analizadorSintactico.symbols.SymbolLoop;
-import analizadorSintactico.symbols.SymbolMain;
-import analizadorSintactico.symbols.SymbolOperand;
-import analizadorSintactico.symbols.SymbolReturn;
-import analizadorSintactico.symbols.SymbolScript;
-import analizadorSintactico.symbols.SymbolSwap;
 import analizadorSintactico.symbols.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import jflex.base.Pair;
 
 public class SemanticAnalysis {
@@ -115,8 +100,8 @@ public class SemanticAnalysis {
             procesarDefinicionMetodo(metodo);
         }
         DescripcionSimbolo d = new DescripcionSimbolo();
-        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.KW_MAIN], d);
-        procesarMain(scriptMainYElementos.main);
+        tablaSimbolos.poner(scriptMainYElementos.nombreMain, d);
+        procesarMain(scriptMainYElementos);
     }
 
     private void procesarDeclaraciones(SymbolDecs decs) {
@@ -131,36 +116,34 @@ public class SemanticAnalysis {
     }
 
     private void procesarDeclaracion(String id, SymbolOperand valorAsignado, boolean isConst, SymbolTipo tipo) {
-        if (tipo.isArray()) {
-            if (isConst) {
-                // error
-            }
-            if (valorAsignado != null) {
-                // error
-            }
-            // array...
-        } else if (tipo.isTupla()) {
-            if (isConst) {
-                // error
-            }
-            if (valorAsignado != null) {
-                // error
-            }
-            // tupla...
-        } else {
-            if (tablaSimbolos.contains(id)) {
-                // error
-            }
-            Object tipoValor = procesarOperando(valorAsignado);
-            if (tipoValor == null) {
-                // error
-            } else if (tipoValor != tipo) {
-                // error
-            }
-            SymbolTipoPrimitivo tipoPrimitivo = tipo.tipo;
-            DescripcionSimbolo d = new DescripcionSimbolo(tipoPrimitivo.getTipo(), isConst, valorAsignado != null);
-            tablaSimbolos.poner(id, d);
+        if (tablaSimbolos.contains(id)) {
+            // error
+            return;
         }
+        if (tipo.isArray() || tipo.isTupla()) {
+            if (isConst) {
+                // error
+                return;
+            }
+            if (valorAsignado != null) {
+                // error
+                return;
+            }
+        } else {
+            String tipoValor = null;
+            if (valorAsignado != null) {
+                tipoValor = procesarOperando(valorAsignado);
+                if (tipoValor == null) {
+                    // error
+                    return;
+                } else if (!tipoValor.equals(tipo.getTipo())) {
+                    // error
+                    return;
+                }
+            }
+        }
+        DescripcionSimbolo d = new DescripcionSimbolo(tipo.getTipo(), isConst, valorAsignado != null);
+        tablaSimbolos.poner(id, d);
     }
 
     private void procesarBody(SymbolBody body) {
@@ -200,7 +183,7 @@ public class SemanticAnalysis {
 
         do {
             SymbolAsig asig = asigs.asig;
-            DescripcionSimbolo d = tablaSimbolos.getDescription(asig.id);
+            DescripcionSimbolo d = tablaSimbolos.consulta(asig.id);
             if (d == null) {
                 // error, no encontrado
             } else if (d.isArray() || d.isFunction() || d.isTupla()) {
@@ -209,6 +192,7 @@ public class SemanticAnalysis {
             Object valor = procesarOperando(asig.valor);
             if (valor == null) {
                 // error
+                return;
             }
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
@@ -235,7 +219,7 @@ public class SemanticAnalysis {
 
     private void procesarLlamadaFuncion(SymbolFCall fcall) {
         String nombre = (String) fcall.methodName.value;
-        DescripcionSimbolo ds = tablaSimbolos.getDescription(nombre);
+        DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
         if (!ds.isFunction()) {
             // error
         }
@@ -250,6 +234,7 @@ public class SemanticAnalysis {
 
             if (tipoOp != tipoParam.snd.getTipo()) {
                 // error
+                return;
             }
             opLista = opLista.operandsLista;
         }
@@ -279,11 +264,11 @@ public class SemanticAnalysis {
 
     private void procesarSwap(SymbolSwap swap) {
 
-        DescripcionSimbolo ds1 = tablaSimbolos.getDescription(swap.op1);
+        DescripcionSimbolo ds1 = tablaSimbolos.consulta(swap.op1);
         if (ds1 == null) {
 
         }
-        DescripcionSimbolo ds2 = tablaSimbolos.getDescription(swap.op2);
+        DescripcionSimbolo ds2 = tablaSimbolos.consulta(swap.op2);
         if (ds2 == null) {
 
         }
@@ -302,23 +287,30 @@ public class SemanticAnalysis {
         if (procesarOperando(cond.cond) == null) {
 
         }
+        tablaSimbolos.entraBloque();
         procesarBody(cond.cuerpo);
+        tablaSimbolos.salirBloque();
         SymbolElifs elifs = cond.elifs;
         while (elifs != null) {
             SymbolElif elif = elifs.elif;
             if (procesarOperando(elif.cond) == null) {
 
             }
+            tablaSimbolos.entraBloque();
             procesarBody(elif.cuerpo);
+            tablaSimbolos.salirBloque();
             elifs = elifs.elifs;
         }
         if (cond.els != null) {
+            tablaSimbolos.entraBloque();
             procesarBody(cond.els.cuerpo);
+            tablaSimbolos.salirBloque();
         }
     }
 
     private void procesarLoop(SymbolLoop loop) {
         // no importa que sea while o do while
+        tablaSimbolos.entraBloque();
         SymbolLoopCond loopCond = loop.loopCond;
         if (loopCond.decs != null) {
             procesarDeclaraciones(loopCond.decs);
@@ -330,9 +322,11 @@ public class SemanticAnalysis {
             // error
         }
         procesarBody(loop.cuerpo);
+        tablaSimbolos.salirBloque();
     }
 
     private void procesarSwitch(SymbolSwitch sw) {
+        tablaSimbolos.entraBloque();
         Object tipo1 = procesarOperando(sw.cond);
         if (tipo1 == null) {
 
@@ -352,16 +346,19 @@ public class SemanticAnalysis {
         if (sw.pred != null) {
             procesarBody(sw.pred.cuerpo);
         }
+        tablaSimbolos.salirBloque();
     }
 
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) {
-        metodoActualmenteSiendoTratado = tablaSimbolos.getDescription(metodo.id);
+        tablaSimbolos.entraBloque();
+        metodoActualmenteSiendoTratado = tablaSimbolos.consulta(metodo.id);
         DescripcionSimbolo d = new DescripcionSimbolo();
 //        d.setValor(metodo.tipoRetorno);
 //        d.setValor(metodo.parametros);
 //        d.setValor(metodo.cuerpo); // está mal lo sé
         tablaSimbolos.poner(metodo.id, d);
         procesarBody(metodo.cuerpo);
+        tablaSimbolos.salirBloque();
     }
 
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) {
@@ -370,9 +367,15 @@ public class SemanticAnalysis {
         tablaSimbolos.poner(tupla.id, d);
     }
 
-    private void procesarMain(SymbolBody body) {
-        // tratamiento
+    private void procesarMain(SymbolMain main) {
+        SymbolBody body = main.main;
+        tablaSimbolos.entraBloque();
+        metodoActualmenteSiendoTratado = tablaSimbolos.consulta(main.nombreMain);
+        String tipo = ParserSym.terminalNames[ParserSym.STRING] + " " + ParserSym.terminalNames[ParserSym.LBRACKET] + " "+ Integer.MAX_VALUE + " " + ParserSym.terminalNames[ParserSym.RBRACKET];
+        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true);
+        tablaSimbolos.poner(main.nombreArgumentos, d);
         procesarBody(body);
+        tablaSimbolos.salirBloque();
     }
 
     /**

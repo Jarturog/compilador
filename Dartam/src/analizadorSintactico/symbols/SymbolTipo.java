@@ -65,7 +65,7 @@ public class SymbolTipo extends SymbolBase {
     public String getTipo() {
         String arrString = ParserSym.terminalNames[ParserSym.LBRACKET] + ParserSym.terminalNames[ParserSym.RBRACKET];
         if (!isTupla()) {
-            String t = (String) tipo.value;
+            String t = tipo.getTipo();
             if (!isArray()) {
                 return t;
             }
