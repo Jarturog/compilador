@@ -213,11 +213,11 @@ TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, tx
         | KW_TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
         ;
 
-TIPO_PRIMITIVO ::= KW_BOOL              {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_BOOL); :}
-        | KW_INT                        {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_INT); :}
-        | KW_DOUBLE                     {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_DOUBLE); :}
-        | KW_CHAR                       {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_CHAR); :}
-        | KW_STRING                     {: RESULT = new SymbolTipoPrimitivo(ParserSym.KW_STRING); :}
+TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_INT:et                        {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_DOUBLE:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_CHAR:et                       {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_STRING:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         ;
 
 PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etxleft, etxright); :}   
@@ -261,7 +261,7 @@ FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new S
         | METODO_NOMBRE:et1 LPAREN RPAREN   {: RESULT = new SymbolFCall(et1, et1xleft, et1xright); :}
         ;
 
-METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(ParserSym.ID, et, etxleft, etxright); :}
+METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(null, et, etxleft, etxright); :}
         | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, et, etxleft, etxright); :}
         | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, et, etxleft, etxright); :}
         | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, et, etxleft, etxright); :}
@@ -300,7 +300,7 @@ ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.A
 
 OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | FCALL:et                      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
-        | LPAREN OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | LPAREN:pos OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et, posxleft, posxright); :}
         | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
@@ -318,8 +318,8 @@ BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESU
 CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {: RESULT = new SymbolConditionalExpression(et1, et2, et3, et1xleft, et1xright);; :}
         ; 
 
-ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | STRING:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(true, et, etxleft, etxright); :}
+        | STRING:et             {: RESULT = new SymbolAtomicExpression(false, et, etxleft, etxright); :}
         | BOOL:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         | INT:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         | DOUBLE:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}

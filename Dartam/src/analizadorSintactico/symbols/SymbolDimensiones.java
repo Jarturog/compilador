@@ -10,17 +10,18 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-
-
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
- * 
- * REGLAS: 
- * DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2, et1left, et1right); :}
-        | LBRACKET OPERAND:et1 RBRACKET                         {: RESULT = new SymbolDimensiones(et1, et1left, et1right); :}
+DIMENSIONES ::= LBRACKET OPERAND:et1 RBRACKET DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1,et2, et1xleft, et1xright); :}
+        | LBRACKET OPERAND:et1 RBRACKET                         {: RESULT = new SymbolDimensiones(et1, et1xleft, et1xright); :}
         ;
- *
+        
+        .
+        .
+        .
+        
+DIMENSIONES ::= [OPERAND] DIMENSIONES
+        | [OPERAND]
+        ;
  */
 public class SymbolDimensiones extends SymbolBase {
     
@@ -39,14 +40,4 @@ public class SymbolDimensiones extends SymbolBase {
         this.dimensiones = dimensiones;
     }
 
-    public SymbolOperand getOperando() {
-        return operando;
-    }
-
-    public SymbolDimensiones getDimensiones() {
-        return dimensiones;
-    }
-    
-    
-    
 }

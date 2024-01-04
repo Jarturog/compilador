@@ -1,4 +1,4 @@
-ent a;
+string a : "aString";
 prop b;
 f vacio inicio(string[]argumentos){ ent e; }
 ent c;

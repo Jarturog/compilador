@@ -9,6 +9,7 @@ import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import jflex.base.Pair;
 
 /**
  *
@@ -16,12 +17,12 @@ import java.util.Set;
  */
 public class DescripcionSimbolo {
     
-    private SymbolTipo tipo;
+    private String tipo;
 
     private int nivel;
     private boolean isConstante, valorAsignado;
 
-    private ArrayList<Parametro> parametros;
+    private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
     private HashMap<DescripcionSimbolo, Boolean> miembros;
     private ArrayList<Integer> dimensiones;
 
@@ -31,15 +32,6 @@ public class DescripcionSimbolo {
     public String idcamp;   //Identificador del campo de la tupla
     
     public int dcamp; //Desplazamiento dentro del array
-    public class Parametro{
-        public String nombre;
-        public SymbolTipo tipo;
-        
-        public Parametro(String nombre, SymbolTipo tipo){
-            this.nombre = nombre;
-            this.tipo = tipo;
-        }
-    }
     
     /**
      * Main
@@ -51,7 +43,7 @@ public class DescripcionSimbolo {
     /**
      * Primitiva
      */
-    public DescripcionSimbolo(SymbolTipo t, boolean isConst){
+    public DescripcionSimbolo(String t, boolean isConst){
         tipo = t;
         isConstante = isConst;
     }
@@ -59,7 +51,7 @@ public class DescripcionSimbolo {
     /**
      * Primitiva
      */
-    public DescripcionSimbolo(SymbolTipo t, boolean isConst, boolean v){
+    public DescripcionSimbolo(String t, boolean isConst, boolean v){
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
@@ -68,7 +60,7 @@ public class DescripcionSimbolo {
     /**
      * Array
      */
-    public DescripcionSimbolo(SymbolTipo t, ArrayList<Integer> dim){
+    public DescripcionSimbolo(String t, ArrayList<Integer> dim){
         tipo = t;
         dimensiones = dim;
     }
@@ -83,11 +75,11 @@ public class DescripcionSimbolo {
     /**
      * Función
      */
-    public DescripcionSimbolo(SymbolTipo tipoRetorno){
+    public DescripcionSimbolo(String tipoRetorno){
         tipo = tipoRetorno;
     }
     
-    public void cambiarTipo(SymbolTipo t){
+    public void cambiarTipo(String t){
         this.tipo = t;
     }
     
@@ -98,12 +90,8 @@ public class DescripcionSimbolo {
         }
     }
     
-    public int getTipo(){
-        if(isFunction()){
-            return ParserSym.KW_METHOD;
-        }else{
-            return -1;//tipo.getTipo();
-        }
+    public String getTipo(){
+        return tipo;
     }
     
     //Array
@@ -111,7 +99,7 @@ public class DescripcionSimbolo {
         //tipo.setTipoBase(base);
     }
     
-    public SymbolTipo getTipoBase(){
+    public String getTipoBase(){
         return null;//tipo.getTipoBase();
     }
     
@@ -132,15 +120,16 @@ public class DescripcionSimbolo {
     }
     
     //Funciones
-    public void añadirParametro(String n, SymbolTipo t){
-        parametros.add(new Parametro(n,t));
+    public void añadirParametro(String n, String t){
+        DescripcionSimbolo ds = new DescripcionSimbolo(t);
+        parametros.add(new Pair(n, ds));
     }
     
     public int getNumeroParametros(){
         return parametros.size();
     }
     
-    public ArrayList<Parametro> getTiposParametros(){
+    public ArrayList<Pair<String, DescripcionSimbolo>> getTiposParametros(){
         return new ArrayList<>(parametros);
     }
     
@@ -148,7 +137,7 @@ public class DescripcionSimbolo {
         return new HashMap<>(miembros);
     }
     
-    public void setTipoRetorno(SymbolTipo tv) throws Exception{
+    public void setTipoRetorno(String tv) throws Exception{
         if(!this.isFunction()){
            throw new Exception("Error");
         }else{
@@ -156,7 +145,7 @@ public class DescripcionSimbolo {
         }
     }
     
-    public SymbolTipo getTipoRetorno(){
+    public String getTipoRetorno(){
         return this.tipo;
     }
     

@@ -27,6 +27,7 @@ import analizadorSintactico.symbols.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import jflex.base.Pair;
 
 public class SemanticAnalysis {
     
@@ -95,7 +96,7 @@ public class SemanticAnalysis {
             procesarDeclaracionTupla(tupla);
         }
         for (SymbolScriptElemento metodo : metodos) {
-            DescripcionSimbolo d = new DescripcionSimbolo(metodo.tipoRetorno.tipo);
+            DescripcionSimbolo d = new DescripcionSimbolo(metodo.tipoRetorno.getTipo());
             tablaSimbolos.poner(metodo.id, d);
         }
         for (SymbolScriptElemento metodo : metodos) {
@@ -144,7 +145,8 @@ public class SemanticAnalysis {
             } else if (tipoValor != tipo) {
                 // error
             }
-            DescripcionSimbolo d = new DescripcionSimbolo(tipo, isConst, valorAsignado != null);
+            SymbolTipoPrimitivo tipoPrimitivo = tipo.tipo;
+            DescripcionSimbolo d = new DescripcionSimbolo(tipoPrimitivo.getTipo(), isConst, valorAsignado != null);
             tablaSimbolos.poner(id, d);
         }
     }
@@ -216,16 +218,16 @@ public class SemanticAnalysis {
         if (!ds.isFunction()) {
             // error
         }
-        ArrayList<DescripcionSimbolo.Parametro> params = ds.getTiposParametros();
+        ArrayList<Pair<String, DescripcionSimbolo>> params = ds.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
-        for (DescripcionSimbolo.Parametro tipoParam : params) {
+        for (Pair<String,DescripcionSimbolo> tipoParam : params) {
             if (opLista == null) {
                 // error, hay más operandos que parámetros
             }
             SymbolOperand op = opLista.operand;
             Object tipoOp = procesarOperando(op);
             
-            if (tipoOp != tipoParam) {
+            if (tipoOp != tipoParam.snd.getTipo()) {
                 // error
             }
             opLista = opLista.operandsLista;
@@ -237,10 +239,10 @@ public class SemanticAnalysis {
     }
     
     private void procesarReturn(SymbolReturn ret) {
-        SymbolTipo tipo = metodoActualmenteSiendoTratado.getTipoRetorno();
+        String tipo = metodoActualmenteSiendoTratado.getTipoRetorno();
         SymbolOperand op = ret.op;
         if (op == null) {
-            if (tipo.tipo == null) {
+            if (tipo == null) {
                 return;
             }
             // error
@@ -357,7 +359,44 @@ public class SemanticAnalysis {
      * @param op
      * @return 
      */
-    private Object procesarOperando(SymbolOperand op) {
+    private String procesarOperando(SymbolOperand op) {
+        switch (op.getTipo()) {
+                case ATOMIC_EXPRESSION -> {
+                    SymbolAtomicExpression literal = op.atomicExp;
+                    return literal.tipo;
+                }
+                case FCALL -> {
+                    SymbolFCall fcall = op.fcall;
+                    SymbolMetodoNombre nombre = fcall.methodName;
+                    if (nombre.isSpecialMethod()) {
+                        return ParserSym.terminalNames[ParserSym.INT]; // los metodos especiales devuelven enteros
+                    }
+                    DescripcionSimbolo ds = tablaSimbolos.consulta((String) nombre.value);
+                    if (ds == null) {
+                        // error, función que se llama no se ha encontrado
+                    }
+                    return ds.getTipo();
+                }
+                case OP_BETWEEN_PAREN -> {
+                
+                }
+                case UNARY_EXPRESSION -> {
+                
+                }
+                case BINARY_EXPRESSION -> {
+                
+                }
+                case CONDITIONAL_EXPRESSION -> {
+                
+                }
+                case IDX_ARRAY -> {
+                
+                }
+                case MEMBER_ACCESS -> {
+                    
+                }
+            }
+        //op
         return null; // DescripcionSimbolo a; a.getValor();
     }
 

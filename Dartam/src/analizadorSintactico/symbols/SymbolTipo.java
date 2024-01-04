@@ -8,6 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
+import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
@@ -59,6 +60,21 @@ public class SymbolTipo extends SymbolBase {
     
     public boolean isArray() {
         return dimArray != null;
+    }
+    
+    public String getTipo() {
+        String arrString = ParserSym.terminalNames[ParserSym.LBRACKET] + ParserSym.terminalNames[ParserSym.RBRACKET];
+        if (!isTupla()) {
+            String t = (String) tipo.value;
+            if (!isArray()) {
+                return t;
+            }
+            return t + " " + arrString;
+        }
+        if (!isArray()) {
+            return ParserSym.terminalNames[ParserSym.KW_TUPLE] + " " + idTupla;
+        }
+        return ParserSym.terminalNames[ParserSym.KW_TUPLE] + " " + idTupla + " " + arrString;
     }
 
 }

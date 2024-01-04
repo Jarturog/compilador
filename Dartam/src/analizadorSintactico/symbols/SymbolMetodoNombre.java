@@ -13,26 +13,25 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
- * 
- * Reglas:
- * METHOD_NAME ::= ID                   {: RESULT = new SymbolMethodName(ParserSym.ID); :}
-        | KW_IN:et                      {: RESULT = new SymbolMethodName(ParserSym.KW_IN); :}
-        | KW_OUT:et                     {: RESULT = new SymbolMethodName(ParserSym.KW_OUT); :}
-        | KW_WRITE:et                   {: RESULT = new SymbolMethodName(ParserSym.KW_WRITE); :}
-        | KW_READ:et                    {: RESULT = new SymbolMethodName(ParserSym.KW_READ); :}
+METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(ParserSym.ID, et, etxleft, etxright); :}
+        | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, et, etxleft, etxright); :}
+        | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, et, etxleft, etxright); :}
+        | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, et, etxleft, etxright); :}
+        | KW_READ:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, et, etxleft, etxright); :}
         ;
  * 
  */
 public class SymbolMetodoNombre extends SymbolBase {
     
-    public final Integer methodName;
+    public final Integer specialMethod;
 
-    public SymbolMetodoNombre(int methodName, Object et, Location l , Location r) {
+    public SymbolMetodoNombre(Integer methodName, Object et, Location l , Location r) {
         super("methodName", et, l,r);
-        this.methodName = methodName;
+        this.specialMethod = methodName;
     }
-
+    
+    public boolean isSpecialMethod() {
+        return specialMethod != null;
+    }
     
 }

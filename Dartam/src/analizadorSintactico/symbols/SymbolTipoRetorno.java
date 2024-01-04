@@ -8,6 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
+import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 /**
@@ -31,4 +32,11 @@ public class SymbolTipoRetorno extends SymbolBase {
         tipo = null;
     }
 
+    public String getTipo() {
+        if (tipo == null) {
+            return ParserSym.terminalNames[ParserSym.KW_VOID];
+        }
+        return tipo.getTipo();
+    }
+    
 }

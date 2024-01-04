@@ -13,10 +13,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
- * 
- * OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | FCALL:et                      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | LPAREN OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
@@ -27,156 +24,147 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolOperand extends SymbolBase {
-    public final SymbolAtomicExpression aex;
+    public final SymbolAtomicExpression atomicExp;
     public final SymbolFCall fcall;
-    public final SymbolOperand op1;
-    public final SymbolOperand op2;
-    public final SymbolUnaryExpression uex;
-    public final SymbolBinaryExpression bex;
-    public final SymbolConditionalExpression cex;
-    public final String id;
+    public final SymbolOperand opBetweenParen, idxArr;
+    public final SymbolUnaryExpression unaryExp;
+    public final SymbolBinaryExpression binaryExp;
+    public final SymbolConditionalExpression conditionalExp;
+    public final String member;
 
-    public SymbolOperand(String variable, Double valor) {
-        super(variable);
-        this.aex = null;
+    // atomic expression
+    public SymbolOperand(SymbolAtomicExpression et, Location l, Location r) {
+        super("operand", 0, l , r);
+        this.atomicExp = et;
         this.fcall = null;
-        this.op1 = null;
-        this.op2 = null;
-        this.uex = null;
-        this.bex = null;
-        this.cex = null;
-        this.id = null;
-    }
-
-    public SymbolOperand(SymbolBinaryExpression et, Location l , Location r) {
-        super("operand", 0 ,l , r);
-        this.bex = et;
-        this.aex = null;
-        this.fcall = null;
-        this.op1 = null;
-        this.op2 = null;
-        this.uex = null;
-        this.cex = null;
-        this.id = null;
-    }
-
-    public SymbolOperand(SymbolOperand arr, SymbolOperand idx, Location l, Location r) {
-        super("operand", 0 ,l ,r );
-        this.op1 = arr;
-        this.op2 = idx;
-        this.aex = null;
-        this.fcall = null;
-        this.uex = null;
-        this.bex = null;
-        this.cex = null;
-        this.id = null;
-  
-    }
-
-    public SymbolOperand(SymbolOperand tuple, String member, Location l, Location r) {
-        super("operand", 0 ,l ,r );
-        this.op1 = tuple;
-        this.id= member;
-        this.aex = null;
-        this.fcall = null;
-        this.op2 = null;
-        this.uex = null;
-        this.bex = null;
-        this.cex = null;
-    }
-
-    public SymbolOperand(SymbolUnaryExpression et, Location l, Location r) {
-        super("operand", 0 ,l , r);
-        this.uex = et;
-        this.aex = null;
-        this.fcall = null;
-        this.op1 = null;
-        this.op2 = null;
-        this.bex = null;
-        this.cex = null;
-        this.id = null;
+        this.opBetweenParen = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+        this.member = null;
     }
     
-
-    public SymbolOperand(SymbolOperand et, Location l, Location r) {
-        super("operand", 0 , l , r);
-        this.op1 = et;
-        this.aex = null;
-        this.fcall = null;
-        this.op2 = null;
-        this.uex = null;
-        this.bex = null;
-        this.cex = null;
-        this.id = null;
-    }
-
+    // fcall
     public SymbolOperand(SymbolFCall et, Location l, Location r) {
         super("operand", 0 , l , r);
         this.fcall = et;
-        this.aex = null;
-        this.op1 = null;
-        this.op2 = null;
-        this.uex = null;
-        this.bex = null;
-        this.cex = null;
-        this.id = null;
-    }
-
-    public SymbolOperand(SymbolAtomicExpression et, Location l, Location r) {
-        super("operand", 0, l , r);
-        this.aex = et;
-        this.fcall = null;
-        this.op1 = null;
-        this.op2 = null;
-        this.uex = null;
-        this.bex = null;
-        this.cex = null;
-        this.id = null;
-    }
-
-    public SymbolOperand(SymbolConditionalExpression et, Location l , Location r) {
-        super("operand", 0, l ,r);
-        this.cex = et;
-        this.aex = null;
-        this.fcall = null;
-        this.op1 = null;
-        this.op2 = null;
-        this.uex = null;
-        this.bex = null;
-        this.id = null;
-    }
-
-    public SymbolAtomicExpression getAex() {
-        return aex;
-    }
-
-    public SymbolFCall getFcall() {
-        return fcall;
-    }
-
-    public SymbolOperand getOp1() {
-        return op1;
-    }
-
-    public SymbolOperand getOp2() {
-        return op2;
-    }
-
-    public SymbolUnaryExpression getUex() {
-        return uex;
-    }
-
-    public SymbolBinaryExpression getBex() {
-        return bex;
-    }
-
-    public SymbolConditionalExpression getCex() {
-        return cex;
-    }
-
-    public String getId() {
-        return id;
+        this.atomicExp = null;
+        this.opBetweenParen = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+        this.member = null;
     }
     
+    // parentesis
+    public SymbolOperand(SymbolOperand et, Location l, Location r) {
+        super("operand", 0 , l , r);
+        this.opBetweenParen = et;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+        this.member = null;
+    }
+    
+    // unary expression
+    public SymbolOperand(SymbolUnaryExpression et, Location l, Location r) {
+        super("operand", 0 ,l , r);
+        this.unaryExp = et;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.opBetweenParen = null;
+        this.idxArr = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+        this.member = null;
+    }
+
+    // binary expression
+    public SymbolOperand(SymbolBinaryExpression et, Location l , Location r) {
+        super("operand", 0 ,l , r);
+        this.binaryExp = et;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.opBetweenParen = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.conditionalExp = null;
+        this.member = null;
+    }
+    
+    // conditional expression
+    public SymbolOperand(SymbolConditionalExpression et, Location l , Location r) {
+        super("operand", 0, l ,r);
+        this.conditionalExp = et;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.opBetweenParen = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.member = null;
+    }
+
+    // array operation
+    public SymbolOperand(SymbolOperand arr, SymbolOperand idx, Location l, Location r) {
+        super("operand", 0 ,l ,r );
+        this.opBetweenParen = arr;
+        this.idxArr = idx;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+        this.member = null;
+    }
+
+    // tupla operation
+    public SymbolOperand(SymbolOperand tuple, String member, Location l, Location r) {
+        super("operand", 0 ,l ,r );
+        this.opBetweenParen = tuple;
+        this.member = member;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+    }
+    
+    public static enum TIPO {
+        ATOMIC_EXPRESSION,
+        FCALL,
+        OP_BETWEEN_PAREN,
+        UNARY_EXPRESSION,
+        BINARY_EXPRESSION,
+        CONDITIONAL_EXPRESSION,
+        IDX_ARRAY,
+        MEMBER_ACCESS
+    }
+    
+    public TIPO getTipo() {
+        if (atomicExp != null) {
+            return TIPO.ATOMIC_EXPRESSION;
+        } else if (fcall != null) {
+            return TIPO.FCALL;
+        } else if (opBetweenParen != null) {
+            return TIPO.OP_BETWEEN_PAREN;
+        } else if (idxArr != null) {
+            return TIPO.IDX_ARRAY;
+        } else if (unaryExp != null) {
+            return TIPO.UNARY_EXPRESSION;
+        } else if (binaryExp != null) {
+            return TIPO.BINARY_EXPRESSION;
+        } else if (conditionalExp != null) {
+            return TIPO.CONDITIONAL_EXPRESSION;
+        } else {
+            return TIPO.MEMBER_ACCESS;
+        }
+    }
     
 }
