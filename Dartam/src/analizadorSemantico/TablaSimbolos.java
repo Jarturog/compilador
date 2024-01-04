@@ -28,12 +28,10 @@ public class TablaSimbolos {
     
     //Clase entrada usado para la tabla de expansión!
     public class Entrada{
-            public String nombreVariable; //Identificador
+
+            public String nombreVariable, idcamp; //Identificador
             public DescripcionSimbolo descripcion;
-            public int next;
-            public int np;
-            public int d;
-            public String idcamp;
+            public int d, next, np;
             public Entrada(String n, DescripcionSimbolo d){
                 this.nombreVariable = n;
                 this.descripcion = d;
@@ -58,14 +56,14 @@ public class TablaSimbolos {
     /**
      * Ponemos un elemento dentro de la tabla de simbolos 
      */
-    public void poner(String id, DescripcionSimbolo d){
+    public void poner(String id, DescripcionSimbolo d) throws Exception{
         //Comprobamos si existe dentro de la tabla de descriptores
         
         DescripcionSimbolo sd = td.get(id);
         
         if(sd != null){ //Existe actualmente
             if(sd.getNivel() == this.n){ //Si ya hay uno al mismo nivel error
-                //throw new Exception("Ya existe una entrada con el mismo nombre en el mismo nivel");
+                throw new Exception("Ya existe una entrada con el mismo nombre en el mismo nivel");
             }
             
             //Si no estan declaradas al mismo nivel
@@ -101,10 +99,10 @@ public class TablaSimbolos {
         ta.add(valor);
     }
     
-    public void salirBloque() {
+    public void salirBloque() throws Exception{
 
         if(this.n == 0){ //Error grave del compilador
-            //throw new Exception("Error grave del compilador"); //Cambiar mas adelante
+            throw new Exception("Error grave del compilador"); //Cambiar mas adelante
         }
         int lini = ta.get(this.n);
         ta.remove(this.n); //Esto revisarlo
@@ -242,6 +240,7 @@ public class TablaSimbolos {
     public boolean last(int idx){
         return te.get(idx).next == 0;
     }
+    
     
     public DescripcionSimbolo consulta(String s){
         for (Entrada e : te) {
