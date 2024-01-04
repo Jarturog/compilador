@@ -22,33 +22,14 @@ BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESU
 
  */
 public class SymbolBinaryExpression extends SymbolBase {
-    public final SymbolOperand op1;
+    public final SymbolOperand op1, op2;
     public final SymbolBinaryOperator bop;
-    public final SymbolOperand op2;
 
-    /*public SymbolBinaryExpression(String variable, Double valor) {
-        super(variable);
-    }*/
-
-    public SymbolBinaryExpression(SymbolOperand op1, SymbolBinaryOperator bop,  SymbolOperand op2, Location l , Location r) {
-        super("binaryExpression", 0 , l , r);
+    public SymbolBinaryExpression(SymbolOperand op1, SymbolBinaryOperator bop, SymbolOperand op2, Location l , Location r) {
+        super("binaryExpression", l , r);
         this.op1 = op1;
         this.bop = bop;
         this.op2 = op2;
     }
 
-    public SymbolOperand getOp1() {
-        return op1;
-    }
-
-    public SymbolBinaryOperator getBop() {
-        return bop;
-    }
-
-    public SymbolOperand getOp2() {
-        return op2;
-    }
-    
-    
-    
 }

@@ -3,7 +3,7 @@
  * Miembros:
  * 	- Korn, Andreas Manuel
  * 	- Román Colom, Marc
- * 	- Vilella Candía, Joan 
+ * 	- Vilella Candía, Joan
  */
 package analizadorSemantico;
 
@@ -30,7 +30,7 @@ import java.util.List;
 import jflex.base.Pair;
 
 public class SemanticAnalysis {
-    
+
     public TablaSimbolos tablaSimbolos;
 
     // Description to the function in which we are currently.
@@ -43,22 +43,22 @@ public class SemanticAnalysis {
     private ArrayList<String> errors;
     public boolean thereIsError = false;
 
-    public String getErrors(){
+    public String getErrors() {
         String s = "";
-        for(String e : errors){
+        for (String e : errors) {
             s += e + "\n";
         }
         return s;
     }
 
-    private void reportError(String errorMessage, int line, int column){
+    private void reportError(String errorMessage, int line, int column) {
         thereIsError = true;
         errorMessage = " !! Semantic error: " + errorMessage + " at position [line: " + line + ", column: " + column + "]";
         System.err.println(errorMessage);
         errors.add(errorMessage);
     }
-    
-    public SemanticAnalysis(SymbolScript scriptElementosAntesDeMain){
+
+    public SemanticAnalysis(SymbolScript scriptElementosAntesDeMain) {
         tablaSimbolos = new TablaSimbolos();
         errors = new ArrayList<>();
         ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
@@ -68,9 +68,18 @@ public class SemanticAnalysis {
         SymbolScriptElemento elem = scriptElementosAntesDeMain.elemento;
         while (elem != null) {
             switch (elem.getTipo()) {
-                case SymbolScriptElemento.DECS -> { declaraciones.add(elem.declaraciones); idMidDecs++; }
-                case SymbolScriptElemento.TUPLA -> { tuplas.add(elem); idMidTuplas++; }
-                case SymbolScriptElemento.METODO -> { metodos.add(elem); idMidMetodos++; }
+                case SymbolScriptElemento.DECS -> {
+                    declaraciones.add(elem.declaraciones);
+                    idMidDecs++;
+                }
+                case SymbolScriptElemento.TUPLA -> {
+                    tuplas.add(elem);
+                    idMidTuplas++;
+                }
+                case SymbolScriptElemento.METODO -> {
+                    metodos.add(elem);
+                    idMidMetodos++;
+                }
             }
             scriptElementosAntesDeMain = scriptElementosAntesDeMain.siguienteElemento;
             elem = scriptElementosAntesDeMain.elemento;
@@ -79,9 +88,12 @@ public class SemanticAnalysis {
         elem = scriptMainYElementos.elemento;
         while (elem != null) {
             switch (elem.getTipo()) {
-                case SymbolScriptElemento.DECS -> declaraciones.add(idMidDecs, elem.declaraciones);
-                case SymbolScriptElemento.TUPLA -> tuplas.add(idMidTuplas, elem);
-                case SymbolScriptElemento.METODO -> metodos.add(idMidMetodos, elem);
+                case SymbolScriptElemento.DECS ->
+                    declaraciones.add(idMidDecs, elem.declaraciones);
+                case SymbolScriptElemento.TUPLA ->
+                    tuplas.add(idMidTuplas, elem);
+                case SymbolScriptElemento.METODO ->
+                    metodos.add(idMidMetodos, elem);
             }
             scriptMainYElementos = scriptMainYElementos.siguienteElemento;
             elem = scriptMainYElementos.elemento;
@@ -106,18 +118,18 @@ public class SemanticAnalysis {
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.KW_MAIN], d);
         procesarMain(scriptMainYElementos.main);
     }
-    
+
     private void procesarDeclaraciones(SymbolDecs decs) {
         SymbolDecAsigLista dec = decs.iddecslista;
         while (dec != null) {
-            procesarDeclaracion(dec.id, 
-                    (dec.asignacion == null) ? null : dec.asignacion.operando, 
-                    decs.isConst, 
+            procesarDeclaracion(dec.id,
+                    (dec.asignacion == null) ? null : dec.asignacion.operando,
+                    decs.isConst,
                     decs.tipo);
             dec = dec.siguienteDeclaracion;
         }
     }
-    
+
     private void procesarDeclaracion(String id, SymbolOperand valorAsignado, boolean isConst, SymbolTipo tipo) {
         if (tipo.isArray()) {
             if (isConst) {
@@ -140,7 +152,7 @@ public class SemanticAnalysis {
                 // error
             }
             Object tipoValor = procesarOperando(valorAsignado);
-            if (tipoValor == null){
+            if (tipoValor == null) {
                 // error
             } else if (tipoValor != tipo) {
                 // error
@@ -150,16 +162,20 @@ public class SemanticAnalysis {
             tablaSimbolos.poner(id, d);
         }
     }
-        
+
     private void procesarBody(SymbolBody body) {
         while (body != null) {
             SymbolMetodoElemento elem = body.metodo;
-            
+
             switch (elem.getTipo()) {
-                case SymbolMetodoElemento.INSTR -> procesarInstruccion(elem.instruccion);
-                case SymbolMetodoElemento.IF -> procesarIf(elem.iff);
-                case SymbolMetodoElemento.LOOP -> procesarLoop(elem.loop);
-                case SymbolMetodoElemento.SWITCH -> procesarSwitch(elem.sw);
+                case SymbolMetodoElemento.INSTR ->
+                    procesarInstruccion(elem.instruccion);
+                case SymbolMetodoElemento.IF ->
+                    procesarIf(elem.iff);
+                case SymbolMetodoElemento.LOOP ->
+                    procesarLoop(elem.loop);
+                case SymbolMetodoElemento.SWITCH ->
+                    procesarSwitch(elem.sw);
             }
             body = body.siguienteMetodo;
         }
@@ -167,14 +183,19 @@ public class SemanticAnalysis {
 
     private void procesarInstruccion(SymbolInstr instr) {
         switch (instr.getTipo()) {
-            case SymbolInstr.ASIGS -> procesarAsignaciones(instr.asigs);
-            case SymbolInstr.DECS -> procesarDeclaraciones(instr.decs);
-            case SymbolInstr.FCALL -> procesarLlamadaFuncion(instr.fcall);
-            case SymbolInstr.RET -> procesarReturn(instr.ret);
-            case SymbolInstr.SWAP -> procesarSwap(instr.swap);
+            case SymbolInstr.ASIGS ->
+                procesarAsignaciones(instr.asigs);
+            case SymbolInstr.DECS ->
+                procesarDeclaraciones(instr.decs);
+            case SymbolInstr.FCALL ->
+                procesarLlamadaFuncion(instr.fcall);
+            case SymbolInstr.RET ->
+                procesarReturn(instr.ret);
+            case SymbolInstr.SWAP ->
+                procesarSwap(instr.swap);
         }
     }
-    
+
     private void procesarAsignaciones(SymbolAsigs asigs) {
 
         do {
@@ -186,32 +207,32 @@ public class SemanticAnalysis {
                 // error, asignación no permitida
             }
             Object valor = procesarOperando(asig.valor);
-            if (valor == null){
+            if (valor == null) {
                 // error
             }
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
-                    if ((Object)d.getTipo() != valor) {
+                    if ((Object) d.getTipo() != valor) {
                         // error se asigna tipo diferente
                     }
-                    
+
                 }
                 case ARRAY -> {
-                
+
                 }
                 case TUPLA -> {
                     //HashMap<DescripcionSimbolo.Parametro, Boolean> tiposMiembros = d.getTiposMiembros();
                 }
             }
-            if (!asig.operacion.isBasicAsig() ){//&& d.getValor() == null) {
+            if (!asig.operacion.isBasicAsig()) {//&& d.getValor() == null) {
                 // error operando con variable sin valor
             }
-            
+
             asigs = asigs.siguienteAsig;
         } while (asigs != null);
-        
+
     }
-    
+
     private void procesarLlamadaFuncion(SymbolFCall fcall) {
         String nombre = (String) fcall.methodName.value;
         DescripcionSimbolo ds = tablaSimbolos.getDescription(nombre);
@@ -220,13 +241,13 @@ public class SemanticAnalysis {
         }
         ArrayList<Pair<String, DescripcionSimbolo>> params = ds.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
-        for (Pair<String,DescripcionSimbolo> tipoParam : params) {
+        for (Pair<String, DescripcionSimbolo> tipoParam : params) {
             if (opLista == null) {
                 // error, hay más operandos que parámetros
             }
             SymbolOperand op = opLista.operand;
             Object tipoOp = procesarOperando(op);
-            
+
             if (tipoOp != tipoParam.snd.getTipo()) {
                 // error
             }
@@ -235,9 +256,9 @@ public class SemanticAnalysis {
         if (opLista != null) {
             // error, hay más parámetros que operandos
         }
-        
+
     }
-    
+
     private void procesarReturn(SymbolReturn ret) {
         String tipo = metodoActualmenteSiendoTratado.getTipoRetorno();
         SymbolOperand op = ret.op;
@@ -255,25 +276,27 @@ public class SemanticAnalysis {
             // error
         }
     }
-    
+
     private void procesarSwap(SymbolSwap swap) {
-        
+
         DescripcionSimbolo ds1 = tablaSimbolos.getDescription(swap.op1);
         if (ds1 == null) {
-            
+
         }
         DescripcionSimbolo ds2 = tablaSimbolos.getDescription(swap.op2);
         if (ds2 == null) {
-            
+
         }
         //if (ds1.getValor() != ds2.getValor()) {
-            
+
         //}
     }
-    
+
     /**
-     * Comprobar que las condiciones del if y elifs respeten los tipos y sus cuerpos
-     * @param cond 
+     * Comprobar que las condiciones del if y elifs respeten los tipos y sus
+     * cuerpos
+     *
+     * @param cond
      */
     private void procesarIf(SymbolIf cond) {
         if (procesarOperando(cond.cond) == null) {
@@ -284,7 +307,7 @@ public class SemanticAnalysis {
         while (elifs != null) {
             SymbolElif elif = elifs.elif;
             if (procesarOperando(elif.cond) == null) {
-                
+
             }
             procesarBody(elif.cuerpo);
             elifs = elifs.elifs;
@@ -293,7 +316,7 @@ public class SemanticAnalysis {
             procesarBody(cond.els.cuerpo);
         }
     }
-    
+
     private void procesarLoop(SymbolLoop loop) {
         // no importa que sea while o do while
         SymbolLoopCond loopCond = loop.loopCond;
@@ -308,20 +331,20 @@ public class SemanticAnalysis {
         }
         procesarBody(loop.cuerpo);
     }
-    
+
     private void procesarSwitch(SymbolSwitch sw) {
         Object tipo1 = procesarOperando(sw.cond);
         if (tipo1 == null) {
-            
+
         }
         SymbolCaso caso = sw.caso;
         while (caso != null) {
             Object tipo2 = procesarOperando(caso.cond);
             if (tipo2 == null) {
-                
+
             }
             if (tipo1 != tipo2) {
-                
+
             }
             procesarBody(caso.cuerpo);
             caso = caso.caso;
@@ -333,7 +356,7 @@ public class SemanticAnalysis {
 
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) {
         metodoActualmenteSiendoTratado = tablaSimbolos.getDescription(metodo.id);
-        DescripcionSimbolo d = new DescripcionSimbolo(); 
+        DescripcionSimbolo d = new DescripcionSimbolo();
 //        d.setValor(metodo.tipoRetorno);
 //        d.setValor(metodo.parametros);
 //        d.setValor(metodo.cuerpo); // está mal lo sé
@@ -341,100 +364,150 @@ public class SemanticAnalysis {
         procesarBody(metodo.cuerpo);
     }
 
-    
-
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) {
-        DescripcionSimbolo d = new DescripcionSimbolo(); 
+        DescripcionSimbolo d = new DescripcionSimbolo();
 //        d.setValor(tupla.miembrosTupla);
         tablaSimbolos.poner(tupla.id, d);
     }
-    
+
     private void procesarMain(SymbolBody body) {
         // tratamiento
         procesarBody(body);
     }
-    
+
     /**
-     * Devuelve el tipo, array o struct al que pertenece el operando. Null si no se respetan los tipos.
+     * Devuelve el tipo, array o struct al que pertenece el operando. Null si no
+     * se respetan los tipos.
+     *
      * @param op
-     * @return 
+     * @return
      */
     private String procesarOperando(SymbolOperand op) {
         switch (op.getTipo()) {
-                case ATOMIC_EXPRESSION -> {
-                    SymbolAtomicExpression literal = op.atomicExp;
-                    return literal.tipo;
+            case ATOMIC_EXPRESSION -> {
+                SymbolAtomicExpression literal = op.atomicExp;
+                return literal.tipo;
+            }
+            case FCALL -> {
+                SymbolFCall fcall = op.fcall;
+                SymbolMetodoNombre nombre = fcall.methodName;
+                if (nombre.isSpecialMethod()) {
+                    return ParserSym.terminalNames[ParserSym.INT]; // los metodos especiales devuelven enteros
                 }
-                case FCALL -> {
-                    SymbolFCall fcall = op.fcall;
-                    SymbolMetodoNombre nombre = fcall.methodName;
-                    if (nombre.isSpecialMethod()) {
-                        return ParserSym.terminalNames[ParserSym.INT]; // los metodos especiales devuelven enteros
-                    }
-                    DescripcionSimbolo ds = tablaSimbolos.consulta((String) nombre.value);
-                    if (ds == null) {
-                        // error, función que se llama no se ha encontrado
-                    }
-                    return ds.getTipo();
+                DescripcionSimbolo ds = tablaSimbolos.consulta((String) nombre.value);
+                if (ds == null) {
+                    // error, función que se llama no se ha encontrado
+                    return null;
                 }
-                case OP_BETWEEN_PAREN -> {
-                    return procesarOperando(op.opBetweenParen);
+                return ds.getTipo();
+            }
+            case OP_BETWEEN_PAREN -> {
+                return procesarOperando(op.opBetweenParen);
+            }
+            case UNARY_EXPRESSION -> {
+                SymbolUnaryExpression exp = op.unaryExp;
+                String tipo = procesarOperando(exp.op);
+                if (tipo == null) {
+                    return null;
                 }
-                case UNARY_EXPRESSION -> {
-                    SymbolUnaryExpression exp = op.unaryExp;
-                    String tipo = procesarOperando(exp.op);
-                    if (tipo == null) {
+                if (exp.isLeftUnaryOperator()) {
+                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                        // error, no se puede operar si no es int ni bool
                         return null;
                     }
-                    if (exp.isLeftUnaryOperator()) {
-                        if (!tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
-                            // error, no se puede operar si no es int ni bool
-                            return null;
-                        }
-                        SymbolLUnaryOperator operator = exp.leftOp;
-                        int operation = operator.unaryOperator;
-                        if (tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && ParserSym.OP_NOT != operation) {
-                            // no se puede operar booleano con inc/dec
-                            return null;
-                        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
-                            // no se puede operar entero con not
-                            return null;
-                        }
-                        return tipo;
-                    }
-                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
-                        // error, no se puede operar si no es int ni double
-                        return null;
-                    }
-                    SymbolRUnaryOperator operator = exp.rightOp;
+                    SymbolLUnaryOperator operator = exp.leftOp;
                     int operation = operator.unaryOperator;
-                    if (tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && ParserSym.OP_PCT != operation) {
-                        // no se puede operar double con inc/dec
+                    if (tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && ParserSym.OP_NOT != operation) {
+                        // no se puede operar booleano con inc/dec
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
-                        // !!! se puede operar entero con OP_PCT
-                        return ParserSym.terminalNames[ParserSym.DOUBLE];
+                        // no se puede operar entero con not
+                        return null;
                     }
                     return tipo;
                 }
-                case BINARY_EXPRESSION -> {
-                    
+                if (!tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                    // error, no se puede operar si no es int ni double
+                    return null;
                 }
-                case CONDITIONAL_EXPRESSION -> {
-                
+                SymbolRUnaryOperator operator = exp.rightOp;
+                int operation = operator.unaryOperator;
+                if (tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && ParserSym.OP_PCT != operation) {
+                    // no se puede operar double con inc/dec
+                    return null;
+                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                    // !!! se puede operar entero con OP_PCT
+                    return ParserSym.terminalNames[ParserSym.DOUBLE];
                 }
-                case IDX_ARRAY -> {
-                
-                }
-                case MEMBER_ACCESS -> {
-                    
-                }
+                return tipo;
             }
-        //op
-        return null; // DescripcionSimbolo a; a.getValor();
+            case BINARY_EXPRESSION -> {
+                SymbolBinaryExpression exp = op.binaryExp;
+                String tipo1 = procesarOperando(exp.op1);
+                if (tipo1 == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                String tipo2 = procesarOperando(exp.op2);
+                if (tipo2 == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && tipo2.equals(ParserSym.terminalNames[ParserSym.INT]))
+                        || (tipo2.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && tipo1.equals(ParserSym.terminalNames[ParserSym.INT]));
+                if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
+                    // error, no se puede operar con tipos diferentes (excepto int y double)
+                    return null;
+                }
+                SymbolBinaryOperator operator = exp.bop;
+                if (tipo1.equals(ParserSym.terminalNames[ParserSym.BOOL]) && !operator.isForBooleanOperands()) { // si booleano
+                    // error
+                    return null;
+                } else if (unoIntOtroDouble && operator.isForDoubleOperands()) {
+                    return ParserSym.terminalNames[ParserSym.DOUBLE];
+                } else if (tipo1.equals(ParserSym.terminalNames[ParserSym.INT]) && !operator.isForIntegerOperands()) { // si int
+                    // error
+                    return null;
+                } else if (tipo1.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && !operator.isForDoubleOperands()) { // si double
+                    // error
+                    return null;
+                }
+                return tipo1;
+            }
+            case CONDITIONAL_EXPRESSION -> {
+                SymbolConditionalExpression exp = op.conditionalExp;
+                String tipoCond = procesarOperando(exp.cond);
+                if (tipoCond == null) {
+                    // error, operación no permitida
+                    return null;
+                } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+                    // error, no se puede utilizar de condición algo que no sea una proposición
+                    return null;
+                }
+                String tipo1 = procesarOperando(exp.caseTrue);
+                if (tipo1 == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                String tipo2 = procesarOperando(exp.caseFalse);
+                if (tipo2 == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                if (!tipo1.equals(tipo2)) {
+                    // error, no se puede asignar con tipos diferentes
+                    return null;
+                }
+                return tipo1;
+            }
+            case IDX_ARRAY -> {
+
+            }
+            case MEMBER_ACCESS -> {
+
+            }
+        }
+        return null; // error, no es ninguno de los casos
     }
 
-    
-
-    
 }

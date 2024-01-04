@@ -8,27 +8,96 @@
  */
 package analizadorSintactico.symbols;
 
+import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramatica.
- * 
- * Basicament conte un valor enter
+BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et, etxleft, etxright); :}
+        | OP_SUB:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_SUB, et, etxleft, etxright); :}
+        | OP_MUL:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MUL, et, etxleft, etxright); :}
+        | OP_DIV:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_DIV, et, etxleft, etxright); :}
+        | OP_MOD:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_MOD, et, etxleft, etxright); :}
+        | OP_POT:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_POT, et, etxleft, etxright); :}
+        | OP_EQ:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_EQ, et, etxleft, etxright); :}
+        | OP_BEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BEQ, et, etxleft, etxright); :}
+        | OP_BT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_BT, et, etxleft, etxright); :}
+        | OP_LEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LEQ, et, etxleft, etxright); :}
+        | OP_LT:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_LT, et, etxleft, etxright); :}
+        | OP_NEQ:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_NEQ, et, etxleft, etxright); :}
+        | OP_AND:et             {: RESULT = new SymbolBinaryOperator(ParserSym.OP_AND, et, etxleft, etxright); :}
+        | OP_OR:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_OR, et, etxleft, etxright); :}
+        ;
  */
 public class SymbolBinaryOperator extends SymbolBase {
-    private int operador;
-    
-    
-    public SymbolBinaryOperator(String variable, Double valor) {
-        super(variable);
-    }
+    private final int operador;
 
     public SymbolBinaryOperator(int op, Object et, Location l, Location r) {
-        super("binaryOperator", 0 ,l, r);
+        super("binaryOperator", et,l, r);
         this.operador = op;
+    }
+    
+    public boolean isForBooleanOperands() {
+        
+    }
+
+    
+    public boolean isForDoubleOperands() {
+        return operador == ParserSym.OP_ADD ||
+               operador == ParserSym.OP_SUB ||
+               operador == ParserSym.OP_MUL ||
+               operador == ParserSym.OP_DIV ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_BEQ ||
+               operador == ParserSym.OP_BT ||
+               operador == ParserSym.OP_LEQ ||
+               operador == ParserSym.OP_LT ||
+               operador == ParserSym.OP_NEQ;
+    }
+    
+    public boolean isForIntegerOperands() {
+        return operador == ParserSym.OP_ADD ||
+               operador == ParserSym.OP_SUB ||
+               operador == ParserSym.OP_MUL ||
+               operador == ParserSym.OP_DIV ||
+               operador == ParserSym.OP_MOD ||
+               operador == ParserSym.OP_POT ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_BEQ ||
+               operador == ParserSym.OP_BT ||
+               operador == ParserSym.OP_LEQ ||
+               operador == ParserSym.OP_LT ||
+               operador == ParserSym.OP_NEQ;
+    }
+    
+    public boolean isForOperandsOfType(String type) {
+        if(type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+            return operador == ParserSym.OP_OR ||
+               operador == ParserSym.OP_AND ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+            return operador == ParserSym.OP_OR ||
+               operador == ParserSym.OP_AND ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+            return operador == ParserSym.OP_OR ||
+               operador == ParserSym.OP_AND ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+            return operador == ParserSym.OP_OR ||
+               operador == ParserSym.OP_AND ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+            return operador == ParserSym.OP_OR ||
+               operador == ParserSym.OP_AND ||
+               operador == ParserSym.OP_EQ ||
+               operador == ParserSym.OP_NEQ;
+            
     }
     
 }
