@@ -19,23 +19,25 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolUnaryExpression extends SymbolBase {
-    public final SymbolLUnaryOperator luo;
-    public final SymbolRUnaryOperator ruo;
+    public final SymbolLUnaryOperator leftOp;
+    public final SymbolRUnaryOperator rightOp;
     public final SymbolOperand op;
     
     public SymbolUnaryExpression(SymbolLUnaryOperator luo, SymbolOperand op, Location l, Location r) {
         super("unaryExpression", 0 , l , r);
-        this.luo = luo;
+        this.leftOp = luo;
         this.op = op;
-        this.ruo = null;
+        this.rightOp = null;
     }
 
     public SymbolUnaryExpression(SymbolOperand op, SymbolRUnaryOperator ruo, Location l, Location r) {
         super("unaryExpression", 0 , l , r);
-        this.ruo = ruo;
+        this.rightOp = ruo;
         this.op = op;
-        this.luo = null;
+        this.leftOp = null;
     }
 
-    
+    public boolean isLeftUnaryOperator() {
+        return leftOp != null;
+    }
 }

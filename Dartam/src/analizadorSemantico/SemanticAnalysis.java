@@ -378,13 +378,47 @@ public class SemanticAnalysis {
                     return ds.getTipo();
                 }
                 case OP_BETWEEN_PAREN -> {
-                
+                    return procesarOperando(op.opBetweenParen);
                 }
                 case UNARY_EXPRESSION -> {
-                
+                    SymbolUnaryExpression exp = op.unaryExp;
+                    String tipo = procesarOperando(exp.op);
+                    if (tipo == null) {
+                        return null;
+                    }
+                    if (exp.isLeftUnaryOperator()) {
+                        if (!tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                            // error, no se puede operar si no es int ni bool
+                            return null;
+                        }
+                        SymbolLUnaryOperator operator = exp.leftOp;
+                        int operation = operator.unaryOperator;
+                        if (tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && ParserSym.OP_NOT != operation) {
+                            // no se puede operar booleano con inc/dec
+                            return null;
+                        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                            // no se puede operar entero con not
+                            return null;
+                        }
+                        return tipo;
+                    }
+                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                        // error, no se puede operar si no es int ni double
+                        return null;
+                    }
+                    SymbolRUnaryOperator operator = exp.rightOp;
+                    int operation = operator.unaryOperator;
+                    if (tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && ParserSym.OP_PCT != operation) {
+                        // no se puede operar double con inc/dec
+                        return null;
+                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                        // !!! se puede operar entero con OP_PCT
+                        return ParserSym.terminalNames[ParserSym.DOUBLE];
+                    }
+                    return tipo;
                 }
                 case BINARY_EXPRESSION -> {
-                
+                    
                 }
                 case CONDITIONAL_EXPRESSION -> {
                 
