@@ -1,7 +1,6 @@
-
 /**
  * Assignatura 21780 - Compiladors
- * Estudis: Grau en Informatica 
+ * Estudis: Grau en Informatica
  * Itinerari: Inteligencia Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta
@@ -10,8 +9,6 @@ package analizadorSintactico.symbols;
 
 import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
 BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et, etxleft, etxright); :}
@@ -31,73 +28,74 @@ BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.O
         ;
  */
 public class SymbolBinaryOperator extends SymbolBase {
+
     private final int operador;
 
     public SymbolBinaryOperator(int op, Object et, Location l, Location r) {
-        super("binaryOperator", et,l, r);
+        super("binaryOperator", et, l, r);
         this.operador = op;
     }
-    
-    public boolean isForBooleanOperands() {
-        
+
+    public boolean doesOperationResultsInBoolean() {
+        return operador == ParserSym.OP_EQ ||
+            operador == ParserSym.OP_BEQ ||
+            operador == ParserSym.OP_BT ||
+            operador == ParserSym.OP_LEQ ||
+            operador == ParserSym.OP_LT ||
+            operador == ParserSym.OP_NEQ ||
+            operador == ParserSym.OP_AND ||
+            operador == ParserSym.OP_OR;
     }
 
-    
-    public boolean isForDoubleOperands() {
-        return operador == ParserSym.OP_ADD ||
-               operador == ParserSym.OP_SUB ||
-               operador == ParserSym.OP_MUL ||
-               operador == ParserSym.OP_DIV ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_BEQ ||
-               operador == ParserSym.OP_BT ||
-               operador == ParserSym.OP_LEQ ||
-               operador == ParserSym.OP_LT ||
-               operador == ParserSym.OP_NEQ;
-    }
-    
-    public boolean isForIntegerOperands() {
-        return operador == ParserSym.OP_ADD ||
-               operador == ParserSym.OP_SUB ||
-               operador == ParserSym.OP_MUL ||
-               operador == ParserSym.OP_DIV ||
-               operador == ParserSym.OP_MOD ||
-               operador == ParserSym.OP_POT ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_BEQ ||
-               operador == ParserSym.OP_BT ||
-               operador == ParserSym.OP_LEQ ||
-               operador == ParserSym.OP_LT ||
-               operador == ParserSym.OP_NEQ;
-    }
-    
     public boolean isForOperandsOfType(String type) {
-        if(type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
-            return operador == ParserSym.OP_OR ||
-               operador == ParserSym.OP_AND ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
-            return operador == ParserSym.OP_OR ||
-               operador == ParserSym.OP_AND ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
-            return operador == ParserSym.OP_OR ||
-               operador == ParserSym.OP_AND ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
-            return operador == ParserSym.OP_OR ||
-               operador == ParserSym.OP_AND ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
-            return operador == ParserSym.OP_OR ||
-               operador == ParserSym.OP_AND ||
-               operador == ParserSym.OP_EQ ||
-               operador == ParserSym.OP_NEQ;
-            
+        if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+            return operador == ParserSym.OP_OR
+                    || operador == ParserSym.OP_AND
+                    || operador == ParserSym.OP_EQ
+                    || operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.INT])) {
+            return operador == ParserSym.OP_ADD
+                    || operador == ParserSym.OP_SUB
+                    || operador == ParserSym.OP_MUL
+                    || operador == ParserSym.OP_DIV
+                    || operador == ParserSym.OP_MOD
+                    || operador == ParserSym.OP_POT
+                    || operador == ParserSym.OP_EQ
+                    || operador == ParserSym.OP_BEQ
+                    || operador == ParserSym.OP_BT
+                    || operador == ParserSym.OP_LEQ
+                    || operador == ParserSym.OP_LT
+                    || operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.DOUBLE])) {
+            return operador == ParserSym.OP_ADD
+                    || operador == ParserSym.OP_SUB
+                    || operador == ParserSym.OP_MUL
+                    || operador == ParserSym.OP_DIV
+                    || operador == ParserSym.OP_EQ
+                    || operador == ParserSym.OP_BEQ
+                    || operador == ParserSym.OP_BT
+                    || operador == ParserSym.OP_LEQ
+                    || operador == ParserSym.OP_LT
+                    || operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.CHAR])) {
+            return operador == ParserSym.OP_ADD
+                    || operador == ParserSym.OP_SUB
+                    || operador == ParserSym.OP_MUL
+                    || operador == ParserSym.OP_DIV
+                    || operador == ParserSym.OP_MOD
+                    || operador == ParserSym.OP_POT
+                    || operador == ParserSym.OP_EQ
+                    || operador == ParserSym.OP_BEQ
+                    || operador == ParserSym.OP_BT
+                    || operador == ParserSym.OP_LEQ
+                    || operador == ParserSym.OP_LT
+                    || operador == ParserSym.OP_NEQ;
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.STRING])) {
+            return operador == ParserSym.OP_ADD
+                    || operador == ParserSym.OP_EQ
+                    || operador == ParserSym.OP_NEQ;
+        }
+        return false;
     }
-    
+
 }

@@ -23,7 +23,7 @@ public class DescripcionSimbolo {
     private boolean isConstante, valorAsignado;
 
     private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
-    private HashMap<DescripcionSimbolo, Boolean> miembros;
+    private HashMap<String, DescripcionSimbolo> miembros;
     private ArrayList<Integer> dimensiones;
 
 
@@ -69,7 +69,7 @@ public class DescripcionSimbolo {
      * Tupla
      */
     public DescripcionSimbolo(Set<DescripcionSimbolo> m){
-        miembros = (HashMap<DescripcionSimbolo, Boolean>) m;
+        miembros = (HashMap<String, DescripcionSimbolo>) m;
     }
     
     /**
@@ -133,7 +133,7 @@ public class DescripcionSimbolo {
         return new ArrayList<>(parametros);
     }
     
-    public HashMap<DescripcionSimbolo, Boolean> getTiposMiembros() {
+    public HashMap<String, DescripcionSimbolo> getTiposMiembros() {
         return new HashMap<>(miembros);
     }
     
@@ -159,6 +159,10 @@ public class DescripcionSimbolo {
     
     public boolean isTupla() {
         return miembros != null;
+    }
+    
+    public DescripcionSimbolo getMember(String id) {
+        return miembros.get(id);
     }
     
 }

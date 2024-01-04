@@ -20,13 +20,13 @@ OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxlef
         | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | OPERAND:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET  {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
-        | OPERAND:et1 OP_MEMBER ID:et2                     {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
+        | OPERAND:et1 OP_MEMBER ID:et2                          {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
         ;
  */
 public class SymbolOperand extends SymbolBase {
     public final SymbolAtomicExpression atomicExp;
     public final SymbolFCall fcall;
-    public final SymbolOperand opBetweenParen, idxArr;
+    public final SymbolOperand op, idxArr;
     public final SymbolUnaryExpression unaryExp;
     public final SymbolBinaryExpression binaryExp;
     public final SymbolConditionalExpression conditionalExp;
@@ -37,7 +37,7 @@ public class SymbolOperand extends SymbolBase {
         super("operand", 0, l , r);
         this.atomicExp = et;
         this.fcall = null;
-        this.opBetweenParen = null;
+        this.op = null;
         this.idxArr = null;
         this.unaryExp = null;
         this.binaryExp = null;
@@ -50,7 +50,7 @@ public class SymbolOperand extends SymbolBase {
         super("operand", 0 , l , r);
         this.fcall = et;
         this.atomicExp = null;
-        this.opBetweenParen = null;
+        this.op = null;
         this.idxArr = null;
         this.unaryExp = null;
         this.binaryExp = null;
@@ -61,7 +61,7 @@ public class SymbolOperand extends SymbolBase {
     // parentesis
     public SymbolOperand(SymbolOperand et, Location l, Location r) {
         super("operand", 0 , l , r);
-        this.opBetweenParen = et;
+        this.op = et;
         this.atomicExp = null;
         this.fcall = null;
         this.idxArr = null;
@@ -77,7 +77,7 @@ public class SymbolOperand extends SymbolBase {
         this.unaryExp = et;
         this.atomicExp = null;
         this.fcall = null;
-        this.opBetweenParen = null;
+        this.op = null;
         this.idxArr = null;
         this.binaryExp = null;
         this.conditionalExp = null;
@@ -90,7 +90,7 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = et;
         this.atomicExp = null;
         this.fcall = null;
-        this.opBetweenParen = null;
+        this.op = null;
         this.idxArr = null;
         this.unaryExp = null;
         this.conditionalExp = null;
@@ -103,7 +103,7 @@ public class SymbolOperand extends SymbolBase {
         this.conditionalExp = et;
         this.atomicExp = null;
         this.fcall = null;
-        this.opBetweenParen = null;
+        this.op = null;
         this.idxArr = null;
         this.unaryExp = null;
         this.binaryExp = null;
@@ -113,7 +113,7 @@ public class SymbolOperand extends SymbolBase {
     // array operation
     public SymbolOperand(SymbolOperand arr, SymbolOperand idx, Location l, Location r) {
         super("operand", 0 ,l ,r );
-        this.opBetweenParen = arr;
+        this.op = arr;
         this.idxArr = idx;
         this.atomicExp = null;
         this.fcall = null;
@@ -126,7 +126,7 @@ public class SymbolOperand extends SymbolBase {
     // tupla operation
     public SymbolOperand(SymbolOperand tuple, String member, Location l, Location r) {
         super("operand", 0 ,l ,r );
-        this.opBetweenParen = tuple;
+        this.op = tuple;
         this.member = member;
         this.atomicExp = null;
         this.fcall = null;
@@ -152,7 +152,7 @@ public class SymbolOperand extends SymbolBase {
             return TIPO.ATOMIC_EXPRESSION;
         } else if (fcall != null) {
             return TIPO.FCALL;
-        } else if (opBetweenParen != null) {
+        } else if (op != null) {
             return TIPO.OP_BETWEEN_PAREN;
         } else if (idxArr != null) {
             return TIPO.IDX_ARRAY;
@@ -166,5 +166,5 @@ public class SymbolOperand extends SymbolBase {
             return TIPO.MEMBER_ACCESS;
         }
     }
-    
+
 }

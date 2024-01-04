@@ -402,7 +402,7 @@ public class SemanticAnalysis {
                 return ds.getTipo();
             }
             case OP_BETWEEN_PAREN -> {
-                return procesarOperando(op.opBetweenParen);
+                return procesarOperando(op.op);
             }
             case UNARY_EXPRESSION -> {
                 SymbolUnaryExpression exp = op.unaryExp;
@@ -458,21 +458,25 @@ public class SemanticAnalysis {
                 if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
                     // error, no se puede operar con tipos diferentes (excepto int y double)
                     return null;
+                } else if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo1)) {
+                    // error, no se puede operar con tuplas y arrays
+                    return null;
                 }
                 SymbolBinaryOperator operator = exp.bop;
-                if (tipo1.equals(ParserSym.terminalNames[ParserSym.BOOL]) && !operator.isForBooleanOperands()) { // si booleano
-                    // error
-                    return null;
-                } else if (unoIntOtroDouble && operator.isForDoubleOperands()) {
-                    return ParserSym.terminalNames[ParserSym.DOUBLE];
-                } else if (tipo1.equals(ParserSym.terminalNames[ParserSym.INT]) && !operator.isForIntegerOperands()) { // si int
-                    // error
-                    return null;
-                } else if (tipo1.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && !operator.isForDoubleOperands()) { // si double
-                    // error
+                if (unoIntOtroDouble) {
+                    if (operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.DOUBLE])) {
+                        return ParserSym.terminalNames[ParserSym.DOUBLE];
+                    }
+                    // error, operando no válido para operar con ints y doubles
                     return null;
                 }
-                return tipo1;
+                if (!operator.isForOperandsOfType(tipo1)) {
+                    return null; // error, operandos no pueden operar con operador
+                }
+                if (operator.doesOperationResultsInBoolean()) {
+                    return ParserSym.terminalNames[ParserSym.BOOL];
+                }
+                return tipo1; // en caso contrario resulta en el mismo tipo
             }
             case CONDITIONAL_EXPRESSION -> {
                 SymbolConditionalExpression exp = op.conditionalExp;
@@ -501,10 +505,63 @@ public class SemanticAnalysis {
                 return tipo1;
             }
             case IDX_ARRAY -> {
-
+                SymbolOperand arr = op.op;
+                String tipoArr = procesarOperando(arr);
+                if (tipoArr == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                if (!tipoArr.endsWith(ParserSym.terminalNames[ParserSym.RBRACKET])) {
+                    // operador a la izquierda no termina siendo un array
+                    return null;
+                }
+                tipoArr = tipoArr.substring(0, tipoArr.lastIndexOf(" "));
+                if (tipoArr.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
+                    String tipoPrimitivo = tipoArr.substring(tipoArr.indexOf(" ") + 1);
+                    if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipoPrimitivo)) {
+                        DescripcionSimbolo ds = tablaSimbolos.consulta(tipoPrimitivo);
+                        if (ds == null) {
+                            // error, tupla no encontrada
+                            return null;
+                        }
+                    }
+                }
+                SymbolOperand idx = op.idxArr;
+                String tipoIdx = procesarOperando(idx);
+                if (tipoIdx == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                    // indice es otra cosa que un entero
+                    return null;
+                }
+                // comprobación de que el entero sea positivo???
+                return tipoArr;
             }
             case MEMBER_ACCESS -> {
-
+                SymbolOperand tupla = op.op;
+                String tipoTupla = procesarOperando(tupla);
+                if (tipoTupla == null) {
+                    // error, operación no permitida
+                    return null;
+                }
+                DescripcionSimbolo ds = tablaSimbolos.consulta(tipoTupla.substring(tipoTupla.indexOf(" ") + 1));
+                if (ds == null) {
+                    // error, tupla no encontrada
+                    return null;
+                }
+                if (!ds.isTupla()) {
+                    // error
+                    return null;
+                }
+                DescripcionSimbolo miembro = ds.getMember(op.member);
+                if (miembro == null){
+                    // error, miembro no encontrado
+                    return null;
+                }
+                // comprobación de que el entero sea positivo???
+                return miembro.getTipo();
             }
         }
         return null; // error, no es ninguno de los casos
