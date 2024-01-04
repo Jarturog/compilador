@@ -148,20 +148,28 @@ public class TablaSimbolos {
             throw new Exception("Ya hay un campo con el mismo identificador");
         }
         
-        int idxe = ta.get(this.n);
-        idxe += 1;
-        te.get(idxe).descripcion = dCamp; 
-        te.get(idxe).descripcion.setNivel(-1);
-        te.get(idxe).descripcion.next = td.get(idr).first;
-        ta.set(this.n, idxe);;
-        td.get(idr).first = idxe;
+        int idxe = ta.get(this.n) + 1;
+        ta.set(this.n, idxe); //Actualizamos tabla de ambitos porque añadimos un nuevo parametro
+        
+        Entrada e = new Entrada(idc, dCamp); // Nueva entrada
+        e.descripcion.setNivel(-1); //No se copiará al hacer el salir bloque, es unicamente un indicador
+        e.descripcion.next = td.get(idr).first;
+        e.descripcion.first = idxe;
+        td.get(idr).next = idxe; //Referenciamos al añadido para crear una lista
+        te.add(e); //Ahora la añadimos a la tabla de expansion
     }
-    
+   
+    /*
+        Vamos a buscar mediante el identificadar de la tupla
+        el una entrada de esta misma. Devolvera la entrada
+        que contiene tanto nombre + DescripcionSimbolo
+    */
     public Entrada consultaCamp(String idr, String idc) throws Exception{
         DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
         if (!d.isTupla()){
-            throw new Exception("No es una tupla");
+            throw new Exception("No es una tupla!");
         }
+        
         int i = d.first;
         while(i != 0 && !te.get(i).nombreVariable.equals(idc)){
             i = te.get(i).descripcion.next;
@@ -175,7 +183,8 @@ public class TablaSimbolos {
         
     }
     
-    
+   //Es parte del codigo del profesor, por si acaso se necesita
+    //Igual esta puesto más arriba actualizado el salirBloque
 /*    public void salirBloque(){
         int idxi = ta.get(this.n);
         idxi -= 1;
@@ -193,6 +202,11 @@ public class TablaSimbolos {
             
     }*/
     
+    /*
+      Vamos a meter un elemento de una tabla dentro de la tabla de simbolos
+      El id hace referencia al id del array, y descripcionSimbolo contendra lo necesirio
+        para identificar al propio dato a insertar
+    */
     public void ponerIndice(String id, DescripcionSimbolo d) throws Exception{
         DescripcionSimbolo da = td.get(id);
         if(!da.isArray()){
