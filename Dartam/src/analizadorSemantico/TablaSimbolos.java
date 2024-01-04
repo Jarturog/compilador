@@ -243,7 +243,12 @@ public class TablaSimbolos {
     
     
     public DescripcionSimbolo consulta(String s){
-        return te.get(idx).descripcion;
+        for (Entrada e : te) {
+            if (e.nombreVariable.equals(s)) {
+                return e.descripcion;
+            }
+        }
+        return null;
     }
     
     public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception{
