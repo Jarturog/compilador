@@ -275,7 +275,14 @@ public class TablaSimbolos {
         return te.get(idx).descripcion;
     }
     
-    
+    public DescripcionSimbolo consulta(String s){
+        for (Entrada e : te) {
+            if (e.nombreVariable.equals(s)) {
+                return e.descripcion;
+            }
+        }
+        return null;
+    }
     
     /*
         Metodo para poner parametros de una función dentro del la tabla de simbolors
