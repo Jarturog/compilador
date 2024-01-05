@@ -184,6 +184,11 @@ public class SymbolOperand extends SymbolBase {
         }
     }
 
+    @Override
+    public String toString(){
+        return (String) value;
+    }
+    
     private String arrayToString(){
         return "("+op.value+lBracket+idxArr.value+rBracket+")";
     }

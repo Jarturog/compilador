@@ -26,8 +26,12 @@ public class SemanticAnalysis {
     // We use a stack because we will be taking elements out every time we process them.
     private Stack<SymbolTipoPrimitivo> currentArgs;
     private List<String> errores;
+    private static final boolean DEBUG = true;
     
     public String getErrors() {
+        if (errores.isEmpty()) {
+            return "";
+        }
         String s = "Localizaciones de los errores multilinea en formato (linea, columna)\n\n";
         for (String e : errores) {
             s += e + "\n";
@@ -570,6 +574,9 @@ public class SemanticAnalysis {
      * @return
      */
     private String procesarOperando(SymbolOperand op) {
+        if (DEBUG) {
+            System.out.println(op.toString());
+        }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {
                 SymbolAtomicExpression literal = op.atomicExp;

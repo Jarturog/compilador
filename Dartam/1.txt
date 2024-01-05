@@ -1,5 +1,5 @@
 
 inmut ent b;
 f vacio inicio(string[]argumentos){
-	b: 2 +3;
+	b: 2+3*35**8;
 }
