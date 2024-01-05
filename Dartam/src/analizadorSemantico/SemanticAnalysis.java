@@ -134,7 +134,7 @@ public class SemanticAnalysis {
             
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
-            if (tablaSimbolos.contains(id)) {
+            if (tablaSimbolos.consulta(id) != null) {
                 errores.add("El identificador " + id + " ya ha sido declarado con anterioridad");
                 indicarLocalizacion(dec);
                 error = true;
