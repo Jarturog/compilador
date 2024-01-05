@@ -269,10 +269,10 @@ private Symbol symbol(int type, Object value) {
 {kw_case}               { tokens += "KW_CASE: "+yytext()+"\n"; return symbol(ParserSym.KW_CASE, yytext()); }
 {kw_default}            { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT, yytext()); }
 {kw_return}             { tokens += "KW_RETURN: "+yytext()+"\n"; return symbol(ParserSym.KW_RETURN, yytext()); }
-{kw_in}                 { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.KW_IN, yytext()); }
-{kw_out}                { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.KW_OUT, yytext()); }
-{kw_read}               { tokens += "KW_READ: "+yytext()+"\n"; return symbol(ParserSym.KW_READ, yytext()); }
-{kw_write}              { tokens += "KW_WRITE: "+yytext()+"\n"; return symbol(ParserSym.KW_WRITE, yytext()); }
+{kw_in}                 { tokens += "ENTER: "+yytext()+"\n"; return symbol(ParserSym.ENTER, yytext()); }
+{kw_out}                { tokens += "SHOW: "+yytext()+"\n"; return symbol(ParserSym.SHOW, yytext()); }
+{kw_read}               { tokens += "FROM: "+yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
+{kw_write}              { tokens += "INTO: "+yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }
 {kw_tuple}              { tokens += "KW_TUPLE: "+yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
 
 // valores

@@ -20,33 +20,19 @@ import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
  */
 public abstract class SymbolBase extends ComplexSymbol {
     private static int id = 0;
-    public final Location leftPos;
-    public final Location rightPos;
     
     private String referencia;
     
     public SymbolBase(String name){
         super(name, id++);
-        leftPos = null;
-        rightPos = null;
-    }
-    
-    public SymbolBase(String name, Object value){
-        super(name, id++, value);
-        leftPos = null;
-        rightPos = null;
     }
     
     public SymbolBase(String name, Object value, Location left, Location right) {
-        super(name, id++, value);
-        leftPos = left;
-        rightPos = right;
+        super(name, id++, left, right, value);
     }
     
     public SymbolBase(String name, Location left, Location right) {
-        super(name, id++);
-        leftPos = left;
-        rightPos = right;
+        super(name, id++, left, right);
     }
     
     public String getReferencia() {

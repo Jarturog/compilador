@@ -103,8 +103,8 @@ public class DescripcionSimbolo {
         return -1;//tipo.getProfundidadArray();
     }
     
-    public void setTamañoArray(int n){
-       //tipo.setTamañoArray(n);
+    public void setTamanyoArray(int n){
+       //tipo.setTamanyoArray(n);
     }
     
     public int getNivel(){
@@ -116,7 +116,7 @@ public class DescripcionSimbolo {
     }
     
     //Funciones
-    public void añadirParametro(String n, DescripcionSimbolo d){
+    public void anyadirParametro(String n, DescripcionSimbolo d){
         parametros.add(new Pair(n, d));
     }
     
@@ -160,7 +160,7 @@ public class DescripcionSimbolo {
         return miembros.get(id);
     }
     
-    public void añadirMiembro(String id, DescripcionSimbolo ds) {
+    public void anyadirMiembro(String id, DescripcionSimbolo ds) {
         miembros.put(id, ds);
     }
     

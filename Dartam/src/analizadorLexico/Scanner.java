@@ -1187,12 +1187,12 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 136: break;
           case 61:
-            { tokens += "KW_READ: "+yytext()+"\n"; return symbol(ParserSym.KW_READ, yytext());
+            { tokens += "FROM: "+yytext()+"\n"; return symbol(ParserSym.FROM, yytext());
             }
           // fall through
           case 137: break;
           case 62:
-            { tokens += "KW_WRITE: "+yytext()+"\n"; return symbol(ParserSym.KW_WRITE, yytext());
+            { tokens += "INTO: "+yytext()+"\n"; return symbol(ParserSym.INTO, yytext());
             }
           // fall through
           case 138: break;
@@ -1212,7 +1212,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 141: break;
           case 66:
-            { tokens += "KW_OUT: "+yytext()+"\n"; return symbol(ParserSym.KW_OUT, yytext());
+            { tokens += "SHOW: "+yytext()+"\n"; return symbol(ParserSym.SHOW, yytext());
             }
           // fall through
           case 142: break;
@@ -1222,7 +1222,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 143: break;
           case 68:
-            { tokens += "KW_IN: "+yytext()+"\n"; return symbol(ParserSym.KW_IN, yytext());
+            { tokens += "ENTER: "+yytext()+"\n"; return symbol(ParserSym.ENTER, yytext());
             }
           // fall through
           case 144: break;

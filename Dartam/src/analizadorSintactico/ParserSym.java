@@ -12,15 +12,15 @@ public class ParserSym {
   public static final int OP_DEC = 3;
   public static final int KW_DOUBLE = 35;
   public static final int BOOL = 68;
+  public static final int FROM = 63;
   public static final int AS_POTA = 14;
-  public static final int KW_OUT = 60;
   public static final int ARROW = 31;
   public static final int OP_BT = 20;
   public static final int AS_MULA = 12;
   public static final int OP_MUL = 6;
   public static final int OP_MOD = 8;
   public static final int RKEY = 42;
-  public static final int KW_CASE = 63;
+  public static final int KW_CASE = 59;
   public static final int COMMA = 46;
   public static final int RPAREN = 40;
   public static final int DOUBLE = 70;
@@ -29,13 +29,13 @@ public class ParserSym {
   public static final int OP_DIV = 7;
   public static final int AS_ANDA = 16;
   public static final int KW_BOOL = 33;
-  public static final int KW_READ = 61;
   public static final int KW_CONST = 51;
   public static final int KW_INT = 34;
   public static final int OP_INC = 2;
+  public static final int INTO = 64;
   public static final int KW_ARGS = 48;
   public static final int KW_SWITCH = 57;
-  public static final int KW_DEFAULT = 64;
+  public static final int KW_DEFAULT = 60;
   public static final int OP_LT = 22;
   public static final int KW_TUPLE = 50;
   public static final int KW_RETURN = 58;
@@ -50,15 +50,16 @@ public class ParserSym {
   public static final int INT = 69;
   public static final int KW_METHOD = 49;
   public static final int OP_NEQ = 23;
+  public static final int SHOW = 62;
   public static final int AUX_MEMBER = 65;
   public static final int EOF = 0;
   public static final int OP_AND = 24;
   public static final int OP_LEQ = 21;
   public static final int KW_DO = 56;
-  public static final int KW_WRITE = 62;
   public static final int AS_ASSIGN = 9;
   public static final int error = 1;
   public static final int KW_CHAR = 36;
+  public static final int ENTER = 61;
   public static final int OP_COND = 30;
   public static final int OP_MEMBER = 32;
   public static final int KW_STRING = 37;
@@ -68,7 +69,6 @@ public class ParserSym {
   public static final int AS_SUBA = 11;
   public static final int RBRACKET = 44;
   public static final int OP_PCT = 28;
-  public static final int KW_IN = 59;
   public static final int STRING = 67;
   public static final int AS_ORA = 17;
   public static final int OP_POT = 29;
@@ -140,12 +140,12 @@ public class ParserSym {
   "KW_DO",
   "KW_SWITCH",
   "KW_RETURN",
-  "KW_IN",
-  "KW_OUT",
-  "KW_READ",
-  "KW_WRITE",
   "KW_CASE",
   "KW_DEFAULT",
+  "ENTER",
+  "SHOW",
+  "FROM",
+  "INTO",
   "AUX_MEMBER",
   "ID",
   "STRING",

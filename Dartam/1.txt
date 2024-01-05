@@ -1,3 +1,7 @@
-inmut ent b;
+inmut ent b: "hola";
 prop b;
-f vacio inicio(string[]argumentos){ car b; }
+f vacio inicio(string[]argumentos){
+	b: 2;
+	b: "hola";
+
+}

@@ -28,7 +28,7 @@ public class SemanticAnalysis {
     private List<String> errores;
     
     public String getErrors() {
-        String s = "";
+        String s = "Localizaciones de los errores en formato (linea, columna)\n\n";
         for (String e : errores) {
             s += e + "\n";
         }
@@ -36,8 +36,16 @@ public class SemanticAnalysis {
     }
     
     private void indicarLocalizacion(SymbolBase s) {
-        String loc = "ERROR: Desde la linea " + s.xleft.getLine() + " y columna " + s.xleft.getColumn() + " hasta la linea " + s.xright.getLine() + " y columna " + s.xright.getColumn() + ": ";
+        String loc;
         int idx = errores.size() - 1;
+        if (s.xleft == null) {
+            loc = "ERROR: No ha sido posible localizarlo: ";
+        } else if (s.xleft.getLine() == s.xright.getLine()) {
+            loc = "ERROR: En la linea " + s.xleft.getLine() + " entre las columnas " + s.xleft.getColumn() + " y " + s.xright.getColumn() + ": ";
+        } else {
+            loc = "ERROR: Desde (" + s.xleft.getLine() + ", " + s.xleft.getColumn() + ") hasta (" + s.xright.getLine() + ", " + s.xright.getColumn() + "): ";
+        }
+        
         errores.set(idx, loc + errores.get(idx));
     }
 
@@ -83,6 +91,15 @@ public class SemanticAnalysis {
             scriptMainYElementos = scriptMainYElementos.siguienteElemento;
             elem = scriptMainYElementos.elemento;
         }
+        // métodos especiales
+        DescripcionSimbolo dEnter = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.ENTER], dEnter);
+        DescripcionSimbolo dShow = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.SHOW], dShow);
+        DescripcionSimbolo dFrom = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.FROM], dFrom);
+        DescripcionSimbolo dInto = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO], dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
             DescripcionSimbolo d = new DescripcionSimbolo(new HashMap<String, DescripcionSimbolo>());
@@ -154,11 +171,11 @@ public class SemanticAnalysis {
             } else if (valorAsignado != null) {
                 String tipoValor = procesarOperando(valorAsignado);
                 if (tipoValor == null) {
-                    errores.add("Los valores del operando no son compatibles");
+                    errores.add("Los valores del operando "+valorAsignado+" no son compatibles");
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 } else if (!tipoValor.equals(tipo.getTipo())) {
-                    errores.add("El tipo con el que se ha declarado no es compatible con el que se está intentado asignar a la variable");
+                    errores.add("El tipo "+tipo.getTipo()+" con el que se ha declarado no es compatible con el que se está intentado asignar a la variable ("+tipoValor+")");
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 }
@@ -167,7 +184,7 @@ public class SemanticAnalysis {
                 DescripcionSimbolo d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, tupla != null);
                 tablaSimbolos.poner(id, d);
                 if (tupla != null) {
-                    tupla.añadirMiembro(id, d);
+                    tupla.anyadirMiembro(id, d);
                 }
             }
             dec = dec.siguienteDeclaracion;
@@ -518,7 +535,7 @@ public class SemanticAnalysis {
             }
             DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
             DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, false);
-            dFuncion.añadirParametro(nombreParam, dParam);
+            dFuncion.anyadirParametro(nombreParam, dParam);
             tablaSimbolos.poner(nombreParam, dParam);
             
             params = params.siguienteParam;
@@ -556,7 +573,18 @@ public class SemanticAnalysis {
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {
                 SymbolAtomicExpression literal = op.atomicExp;
-                return literal.tipo;
+                String tipo = literal.tipo;
+                if (!tipo.equals(ParserSym.terminalNames[ParserSym.ID])){
+                    return tipo; // si no es ID
+                }
+                String nombreID = (String)literal.value;
+                DescripcionSimbolo ds = tablaSimbolos.consulta(nombreID);
+                if (ds == null) {
+                    errores.add("No se ha declarado con anterioridad la variable " + nombreID);
+                    indicarLocalizacion(literal);
+                    return null;
+                }
+                return ds.getTipo();
             }
             case FCALL -> {
                 SymbolFCall fcall = op.fcall;

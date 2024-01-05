@@ -118,7 +118,8 @@ terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
 terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_STRING, KW_VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
-terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_IN, KW_OUT, KW_READ, KW_WRITE, KW_CASE, KW_DEFAULT;
+terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
+terminal    ENTER, SHOW, FROM, INTO;
 terminal    AUX_MEMBER;
 
 terminal    String              ID, STRING;
@@ -262,10 +263,10 @@ FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new S
         ;
 
 METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(null, et, etxleft, etxright); :}
-        | KW_IN:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.KW_IN, et, etxleft, etxright); :}
-        | KW_OUT:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.KW_OUT, et, etxleft, etxright); :}
-        | KW_WRITE:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.KW_WRITE, et, etxleft, etxright); :}
-        | KW_READ:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.KW_READ, et, etxleft, etxright); :}
+        | ENTER:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.ENTER, et, etxleft, etxright); :}
+        | SHOW:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.SHOW, et, etxleft, etxright); :}
+        | INTO:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.INTO, et, etxleft, etxright); :}
+        | FROM:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.FROM, et, etxleft, etxright); :}
         ;
 
 OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol, etxleft, etxright); :}

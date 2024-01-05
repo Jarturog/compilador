@@ -42,5 +42,10 @@ public class SymbolDimensiones extends SymbolBase {
         String sig = (siguienteDimension != null) ? siguienteDimension.toString() : "";
         return lBracket + operando.value + rBracket + sig;
     }
+    
+    public String getEmptyBrackets() {
+        String sig = (siguienteDimension != null) ? siguienteDimension.toString() : "";
+        return lBracket + rBracket + sig;
+    }
 
 }

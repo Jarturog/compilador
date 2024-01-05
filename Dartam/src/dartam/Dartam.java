@@ -53,6 +53,7 @@ public class Dartam {
             System.out.println(scanner.getTokens());
             // Semantic analysis
             SemanticAnalysis sem = new SemanticAnalysis(script);
+            System.err.println(sem.getErrors());
             // Intermediate code generation
             GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
             // Machine code generation
