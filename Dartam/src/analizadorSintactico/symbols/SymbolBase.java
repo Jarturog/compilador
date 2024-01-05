@@ -23,7 +23,7 @@ public abstract class SymbolBase extends ComplexSymbol {
     public final Location leftPos;
     public final Location rightPos;
     
-    public String referencia;
+    private String referencia;
     
     public SymbolBase(String name){
         super(name, id++);
@@ -47,5 +47,13 @@ public abstract class SymbolBase extends ComplexSymbol {
         super(name, id++);
         leftPos = left;
         rightPos = right;
+    }
+    
+    public String getReferencia() {
+        return referencia;
+    }
+    
+    public void setReferencia(String ref) {
+        referencia = ref;
     }
 }

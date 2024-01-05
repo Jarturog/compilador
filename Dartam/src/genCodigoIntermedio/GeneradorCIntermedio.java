@@ -189,7 +189,7 @@ public class GeneradorCIntermedio {
         //Cabecera
         SymbolOperand operando = insIf.cond;
         generate(operando);
-        String referenciaOperando = operando.referencia;
+        String referenciaOperando = operando.getReferencia();
         
         //Creamos etiqueta para un else
         String etiquetaElse = newTag();
@@ -219,7 +219,7 @@ public class GeneradorCIntermedio {
         //Cabecera
         SymbolOperand operando = insElifs.elif.cond;
         generate(operando);
-        String referenciaOperando = operando.referencia;
+        String referenciaOperando = operando.getReferencia();
         
         //Creamos etiqueta para un else
         String etiquetaElif = newTag();
@@ -274,7 +274,7 @@ public class GeneradorCIntermedio {
             nombre = ""+fcall.methodName.specialMethod;
         }
         addInstruction(InstructionType.call, nombre, etiqueta);
-        fcall.referencia = etiqueta;
+        fcall.setReferencia(etiqueta);
     }
     
     //POR COMPLETAR
@@ -307,7 +307,7 @@ public class GeneradorCIntermedio {
         SymbolOperand op = ret.op;
         if(op != null){
             generate(op);
-            t = op.referencia;
+            t = op.getReferencia();
         }else{
             t = "0";
         }
