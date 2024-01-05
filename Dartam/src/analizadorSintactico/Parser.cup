@@ -40,24 +40,6 @@ scan with {:
 **/
 parser code {:
 
-    private HashMap<String, Double>tsymbols = new HashMap<>();
-
-    public Double getSymbolValue(String id) {
-         return tsymbols.get(id);
-    }
-
-    public void addSymbol(String id, Double value) {
-        if (tsymbols.get(id) == null) {
-            tsymbols.put(id, value);
-        } else {
-            tsymbols.replace(id, value);
-        }
-    }
-
-    /**********************************************************************
-     * sobrecàrrega de mètodes per gestionar els errors que es localitzin *
-     **********************************************************************/
-
     /**
      * Metodo al que se llama automaticamente ante algun error sintactico 
      * en el que ya no es posible una recuperacion de errores.
@@ -120,6 +102,7 @@ terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_STRING, KW_VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
 terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
+terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP;
 
 terminal    String              ID, STRING;
 terminal    Boolean             PROP;
@@ -170,6 +153,7 @@ non terminal SymbolDimensiones DIMENSIONES;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
 
 
+precedence left PREC_B_EXP;
 precedence left OP_ADD, OP_SUB;
 precedence left OP_MUL, OP_DIV, OP_MOD;
 precedence right OP_POT;
@@ -179,6 +163,9 @@ precedence left OP_PCT;
 precedence nonassoc OP_INC, OP_DEC; // si conflicto -> error
 precedence right OP_COND;
 precedence left OP_MEMBER, LBRACKET;
+precedence left PREC_C_EXP;
+precedence left PREC_L_U_EXP;
+precedence right PREC_R_U_EXP;
 
 start with SCRIPT;
 
@@ -303,14 +290,14 @@ OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxlef
         | FCALL:et                      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | LPAREN:pos OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et, posxleft, posxright); :}
         | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
-        | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
+        | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :} 
         | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | OPERAND:et1 LBRACKET:l OPERAND:et2 RBRACKET:r  {: RESULT = new SymbolOperand(et1, l, et2, r, et1xleft, et1xright); :}
         | OPERAND:et1 OP_MEMBER ID:et2                     {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
         ;
 
-UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et1 OPERAND:et2                       {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
-        | OPERAND:et1 R_UNARY_OPERATOR:et2                                  {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
+UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et1 OPERAND:et2                       {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :} %prec PREC_L_U_EXP
+        | OPERAND:et1 R_UNARY_OPERATOR:et2                                  {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :} %prec PREC_R_U_EXP
         ;
 
 L_UNARY_OPERATOR ::= OP_NOT:et  {: RESULT = new SymbolLUnaryOperator(ParserSym.OP_NOT, et, etxleft, etxright); :}
@@ -325,10 +312,10 @@ R_UNARY_OPERATOR ::= OP_PCT:et  {: RESULT = new SymbolRUnaryOperator(ParserSym.O
         | OP_DEC:et             {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_DEC, et, etxleft, etxright); :}
         ;
 
-BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESULT = new SymbolBinaryExpression(et1, et2, et3, et1xleft, et1xright); :}
+BINARY_EXPRESSION ::= OPERAND:et1 BINARY_OPERATOR:et2 OPERAND:et3        {: RESULT = new SymbolBinaryExpression(et1, et2, et3, et1xleft, et1xright); :} %prec PREC_B_EXP
         ;
 
-CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {: RESULT = new SymbolConditionalExpression(et1, et2, et3, et1xleft, et1xright);; :}
+CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {: RESULT = new SymbolConditionalExpression(et1, et2, et3, et1xleft, et1xright);; :} %prec PREC_C_EXP
         ; 
 
 ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(true, et, etxleft, etxright); :}

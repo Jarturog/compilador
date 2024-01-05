@@ -244,7 +244,7 @@ public class SemanticAnalysis {
             }
             String tipoValor = procesarOperando(asig.valor);
             if (tipoValor == null) {
-                errores.add("Se realizan operaciones no validas en el valor a asignar a " + asig.id);
+                errores.add("Se realizan operaciones no validas en el valor a asignar a '" + asig.id + "'");
                 indicarLocalizacion(asig.valor);
                 errorOperandoInvalido = true;
             }
@@ -608,44 +608,54 @@ public class SemanticAnalysis {
             }
             case UNARY_EXPRESSION -> {
                 SymbolUnaryExpression exp = op.unaryExp;
+                System.out.println(exp.op.atomicExp.tipo);
                 String tipo = procesarOperando(exp.op);
                 if (tipo == null) {
                     errores.add("Se realizan operaciones no validas en " + exp.op);
                     indicarLocalizacion(exp.op);
                     return null;
                 }
+                int operation;
+                if (exp.isLeftUnaryOperator()) {
+                    SymbolLUnaryOperator operator = exp.leftOp;
+                    operation = operator.unaryOperator;
+                } else {
+                    SymbolRUnaryOperator operator = exp.rightOp;
+                    operation = operator.unaryOperator;
+                }
+                if ((exp.op.atomicExp == null || !exp.op.atomicExp.tipo.equals(ParserSym.terminalNames[ParserSym.ID]))&& (ParserSym.OP_INC == operation || ParserSym.OP_DEC == operation)) {
+                    String s = "incremento";
+                    if (ParserSym.OP_DEC == operation) s = "decremento";
+                    errores.add("Se ha intentado realizar una operacion "+exp+" de "+s+" no valida sobre un " + tipo + " y no un "+ParserSym.terminalNames[ParserSym.ID]);
+                    indicarLocalizacion(exp);
+                    return null;
+                }
                 if (exp.isLeftUnaryOperator()) {
                     if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-                        errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
+                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
                         indicarLocalizacion(exp);
                         return null;
-                    }
-                    SymbolLUnaryOperator operator = exp.leftOp;
-                    int operation = operator.unaryOperator;
-                    if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT != operation) {
-                        errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
+                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT != operation) {
+                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
                         indicarLocalizacion(exp);
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && (ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
-                        errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con +/-
+                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar booleano con signo +/-
                         indicarLocalizacion(exp);
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation && ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
-                        errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar entero con not
+                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar entero con not
                         indicarLocalizacion(exp);
                         return null;
                     }
                     return tipo;
                 }
                 if (!tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                    errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
+                    errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
                     indicarLocalizacion(exp); 
                     return null;
-                }
-                SymbolRUnaryOperator operator = exp.rightOp;
-                int operation = operator.unaryOperator;
-                if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && ParserSym.OP_PCT != operation) {
-                    errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar double con inc/dec
+                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && ParserSym.OP_PCT != operation) {
+                    errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar double con inc/dec
                     indicarLocalizacion(exp);
                     return null;
                 } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation)) {
@@ -674,11 +684,11 @@ public class SemanticAnalysis {
                 boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
                         || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
                 if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop.value+" entre "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
                     error = true;
                 } else if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo1)) {
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop.value+" entre tipos no primitivos ("+tipo1 + ") en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre tipos no primitivos ("+tipo1 + ") en la expresion binaria "+exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tuplas y arrays
                     error = true;
                 }
@@ -690,12 +700,12 @@ public class SemanticAnalysis {
                     if (operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
                         return ParserSym.terminalNames[ParserSym.REAL];
                     }
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop.value+" entre tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
                     indicarLocalizacion(exp);// error, operando no valido para operar con ints y doubles
                     return null;
                 }
                 if (!operator.isForOperandsOfType(tipo1)) {
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop.value+" para los tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" para los tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
                     indicarLocalizacion(exp);
                     return null; // error, operandos no pueden operar con operador
                 }
