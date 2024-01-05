@@ -626,11 +626,11 @@ public class SemanticAnalysis {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
                         indicarLocalizacion(exp);
                         return null;
-                    } else if ((tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) || tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) && (ParserSym.OP_ADD != operation || ParserSym.OP_SUB != operation)) {
+                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && (ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con +/-
                         indicarLocalizacion(exp);
                         return null;
-                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation && ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar entero con not
                         indicarLocalizacion(exp);
                         return null;
@@ -648,7 +648,7 @@ public class SemanticAnalysis {
                     errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar double con inc/dec
                     indicarLocalizacion(exp);
                     return null;
-                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation)) {
                     return ParserSym.terminalNames[ParserSym.REAL]; // !!! se puede operar entero con OP_PCT
                 }
                 return tipo;
