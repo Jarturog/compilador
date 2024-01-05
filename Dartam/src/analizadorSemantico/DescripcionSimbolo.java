@@ -5,6 +5,7 @@
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
+import analizadorSintactico.symbols.SymbolParamsLista;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class DescripcionSimbolo {
     private String tipo;
 
     private int nivel;
-    private boolean isConstante, valorAsignado;
+    private boolean isConstante, valorAsignado, isMember;
 
     private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
     private HashMap<String, DescripcionSimbolo> miembros;
@@ -39,22 +40,15 @@ public class DescripcionSimbolo {
     public DescripcionSimbolo(){
         tipo = null;
     }
-    
+
     /**
-     * Primitiva
+     * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst){
-        tipo = t;
-        isConstante = isConst;
-    }
-    
-    /**
-     * Primitiva
-     */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v){
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, boolean isMiembro){
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
+        isMember = isMiembro; // miembro de una tupla
     }
     
     /**
@@ -68,15 +62,17 @@ public class DescripcionSimbolo {
     /**
      * Tupla
      */
-    public DescripcionSimbolo(Set<DescripcionSimbolo> m){
+    public DescripcionSimbolo(HashMap<String, DescripcionSimbolo> m){
         miembros = (HashMap<String, DescripcionSimbolo>) m;
     }
     
     /**
      * Función
+     * @param tipoRetorno
      */
     public DescripcionSimbolo(String tipoRetorno){
         tipo = tipoRetorno;
+        parametros = new ArrayList<>();
     }
     
     public void cambiarTipo(String t){
@@ -120,9 +116,8 @@ public class DescripcionSimbolo {
     }
     
     //Funciones
-    public void añadirParametro(String n, String t){
-        DescripcionSimbolo ds = new DescripcionSimbolo(t);
-        parametros.add(new Pair(n, ds));
+    public void añadirParametro(String n, DescripcionSimbolo d){
+        parametros.add(new Pair(n, d));
     }
     
     public int getNumeroParametros(){
@@ -163,6 +158,30 @@ public class DescripcionSimbolo {
     
     public DescripcionSimbolo getMember(String id) {
         return miembros.get(id);
+    }
+    
+    public void añadirMiembro(String id, DescripcionSimbolo ds) {
+        miembros.put(id, ds);
+    }
+    
+    public String getTipoArray() {
+        if (!isArray()) {
+            return null;
+        }
+        String tipo = getTipo();
+        return tipo.substring(0, tipo.lastIndexOf(" "));
+    }
+    
+    public boolean tieneValorAsignado() {
+        return valorAsignado;
+    }
+    
+    public void asignarValor() {
+        valorAsignado = true;
+    }
+    
+    public boolean isConstante() {
+        return isConstante;
     }
     
 }
