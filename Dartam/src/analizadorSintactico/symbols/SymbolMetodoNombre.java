@@ -23,20 +23,11 @@ METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(Parse
  */
 public class SymbolMetodoNombre extends SymbolBase {
     
-    //Me daba problemas
-    public Integer specialMethod;
-    public String nombreMetodo;
-    
-   
-    
+    public final Integer specialMethod;
+
     public SymbolMetodoNombre(Integer methodName, Object et, Location l , Location r) {
         super("methodName", et, l,r);
         this.specialMethod = methodName;
-    }
-    
-     public SymbolMetodoNombre(String nombre, Object et, Location l , Location r) {
-        super("methodName", et, l,r);
-        this.nombreMetodo = nombre;
     }
     
     public boolean isSpecialMethod() {

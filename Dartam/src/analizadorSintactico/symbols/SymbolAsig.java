@@ -23,9 +23,8 @@ public class SymbolAsig extends SymbolBase {
     public final String id;
     public final SymbolAsigOp operacion;
     public final SymbolOperand valor;
-    
     // array
-    public final SymbolOperand dimensiones;
+    public final SymbolOperand idx;
     // tupla
     public final String miembro;
 
@@ -33,7 +32,7 @@ public class SymbolAsig extends SymbolBase {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
-        this.dimensiones = null;
+        this.idx = null;
         this.miembro = null;
         operacion = op;
     }
@@ -42,7 +41,7 @@ public class SymbolAsig extends SymbolBase {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
-        this.dimensiones = dimensiones;
+        this.idx = dimensiones;
         this.miembro = null;
         operacion = op;
     }
@@ -51,7 +50,7 @@ public class SymbolAsig extends SymbolBase {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
-        this.dimensiones = null;
+        this.idx = null;
         this.miembro = miembro;
         operacion = op;
     }
@@ -65,9 +64,9 @@ public class SymbolAsig extends SymbolBase {
      * @return f, d, a, s or r
      */
     public TIPO getTipo() {
-        if (dimensiones == null && miembro == null) {
+        if (idx == null && miembro == null) {
             return TIPO.PRIMITIVA;
-        } else if (dimensiones != null) {
+        } else if (idx != null) {
             return TIPO.ARRAY;
         } else {
             return TIPO.TUPLA;

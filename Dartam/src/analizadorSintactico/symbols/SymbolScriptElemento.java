@@ -61,19 +61,19 @@ public class SymbolScriptElemento extends SymbolBase{
         declaraciones = decs;
     }
 
-    public static final String DECS = "d", METODO = "m", TUPLA = "t";
+    public static enum TIPO { DECS, METODO, TUPLA }
     
     /**
      * 
      * @return d, m or t
      */
-    public String getTipo() {
+    public TIPO getTipo() {
         if (declaraciones != null) {
-            return DECS;
+            return TIPO.DECS;
         } else if (tipoRetorno != null) {
-            return METODO;
+            return TIPO.METODO;
         } else {
-            return TUPLA;
+            return TIPO.TUPLA;
         }
     }
 }

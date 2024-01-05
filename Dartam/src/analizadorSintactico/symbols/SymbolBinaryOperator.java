@@ -36,7 +36,7 @@ public class SymbolBinaryOperator extends SymbolBase {
         this.operador = op;
     }
 
-    public boolean doesOperationResultsInBoolean() {
+    public boolean doesOperationResultInBoolean() {
         return operador == ParserSym.OP_EQ ||
             operador == ParserSym.OP_BEQ ||
             operador == ParserSym.OP_BT ||

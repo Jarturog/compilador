@@ -17,25 +17,17 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  */
 public class SymbolParams extends SymbolBase {
     
-    public final SymbolParamsLista pl;
+    public final SymbolParamsLista paramsLista;
     
     public SymbolParams(SymbolParamsLista pl, Location l, Location r) {
         super("params" , l , r);
-        this.pl = pl;
+        this.paramsLista = pl;
     }
     
     public SymbolParams(){
         super("");
-        this.pl = null;
+        this.paramsLista = null;
     }
 
-    /*public SymbolParams(SymbolParamsLista et) {
-        super("");
-    }*/
-
-    public SymbolParamsLista getPl() {
-        return pl;
-    }
-    
     
 }

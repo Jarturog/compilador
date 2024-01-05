@@ -6,45 +6,30 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-import java_cup.runtime.ComplexSymbolFactory;
-
 
 /**
- *
- * @author jartu
- * 
- * PARAMSLISTA ::= PARAM:et1 COMMA PARAMSLISTA:et3           {: RESULT = new ParamsLista(et1, et2, et1left, et1right); :}
-        | PARAM:et                           {: RESULT = new ParamsLista(et, etleft, etright); :}
+PARAMSLISTA ::= TIPO:et1 ID:id COMMA PARAMSLISTA:sig           {: RESULT = new SymbolParamsLista(et1, id, sig, et1xleft, et1xright); :}
+        | TIPO:et ID:id                          {: RESULT = new SymbolParamsLista(et, id, etxleft, etxright); :}
         ;
  */
 public class SymbolParamsLista extends SymbolBase {
     
     public final SymbolTipo param;
-    public final SymbolParamsLista pl;
-    public int numParametros;
+    public final String id;
+    public final SymbolParamsLista siguienteParam;
     
-    public SymbolParamsLista(SymbolTipo param, Location l, Location r) {
+    public SymbolParamsLista(SymbolTipo param, String id, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
-        this.pl = null;
-        this.numParametros += 1;
-        
+        this.id = id;
+        this.siguienteParam = null;
     }
     
-    public SymbolParamsLista(SymbolTipo param, SymbolParamsLista pl, Location l, Location r) {
+    public SymbolParamsLista(SymbolTipo param, String id, SymbolParamsLista pl, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
-        this.pl = pl;
-        this.numParametros +=1 ; 
+        this.id = id;
+        this.siguienteParam = pl;
     }
 
-    public SymbolTipo getParam() {
-        return param;
-    }
-
-    public SymbolParamsLista getPl() {
-        return pl;
-    }
-    
-    
 }
