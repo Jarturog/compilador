@@ -28,7 +28,7 @@ public class SymbolAsigOp extends SymbolBase {
     private final int operacion;
 
     public SymbolAsigOp(int tipo, Object et, Location l, Location r) {
-        super("asigOp", 0 , l , r);
+        super("asigOp", l , r);
         this.operacion = tipo;
     }
     

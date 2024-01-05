@@ -139,7 +139,7 @@ public class SemanticAnalysis {
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
             if (tablaSimbolos.consulta(id) != null) {
-                errores.add("El identificador " + id + " ya ha sido declarado con anterioridad");
+                errores.add("El identificador '" + id + "' ya ha sido declarado con anterioridad");
                 indicarLocalizacion(dec);
                 error = true;
             }
@@ -322,10 +322,15 @@ public class SemanticAnalysis {
                 asigs = asigs.siguienteAsig;
                 continue;
             }
+            if (!asig.operacion.isBasicAsig() && !d.tieneValorAsignado()) {
+                errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' no ha sido asignada de forma simple anteriormente");
+                indicarLocalizacion(asig.operacion);
+                errorOperandoInvalido = true;
+            }
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
                     if (d.tieneValorAsignado() && d.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor a la constante "+ asig.id+" que ya tenia valor");
+                        errores.add("Se esta intentado asignar un valor a la constante '"+ asig.id+"' que ya tenia valor");
                         indicarLocalizacion(asig);
                         error = true;
                     }
@@ -337,7 +342,7 @@ public class SemanticAnalysis {
                 case TUPLA -> {
                     DescripcionSimbolo miembro = d.getMember(asig.miembro);
                     if (miembro.tieneValorAsignado() && miembro.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor al miembro constante "+ asig.miembro+" de la tupla "+asig.id+", el cual ya tenia un valor asignado");
+                        errores.add("Se esta intentado asignar un valor al miembro constante '"+ asig.miembro+"' de la tupla '"+asig.id+"', el cual ya tenia un valor asignado");
                         indicarLocalizacion(asig);
                         error = true;
                     }

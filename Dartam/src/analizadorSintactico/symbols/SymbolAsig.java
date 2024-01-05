@@ -8,6 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
+import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 
@@ -27,7 +28,8 @@ public class SymbolAsig extends SymbolBase {
     public final SymbolOperand idx;
     // tupla
     public final String miembro;
-
+    private final Boolean isPost, isIncrement;
+    
     public SymbolAsig(String id, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
         super("asig", l, r);
         this.id = id;
@@ -35,6 +37,8 @@ public class SymbolAsig extends SymbolBase {
         this.idx = null;
         this.miembro = null;
         operacion = op;
+        this.isPost = null;
+        this.isIncrement = null;
     }
 
     public SymbolAsig(String id, SymbolOperand dimensiones, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
@@ -44,6 +48,8 @@ public class SymbolAsig extends SymbolBase {
         this.idx = dimensiones;
         this.miembro = null;
         operacion = op;
+        this.isPost = null;
+        this.isIncrement = null;
     }
 
     public SymbolAsig(String id, String miembro, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
@@ -53,6 +59,21 @@ public class SymbolAsig extends SymbolBase {
         this.idx = null;
         this.miembro = miembro;
         operacion = op;
+        this.isPost = null;
+        this.isIncrement = null;
+    }
+    
+    // post/pre-incremento/decremento
+    public SymbolAsig(boolean postOperation, int numOperacion, String id, Object v, Location l, Location r) {
+        super("asig", l, r);
+        this.id = id;
+        this.idx = null;
+        this.miembro = null;
+        this.isIncrement = numOperacion == ParserSym.OP_INC;
+        operacion = new SymbolAsigOp(isIncrement ? ParserSym.AS_ADDA : ParserSym.AS_SUBA, v, l, r);
+        valor = new SymbolOperand(new SymbolAtomicExpression((Integer)1, l, r), l, r);
+        this.isPost = postOperation;
+        
     }
     
     public static enum TIPO {
@@ -71,6 +92,14 @@ public class SymbolAsig extends SymbolBase {
         } else {
             return TIPO.TUPLA;
         }
+    }
+    
+    public Boolean isPost(){
+        return isPost;
+    }
+    
+    public Boolean isIncrement(){
+        return isIncrement;
     }
 
 }
