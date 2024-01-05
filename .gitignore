@@ -1,2 +1,6 @@
 .DS_Store
 *~
+/Dartam/target/
+/Dartam/nbproject/private/
+/Dartam/build/
+/Dartam/dist/
