@@ -24,6 +24,12 @@ public class SymbolConditionalExpression extends SymbolBase {
         this.cond = op1;
         this.caseTrue = op2;
         this.caseFalse = op3;
+        value = toString();
+    }
+    
+    @Override
+    public String toString() {
+        return "(" + cond.value + " ? " + caseTrue.value + " -> " + caseFalse.value + ")";
     }
     
 }

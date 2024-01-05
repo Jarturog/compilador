@@ -30,6 +30,11 @@ public class SymbolBinaryExpression extends SymbolBase {
         this.op1 = op1;
         this.bop = bop;
         this.op2 = op2;
+        value = toString();
+    }
+    
+    public String toString(){
+        return "(" + op1.value + " " + bop.value + " " + op2.value +")";
     }
 
 }

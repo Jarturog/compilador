@@ -19,18 +19,18 @@ MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMi
 public class SymbolMiembrosTupla extends SymbolBase {
 
     public final SymbolDecs decs;
-    public final SymbolMiembrosTupla miembrosTupla;
+    public final SymbolMiembrosTupla siguienteDeclaracion;
     
     public SymbolMiembrosTupla(){
         super("miembrosTupla");
         decs = null;
-        miembrosTupla = null;
+        siguienteDeclaracion = null;
     }
     
     public SymbolMiembrosTupla(SymbolDecs d, SymbolMiembrosTupla m, Location l, Location r){
         super("miembrosTupla", l, r);
         decs = d;
-        miembrosTupla = m;
+        siguienteDeclaracion = m;
     }
 
 }

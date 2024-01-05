@@ -10,8 +10,6 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-
-
 /**
 OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | FCALL:et                      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
@@ -34,7 +32,7 @@ public class SymbolOperand extends SymbolBase {
 
     // atomic expression
     public SymbolOperand(SymbolAtomicExpression et, Location l, Location r) {
-        super("operand", 0, l , r);
+        super("operand", et.value, l , r);
         this.atomicExp = et;
         this.fcall = null;
         this.op = null;
@@ -47,7 +45,7 @@ public class SymbolOperand extends SymbolBase {
     
     // fcall
     public SymbolOperand(SymbolFCall et, Location l, Location r) {
-        super("operand", 0 , l , r);
+        super("operand", et.value, l , r);
         this.fcall = et;
         this.atomicExp = null;
         this.op = null;
@@ -60,7 +58,7 @@ public class SymbolOperand extends SymbolBase {
     
     // parentesis
     public SymbolOperand(SymbolOperand et, Location l, Location r) {
-        super("operand", 0 , l , r);
+        super("operand", "("+et.value+")", l , r);
         this.op = et;
         this.atomicExp = null;
         this.fcall = null;
@@ -73,7 +71,7 @@ public class SymbolOperand extends SymbolBase {
     
     // unary expression
     public SymbolOperand(SymbolUnaryExpression et, Location l, Location r) {
-        super("operand", 0 ,l , r);
+        super("operand", et.value,l , r);
         this.unaryExp = et;
         this.atomicExp = null;
         this.fcall = null;
@@ -86,7 +84,7 @@ public class SymbolOperand extends SymbolBase {
 
     // binary expression
     public SymbolOperand(SymbolBinaryExpression et, Location l , Location r) {
-        super("operand", 0 ,l , r);
+        super("operand", et.value,l , r);
         this.binaryExp = et;
         this.atomicExp = null;
         this.fcall = null;
@@ -99,7 +97,7 @@ public class SymbolOperand extends SymbolBase {
     
     // conditional expression
     public SymbolOperand(SymbolConditionalExpression et, Location l , Location r) {
-        super("operand", 0, l ,r);
+        super("operand", et.value, l ,r);
         this.conditionalExp = et;
         this.atomicExp = null;
         this.fcall = null;
@@ -112,7 +110,7 @@ public class SymbolOperand extends SymbolBase {
 
     // array operation
     public SymbolOperand(SymbolOperand arr, SymbolOperand idx, Location l, Location r) {
-        super("operand", 0 ,l ,r );
+        super("operand",l ,r );
         this.op = arr;
         this.idxArr = idx;
         this.atomicExp = null;
@@ -121,11 +119,12 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
+        value = arrayToString();
     }
 
     // tupla operation
     public SymbolOperand(SymbolOperand tuple, String member, Location l, Location r) {
-        super("operand", 0 ,l ,r );
+        super("operand", l , r );
         this.op = tuple;
         this.member = member;
         this.atomicExp = null;
@@ -134,6 +133,7 @@ public class SymbolOperand extends SymbolBase {
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
+        value = tuplaToString();
     }
     
     public static enum TIPO {
@@ -167,4 +167,11 @@ public class SymbolOperand extends SymbolBase {
         }
     }
 
+    private String arrayToString(){
+        return "("+op.value+"["+idxArr.value+"]"+")";
+    }
+    
+    private String tuplaToString(){
+        return "("+op.value+"."+member+")";
+    }
 }

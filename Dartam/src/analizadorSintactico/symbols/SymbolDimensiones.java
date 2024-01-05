@@ -26,18 +26,24 @@ DIMENSIONES ::= [OPERAND] DIMENSIONES
 public class SymbolDimensiones extends SymbolBase {
     
     public final SymbolOperand operando;
-    public final SymbolDimensiones dimensiones;
+    public final SymbolDimensiones siguienteDimension;
             
     public SymbolDimensiones(SymbolOperand operando, Location l, Location r){
         super("dimensiones", l, r);
         this.operando = operando;
-        this.dimensiones = null;
+        this.siguienteDimension = null;
     }
     
     public SymbolDimensiones(SymbolOperand operando, SymbolDimensiones dimensiones, Location l, Location r) {
         super("dimensiones", l, r);
         this.operando = operando;
-        this.dimensiones = dimensiones;
+        this.siguienteDimension = dimensiones;
+    }
+    
+    @Override
+    public String toString() {
+        String sig = (siguienteDimension != null) ? siguienteDimension.toString() : "";
+        return "[" + operando.value + "]" + sig;
     }
 
 }

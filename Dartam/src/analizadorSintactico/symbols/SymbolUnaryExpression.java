@@ -24,20 +24,27 @@ public class SymbolUnaryExpression extends SymbolBase {
     public final SymbolOperand op;
     
     public SymbolUnaryExpression(SymbolLUnaryOperator luo, SymbolOperand op, Location l, Location r) {
-        super("unaryExpression", 0 , l , r);
+        super("unaryExpression", l , r);
         this.leftOp = luo;
         this.op = op;
         this.rightOp = null;
+        value = toString();
     }
 
     public SymbolUnaryExpression(SymbolOperand op, SymbolRUnaryOperator ruo, Location l, Location r) {
-        super("unaryExpression", 0 , l , r);
+        super("unaryExpression", l , r);
         this.rightOp = ruo;
         this.op = op;
         this.leftOp = null;
+        value = toString();
     }
 
     public boolean isLeftUnaryOperator() {
         return leftOp != null;
+    }
+    
+    @Override
+    public String toString(){
+        return "(" + (isLeftUnaryOperator() ? (leftOp.value + "" + op.value) : (op.value + "" + rightOp.value)) + ")";
     }
 }

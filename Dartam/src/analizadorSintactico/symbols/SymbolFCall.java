@@ -30,16 +30,33 @@ public class SymbolFCall extends SymbolBase {
     public final SymbolOperandsLista operandsLista;
     
     public SymbolFCall(SymbolMetodoNombre methodName, Location l, Location r) {
-        super("fcall", 0 ,l ,r);
+        super("fcall", l ,r);
         this.methodName = methodName;
         this.operandsLista = null;
+        value = toString();
     }
 
     public SymbolFCall(SymbolMetodoNombre et1, SymbolOperandsLista et2, Location l, Location r) {
-        super("fcall", 0, l ,r );
+        super("fcall", l ,r );
         this.methodName = et1;
         this.operandsLista = et2;
+        value = toString();
     }
 
+    @Override
+    public String toString() {
+        String nombre = ((String)methodName.value) + "(";
+        if (operandsLista == null) {
+            return nombre + ")";
+        }
+        String ops = "";
+        SymbolOperandsLista op = operandsLista;
+        while (op != null) {
+            ops += op.operand.toString() + ", ";
+            op = op.siguienteOperando;
+        }
+        return ops.substring(0, ops.length() - 2) + ")";
+    }
+    
     
 }
