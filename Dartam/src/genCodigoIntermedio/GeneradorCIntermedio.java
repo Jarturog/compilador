@@ -141,22 +141,22 @@ public class GeneradorCIntermedio {
     }
     
     private void generate(SymbolParams p){
-        generate(p.getPl()); //Generamos la lista de parametros
+        generate(p.paramsLista); //Generamos la lista de parametros
     }
     
     //preguntar porque SymbolTipo en parametro en vez de otra clase?
     public void generate(SymbolParamsLista pl){
         currentSublevel = -1;
-        generate(pl.getParam()); //Primer parametro de la lista
+        generate(pl.param); //Primer parametro de la lista
         
-        SymbolParamsLista aux = pl.getPl(); //Comprobamos si tiene mas
-        while(pl.getPl() != null){ //Tenemos otro parametro
+        SymbolParamsLista aux = pl.siguienteParam; //Comprobamos si tiene mas
+        while(pl.siguienteParam != null){ //Tenemos otro parametro
             String t = newVariable();
             VTEntry vte = getVar(t);
             //replaceVarTableKey(t, aux.getParam().);
             currentProcTable.params.add(t);
             
-            boolean tipo = aux.getParam().isArray();
+            boolean tipo = aux.param.isArray();
             if(tipo){
                 vte.dimensions.add(newVariable());
             }       
@@ -263,7 +263,7 @@ public class GeneradorCIntermedio {
     }
     
     private void generate(SymbolFCall fcall){
-        String nombre = fcall.methodName.nombreMetodo;
+        String nombre = (String)fcall.methodName.value;
         SymbolOperandsLista operandos = fcall.operandsLista;
         if(operandos != null){
             generate(operandos);
