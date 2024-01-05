@@ -22,7 +22,7 @@ public class Dartam {
     
     /**
     /**
-     * @param args arguments de línia de comanda
+     * @param args arguments de linia de comanda
      */
     public static void main(String[] args) {
         Reader input;
@@ -34,18 +34,18 @@ public class Dartam {
             if (args.length > 0) {
                 input = new FileReader(args[0]);
             } else {
-                System.out.println("Escriu l'expressió que vols calcular (help; per ajuda):");
+                System.out.println("Escriu l'expressio que vols calcular (help; per ajuda):");
                 System.out.print(">>> ");
                 input = new InputStreamReader(System.in);
             }
             Scanner scanner = new Scanner(input);
             
-            // sintáctico
+            // sintactico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
             SymbolScript script;
             try {
                 script = (SymbolScript) parser.parse().value;
-            } catch (NullPointerException | ClassCastException e) { // análisis sintáctico ha ido mal o no se ha encontrado main
+            } catch (NullPointerException | ClassCastException e) { // analisis sintactico ha ido mal o no se ha encontrado main
                 return;
             }
             
@@ -59,7 +59,7 @@ public class Dartam {
             // Machine code generation
             GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
             // Optimzaciones
-            Optimizador op = new Optimizador(); // pasar por parámetro codigomaQUINA
+            Optimizador op = new Optimizador(); // pasar por parametro codigomaQUINA
             
             System.out.println("DONE");
             

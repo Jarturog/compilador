@@ -775,8 +775,8 @@ public class Parser extends java_cup.runtime.lr_parser {
      **********************************************************************/
 
     /**
-     * Método al que se llama automáticamente ante algún error sintáctico 
-     * en el que ya no es posible una recuperación de errores.
+     * Metodo al que se llama automaticamente ante algun error sintactico 
+     * en el que ya no es posible una recuperacion de errores.
     **/ 
     @Override
     public void unrecovered_syntax_error(Symbol cur_token) { 
@@ -790,7 +790,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     }  
 
     /**
-     * Método al que se llama automáticamente ante algún error sintactico.
+     * Metodo al que se llama automaticamente ante algun error sintactico.
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 

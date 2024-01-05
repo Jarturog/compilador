@@ -2,7 +2,7 @@
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Intel·ligència Artificial i Computació
+ * Itinerari: Intel·ligència Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta
  */
@@ -65,7 +65,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     public static final String INSTR = "i", IF = "c", LOOP = "l", SWITCH = "s";
 
     /**
-     * instrucción, if, loop, switch
+     * instruccion, if, loop, switch
      * @return i, c, l or s
      */
     public String getTipo() {

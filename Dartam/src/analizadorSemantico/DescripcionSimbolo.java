@@ -67,7 +67,7 @@ public class DescripcionSimbolo {
     }
     
     /**
-     * Función
+     * Funcion
      * @param tipoRetorno
      */
     public DescripcionSimbolo(String tipoRetorno){

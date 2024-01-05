@@ -5,7 +5,7 @@
 /**
   * Assignatura 21742 - Compiladors I 
   * Estudis: Grau en Informàtica 
-  * Itinerari: Computació 
+  * Itinerari: Computacio 
   * Curs: 2023-2024
   *
   * Equipo: Arturo, Dani y Marta
@@ -420,8 +420,8 @@ public class Scanner implements java_cup.runtime.Scanner {
 
   /* user code: */
 /***
-  Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
-  aquest cas potser no és del tot necessari.
+  Mecanismes de gestio de simbols basat en ComplexSymbol. Tot i que en
+  aquest cas potser no es del tot necessari.
 ***/
 private String tokens = "", errores = "";
 
@@ -434,14 +434,14 @@ public String getErrores(){
 }
 
 private String errorToString(){
-  return "!!! Error léxico: Token " + yytext() + " no reconocido en la posición [línea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+  return "!!! Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
 }
 
 /**
-  Construcció d'un symbol sense atribut associat.
+  Construccio d'un symbol sense atribut associat.
 **/
 private ComplexSymbol symbol(int type) {
-  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  // Sumar 1 per a que la primera linia i columna no sigui 0.
   Location esquerra = new Location(yyline+1, yycolumn+1);
   Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
 
@@ -449,10 +449,10 @@ private ComplexSymbol symbol(int type) {
 }
 
 /**
-  Construcció d'un symbol amb un atribut associat.
+  Construccio d'un symbol amb un atribut associat.
 **/
 private Symbol symbol(int type, Object value) {
-  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  // Sumar 1 per a que la primera linia i columna no sigui 0.
   Location esquerra = new Location(yyline+1, yycolumn+1);
   Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
 

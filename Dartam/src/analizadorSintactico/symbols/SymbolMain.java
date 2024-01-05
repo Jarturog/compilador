@@ -2,7 +2,7 @@
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Intel·ligència Artificial i Computació
+ * Itinerari: Intel·ligència Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta
  */
@@ -22,7 +22,7 @@ public class SymbolMain extends SymbolBase {
     // body main
     public final String nombreMain, nombreArgumentos, lBracket, rBracket;
     public final SymbolBody main;
-    // hay más elementos
+    // hay mas elementos
     public final SymbolMain siguienteElemento;
     public final SymbolScriptElemento elemento;
 

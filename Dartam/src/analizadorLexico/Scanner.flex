@@ -1,7 +1,7 @@
 /**
   * Assignatura 21742 - Compiladors I 
   * Estudis: Grau en Informàtica 
-  * Itinerari: Computació 
+  * Itinerari: Computacio 
   * Curs: 2023-2024
   *
   * Equipo: Arturo, Dani y Marta
@@ -23,19 +23,19 @@ import analizadorSintactico.ParserSym;
 ****/
 
 /****
-  Indicació de quin tipus d'analitzador sintàctic s'utilitzarà. En aquest cas 
-  es fa ús de Java CUP.
+  Indicacio de quin tipus d'analitzador sintàctic s'utilitzarà. En aquest cas 
+  es fa us de Java CUP.
 ****/
 %cup
 /****
-  La línia anterior és una alternativa a la indicació element a element:
+  La linia anterior es una alternativa a la indicacio element a element:
 
   %implements java_cup.runtime.Scanner
   %function next_token
   %type java_cup.runtime.Symbol
 ****/
 
-%public              // Per indicar que la classe és pública
+%public              // Per indicar que la classe es publica
 %class Scanner       // El nom de la classe
 
 %char
@@ -49,17 +49,17 @@ import analizadorSintactico.ParserSym;
 // Declaracions
 // sub quiere decir que es un lexema que forma parte de otro
 // val que comprende valores
-// op que es una operación
-// sym que es un símbolo
+// op que es una operacion
+// sym que es un simbolo
 // kw que es una palabra reservada (keyword)
 
 // reutilizables
 sub_digit   = [0-9]
-sub_letra   = [A-Za-z] // no confundir con carácter
+sub_letra   = [A-Za-z] // no confundir con caracter
 sub_car     = {sub_digit}|{sub_letra}
 sub_signo   = [+|-]? 
 
-// símbolos
+// simbolos
 sym_parenIzq	= \(
 sym_parenDer	= \)
 sym_llaveIzq	= \{
@@ -112,7 +112,7 @@ type_double    = "real"
 type_bool      = "prop"
 type_void      = "vacio"
 
-// palabras reservadas (const está entre type y kw)
+// palabras reservadas (const esta entre type y kw)
 kw_const     = "inmut"  // inmutable
 kw_main      = "inicio"
 kw_args      = "argumentos"
@@ -152,12 +152,12 @@ comentarLinea  = "\/\/"
 comentarBloque = "#" // tanto para el inicio como para el final
 comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
 
-// El següent codi es copiarà també, dins de la classe. És a dir, si es posa res
+// El següent codi es copiarà tambe, dins de la classe. És a dir, si es posa res
 // ha de ser en el format adient: mètodes, atributs, etc. 
 %{
 /***
-  Mecanismes de gestió de símbols basat en ComplexSymbol. Tot i que en
-  aquest cas potser no és del tot necessari.
+  Mecanismes de gestio de simbols basat en ComplexSymbol. Tot i que en
+  aquest cas potser no es del tot necessari.
 ***/
 private String tokens = "", errores = "";
 
@@ -170,14 +170,14 @@ public String getErrores(){
 }
 
 private String errorToString(){
-  return "!!! Error léxico: Token " + yytext() + " no reconocido en la posición [línea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+  return "!!! Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
 }
 
 /**
-  Construcció d'un symbol sense atribut associat.
+  Construccio d'un symbol sense atribut associat.
 **/
 private ComplexSymbol symbol(int type) {
-  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  // Sumar 1 per a que la primera linia i columna no sigui 0.
   Location esquerra = new Location(yyline+1, yycolumn+1);
   Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
 
@@ -185,10 +185,10 @@ private ComplexSymbol symbol(int type) {
 }
 
 /**
-  Construcció d'un symbol amb un atribut associat.
+  Construccio d'un symbol amb un atribut associat.
 **/
 private Symbol symbol(int type, Object value) {
-  // Sumar 1 per a que la primera línia i columna no sigui 0.
+  // Sumar 1 per a que la primera linia i columna no sigui 0.
   Location esquerra = new Location(yyline+1, yycolumn+1);
   Location dreta = new Location(yyline+1, yycolumn+yytext().length()+1); // , yycolumn+yylength()
 

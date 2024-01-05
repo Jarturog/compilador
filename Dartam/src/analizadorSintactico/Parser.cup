@@ -13,7 +13,7 @@ alternativament
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
- * Itinerari: Intel·ligència Artificial i Computació
+ * Itinerari: Intel·ligència Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta
  */
@@ -36,7 +36,7 @@ scan with {:
 :};
 
 /**
- ** Aquí es podria posar un codi 'ad hoc' però en aquest cas no és necessari.
+ ** Aqui es podria posar un codi 'ad hoc' però en aquest cas no es necessari.
 **/
 parser code {:
 
@@ -59,8 +59,8 @@ parser code {:
      **********************************************************************/
 
     /**
-     * Método al que se llama automáticamente ante algún error sintáctico 
-     * en el que ya no es posible una recuperación de errores.
+     * Metodo al que se llama automaticamente ante algun error sintactico 
+     * en el que ya no es posible una recuperacion de errores.
     **/ 
     @Override
     public void unrecovered_syntax_error(Symbol cur_token) { 
@@ -74,7 +74,7 @@ parser code {:
     }  
 
     /**
-     * Método al que se llama automáticamente ante algún error sintactico.
+     * Metodo al que se llama automaticamente ante algun error sintactico.
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
