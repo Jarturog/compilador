@@ -92,13 +92,13 @@ public class SemanticAnalysis {
             elem = scriptMainYElementos.elemento;
         }
         // metodos especiales
-        DescripcionSimbolo dEnter = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        DescripcionSimbolo dEnter = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.ENTER], dEnter);
-        DescripcionSimbolo dShow = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        DescripcionSimbolo dShow = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.SHOW], dShow);
-        DescripcionSimbolo dFrom = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        DescripcionSimbolo dFrom = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.FROM], dFrom);
-        DescripcionSimbolo dInto = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.INT]);
+        DescripcionSimbolo dInto = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO], dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
@@ -160,7 +160,7 @@ public class SemanticAnalysis {
                             errores.add("Se realizan operaciones no validas para el calculo del indice "+n+" del array "+id);
                             indicarLocalizacion(dim.operando);
                             error = true;
-                        } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                        } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                             errores.add("Las operaciones para el calculo del indice "+n+" del array " + id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
                             indicarLocalizacion(dim.operando);
                             error = true;
@@ -274,7 +274,7 @@ public class SemanticAnalysis {
                         errores.add("Se realizan operaciones no validas en el indice del array " + asig.id);
                         indicarLocalizacion(asig.idx);
                         error = true;
-                    } else if (!idx.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                    } else if (!idx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                         errores.add("El indice del array " + asig.id + " no resulta en un entero");
                         indicarLocalizacion(asig.idx);
                         error = true;
@@ -435,7 +435,7 @@ public class SemanticAnalysis {
         if (tipoCond == null) {
             errores.add("La condicion del 'si' realiza una operacion no valida");
             indicarLocalizacion(cond.cond);
-        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.BOOL])){
+        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])){
             errores.add("La condicion del 'si' no resulta en una proposicion evualable como verdadera o falsa");
             indicarLocalizacion(cond.cond);
         }
@@ -449,7 +449,7 @@ public class SemanticAnalysis {
             if (tipoCond == null) {
                 errores.add("La condicion del 'sino' realiza una operacion no valida");
                 indicarLocalizacion(elif.cond);
-            } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.BOOL])){
+            } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])){
                 errores.add("La condicion del 'sino' no resulta en una proposicion evualable como verdadera o falsa");
                 indicarLocalizacion(elif.cond);
             }
@@ -476,7 +476,7 @@ public class SemanticAnalysis {
         if (tipoCond == null) {
             errores.add("La condicion del 'loop' realiza una operacion no valida");
             indicarLocalizacion(loopCond.cond);
-        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.BOOL])){
+        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])){
             errores.add("La condicion del 'loop' no resulta en una proposicion evualable como verdadera o falsa");
             indicarLocalizacion(loopCond.cond);
         }
@@ -608,37 +608,37 @@ public class SemanticAnalysis {
                     return null;
                 }
                 if (exp.isLeftUnaryOperator()) {
-                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
                         indicarLocalizacion(exp);
                         return null;
                     }
                     SymbolLUnaryOperator operator = exp.leftOp;
                     int operation = operator.unaryOperator;
-                    if (tipo.equals(ParserSym.terminalNames[ParserSym.BOOL]) && ParserSym.OP_NOT != operation) {
+                    if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT != operation) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
                         indicarLocalizacion(exp);
                         return null;
-                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar entero con not
                         indicarLocalizacion(exp);
                         return null;
                     }
                     return tipo;
                 }
-                if (!tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && !tipo.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                if (!tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                     errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
                     indicarLocalizacion(exp); 
                     return null;
                 }
                 SymbolRUnaryOperator operator = exp.rightOp;
                 int operation = operator.unaryOperator;
-                if (tipo.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && ParserSym.OP_PCT != operation) {
+                if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && ParserSym.OP_PCT != operation) {
                     errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar double con inc/dec
                     indicarLocalizacion(exp);
                     return null;
-                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.INT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
-                    return ParserSym.terminalNames[ParserSym.DOUBLE]; // !!! se puede operar entero con OP_PCT
+                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
+                    return ParserSym.terminalNames[ParserSym.REAL]; // !!! se puede operar entero con OP_PCT
                 }
                 return tipo;
             }
@@ -660,8 +660,8 @@ public class SemanticAnalysis {
                 if (error){
                     return null;
                 }
-                boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && tipo2.equals(ParserSym.terminalNames[ParserSym.INT]))
-                        || (tipo2.equals(ParserSym.terminalNames[ParserSym.DOUBLE]) && tipo1.equals(ParserSym.terminalNames[ParserSym.INT]));
+                boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
+                        || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
                 if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
                     errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop.value+" entre "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
@@ -676,8 +676,8 @@ public class SemanticAnalysis {
                 }
                 SymbolBinaryOperator operator = exp.bop;
                 if (unoIntOtroDouble) {
-                    if (operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.DOUBLE])) {
-                        return ParserSym.terminalNames[ParserSym.DOUBLE];
+                    if (operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
+                        return ParserSym.terminalNames[ParserSym.REAL];
                     }
                     errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop.value+" entre tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
                     indicarLocalizacion(exp);// error, operando no valido para operar con ints y doubles
@@ -689,7 +689,7 @@ public class SemanticAnalysis {
                     return null; // error, operandos no pueden operar con operador
                 }
                 if (operator.doesOperationResultInBoolean()) {
-                    return ParserSym.terminalNames[ParserSym.BOOL];
+                    return ParserSym.terminalNames[ParserSym.PROP];
                 }
                 return tipo1; // en caso contrario resulta en el mismo tipo
             }
@@ -699,7 +699,7 @@ public class SemanticAnalysis {
                 if (tipoCond == null) {
                     errores.add("La condicion "+exp.cond+" de la expresion ternaria "+exp+" realiza una operacion no valida");
                     indicarLocalizacion(exp.cond);
-                } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+                } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])) {
                     errores.add("La condicion "+exp.cond+" de la expresion ternaria "+exp+" no resulta en una proposicion evualable como verdadera o falsa, sino en " + tipoCond);
                     indicarLocalizacion(exp.cond); // error, no se puede utilizar de condicion algo que no sea una proposicion
                 }
@@ -761,7 +761,7 @@ public class SemanticAnalysis {
                     indicarLocalizacion(idx);
                     return null;
                 }
-                if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.INT])) {
+                if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                     errores.add("El operador que se quiere usar como indice ("+idx+") no es un entero, es de tipo " + tipoIdx);
                     indicarLocalizacion(idx); // indice es otra cosa que un entero
                     return null;

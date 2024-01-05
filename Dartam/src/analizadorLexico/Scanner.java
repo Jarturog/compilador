@@ -952,7 +952,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 89: break;
           case 14:
-            { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext()));
+            { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext()));
             }
           // fall through
           case 90: break;
@@ -1087,7 +1087,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 116: break;
           case 41:
-            { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.INT, Double.parseDouble(yytext()));
+            { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Double.parseDouble(yytext()));
             }
           // fall through
           case 117: break;
@@ -1142,7 +1142,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 127: break;
           case 52:
-            { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CHAR, yytext().charAt(0));
+            { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(0));
             }
           // fall through
           case 128: break;
@@ -1152,17 +1152,17 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 129: break;
           case 54:
-            { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),2));
+            { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),2));
             }
           // fall through
           case 130: break;
           case 55:
-            { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),8));
+            { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),8));
             }
           // fall through
           case 131: break;
           case 56:
-            { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.INT, Integer.parseInt(yytext().substring(2, yytext().length()),16));
+            { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),16));
             }
           // fall through
           case 132: break;
@@ -1227,7 +1227,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 144: break;
           case 69:
-            { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.BOOL, "cierto".equals(yytext()));
+            { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.PROP, "cierto".equals(yytext()));
             }
           // fall through
           case 145: break;

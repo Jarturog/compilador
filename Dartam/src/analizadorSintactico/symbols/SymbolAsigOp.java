@@ -37,12 +37,12 @@ public class SymbolAsigOp extends SymbolBase {
     }
     
     public boolean doesOperationResultInSameType(String type) {
-        if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])){
+        if (type.equals(ParserSym.terminalNames[ParserSym.PROP])){
             return isBasicAsig() ||
                     operacion == ParserSym.AS_ANDA ||
                     operacion == ParserSym.AS_ORA;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.CHAR])
-                || type.equals(ParserSym.terminalNames[ParserSym.INT])){
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.CAR])
+                || type.equals(ParserSym.terminalNames[ParserSym.ENT])){
             return isBasicAsig() ||
                     operacion == ParserSym.AS_ADDA ||
                     operacion == ParserSym.AS_SUBA ||
@@ -50,7 +50,7 @@ public class SymbolAsigOp extends SymbolBase {
                     operacion == ParserSym.AS_DIVA ||
                     operacion == ParserSym.AS_MODA ||
                     operacion == ParserSym.AS_POTA;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.DOUBLE])){
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.REAL])){
             return isBasicAsig() ||
                     operacion == ParserSym.AS_ADDA ||
                     operacion == ParserSym.AS_SUBA ||

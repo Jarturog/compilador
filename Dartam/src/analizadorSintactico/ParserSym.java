@@ -11,7 +11,7 @@ public class ParserSym {
   public static final int OP_BEQ = 19;
   public static final int OP_DEC = 3;
   public static final int KW_DOUBLE = 35;
-  public static final int BOOL = 68;
+  public static final int REAL = 70;
   public static final int FROM = 63;
   public static final int AS_POTA = 14;
   public static final int ARROW = 31;
@@ -23,11 +23,11 @@ public class ParserSym {
   public static final int KW_CASE = 59;
   public static final int COMMA = 46;
   public static final int RPAREN = 40;
-  public static final int DOUBLE = 70;
   public static final int LPAREN = 39;
   public static final int OP_ADD = 4;
   public static final int OP_DIV = 7;
   public static final int AS_ANDA = 16;
+  public static final int PROP = 68;
   public static final int KW_BOOL = 33;
   public static final int KW_CONST = 51;
   public static final int KW_INT = 34;
@@ -41,13 +41,11 @@ public class ParserSym {
   public static final int KW_RETURN = 58;
   public static final int KW_ELIF = 53;
   public static final int ENDINSTR = 45;
-  public static final int CHAR = 71;
   public static final int KW_LOOP = 55;
   public static final int AS_MODA = 15;
   public static final int AS_ADDA = 10;
   public static final int AS_DIVA = 13;
   public static final int OP_EQ = 18;
-  public static final int INT = 69;
   public static final int KW_METHOD = 49;
   public static final int OP_NEQ = 23;
   public static final int SHOW = 62;
@@ -56,6 +54,7 @@ public class ParserSym {
   public static final int OP_AND = 24;
   public static final int OP_LEQ = 21;
   public static final int KW_DO = 56;
+  public static final int ENT = 69;
   public static final int AS_ASSIGN = 9;
   public static final int error = 1;
   public static final int KW_CHAR = 36;
@@ -70,6 +69,7 @@ public class ParserSym {
   public static final int RBRACKET = 44;
   public static final int OP_PCT = 28;
   public static final int STRING = 67;
+  public static final int CAR = 71;
   public static final int AS_ORA = 17;
   public static final int OP_POT = 29;
   public static final int KW_IF = 52;
@@ -149,10 +149,10 @@ public class ParserSym {
   "AUX_MEMBER",
   "ID",
   "STRING",
-  "BOOL",
-  "INT",
-  "DOUBLE",
-  "CHAR"
+  "PROP",
+  "ENT",
+  "REAL",
+  "CAR"
   };
 }
 

@@ -123,10 +123,10 @@ terminal    ENTER, SHOW, FROM, INTO;
 terminal    AUX_MEMBER;
 
 terminal    String              ID, STRING;
-terminal    Boolean             BOOL;
-terminal    Integer             INT;
-terminal    Double              DOUBLE;
-terminal    Character           CHAR;
+terminal    Boolean             PROP;
+terminal    Integer             ENT;
+terminal    Double              REAL;
+terminal    Character           CAR;
 
 non terminal SymbolBody BODY;
 non terminal SymbolMain MAIN;
@@ -322,10 +322,10 @@ CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {
 
 ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(true, et, etxleft, etxright); :}
         | STRING:et             {: RESULT = new SymbolAtomicExpression(false, et, etxleft, etxright); :}
-        | BOOL:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | INT:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | DOUBLE:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | CHAR:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | PROP:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | ENT:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | REAL:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | CAR:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         ;
 
 BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et, etxleft, etxright); :}

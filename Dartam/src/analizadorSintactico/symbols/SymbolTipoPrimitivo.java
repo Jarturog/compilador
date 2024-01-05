@@ -32,10 +32,10 @@ public class SymbolTipoPrimitivo extends SymbolBase {
     }
 
     public static boolean isTipoPrimitivo(String t) {
-        return t.equals(ParserSym.terminalNames[ParserSym.BOOL])
-                || t.equals(ParserSym.terminalNames[ParserSym.INT])
-                || t.equals(ParserSym.terminalNames[ParserSym.DOUBLE])
-                || t.equals(ParserSym.terminalNames[ParserSym.CHAR])
+        return t.equals(ParserSym.terminalNames[ParserSym.PROP])
+                || t.equals(ParserSym.terminalNames[ParserSym.ENT])
+                || t.equals(ParserSym.terminalNames[ParserSym.REAL])
+                || t.equals(ParserSym.terminalNames[ParserSym.CAR])
                 || t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
 

@@ -48,12 +48,12 @@ public class SymbolBinaryOperator extends SymbolBase {
     }
 
     public boolean isForOperandsOfType(String type) {
-        if (type.equals(ParserSym.terminalNames[ParserSym.BOOL])) {
+        if (type.equals(ParserSym.terminalNames[ParserSym.PROP])) {
             return operador == ParserSym.OP_OR
                     || operador == ParserSym.OP_AND
                     || operador == ParserSym.OP_EQ
                     || operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.INT])) {
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.ENT])) {
             return operador == ParserSym.OP_ADD
                     || operador == ParserSym.OP_SUB
                     || operador == ParserSym.OP_MUL
@@ -66,7 +66,7 @@ public class SymbolBinaryOperator extends SymbolBase {
                     || operador == ParserSym.OP_LEQ
                     || operador == ParserSym.OP_LT
                     || operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.DOUBLE])) {
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.REAL])) {
             return operador == ParserSym.OP_ADD
                     || operador == ParserSym.OP_SUB
                     || operador == ParserSym.OP_MUL
@@ -77,7 +77,7 @@ public class SymbolBinaryOperator extends SymbolBase {
                     || operador == ParserSym.OP_LEQ
                     || operador == ParserSym.OP_LT
                     || operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.CHAR])) {
+        } else if (type.equals(ParserSym.terminalNames[ParserSym.CAR])) {
             return operador == ParserSym.OP_ADD
                     || operador == ParserSym.OP_SUB
                     || operador == ParserSym.OP_MUL

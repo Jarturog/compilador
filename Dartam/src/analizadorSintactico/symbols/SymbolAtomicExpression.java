@@ -37,22 +37,22 @@ public class SymbolAtomicExpression extends SymbolBase {
 
     public SymbolAtomicExpression(Character et, Location l, Location r) {
         super("literal", et, l, r);
-        tipo = ParserSym.terminalNames[ParserSym.CHAR];
+        tipo = ParserSym.terminalNames[ParserSym.CAR];
     }
 
     public SymbolAtomicExpression(Double et, Location l, Location r) {
         super("literal", et, l, r);
-        tipo = ParserSym.terminalNames[ParserSym.DOUBLE];
+        tipo = ParserSym.terminalNames[ParserSym.REAL];
     }
 
     public SymbolAtomicExpression(Integer et, Location l, Location r) {
         super("literal", et, l, r);
-        tipo = ParserSym.terminalNames[ParserSym.INT];
+        tipo = ParserSym.terminalNames[ParserSym.ENT];
     }
 
     public SymbolAtomicExpression(Boolean et, Location l, Location r) {
         super("literal", et, l, r);
-        tipo = ParserSym.terminalNames[ParserSym.BOOL];
+        tipo = ParserSym.terminalNames[ParserSym.PROP];
     }
     
 }
