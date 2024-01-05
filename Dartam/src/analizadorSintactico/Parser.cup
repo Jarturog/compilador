@@ -112,7 +112,7 @@ parser code {:
 :}
 
 terminal    OP_INC, OP_DEC, OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD;
-terminal    AS_ASSIGN, AS_ADDA, AS_SUBA, AS_MULA, AS_DIVA, AS_POTA, AS_ANDA, AS_ORA;
+terminal    AS_ASSIGN, AS_ADDA, AS_SUBA, AS_MULA, AS_DIVA, AS_POTA, AS_MODA, AS_ANDA, AS_ORA;
 terminal    OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
@@ -224,8 +224,8 @@ PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolPara
         |                                             {: RESULT = new SymbolParams(); :}
         ;
 
-PARAMSLISTA ::= TIPO:et1 ID COMMA PARAMSLISTA:et2           {: RESULT = new SymbolParamsLista(et1, et2, et1xleft, et1xright); :}
-        | TIPO:et ID                          {: RESULT = new SymbolParamsLista(et, etxleft, etxright); :}
+PARAMSLISTA ::= TIPO:et1 ID:id COMMA PARAMSLISTA:sig           {: RESULT = new SymbolParamsLista(et1, id, sig, et1xleft, et1xright); :}
+        | TIPO:et ID:id                          {: RESULT = new SymbolParamsLista(et, id, etxleft, etxright); :}
         ;
 
 DECS ::= KW_CONST:et1 TIPO:et2 DEC_ASIG_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}
@@ -294,6 +294,7 @@ ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.A
         | AS_MULA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_MULA, et, etxleft, etxright); :}
         | AS_DIVA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_DIVA, et, etxleft, etxright); :}
         | AS_POTA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_POTA, et, etxleft, etxright); :}
+        | AS_MODA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_MODA, et, etxleft, etxright); :}
         | AS_ANDA:et                    {: RESULT = new SymbolAsigOp(ParserSym.AS_ANDA, et, etxleft, etxright); :}
         | AS_ORA:et                     {: RESULT = new SymbolAsigOp(ParserSym.AS_ORA, et, etxleft, etxright); :}
         ;

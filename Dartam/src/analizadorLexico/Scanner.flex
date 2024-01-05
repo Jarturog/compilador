@@ -100,6 +100,7 @@ op_res_asig = \-\:
 op_mul_asig = \*\:
 op_div_asig = \/\:
 op_pot_asig = \*\*\:
+op_mod_asig = \\\:
 op_cond     = \?
 op_arrow    = \-\>
 
@@ -209,6 +210,7 @@ private Symbol symbol(int type, Object value) {
 {op_mul_asig}               { tokens += "OP_MUL_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_MULA, yytext()); }
 {op_div_asig}               { tokens += "OP_DIV_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_DIVA, yytext()); }
 {op_pot_asig}               { tokens += "OP_POT_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_POTA, yytext()); }
+{op_mod_asig}               { tokens += "OP_MOD_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_MODA, yytext()); }
 {op_inc}                    { tokens += "OP_INC: "+yytext()+"\n"; return symbol(ParserSym.OP_INC, yytext()); }
 {op_dec}                    { tokens += "OP_DEC: "+yytext()+"\n"; return symbol(ParserSym.OP_DEC, yytext()); }
 {op_sum}                    { tokens += "OP_SUM: "+yytext()+"\n"; return symbol(ParserSym.OP_ADD, yytext()); }
