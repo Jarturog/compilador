@@ -1083,7 +1083,7 @@ private Symbol symbol(int type, Object value) {
           // fall through
           case 116: break;
           case 41:
-            { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Double.parseDouble(yytext()));
+            { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext()));
             }
           // fall through
           case 117: break;

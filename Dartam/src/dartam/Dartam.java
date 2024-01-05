@@ -28,7 +28,6 @@ public class Dartam {
         Reader input;
         // cutre lo de abajo
         args = new String[1];
-        inputPath = "1.txt";
         args[0] = inputPath;
         try {
             if (args.length > 0) {
@@ -46,6 +45,8 @@ public class Dartam {
             try {
                 script = (SymbolScript) parser.parse().value;
             } catch (NullPointerException | ClassCastException e) { // analisis sintactico ha ido mal o no se ha encontrado main
+                System.err.println("error: "+e);
+                e.printStackTrace(System.err);
                 return;
             }
             

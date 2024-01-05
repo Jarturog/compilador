@@ -280,7 +280,7 @@ private Symbol symbol(int type, Object value) {
 {val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),16)); }
 {val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),8)); }
 {val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext())); }
-{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Double.parseDouble(yytext())); }
+{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); }
 {val_char}          { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(0)); }
 {val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.PROP, "cierto".equals(yytext())); }
 {val_cadena}        { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext()); }

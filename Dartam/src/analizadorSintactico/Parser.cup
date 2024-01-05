@@ -322,8 +322,8 @@ ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(true, et,
         | STRING:et             {: RESULT = new SymbolAtomicExpression(false, et, etxleft, etxright); :}
         | PROP:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         | ENT:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | REAL:et             {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | CAR:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | REAL:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+        | CAR:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         ;
 
 BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.OP_ADD, et, etxleft, etxright); :}

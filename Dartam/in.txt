@@ -1,4 +1,4 @@
-inmut real k : 3 + 1;
+inmut real k : 3.0 + 1;
 
 f vacio inicio(string[]argumentos){
 	ent a: 1;
@@ -6,9 +6,9 @@ f vacio inicio(string[]argumentos){
 	ent c: a + b;
 	string s: "oki";
 	prop OK: isOK(s);
-	pop;
+	//pop;
 }
 
 f prop isOK(string s){
-	pop s="ok" ? true -> false;
+	//pop s="ok" ? true -> false;
 }
