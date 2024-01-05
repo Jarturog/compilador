@@ -1,7 +1,5 @@
-inmut ent b: "hola";
-prop b;
+
+inmut ent b;
 f vacio inicio(string[]argumentos){
-	b: 2;
-	b: "hola";
-	b: cierto;
+	b: 2 +3;
 }

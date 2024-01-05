@@ -57,7 +57,7 @@ import analizadorSintactico.ParserSym;
 sub_digit   = [0-9]
 sub_letra   = [A-Za-z] // no confundir con caracter
 sub_car     = {sub_digit}|{sub_letra}
-sub_signo   = [+|-]? 
+//sub_signo   = [+|-]? 
 
 // simbolos
 sym_parenIzq	= \(
@@ -135,7 +135,7 @@ kw_write     = "into"
 kw_tuple     = "tupla"
 
 // valores
-val_decimal = {sub_signo}{sub_digit}+
+val_decimal = {sub_digit}+
 val_binario = 0b[01]+
 val_octal   = 0o[0-7]+
 val_hex     = 0x[A-Fa-f0-9]+

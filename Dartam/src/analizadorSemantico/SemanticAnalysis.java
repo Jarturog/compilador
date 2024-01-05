@@ -608,7 +608,7 @@ public class SemanticAnalysis {
                     return null;
                 }
                 if (exp.isLeftUnaryOperator()) {
-                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
+                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
                         indicarLocalizacion(exp);
                         return null;
@@ -617,6 +617,10 @@ public class SemanticAnalysis {
                     int operation = operator.unaryOperator;
                     if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT != operation) {
                         errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
+                        indicarLocalizacion(exp);
+                        return null;
+                    } else if ((tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) || tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) && (ParserSym.OP_ADD != operation || ParserSym.OP_SUB != operation)) {
+                        errores.add("Se ha intentado realizar una operacion "+exp.op+" no valida sobre un " + tipo); // no se puede operar booleano con +/-
                         indicarLocalizacion(exp);
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation || ParserSym.OP_DEC != operation)) {
