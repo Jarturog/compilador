@@ -20,19 +20,21 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 public class SymbolMain extends SymbolBase {
     
     // body main
-    public final String nombreMain, nombreArgumentos;
+    public final String nombreMain, nombreArgumentos, lBracket, rBracket;
     public final SymbolBody main;
     // hay más elementos
     public final SymbolMain siguienteElemento;
     public final SymbolScriptElemento elemento;
 
-    public SymbolMain(Object m, Object a, SymbolBody b, Location l, Location r) {
+    public SymbolMain(Object m, Object a, Object lb, Object rb, SymbolBody b, Location l, Location r) {
         super("main", r, r);
         main = b;
         siguienteElemento = null;
         elemento = null;
         nombreMain = (String)m;
         nombreArgumentos = (String)a;
+        lBracket = (String)lb;
+        rBracket = (String)rb;
     }
 
     public SymbolMain(SymbolMain m, SymbolScriptElemento e, Location l, Location r) {
@@ -42,5 +44,7 @@ public class SymbolMain extends SymbolBase {
         elemento = e;
         nombreMain = null;
         nombreArgumentos = null;
+        lBracket = null;
+        rBracket = null;
     }
 }

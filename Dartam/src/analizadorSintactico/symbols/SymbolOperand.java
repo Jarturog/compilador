@@ -29,6 +29,7 @@ public class SymbolOperand extends SymbolBase {
     public final SymbolBinaryExpression binaryExp;
     public final SymbolConditionalExpression conditionalExp;
     public final String member;
+    private final String lBracket, rBracket;
 
     // atomic expression
     public SymbolOperand(SymbolAtomicExpression et, Location l, Location r) {
@@ -41,6 +42,8 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
+        this.lBracket = null;
+        this.rBracket = null;
     }
     
     // fcall
@@ -54,6 +57,8 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
+        this.lBracket = null;
+        this.rBracket = null;
     }
     
     // parentesis
@@ -67,6 +72,8 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
+        this.lBracket = null;
+        this.rBracket = null;
     }
     
     // unary expression
@@ -80,6 +87,8 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
+        this.lBracket = null;
+        this.rBracket = null;
     }
 
     // binary expression
@@ -93,6 +102,8 @@ public class SymbolOperand extends SymbolBase {
         this.unaryExp = null;
         this.conditionalExp = null;
         this.member = null;
+        this.lBracket = null;
+        this.rBracket = null;
     }
     
     // conditional expression
@@ -106,10 +117,12 @@ public class SymbolOperand extends SymbolBase {
         this.unaryExp = null;
         this.binaryExp = null;
         this.member = null;
+        this.lBracket = null;
+        this.rBracket = null;
     }
 
     // array operation
-    public SymbolOperand(SymbolOperand arr, SymbolOperand idx, Location l, Location r) {
+    public SymbolOperand(SymbolOperand arr, Object lb, SymbolOperand idx, Object lr, Location l, Location r) {
         super("operand",l ,r );
         this.op = arr;
         this.idxArr = idx;
@@ -120,6 +133,8 @@ public class SymbolOperand extends SymbolBase {
         this.conditionalExp = null;
         this.member = null;
         value = arrayToString();
+        this.lBracket = (String)lb;
+        this.rBracket = (String)lr;
     }
 
     // tupla operation
@@ -134,6 +149,8 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         value = tuplaToString();
+        this.lBracket = null;
+        this.rBracket = null;
     }
     
     public static enum TIPO {
@@ -168,7 +185,7 @@ public class SymbolOperand extends SymbolBase {
     }
 
     private String arrayToString(){
-        return "("+op.value+"["+idxArr.value+"]"+")";
+        return "("+op.value+lBracket+idxArr.value+rBracket+")";
     }
     
     private String tuplaToString(){
