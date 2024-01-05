@@ -275,12 +275,21 @@ public class TablaSimbolos {
         return te.get(idx).descripcion;
     }
     
+    //Consulatamos una variable ya incorporada
     public DescripcionSimbolo consulta(String s){
-        for (Entrada e : te) {
-            if (e.nombreVariable.equals(s)) {
-                return e.descripcion;
-            }
+        DescripcionSimbolo e = td.get(s);
+        if (e != null){ //Si es visible desde el bloque, estará aquí
+            return e;
         }
+        
+        //No es necesario, ya que si esta oculto, usaremos la del bloque actual, que no este oculto significa
+        //que en un nivel diferente no hay una variable con el mismo nombre, por lo que siempre estará en tabla de descriptores (visible) o no existira
+        //En el caso de que no, recorrerá la tabla de expansión ()
+        /*for (Entrada ent : te) {
+            if (ent.nombreVariable.equals(s)) {
+                return ent.descripcion;
+            }
+        }*/
         return null;
     }
     
