@@ -144,6 +144,7 @@ public class GeneradorCIntermedio {
         generate(p.getPl()); //Generamos la lista de parametros
     }
     
+    //preguntar porque SymbolTipo en parametro en vez de otra clase?
     public void generate(SymbolParamsLista pl){
         currentSublevel = -1;
         generate(pl.getParam()); //Primer parametro de la lista
@@ -152,20 +153,201 @@ public class GeneradorCIntermedio {
         while(pl.getPl() != null){ //Tenemos otro parametro
             String t = newVariable();
             VTEntry vte = getVar(t);
-            replaceVarTableKey(t, aux.getParam().identificador1);
+            //replaceVarTableKey(t, aux.getParam().);
             currentProcTable.params.add(t);
             
-            SymbolTipoPrimitivo tipo = aux.getParam().getTipo();
-            while(tipo.isTipo(ParserSym.LBRACKET)){
+            boolean tipo = aux.getParam().isArray();
+            if(tipo){
                 vte.dimensions.add(newVariable());
-                tipo = tipo.getTipoBase();
             }       
         }
     }
     
+    //PREGUNTAR ARTURO
     /*
-   
-
+        ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
+            | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+            ;
+            * 
+        ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                                  {: RESULT = new SymbolAsig(et, aop, val); :}
+        | ID:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
+        | ID:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val                          {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
+        ;
+    
+        
+    */
+    // Con la gramatica actual se permite int id=3, p+=3, test-=32...
+    // Es correcto?
+    private void generate(SymbolAsigs asignaciones){
+        //SymbolAsig asignacion = asignaciones.asig.; //Primera
+        
+    }
+    
+    private void generate(SymbolIf insIf){
+        currentSublevel++; //Hemos bajado un nivel
+        
+        //Cabecera
+        SymbolOperand operando = insIf.cond;
+        generate(operando);
+        String referenciaOperando = operando.referencia;
+        
+        //Creamos etiqueta para un else
+        String etiquetaElse = newTag();
+        addInstruction(InstructionType.if_EQ, referenciaOperando, "0", etiquetaElse);
+        
+        SymbolBody cuerpo = insIf.cuerpo;
+        generate(cuerpo);
+        
+        addInstruction(InstructionType.skip, etiquetaElse);
+        
+        SymbolElifs insElifs = insIf.elifs;
+        if(insElifs != null){
+            generate(insElifs);
+        }    
+        
+        SymbolElse insElse = insIf.els; 
+        if(insElse != null){ //Hay bloque else
+            generate(insElse);
+        }
+        //Salimos del bloque
+        currentSublevel--;
+    }   
+    
+    private void generate(SymbolElifs insElifs){
+        currentSublevel++; //Hemos bajado un nivel
+        
+        //Cabecera
+        SymbolOperand operando = insElifs.elif.cond;
+        generate(operando);
+        String referenciaOperando = operando.referencia;
+        
+        //Creamos etiqueta para un else
+        String etiquetaElif = newTag();
+        addInstruction(InstructionType.if_EQ, referenciaOperando, "0", etiquetaElif);
+        
+        SymbolBody cuerpo = insElifs.elif.cuerpo;
+        generate(cuerpo);
+        
+        addInstruction(InstructionType.skip, etiquetaElif);
+        
+        SymbolElifs siguienteElifs = insElifs.elifs;
+        if(siguienteElifs != null){
+            generate(insElifs);
+        }    
+        
+        //Salimos del bloque
+        currentSublevel--;
+    }
+    
+    
+    private void generate(SymbolElse insElse){
+        SymbolBody cuerpo = insElse.cuerpo;
+        if(cuerpo != null){
+            generate(cuerpo);
+        }
+    }
+    
+    private void generate(SymbolInstr instruccion){
+        if (instruccion.fcall != null){
+            generate(instruccion.fcall);
+        }else if (instruccion.ret != null){
+            generate(instruccion.ret);
+        }else if (instruccion.decs != null){
+            generate(instruccion.decs);
+        }else if (instruccion.asigs != null){
+            generate(instruccion.asigs);
+        }else{
+            generate(instruccion.swap);
+        }
+            
+    }
+    
+    private void generate(SymbolFCall fcall){
+        String nombre = fcall.methodName.nombreMetodo;
+        SymbolOperandsLista operandos = fcall.operandsLista;
+        if(operandos != null){
+            generate(operandos);
+        }
+        
+        String etiqueta = newVariable();
+        if(nombre == null){
+            nombre = ""+fcall.methodName.specialMethod;
+        }
+        addInstruction(InstructionType.call, nombre, etiqueta);
+        fcall.referencia = etiqueta;
+    }
+    
+    //POR COMPLETAR
+   /* private void generate(SymbolLoop func){
+        String nombre = func.nombreMetodo;
+        if(nombre != null){
+            currentFunction = createProcTableEntry(nombre);
+        }else{
+            currentFunction = createProcTableEntry(""+func.methodName.specialMethod);
+        }
+        
+        SymbolOperandsLista opL = fcall.operandsLista;
+        PTEntry pte = procedureTable.get(currentFunction);
+        currentProcTable = pte;
+        
+        if(opL != null){
+            generate(opL);
+            pte.numParams = opL.numOperandos;
+        }
+        
+        addInstruction(InstructionType.skip, pte.eStart);
+        addInstruction(InstructionType.pmb, nombre);
+        
+       // SymbolCuerpo 
+    }*/
+    
+    
+    private void generate(SymbolReturn ret){
+        String t;
+        SymbolOperand op = ret.op;
+        if(op != null){
+            generate(op);
+            t = op.referencia;
+        }else{
+            t = "0";
+        }
+        
+        String nombre = currentFunction.replace(".", "");
+        addInstruction(InstructionType.rtn, t, nombre);
+    }
+    
+    private void generate(SymbolSwap swap){
+    
+    }
+    
+    private void generate(SymbolDecs decs){
+    
+    }
+        
+    //FALTA POR MIRAR
+    private void generate(SymbolBody insBody){
+    
+    }
+    
+    private void generate(SymbolOperand op){
+        
+    }
+    
+    private void generate(SymbolOperandsLista opL){
+        
+    }
+    
+    private void generate(SymbolTipo tipo){
+        
+    }
+        
+        
+        
+    
+    
+}
+    
+    /*
     private void generate(SymbolArrSuff arrSuff){
         // if first 
         //     t1 = i = arrSuff.reference = getIndex().reference;
@@ -872,4 +1054,3 @@ public class GeneradorCIntermedio {
         }
         return s;
     }*/
-}

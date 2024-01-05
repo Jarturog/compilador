@@ -23,6 +23,8 @@ public abstract class SymbolBase extends ComplexSymbol {
     public final Location leftPos;
     public final Location rightPos;
     
+    public String referencia;
+    
     public SymbolBase(String name){
         super(name, id++);
         leftPos = null;

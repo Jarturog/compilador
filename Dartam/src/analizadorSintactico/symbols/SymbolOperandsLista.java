@@ -24,17 +24,20 @@ public class SymbolOperandsLista extends SymbolBase {
     
     public final SymbolOperand operand;
     public final SymbolOperandsLista siguienteOperando;
+    public int numOperandos;
     
     public SymbolOperandsLista(SymbolOperand op, SymbolOperandsLista opl, Location l, Location r) {
         super("operandsLista",0, l, r);
         this.operand = op;
         this.siguienteOperando = opl;
+        this.numOperandos += 1;
     }
 
     public SymbolOperandsLista(SymbolOperand et, Location l, Location r) {
         super("operandsLista", 0 , l , r);
         this.operand = et;
         this.siguienteOperando = null;
+        this.numOperandos += 1;
     }
     
 }

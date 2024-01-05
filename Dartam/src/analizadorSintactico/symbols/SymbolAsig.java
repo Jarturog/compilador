@@ -23,6 +23,7 @@ public class SymbolAsig extends SymbolBase {
     public final String id;
     public final SymbolAsigOp operacion;
     public final SymbolOperand valor;
+    
     // array
     public final SymbolOperand dimensiones;
     // tupla

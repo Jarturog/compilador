@@ -21,17 +21,21 @@ public class SymbolParamsLista extends SymbolBase {
     
     public final SymbolTipo param;
     public final SymbolParamsLista pl;
+    public int numParametros;
     
     public SymbolParamsLista(SymbolTipo param, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
         this.pl = null;
+        this.numParametros += 1;
+        
     }
     
     public SymbolParamsLista(SymbolTipo param, SymbolParamsLista pl, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
         this.pl = pl;
+        this.numParametros +=1 ; 
     }
 
     public SymbolTipo getParam() {

@@ -34,6 +34,9 @@ public class SymbolAsigs extends SymbolBase {
         this.siguienteAsig = null;
     }
     
+    public boolean next(){
+        return siguienteAsig.siguienteAsig != null;
+    }
     
     
 }
