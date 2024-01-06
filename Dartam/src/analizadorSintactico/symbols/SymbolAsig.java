@@ -81,8 +81,7 @@ public class SymbolAsig extends SymbolBase {
     }
 
     /**
-     * fcall, decs, asigs, swap, return
-     * @return f, d, a, s or r
+     * 
      */
     public TIPO getTipo() {
         if (idx == null && miembro == null) {

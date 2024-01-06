@@ -5,6 +5,7 @@
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
+import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolParamsLista;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ public class DescripcionSimbolo {
     private String tipo;
 
     private int nivel;
-    private boolean isConstante, valorAsignado, isMember;
+    private boolean isConstante = false, valorAsignado = false, isMember = false;
 
     private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
     private HashMap<String, DescripcionSimbolo> miembros;
-    private ArrayList<Integer> dimensiones;
+    private ArrayList<SymbolOperand> dimensiones;
 
 
     public int first;
@@ -54,9 +55,10 @@ public class DescripcionSimbolo {
     /**
      * Array
      */
-    public DescripcionSimbolo(String t, ArrayList<Integer> dim){
+    public DescripcionSimbolo(String t, ArrayList<SymbolOperand> dim, boolean isMiembro){
         tipo = t;
         dimensiones = dim;
+        isMember = isMiembro; // miembro de una tupla
     }
     
     /**
@@ -162,14 +164,6 @@ public class DescripcionSimbolo {
     
     public void anyadirMiembro(String id, DescripcionSimbolo ds) {
         miembros.put(id, ds);
-    }
-    
-    public String getTipoArray() {
-        if (!isArray()) {
-            return null;
-        }
-        String tipo = getTipo();
-        return tipo.substring(0, tipo.lastIndexOf(" "));
     }
     
     public boolean tieneValorAsignado() {

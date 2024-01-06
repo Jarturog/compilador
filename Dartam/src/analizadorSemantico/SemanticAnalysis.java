@@ -185,7 +185,12 @@ public class SemanticAnalysis {
                 }
             }
             if (!error) {
-                DescripcionSimbolo d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, tupla != null);
+                DescripcionSimbolo d;
+                if (tipo.isArray()) {
+                    d = new DescripcionSimbolo(tipo.getTipo(), tipo.dimArray.getDimensiones(), tupla != null);
+                } else {
+                    d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, tupla != null);
+                }
                 tablaSimbolos.poner(id, d);
                 if (tupla != null) {
                     tupla.anyadirMiembro(id, d);
@@ -234,7 +239,7 @@ public class SemanticAnalysis {
             SymbolAsig asig = asigs.asig;
             DescripcionSimbolo d = tablaSimbolos.consulta(asig.id);
             if (d == null) {
-                errores.add("La variable " + asig.id + " no ha sido declarado con anterioridad");
+                errores.add("La variable " + asig.id + " no ha sido declarada con anterioridad");
                 indicarLocalizacion(asig);
                 error = true;
             } else if (d.isFunction()) {
@@ -284,7 +289,12 @@ public class SemanticAnalysis {
                         error = true;
                     }
                     if (!error) {
-                        tipoVariable = d.getTipoArray();
+                        tipoVariable = d.getTipo();
+                    }
+                    if (!asig.operacion.isBasicAsig()) {
+                        errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' es un array");
+                        indicarLocalizacion(asig.operacion);
+                        error = true;
                     }
                 }
                 case TUPLA -> {
@@ -325,7 +335,7 @@ public class SemanticAnalysis {
             if (!asig.operacion.isBasicAsig() && !d.tieneValorAsignado()) {
                 errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' no ha sido asignada de forma simple anteriormente");
                 indicarLocalizacion(asig.operacion);
-                errorOperandoInvalido = true;
+                error = true;
             }
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
@@ -613,7 +623,6 @@ public class SemanticAnalysis {
             }
             case UNARY_EXPRESSION -> {
                 SymbolUnaryExpression exp = op.unaryExp;
-                System.out.println(exp.op.atomicExp.tipo);
                 String tipo = procesarOperando(exp.op);
                 if (tipo == null) {
                     errores.add("Se realizan operaciones no validas en " + exp.op);
@@ -628,12 +637,37 @@ public class SemanticAnalysis {
                     SymbolRUnaryOperator operator = exp.rightOp;
                     operation = operator.unaryOperator;
                 }
-                if ((exp.op.atomicExp == null || !exp.op.atomicExp.tipo.equals(ParserSym.terminalNames[ParserSym.ID]))&& (ParserSym.OP_INC == operation || ParserSym.OP_DEC == operation)) {
+                if (ParserSym.OP_INC == operation || ParserSym.OP_DEC == operation) {
                     String s = "incremento";
                     if (ParserSym.OP_DEC == operation) s = "decremento";
-                    errores.add("Se ha intentado realizar una operacion "+exp+" de "+s+" no valida sobre un " + tipo + " y no un "+ParserSym.terminalNames[ParserSym.ID]);
-                    indicarLocalizacion(exp);
-                    return null;
+                    if (exp.op.atomicExp == null || !exp.op.atomicExp.tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
+                        errores.add("No se puede realizar un "+s+" sobre un operando diferente a una variable primitiva ("+exp+")");
+                        indicarLocalizacion(exp);
+                        return null;
+                    }
+                    int nErrors = errores.size();
+                    procesarAsignaciones(new SymbolAsigs(new SymbolAsig(!exp.isLeftUnaryOperator(), operation, exp.op.toString(), exp.value, exp.xleft, exp.xright), exp.xleft, exp.xright));
+                    if (errores.size() != nErrors) {
+                        errores.add("No se ha podido realizar la operacion de "+s+" "+exp);
+                        indicarLocalizacion(exp);
+                        return null;
+                    }
+//                    DescripcionSimbolo d = tablaSimbolos.consulta(id);
+//                    if (d == null) {
+//                        errores.add("No se puede realizar una operacion de "+s+" en la variable no declarada "+id);
+//                        indicarLocalizacion(exp);
+//                    } else if (!d.tieneValorAsignado()) {
+//                        errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' no ha sido asignada de forma simple anteriormente");
+//                        indicarLocalizacion(asig.operacion);
+//                    }
+//                    String s2 = "";
+//                    if (d.isFunction()) s2 = "una funcion";
+//                    else if (d.isTupla()) s2 = "una tupla";
+//                    else if (d.isArray()) s2 = "un array";
+//                    if (!s2.isEmpty()) {
+//                        errores.add("No se puede realizar una operacion de "+s+" en el identificador "+id+" que corresponde a "+s2);
+//                        indicarLocalizacion(asig.operacion);
+//                    }
                 }
                 if (exp.isLeftUnaryOperator()) {
                     if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
@@ -767,7 +801,7 @@ public class SemanticAnalysis {
                     error = true;
                 }
                 if (!error) {
-                    tipoArr = tipoArr.substring(0, tipoArr.lastIndexOf(" "));
+                    tipoArr = tipoArr.substring(0, tipoArr.length() - 2);
                     if (tipoArr.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
                         String tipo = tipoArr.substring(tipoArr.indexOf(" ") + 1);
                         if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo)) {

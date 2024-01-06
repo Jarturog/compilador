@@ -8,6 +8,7 @@
  */
 package analizadorSintactico.symbols;
 
+import java.util.ArrayList;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 /**
@@ -44,8 +45,18 @@ public class SymbolDimensiones extends SymbolBase {
     }
     
     public String getEmptyBrackets() {
-        String sig = (siguienteDimension != null) ? siguienteDimension.toString() : "";
+        String sig = (siguienteDimension != null) ? siguienteDimension.getEmptyBrackets() : "";
         return lBracket + rBracket + sig;
+    }
+    
+    public ArrayList<SymbolOperand> getDimensiones() {
+        ArrayList<SymbolOperand> arr = new ArrayList<>();
+        arr.add(operando);
+        ArrayList<SymbolOperand>  sig = (siguienteDimension != null) ? siguienteDimension.getDimensiones() : null;
+        if (sig != null) {
+            arr.addAll(sig);
+        }
+        return arr;
     }
 
 }
