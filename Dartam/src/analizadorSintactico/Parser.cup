@@ -175,7 +175,7 @@ SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2       {: RESULT = new SymbolScript(et1
 
 SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAREN LKEY BODY:et5 RKEY   {: RESULT = new SymbolScriptElemento(et2, et3, et4, et5, et1xleft, et1xright); :}
         | DECS:et                                                       {: RESULT = new SymbolScriptElemento(et, etxleft, etxright); :}
-        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY ENDINSTR     {: RESULT = new SymbolScriptElemento(et2, et3, et1xleft, et1xright); :}
+        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY     {: RESULT = new SymbolScriptElemento(et2, et3, et1xleft, et1xright); :}
         ;
 
 TIPO_RETORNO ::= TIPO:et            {: RESULT = new SymbolTipoRetorno(et, etxleft, etxright); :}
