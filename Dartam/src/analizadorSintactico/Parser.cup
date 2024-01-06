@@ -102,7 +102,7 @@ terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_STRING, KW_VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
 terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
-terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP;
+terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP, CASTING;
 
 terminal    String              ID, STRING;
 terminal    Boolean             PROP;
@@ -152,7 +152,7 @@ non terminal SymbolScriptElemento SCRIPT_ELEMENTO;
 non terminal SymbolDimensiones DIMENSIONES;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
 
-
+precedence right CASTING;
 precedence left PREC_B_EXP;
 precedence left OP_ADD, OP_SUB;
 precedence left OP_MUL, OP_DIV, OP_MOD;
@@ -292,12 +292,13 @@ ASIG_OP ::= AS_ASSIGN:et                {: RESULT = new SymbolAsigOp(ParserSym.A
 
 OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | FCALL:et                      {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
-        | LPAREN:pos OPERAND:et RPAREN      {: RESULT = new SymbolOperand(et, posxleft, posxright); :}
+        | LPAREN:pos OPERAND:et RPAREN  {: RESULT = new SymbolOperand(et, posxleft, posxright); :}
         | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :} 
         | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
-        | OPERAND:et1 LBRACKET:l OPERAND:et2 RBRACKET:r  {: RESULT = new SymbolOperand(et1, l, et2, r, et1xleft, et1xright); :}
-        | OPERAND:et1 OP_MEMBER ID:et2                     {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
+        | OPERAND:et1 LBRACKET:l OPERAND:et2 RBRACKET:r {: RESULT = new SymbolOperand(et1, l, et2, r, et1xleft, et1xright); :}
+        | OPERAND:et1 OP_MEMBER ID:et2                  {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
+        | LPAREN:et TIPO_PRIMITIVO:t RPAREN:et2 OPERAND:op  {: RESULT = new SymbolOperand(t, op, et, et2, etxleft, etxright); :} %prec CASTING
         ;
 
 UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et1 OPERAND:et2                       {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :} %prec PREC_L_U_EXP

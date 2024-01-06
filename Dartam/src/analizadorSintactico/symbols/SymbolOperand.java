@@ -29,6 +29,7 @@ public class SymbolOperand extends SymbolBase {
     public final SymbolBinaryExpression binaryExp;
     public final SymbolConditionalExpression conditionalExp;
     public final String member;
+    public final SymbolTipoPrimitivo casting;
     private final String lBracket, rBracket;
 
     // atomic expression
@@ -44,6 +45,7 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
     }
     
     // fcall
@@ -59,6 +61,7 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
     }
     
     // parentesis
@@ -74,6 +77,7 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
     }
     
     // unary expression
@@ -89,6 +93,7 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
     }
 
     // binary expression
@@ -104,6 +109,7 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
     }
     
     // conditional expression
@@ -119,6 +125,7 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
     }
 
     // array operation
@@ -135,11 +142,12 @@ public class SymbolOperand extends SymbolBase {
         value = arrayToString();
         this.lBracket = (String)lb;
         this.rBracket = (String)lr;
+        this.casting = null;
     }
 
     // tupla operation
     public SymbolOperand(SymbolOperand tuple, String member, Location l, Location r) {
-        super("operand", l , r );
+        super("operand", l, r );
         this.op = tuple;
         this.member = member;
         this.atomicExp = null;
@@ -151,6 +159,22 @@ public class SymbolOperand extends SymbolBase {
         value = tuplaToString();
         this.lBracket = null;
         this.rBracket = null;
+        this.casting = null;
+    }
+
+    public SymbolOperand(SymbolTipoPrimitivo t, SymbolOperand op, Object lParen, Object rParen, Location l, Location r) {
+        super("operand", (String)lParen + t.value + rParen + op.value, l, r );
+        this.op = op;
+        this.member = null;
+        this.atomicExp = null;
+        this.fcall = null;
+        this.idxArr = null;
+        this.unaryExp = null;
+        this.binaryExp = null;
+        this.conditionalExp = null;
+        this.lBracket = null;
+        this.rBracket = null;
+        this.casting = t;
     }
     
     public static enum TIPO {
@@ -161,7 +185,8 @@ public class SymbolOperand extends SymbolBase {
         BINARY_EXPRESSION,
         CONDITIONAL_EXPRESSION,
         IDX_ARRAY,
-        MEMBER_ACCESS
+        MEMBER_ACCESS,
+        CASTING
     }
     
     public TIPO getTipo() {
@@ -179,8 +204,10 @@ public class SymbolOperand extends SymbolBase {
             return TIPO.BINARY_EXPRESSION;
         } else if (conditionalExp != null) {
             return TIPO.CONDITIONAL_EXPRESSION;
-        } else {
+        } else if (member != null) {
             return TIPO.MEMBER_ACCESS;
+        } else {
+            return TIPO.CASTING;
         }
     }
 

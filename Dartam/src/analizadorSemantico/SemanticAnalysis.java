@@ -836,7 +836,7 @@ public class SemanticAnalysis {
                 SymbolOperand tupla = op.op;
                 String tipoTupla = procesarOperando(tupla);
                 if (tipoTupla == null) {
-                    errores.add("Se realizan operaciones no validas ("+tupla+") en en la tupla de la cual se quiere coger un miembro");
+                    errores.add("Se realizan operaciones no validas ("+tupla+") en la tupla de la cual se quiere coger un miembro");
                     indicarLocalizacion(tupla);
                     return null;
                 }
@@ -858,6 +858,24 @@ public class SemanticAnalysis {
                     return null;
                 }
                 return miembro.getTipo();
+            }
+            case CASTING -> {
+                SymbolOperand operando = op.op;
+                String casting = op.casting.getTipo();
+                String tipo = procesarOperando(operando);
+                if (tipo == null) {
+                    errores.add("Se realizan operaciones no validas ("+operando+") en antes de aplicar el casting");
+                    indicarLocalizacion(operando);
+                    return null;
+                }
+                boolean opIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) ||tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                boolean castIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) ||casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                if ((opIntCharDouble && castIntCharDouble) || (casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]))){ 
+                    return casting; // casting posible entre int <-> char <-> double <-> int y de char -> string
+                }
+                errores.add("Se ha intentado realizar un casting no permitido ("+op.toString()+") de "+tipo+" a "+casting);
+                indicarLocalizacion(operando);
+                return null;
             }
         }
         return null; // error, no es ninguno de los casos
