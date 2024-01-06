@@ -53,7 +53,7 @@ public class SemanticAnalysis {
         errores.set(idx, loc + errores.get(idx));
     }
 
-    public SemanticAnalysis(SymbolScript scriptElementosAntesDeMain) {
+    public SemanticAnalysis(SymbolScript scriptElementosAntesDeMain) throws Exception {
         tablaSimbolos = new TablaSimbolos();
         errores = new ArrayList<>();
         ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
@@ -200,7 +200,7 @@ public class SemanticAnalysis {
         }
     }
 
-    private void procesarBody(SymbolBody body) {
+    private void procesarBody(SymbolBody body) throws Exception {
         while (body != null) {
             SymbolMetodoElemento elem = body.metodo;
 
@@ -449,7 +449,7 @@ public class SemanticAnalysis {
         }
     }
 
-    private void procesarIf(SymbolIf cond) {
+    private void procesarIf(SymbolIf cond) throws Exception {
         String tipoCond = procesarOperando(cond.cond);
         if (tipoCond == null) {
             errores.add("La condicion del 'si' realiza una operacion no valida");
@@ -484,7 +484,7 @@ public class SemanticAnalysis {
         }
     }
 
-    private void procesarLoop(SymbolLoop loop) {
+    private void procesarLoop(SymbolLoop loop) throws Exception {
         // no importa que sea while o do while
         tablaSimbolos.entraBloque();
         SymbolLoopCond loopCond = loop.loopCond;
@@ -506,7 +506,7 @@ public class SemanticAnalysis {
         tablaSimbolos.salirBloque();
     }
 
-    private void procesarSwitch(SymbolSwitch sw) {
+    private void procesarSwitch(SymbolSwitch sw) throws Exception {
         tablaSimbolos.entraBloque();
         Object tipo1 = procesarOperando(sw.cond);
         if (tipo1 == null) {
@@ -534,7 +534,7 @@ public class SemanticAnalysis {
         tablaSimbolos.salirBloque();
     }
 
-    private void procesarDefinicionMetodo(SymbolScriptElemento metodo) {
+    private void procesarDefinicionMetodo(SymbolScriptElemento metodo) throws Exception {
         tablaSimbolos.entraBloque();
         metodoActualmenteSiendoTratado = new Pair(metodo.id, tablaSimbolos.consulta(metodo.id));
         procesarParametros(metodo.parametros.paramsLista);
@@ -570,7 +570,7 @@ public class SemanticAnalysis {
         }
     }
 
-    private void procesarMain(SymbolMain main) {
+    private void procesarMain(SymbolMain main) throws Exception {
         SymbolBody body = main.main;
         tablaSimbolos.entraBloque();
         metodoActualmenteSiendoTratado = new Pair(main.nombreMain, tablaSimbolos.consulta(main.nombreMain));

@@ -32,9 +32,10 @@ public class TablaSimbolos {
             public String nombreVariable, idcamp; //Identificador
             public DescripcionSimbolo descripcion;
             public int d, next, np;
-            public Entrada(String n, DescripcionSimbolo d){
+            public Entrada(String n, DescripcionSimbolo d, int np){
                 this.nombreVariable = n;
                 this.descripcion = d;
+                this.np = np;
             }
     }
     
@@ -69,7 +70,7 @@ public class TablaSimbolos {
             //Si no estan declaradas al mismo nivel
             int indice = ta.get(this.n) + 1;
             ta.set(n,indice);
-            te.add(new Entrada(id, sd)); //Ya que existia de antes, pero ahora a otro nivel
+            te.add(new Entrada(id, sd, n)); //Ya que existia de antes, pero ahora a otro nivel
         }
         
         //Ya sea si no existia el simbolo, como si ha sido movido el actual de td
@@ -99,10 +100,10 @@ public class TablaSimbolos {
         ta.add(valor);
     }
     
-    public void salirBloque() {
+    public void salirBloque() throws Exception {
 
         if(this.n == 0){ //Error grave del compilador
-            //throw new Exception("Error grave del compilador"); //Cambiar mas adelante
+            throw new Exception("Error grave del compilador, contacta con los desarrolladores por favor"); //Cambiar mas adelante
         }
         int lini = ta.get(this.n);
         ta.remove(this.n); //Esto revisarlo
