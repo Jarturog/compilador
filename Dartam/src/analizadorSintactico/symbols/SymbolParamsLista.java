@@ -17,12 +17,19 @@ public class SymbolParamsLista extends SymbolBase {
     public final SymbolTipo param;
     public final String id;
     public final SymbolParamsLista siguienteParam;
+    public int numParametros;
     
     public SymbolParamsLista(SymbolTipo param, String id, Location l, Location r) {
         super("paramsLista" , l , r);
         this.param = param;
         this.id = id;
         this.siguienteParam = null;
+        
+        if(siguienteParam != null){
+            numParametros = siguienteParam.getNumeroParametros() + 1;
+        }else{
+            numParametros = 1;
+        }
     }
     
     public SymbolParamsLista(SymbolTipo param, String id, SymbolParamsLista pl, Location l, Location r) {
@@ -30,6 +37,12 @@ public class SymbolParamsLista extends SymbolBase {
         this.param = param;
         this.id = id;
         this.siguienteParam = pl;
+        this.numParametros = 1; //Revisar probando que no pase de una lista de params a solo 1
+    }
+    
+    
+    public int getNumeroParametros(){
+        return numParametros;
     }
 
 }

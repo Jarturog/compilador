@@ -20,7 +20,7 @@ TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(e
  */
 public class SymbolTipoPrimitivo extends SymbolBase {
 
-    private final String tipo;
+    public final String tipo;
 
     public SymbolTipoPrimitivo(Object tipo, Location l, Location r) {
         super("tipoVar", tipo, l, r);

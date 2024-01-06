@@ -15,12 +15,12 @@ public class GeneradorCIntermedio {
     private Hashtable<String, VTEntry> variableTable;
     private Hashtable<String, PTEntry> procedureTable;
     
-    private PTEntry currentProcTable;
-    private String currentFunction;
-    private int currentSublevel;
+    private PTEntry tablaProcesosActual;
+    private String funcionActual;
+    private int subnivelActual;
     static final String DEF_FUNCTION = ".";
     
-    private String currentDec; // Variable used in array declaration
+    private String declaracionActual; // Variable used in array declaration
     private int currentDecLength;
     private ArrayList<String> dimensionsToCheck;
 
@@ -33,32 +33,32 @@ public class GeneradorCIntermedio {
         procedureTable = new Hashtable<>();
         numE = 0;
         numT = 0;
-        currentFunction = DEF_FUNCTION; // We use the format function.variable to store and access the variable table
+        funcionActual = DEF_FUNCTION; // We use the format function.variable to store and access the variable table
         // This avoids the very real possibility of the user creating a variable of format tN (where N is a natural) 
         // which would cause undesired behaviour
-        currentSublevel = 0;
+        subnivelActual = 0;
         currentDecLength = -1;
     }
     
-    private String newVariable(){
+    private String nuevaVariable(){
         String t = "t" + numT++;
         VTEntry vte = new VTEntry(t);
-        variableTable.put(currentFunction + currentSublevel + t, vte);
-        if(currentProcTable != null) currentProcTable.variableTable.put(currentSublevel + t, vte);
+        variableTable.put(funcionActual + subnivelActual + t, vte);
+        if(tablaProcesosActual != null) tablaProcesosActual.variableTable.put(subnivelActual + t, vte);
         return t;
     }
 
-    private String newTag(){
+    private String nuevaEtiqueta(){
         return "e" + numE++;
     }
 
-    private VTEntry getVar(String t){
-        VTEntry vte = variableTable.get(currentFunction + currentSublevel + t);
-        int i = currentSublevel-1;
+    private VTEntry getVariable(String t){
+        VTEntry vte = variableTable.get(funcionActual + subnivelActual + t);
+        int i = subnivelActual-1;
 
         // We check up until -1 since parameters are in sublevel -1
         while(vte == null && i >= -1) {
-            vte = variableTable.get(currentFunction + i-- + t);
+            vte = variableTable.get(funcionActual + i-- + t);
         }
         if(vte == null) {
             vte = variableTable.get(DEF_FUNCTION + 0 + t);
@@ -66,42 +66,42 @@ public class GeneradorCIntermedio {
         return vte;
     }
 
-    private void removeVar(String t){
-        VTEntry vte = variableTable.remove(currentFunction + currentSublevel + t);
-        int i = currentSublevel-1;
+    private void eliminarVariable(String t){
+        VTEntry vte = variableTable.remove(funcionActual + subnivelActual + t);
+        int i = subnivelActual-1;
         while(vte == null && i >= 0) {
-            vte = variableTable.remove(currentFunction + i-- + t);
+            vte = variableTable.remove(funcionActual + i-- + t);
         }
         if(vte == null) {
             vte = variableTable.remove(DEF_FUNCTION + 0 + t);
         }
     }
     
-    private void replaceVarTableKey(String oldKey, String newKey){
-        VTEntry vte = getVar(oldKey);
-        removeVar(oldKey);
-        variableTable.put(currentFunction + currentSublevel + newKey, vte);
+    private void remplazarNombreVariable(String oldKey, String newKey){
+        VTEntry vte = getVariable(oldKey);
+        eliminarVariable(oldKey);
+        variableTable.put(funcionActual + subnivelActual + newKey, vte);
     }
 
-    private String createProcTableEntry(String procName){
+    private String crearEntradaProcedimiento(String procName){
         String internalFunctionName = procName + DEF_FUNCTION;
         PTEntry pte = new PTEntry();
-        pte.eStart = newTag();
+        pte.eStart = nuevaEtiqueta();
         procedureTable.put(internalFunctionName, pte);
         return internalFunctionName;
     }
 
-    private void addInstruction(InstructionType instruction, String left, String right, String destination){
+    private void añadirInstruccion(InstructionType instruction, String left, String right, String destination){
         Instruction i = new Instruction(instruction, left, right, destination);
         c3a.add(i);
     }
     
-    private void addInstruction(InstructionType instruction, String left, String destination){
+    private void añadirInstruccion(InstructionType instruction, String left, String destination){
         Instruction i = new Instruction(instruction, left, destination);
         c3a.add(i);
     }
     
-    private void addInstruction(InstructionType instruction, String destination){
+    private void añadirInstruccion(InstructionType instruction, String destination){
         Instruction i = new Instruction(instruction, destination);
         c3a.add(i);
     }
@@ -118,185 +118,224 @@ public class GeneradorCIntermedio {
         return c3a;
     }
     
-    public void generate(SymbolScript s){
-        SymbolScriptElemento se = s.getElemento();
-        if(se != null){
-            generate(se); //Generamos el siguiente elemento
-        }
-        
-        SymbolScript s2 = s.getSiguienteElemento();
-        while(s2 != null){
-            generate(s2);
-            s2 = s2.getSiguienteElemento();
-        }
-        
-        for (String nombre : procedureTable.keySet()){
-            PTEntry pte = procedureTable.get(s);
-            pte.prepareForMachineCode();
-        }
-    }
-    
-    public void generate(SymbolScriptElemento se){
-        //TODO
-    }
-    
-    private void generate(SymbolParams p){
-        generate(p.paramsLista); //Generamos la lista de parametros
-    }
-    
-    //preguntar porque SymbolTipo en parametro en vez de otra clase?
-    public void generate(SymbolParamsLista pl){
-        currentSublevel = -1;
-        generate(pl.param); //Primer parametro de la lista
-        
-        SymbolParamsLista aux = pl.siguienteParam; //Comprobamos si tiene mas
-        while(pl.siguienteParam != null){ //Tenemos otro parametro
-            String t = newVariable();
-            VTEntry vte = getVar(t);
-            //replaceVarTableKey(t, aux.getParam().);
-            currentProcTable.params.add(t);
-            
-            boolean tipo = aux.param.isArray();
-            if(tipo){
-                vte.dimensions.add(newVariable());
-            }       
-        }
-    }
-    
-    //PREGUNTAR ARTURO
-    /*
-        ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
-            | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
-            ;
-            * 
-        ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                                  {: RESULT = new SymbolAsig(et, aop, val); :}
-        | ID:et1 AUX_MEMBER LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
-        | ID:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val                          {: RESULT = new SymbolAsig(et1, et2, aop, val); :}
+   /*
+        SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2       {: RESULT = new SymbolScript(et1, et2, et1xleft, et1xright); :}
+        | MAIN:et                               {: RESULT = new SymbolScript(et, etxleft, etxright); :}
         ;
-    
-        
     */
-    // Con la gramatica actual se permite int id=3, p+=3, test-=32...
-    // Es correcto?
-    private void generate(SymbolAsigs asignaciones){
-        //SymbolAsig asignacion = asignaciones.asig.; //Primera
-        
+    
+    //A partir de este se generaran el resto
+    private void procesar(SymbolScript sScript){
+       
+       //Generación del primer elemento
+       SymbolScriptElemento sse = sScript.elemento;
+       if(sse != null){
+           procesar(sse);
+       }
+       
+       //Generacion del siguiente, llamada recursiva
+       SymbolScript sScript2 = sScript.siguienteElemento;
+       if(sScript2 != null){
+           procesar(sScript2);
+       }
+       
+       //Generaremos codigo intermedio del main
+       SymbolMain main = sScript.main;
+       if(main != null){
+           procesar(main);
+       }
+       
     }
     
-    private void generate(SymbolIf insIf){
-        currentSublevel++; //Hemos bajado un nivel
-        
-        //Cabecera
-        SymbolOperand operando = insIf.cond;
-        generate(operando);
-        String referenciaOperando = operando.getReferencia();
-        
-        //Creamos etiqueta para un else
-        String etiquetaElse = newTag();
-        addInstruction(InstructionType.if_EQ, referenciaOperando, "0", etiquetaElse);
-        
-        SymbolBody cuerpo = insIf.cuerpo;
-        generate(cuerpo);
-        
-        addInstruction(InstructionType.skip, etiquetaElse);
-        
-        SymbolElifs insElifs = insIf.elifs;
-        if(insElifs != null){
-            generate(insElifs);
-        }    
-        
-        SymbolElse insElse = insIf.els; 
-        if(insElse != null){ //Hay bloque else
-            generate(insElse);
-        }
-        //Salimos del bloque
-        currentSublevel--;
-    }   
-    
-    private void generate(SymbolElifs insElifs){
-        currentSublevel++; //Hemos bajado un nivel
-        
-        //Cabecera
-        SymbolOperand operando = insElifs.elif.cond;
-        generate(operando);
-        String referenciaOperando = operando.getReferencia();
-        
-        //Creamos etiqueta para un else
-        String etiquetaElif = newTag();
-        addInstruction(InstructionType.if_EQ, referenciaOperando, "0", etiquetaElif);
-        
-        SymbolBody cuerpo = insElifs.elif.cuerpo;
-        generate(cuerpo);
-        
-        addInstruction(InstructionType.skip, etiquetaElif);
-        
-        SymbolElifs siguienteElifs = insElifs.elifs;
-        if(siguienteElifs != null){
-            generate(insElifs);
-        }    
-        
-        //Salimos del bloque
-        currentSublevel--;
+    /*
+    SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAREN LKEY BODY:et5 RKEY   {: RESULT = new SymbolScriptElemento(et2, et3, et4, et5, et1xleft, et1xright); :}
+        | DECS:et                                                       {: RESULT = new SymbolScriptElemento(et, etxleft, etxright); :}
+        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY     {: RESULT = new SymbolScriptElemento(et2, et3, et1xleft, et1xright); :}
+        ;
+    */
+    private void procesar(SymbolScriptElemento se){
+        //TODO 2 partes, o generar funcion que es como el de abajo y declarar cosas
     }
     
-    
-    private void generate(SymbolElse insElse){
-        SymbolBody cuerpo = insElse.cuerpo;
-        if(cuerpo != null){
-            generate(cuerpo);
-        }
-    }
-    
-    private void generate(SymbolInstr instruccion){
-        if (instruccion.fcall != null){
-            generate(instruccion.fcall);
-        }else if (instruccion.ret != null){
-            generate(instruccion.ret);
-        }else if (instruccion.decs != null){
-            generate(instruccion.decs);
-        }else if (instruccion.asigs != null){
-            generate(instruccion.asigs);
-        }else{
-            generate(instruccion.swap);
-        }
+    /*
+        MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN KW_STRING LBRACKET:l RBRACKET:r KW_ARGS:args RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, args, l, r, et, posxleft, posxright); :}
+        | MAIN:et1 SCRIPT_ELEMENTO:et2     {: RESULT = new SymbolMain(et1,et2, et1xleft, et1xright); :}
+        ;
+    */
+    private void procesar(SymbolMain main){
+        //Primer caso, si tenemos un main y luego scriptElemento
+        if(main.main != null){
+            procesar(main.siguienteElemento);
+            procesar(main.elemento);
+        }else{ //Caso donde nuestro main es una funcion normal y corriente
+            String nombre = main.nombreMain; 
+            funcionActual = this.crearEntradaProcedimiento(nombre);
             
+            
+            //TODO: los argumentos son un array []argumentos!, pero bueno
+            //Gestionamos parametros 
+            SymbolParams parametros = null;
+            
+            //Recibimos la tabla de procedimientos de esta funcion
+            PTEntry tabla = this.procedureTable.get(nombre);
+            this.tablaProcesosActual = tabla; //Cambiamos a la actual
+            
+            //Tratando parametros
+            if(parametros != null){
+                procesar(parametros);
+                
+                //Ahora la tabla de dicha funcion tiene incorporado cuantos parametros tiene 
+                tabla.numParams = parametros.paramsLista.numParametros;
+            }
+            
+            añadirInstruccion(InstructionType.skip, tabla.eStart);
+            añadirInstruccion(InstructionType.pmb, nombre);
+            
+            //Tratamiento del body
+            SymbolBody cuerpo = main.main;
+            if(cuerpo != null){
+                procesar(cuerpo);
+            }
+            
+            //Al ser el main solo devolvera void, por lo que no hace nada
+            añadirInstruccion(InstructionType.rtn, "0", nombre);
+            
+            //Etiqueta para el final de la funcion
+            this.tablaProcesosActual.eEnd = nuevaEtiqueta();
+            añadirInstruccion(InstructionType.skip, tablaProcesosActual.eEnd);
+            
+            //Ahora reseteamos la funcion actual y la tabla de procesos actual
+            this.funcionActual = DEF_FUNCTION;
+            this.tablaProcesosActual = null;       
+        }             
     }
     
-    private void generate(SymbolFCall fcall){
-        String nombre = (String)fcall.methodName.value;
-        SymbolOperandsLista operandos = fcall.operandsLista;
-        if(operandos != null){
-            generate(operandos);
+    /*
+        BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1xleft, et1xright); :}
+        |                               {: RESULT = new SymbolBody(); :}
+        ;
+
+    */
+    private void procesar(SymbolBody cuerpo){
+        if(cuerpo != null){
+            
+            //Procesamos el actual
+            if(cuerpo.metodo != null){
+                procesar(cuerpo.metodo);
+            }
+            
+            //procesamos los siguientes
+            SymbolBody cuerpo2 = cuerpo.siguienteMetodo;
+            if(cuerpo2 != null){
+                procesar(cuerpo2);
+            }
+            
+        }
+    }
+    
+    /*
+        TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, txleft, txright); :}
+        | TIPO_PRIMITIVO:t DIMENSIONES:d        {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
+        | KW_TUPLE:t ID:i                       {: RESULT = new SymbolTipo(i, txleft, txright); :}
+        | KW_TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
+        ;
+    */
+    private void procesar(SymbolTipo tipo){
+        //TODO: Posiblemente tratarlos unicamente donde se usen declaraciones
+    }
+    
+    
+    /*
+    TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_INT:et                        {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_DOUBLE:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_CHAR:et                       {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        | KW_STRING:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolTipoPrimitivo tipoPrimitivo){
+        //TODO: Posiblemente tratarlos unicamente donde se usen declaraciones
+    }
+    
+    
+    /*
+        PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etxleft, etxright); :}   
+        |                                             {: RESULT = new SymbolParams(); :}
+        ;
+    */
+    private void procesar(SymbolParams params){
+        if(params != null){ //Ya que podemos tener params como lambda
+            procesar(params.paramsLista);
+        }
+    }
+    
+    /*
+        PARAMSLISTA ::= TIPO:et1 ID:id COMMA PARAMSLISTA:sig           {: RESULT = new SymbolParamsLista(et1, id, sig, et1xleft, et1xright); :}
+        | TIPO:et ID:id                          {: RESULT = new SymbolParamsLista(et, id, etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolParamsLista paramsLista){
+        //Crearemos una nueva variable
+        String variable = this.nuevaVariable();
+        VTEntry entrada = this.getVariable(variable);
+        
+        //Como este parametro vendra de una funcion o llamada el tablaProcesosActual != null
+        this.tablaProcesosActual.params.add(variable); //Añadimos el parametro
+        
+        //Ahora meterelos el tipo dentro de la variable
+        if(paramsLista.param.idTupla != null){ //Es una tupla
+            entrada.dimensions.add(nuevaVariable());
+        }else{
+            //Tipo primitivo
+            switch(paramsLista.param.tipo.tipo){ //Almacenaremos el tipo de variable que es
+                case "STRING":
+                    entrada.type = ParserSym.STRING;
+                    break;
+                case "PROP":
+                    entrada.type = ParserSym.PROP;
+                    break;
+                case "ENT":
+                    entrada.type = ParserSym.ENT;
+                    break;
+                case "REAL":
+                    entrada.type = ParserSym.REAL;
+                    break;
+                case "CAR":
+                    entrada.type = ParserSym.CAR;
+                    break;
+            }
         }
         
-        String etiqueta = newVariable();
-        if(nombre == null){
-            nombre = ""+fcall.methodName.specialMethod;
+        //Ahora generamos por si siguen habiendo mas parametros
+        SymbolParamsLista siguiente = paramsLista.siguienteParam;
+        if(siguiente != null){
+            procesar(siguiente);
         }
-        addInstruction(InstructionType.call, nombre, etiqueta);
-        fcall.setReferencia(etiqueta);
+         
+        
     }
+    
     
     //POR COMPLETAR
    /* private void generate(SymbolLoop func){
         String nombre = func.nombreMetodo;
         if(nombre != null){
-            currentFunction = createProcTableEntry(nombre);
+            funcionActual = crearEntradaProcedimiento(nombre);
         }else{
-            currentFunction = createProcTableEntry(""+func.methodName.specialMethod);
+            funcionActual = crearEntradaProcedimiento(""+func.methodName.specialMethod);
         }
         
         SymbolOperandsLista opL = fcall.operandsLista;
-        PTEntry pte = procedureTable.get(currentFunction);
-        currentProcTable = pte;
+        PTEntry pte = procedureTable.get(funcionActual);
+        tablaProcesosActual = pte;
         
         if(opL != null){
             generate(opL);
             pte.numParams = opL.numOperandos;
         }
         
-        addInstruction(InstructionType.skip, pte.eStart);
-        addInstruction(InstructionType.pmb, nombre);
+        añadirInstruccion(InstructionType.skip, pte.eStart);
+        añadirInstruccion(InstructionType.pmb, nombre);
         
        // SymbolCuerpo 
     }*/
@@ -312,8 +351,8 @@ public class GeneradorCIntermedio {
             t = "0";
         }
         
-        String nombre = currentFunction.replace(".", "");
-        addInstruction(InstructionType.rtn, t, nombre);
+        String nombre = funcionActual.replace(".", "");
+        añadirInstruccion(InstructionType.rtn, t, nombre);
     }
     
     private void generate(SymbolSwap swap){
@@ -338,6 +377,10 @@ public class GeneradorCIntermedio {
     }
     
     private void generate(SymbolTipo tipo){
+        
+    }
+    
+    private void procesar(SymbolMetodoElemento me){
         
     }
         
@@ -367,13 +410,13 @@ public class GeneradorCIntermedio {
         if(dimensionsToCheck.size() != 0) {
             dimensions = dimensionsToCheck.remove(0);
         }
-        String tn1 = newVariable();
-        addInstruction(InstructionType.prod, tn, ""+dimensions, tn1); // tn1 = tn * d
+        String tn1 = nuevaVariableiable();
+        añadirInstruccion(InstructionType.prod, tn, ""+dimensions, tn1); // tn1 = tn * d
         SymbolOperation index = arrSuff.getIndex();
         generate(index);
         String in = index.reference;
-        String tn2 = newVariable();
-        addInstruction(InstructionType.add, tn1, in, tn2); // tn2 = tn1 + in
+        String tn2 = nuevaVariableiable();
+        añadirInstruccion(InstructionType.add, tn1, in, tn2); // tn2 = tn1 + in
         
         // Next iteration
         SymbolArrSuff next = arrSuff.getNext();
@@ -400,16 +443,16 @@ public class GeneradorCIntermedio {
         String t1 = rSide.reference;
 
         if(rSide.type.isType(KW_ARRAY)){
-            addInstruction(InstructionType.point, t1, t);
-        } else addInstruction(InstructionType.copy, t1, t);
+            añadirInstruccion(InstructionType.point, t1, t);
+        } else añadirInstruccion(InstructionType.copy, t1, t);
     }
 
     private void generate(SymbolDec dec){
-        String t = newVariable();
-        VTEntry vte = getVar(t);
+        String t = nuevaVariableiable();
+        VTEntry vte = getVariable(t);
         currentDec = dec.variableName;
         if(dec.isConstant){
-            // addInstruction(InstructionType.copy, dec.getValue().getSemanticValue().toString(), t);
+            // añadirInstruccion(InstructionType.copy, dec.getValue().getSemanticValue().toString(), t);
             vte.initialValue = dec.getValue().getSemanticValue().toString();
             replaceVarTableKey(t, dec.variableName);
             return;
@@ -423,7 +466,7 @@ public class GeneradorCIntermedio {
                 vte.initialValue = v.toString();
             } else {
                 generate(value);
-                if(!t.equals(value.reference)) addInstruction(InstructionType.copy, value.reference, t);
+                if(!t.equals(value.reference)) añadirInstruccion(InstructionType.copy, value.reference, t);
             }
         }
         dec.reference = t;
@@ -437,10 +480,10 @@ public class GeneradorCIntermedio {
         SymbolBase dec = decs.getDeclaration();
         if(dec instanceof SymbolDec) generate((SymbolDec) dec);
         else if (dec instanceof SymbolFunc) {
-            String eContDecs = newTag();
-            addInstruction(InstructionType.go_to, eContDecs); // We must skip the function during executions unless called
+            String eContDecs = nuevaEtiqueta();
+            añadirInstruccion(InstructionType.go_to, eContDecs); // We must skip the function during executions unless called
             generate((SymbolFunc) dec);
-            addInstruction(InstructionType.skip, eContDecs);
+            añadirInstruccion(InstructionType.skip, eContDecs);
         }
         
         SymbolDecs nextDecs = decs.getNext();
@@ -459,7 +502,7 @@ public class GeneradorCIntermedio {
 
 
     private void generate(SymbolFor sFor){
-        currentSublevel++;
+        subnivelActual++;
         
         SymbolBase init = sFor.getInit();
         if(init instanceof SymbolDec) generate((SymbolDec) init);
@@ -467,15 +510,15 @@ public class GeneradorCIntermedio {
         else if(init instanceof SymbolSwap) generate((SymbolSwap) init);
         else if(init instanceof SymbolFuncCall) generate((SymbolFuncCall) init);
 
-        String eStart = newTag();
-        addInstruction(InstructionType.skip, eStart);
+        String eStart = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.skip, eStart);
 
         SymbolOperation cond = sFor.getCondition();
         generate(cond);
         String tCond = cond.reference;
 
-        String eEnd = newTag();
-        addInstruction(InstructionType.if_EQ, tCond, "0", eEnd);
+        String eEnd = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.if_EQ, tCond, "0", eEnd);
 
         SymbolInstrs instrs = sFor.getInstructions();
         generate(instrs);
@@ -486,42 +529,42 @@ public class GeneradorCIntermedio {
         else if(end instanceof SymbolSwap) generate((SymbolSwap) end);
         else if(end instanceof SymbolFuncCall) generate((SymbolFuncCall) end);
 
-        addInstruction(InstructionType.go_to, eStart);
-        addInstruction(InstructionType.skip, eEnd);
+        añadirInstruccion(InstructionType.go_to, eStart);
+        añadirInstruccion(InstructionType.skip, eEnd);
 
-        currentSublevel--;
+        subnivelActual--;
     }
 
 
     private void generate(SymbolFunc func){
         String name = func.getFunctionName();
 
-        currentFunction = createPTEntry(name);
+        funcionActual = createPTEntry(name);
 
         SymbolArgs args = func.getArgs();
-        PTEntry pte = procedureTable.get(currentFunction);
-        currentProcTable = pte;
+        PTEntry pte = procedureTable.get(funcionActual);
+        tablaProcesosActual = pte;
 
         if(args != null) {
             generate(args);
             pte.numParams = args.getNArgs();
         }
         
-        addInstruction(InstructionType.skip, pte.eStart);
-        addInstruction(InstructionType.pmb, name);
-        // pte.tReturn = newVariable();
+        añadirInstruccion(InstructionType.skip, pte.eStart);
+        añadirInstruccion(InstructionType.pmb, name);
+        // pte.tReturn = nuevaVariableiable();
         SymbolInstrs instrs = func.getInstructions();
         if(instrs != null) generate(instrs);
 
         // If no return was found, we must put it at the end
-        // addInstruction(InstructionType.rtn, "0", name);
+        // añadirInstruccion(InstructionType.rtn, "0", name);
         if(func.getType().isType(KW_VOID)) 
-            addInstruction(InstructionType.rtn, "0", name);
-        currentProcTable.eEnd = newTag();
-        addInstruction(InstructionType.skip, currentProcTable.eEnd);
+            añadirInstruccion(InstructionType.rtn, "0", name);
+        tablaProcesosActual.eEnd = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.skip, tablaProcesosActual.eEnd);
 
-        currentFunction = DEF_FUNCTION;
-        currentProcTable = null;
+        funcionActual = DEF_FUNCTION;
+        tablaProcesosActual = null;
     }
 
  
@@ -530,38 +573,38 @@ public class GeneradorCIntermedio {
         SymbolParams params = functionCall.getParams();
         if(params != null) generate(params);
 
-        String t = newVariable();
-        addInstruction(InstructionType.call, funcName, t);
+        String t = nuevaVariableiable();
+        añadirInstruccion(InstructionType.call, funcName, t);
         functionCall.reference = t;
     }
 
  
     private void generate(SymbolIf sIf){
         // We change the current function so as to denote that this is a different block, but we must restore it after.
-        currentSublevel++;
+        subnivelActual++;
 
         SymbolOperation cond = sIf.getCondition();
         generate(cond);
         String tCond = cond.reference;
 
-        String eElse = newTag();
-        addInstruction(InstructionType.if_EQ, tCond, "0", eElse);
+        String eElse = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.if_EQ, tCond, "0", eElse);
 
         SymbolInstrs instrs = sIf.getInstructions();
         generate(instrs);
 
-        addInstruction(InstructionType.skip, eElse);
+        añadirInstruccion(InstructionType.skip, eElse);
         
         SymbolElse sElse = sIf.getElse();
         if(sElse != null) generate(sElse);
-        currentSublevel--;
+        subnivelActual--;
     }
 
     private void generate(SymbolIn in){
-        SymbolVar oper = in.getVar();
+        SymbolVar oper = in.getVariable();
         generate(oper);
         String t = oper.reference;
-        addInstruction(InstructionType.in, t);
+        añadirInstruccion(InstructionType.in, t);
     }
 
     private void generate(SymbolInstr instruction){
@@ -614,10 +657,10 @@ public class GeneradorCIntermedio {
         VTEntry vte = null;
         // This is to deal with the indexing of the lists
         if(currentDec != null){
-            vte = getVar(currentDec);
+            vte = getVariable(currentDec);
             t = vte.tName;
         } else  {
-            t = newVariable();
+            t = nuevaVariableiable();
             currentDec = t;
         }
         String right = "";
@@ -637,7 +680,7 @@ public class GeneradorCIntermedio {
         } else if(value.getSemanticValue() instanceof Character){
             char cVal = (Character) value.getSemanticValue();
             right = "" + (int) cVal; // We store ASCII value
-            getVar(currentDec).type = ParserSym.KW_CHAR;
+            getVariable(currentDec).type = ParserSym.KW_CHAR;
         } else if(value.getSemanticValue() instanceof Boolean){
             boolean bVal = (Boolean) value.getSemanticValue();
             // We store true or false in bits, not in Boolean
@@ -653,7 +696,7 @@ public class GeneradorCIntermedio {
             int size = VTEntry.CHAR_BYTES;
             if(value.type.isType(ParserSym.KW_INT)) size = VTEntry.INTEGER_BYTES;
             int displacement = currentDecLength * size;
-            addInstruction(InstructionType.ind_ass, ""+displacement, right, getVar(currentDec).tName);
+            añadirInstruccion(InstructionType.ind_ass, ""+displacement, right, getVariable(currentDec).tName);
         }
 
         SymbolList next = list.getNext();
@@ -665,41 +708,41 @@ public class GeneradorCIntermedio {
     }
 
     private void generate(SymbolLoop loop){
-        currentSublevel++;
+        subnivelActual++;
 
-        String eStart = newTag();
-        addInstruction(InstructionType.skip, eStart);
+        String eStart = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.skip, eStart);
 
         SymbolOperation cond = loop.getCondition();
         generate(cond);
         String tCond = cond.reference;
 
-        String eEnd = newTag();
-        addInstruction(InstructionType.if_EQ, tCond, "0", eEnd);
+        String eEnd = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.if_EQ, tCond, "0", eEnd);
 
         SymbolInstrs instrs = loop.getInstructions();
         generate(instrs);
 
-        addInstruction(InstructionType.go_to, eStart);
-        addInstruction(InstructionType.skip, eEnd);
+        añadirInstruccion(InstructionType.go_to, eStart);
+        añadirInstruccion(InstructionType.skip, eEnd);
 
-        currentSublevel--;
+        subnivelActual--;
     }
 
     private void generate(SymbolMain main){
         SymbolInstrs instrs = main.getInstructions();
         if(instrs != null) {
             // We prepare the procedure table and insert the info about the main procedure
-            currentFunction = createPTEntry("main");
-            currentProcTable = procedureTable.get(currentFunction);
-            String eMain = currentProcTable.eStart;
+            funcionActual = createPTEntry("main");
+            tablaProcesosActual = procedureTable.get(funcionActual);
+            String eMain = tablaProcesosActual.eStart;
 
-            addInstruction(InstructionType.skip, eMain);
-            addInstruction(InstructionType.pmb, "main");
+            añadirInstruccion(InstructionType.skip, eMain);
+            añadirInstruccion(InstructionType.pmb, "main");
             generate(instrs);
 
-            currentFunction = DEF_FUNCTION; // Reset current function
-            currentProcTable = null;
+            funcionActual = DEF_FUNCTION; // Reset current function
+            tablaProcesosActual = null;
         }
     }
 
@@ -717,28 +760,28 @@ public class GeneradorCIntermedio {
             generate(sValue);
             t = sValue.reference;
         } else if(value instanceof Integer){
-            t = newVariable();
-            addInstruction(InstructionType.copy, value.toString(), t);
-            //getVar(t).occupation = VTEntry.INTEGER_BYTES;
+            t = nuevaVariableiable();
+            añadirInstruccion(InstructionType.copy, value.toString(), t);
+            //getVariable(t).occupation = VTEntry.INTEGER_BYTES;
         } else if(value instanceof Character){
-            t = newVariable();
+            t = nuevaVariableiable();
             char cVal = (Character) value;
             // We store the ASCII value
-            addInstruction(InstructionType.copy, "" + (int) cVal, t);
-            getVar(t).type = ParserSym.KW_CHAR;
+            añadirInstruccion(InstructionType.copy, "" + (int) cVal, t);
+            getVariable(t).type = ParserSym.KW_CHAR;
         } else if(value instanceof Boolean){
-            t = newVariable();
+            t = nuevaVariableiable();
             boolean bVal = (Boolean) value;
             // We store true or false in bits, not in Boolean
-            addInstruction(InstructionType.copy, "" + (bVal ? VTEntry.TRUE : VTEntry.FALSE), t);
+            añadirInstruccion(InstructionType.copy, "" + (bVal ? VTEntry.TRUE : VTEntry.FALSE), t);
         }
 
         if(!operand.isConstant && operand.isNegated()){
             if(operand.type.isType(ParserSym.KW_INT)){
-                addInstruction(InstructionType.neg, t, t);
+                añadirInstruccion(InstructionType.neg, t, t);
 
             } else {
-                addInstruction(InstructionType.not, t, t);
+                añadirInstruccion(InstructionType.not, t, t);
             }
         }
         operand.reference = t;
@@ -760,89 +803,89 @@ public class GeneradorCIntermedio {
         }
 
         generate(rValue);
-        t = newVariable();
+        t = nuevaVariableiable();
         String eTrue, eFalse;
         switch (op.operation) {
             case VTEntry.ADD:
-                addInstruction(InstructionType.add, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.add, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.SUB:
-                addInstruction(InstructionType.sub, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.sub, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.PROD:
-                addInstruction(InstructionType.prod, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.prod, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.DIV:
-                addInstruction(InstructionType.div, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.div, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.MOD:
-                addInstruction(InstructionType.mod, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.mod, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.OR:
-                addInstruction(InstructionType.or, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.or, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.AND:    
-                addInstruction(InstructionType.and, lValue.reference, rValue.reference, t);
+                añadirInstruccion(InstructionType.and, lValue.reference, rValue.reference, t);
                 break;
             case VTEntry.IS_EQUAL:
-                eTrue = newTag();
-                eFalse = newTag();
-                addInstruction(InstructionType.if_EQ, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
-                addInstruction(InstructionType.go_to, eFalse);
-                addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
-                addInstruction(InstructionType.skip, eFalse);
+                eTrue = nuevaEtiqueta();
+                eFalse = nuevaEtiqueta();
+                añadirInstruccion(InstructionType.if_EQ, lValue.reference, rValue.reference, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.FALSE, t);
+                añadirInstruccion(InstructionType.go_to, eFalse);
+                añadirInstruccion(InstructionType.skip, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.TRUE, t);
+                añadirInstruccion(InstructionType.skip, eFalse);
                 break;
             case VTEntry.BIGGER:
-                eTrue = newTag();
-                eFalse = newTag();
-                addInstruction(InstructionType.if_GT, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
-                addInstruction(InstructionType.go_to, eFalse);
-                addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
-                addInstruction(InstructionType.skip, eFalse);
+                eTrue = nuevaEtiqueta();
+                eFalse = nuevaEtiqueta();
+                añadirInstruccion(InstructionType.if_GT, lValue.reference, rValue.reference, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.FALSE, t);
+                añadirInstruccion(InstructionType.go_to, eFalse);
+                añadirInstruccion(InstructionType.skip, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.TRUE, t);
+                añadirInstruccion(InstructionType.skip, eFalse);
                 break;
             case VTEntry.BEQ:
-                eTrue = newTag();
-                eFalse = newTag();
-                addInstruction(InstructionType.if_GE, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
-                addInstruction(InstructionType.go_to, eFalse);
-                addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
-                addInstruction(InstructionType.skip, eFalse);
+                eTrue = nuevaEtiqueta();
+                eFalse = nuevaEtiqueta();
+                añadirInstruccion(InstructionType.if_GE, lValue.reference, rValue.reference, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.FALSE, t);
+                añadirInstruccion(InstructionType.go_to, eFalse);
+                añadirInstruccion(InstructionType.skip, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.TRUE, t);
+                añadirInstruccion(InstructionType.skip, eFalse);
                 break;
             case VTEntry.LESSER:
-                eTrue = newTag();
-                eFalse = newTag();
-                addInstruction(InstructionType.if_LT, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
-                addInstruction(InstructionType.go_to, eFalse);
-                addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
-                addInstruction(InstructionType.skip, eFalse);
+                eTrue = nuevaEtiqueta();
+                eFalse = nuevaEtiqueta();
+                añadirInstruccion(InstructionType.if_LT, lValue.reference, rValue.reference, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.FALSE, t);
+                añadirInstruccion(InstructionType.go_to, eFalse);
+                añadirInstruccion(InstructionType.skip, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.TRUE, t);
+                añadirInstruccion(InstructionType.skip, eFalse);
                 break;
             case VTEntry.LEQ:
-                eTrue = newTag();
-                eFalse = newTag();
-                addInstruction(InstructionType.if_LE, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
-                addInstruction(InstructionType.go_to, eFalse);
-                addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
-                addInstruction(InstructionType.skip, eFalse);
+                eTrue = nuevaEtiqueta();
+                eFalse = nuevaEtiqueta();
+                añadirInstruccion(InstructionType.if_LE, lValue.reference, rValue.reference, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.FALSE, t);
+                añadirInstruccion(InstructionType.go_to, eFalse);
+                añadirInstruccion(InstructionType.skip, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.TRUE, t);
+                añadirInstruccion(InstructionType.skip, eFalse);
                 break;
             case VTEntry.NEQ:
-                eTrue = newTag();
-                eFalse = newTag();
-                addInstruction(InstructionType.if_NE, lValue.reference, rValue.reference, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.FALSE, t);
-                addInstruction(InstructionType.go_to, eFalse);
-                addInstruction(InstructionType.skip, eTrue);
-                addInstruction(InstructionType.copy, ""+VTEntry.TRUE, t);
-                addInstruction(InstructionType.skip, eFalse);
+                eTrue = nuevaEtiqueta();
+                eFalse = nuevaEtiqueta();
+                añadirInstruccion(InstructionType.if_NE, lValue.reference, rValue.reference, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.FALSE, t);
+                añadirInstruccion(InstructionType.go_to, eFalse);
+                añadirInstruccion(InstructionType.skip, eTrue);
+                añadirInstruccion(InstructionType.copy, ""+VTEntry.TRUE, t);
+                añadirInstruccion(InstructionType.skip, eFalse);
                 break;
         }
 
@@ -853,7 +896,7 @@ public class GeneradorCIntermedio {
         SymbolOperation oper = out.getValue();
         generate(oper);
         String t = oper.reference;
-        addInstruction(InstructionType.out, t);
+        añadirInstruccion(InstructionType.out, t);
     }
 
     private void generate(SymbolParams params){
@@ -865,15 +908,15 @@ public class GeneradorCIntermedio {
         String t = oper.reference;
         
         if(oper.type.isType(KW_ARRAY)){
-            addInstruction(InstructionType.param_c, t);
+            añadirInstruccion(InstructionType.param_c, t);
             SymbolTypeVar type = oper.type;
             // Since we need to know the dimensions of the arrays but parameters are not known in compilation time,
             // we pass them as parameters which the function's preamble will take care of during assembly code generation.
             while(type != null && type.arrayLength != VTEntry.UNKNOWN) {
-                addInstruction(InstructionType.param_s, ""+type.arrayLength);
+                añadirInstruccion(InstructionType.param_s, ""+type.arrayLength);
                 type = type.getBaseType();
             }
-        } else addInstruction(InstructionType.param_s, t);
+        } else añadirInstruccion(InstructionType.param_s, t);
     }
 
 
@@ -885,25 +928,25 @@ public class GeneradorCIntermedio {
             t = oper.reference;
         } else t = "0";
         
-        String name = currentFunction.replace(".", "");
-        addInstruction(InstructionType.rtn, t, name);
+        String name = funcionActual.replace(".", "");
+        añadirInstruccion(InstructionType.rtn, t, name);
     }
 
 
     private void generate(SymbolSwap swap){
-        SymbolVar var1 = swap.getVar1();
+        SymbolVar var1 = swap.getVariable1();
         generate(var1);
         String t1 = var1.reference;
 
-        String t = newVariable();
-        addInstruction(InstructionType.copy, t1, t);
+        String t = nuevaVariableiable();
+        añadirInstruccion(InstructionType.copy, t1, t);
 
-        SymbolVar var2 = swap.getVar2();
+        SymbolVar var2 = swap.getVariable2();
         generate(var2);
         String t2 = var2.reference;
 
-        addInstruction(InstructionType.copy, t2, t1);
-        addInstruction(InstructionType.copy, t, t2);
+        añadirInstruccion(InstructionType.copy, t2, t1);
+        añadirInstruccion(InstructionType.copy, t, t2);
     }
 
 
@@ -925,7 +968,7 @@ public class GeneradorCIntermedio {
             generate(list);
             t = list.reference;
             // We calculate the total dimensions on this variable, starting by the first level's length
-            VTEntry vte = getVar(currentDec);
+            VTEntry vte = getVariable(currentDec);
             currentDec = prevDec; // We restore the previous value of currentDec
             SymbolTypeVar subLevel = list.type;
             // We go through each sublevel so that we can calculate the occupation accordingly.
@@ -935,24 +978,24 @@ public class GeneradorCIntermedio {
             }
         } else if(val instanceof Integer) {
             int intValue = (Integer) val; 
-            t = newVariable();
-            addInstruction(InstructionType.copy, "" + intValue, t);
+            t = nuevaVariableiable();
+            añadirInstruccion(InstructionType.copy, "" + intValue, t);
         } else if(val instanceof Boolean) {
             boolean boolValue = (Boolean) val;
-            t = newVariable();
-            addInstruction(InstructionType.copy, "" + (boolValue ? VTEntry.TRUE : VTEntry.FALSE), t);
+            t = nuevaVariableiable();
+            añadirInstruccion(InstructionType.copy, "" + (boolValue ? VTEntry.TRUE : VTEntry.FALSE), t);
         } else if(val instanceof Character) {
             char cValue = (Character) val;
-            t = newVariable();
-            addInstruction(InstructionType.copy, "" + cValue, t);
-            getVar(t).type = ParserSym.KW_CHAR;
+            t = nuevaVariableiable();
+            añadirInstruccion(InstructionType.copy, "" + cValue, t);
+            getVariable(t).type = ParserSym.KW_CHAR;
         }
         value.reference = t;
     }
 
 
     private void generate(SymbolVar var){
-        VTEntry vte = getVar(var.getId());
+        VTEntry vte = getVariable(var.getId());
         String t = vte.tName;
 
         SymbolArrSuff arrSuff = var.getArrSuff();
@@ -971,35 +1014,35 @@ public class GeneradorCIntermedio {
             // t' = tSuff * nbytes
             // t'' = t[t']
             // t <- t''
-            String tPrima = newVariable();
-            addInstruction(InstructionType.prod, tSuffix, "" + nBytes, tPrima);
+            String tPrima = nuevaVariableiable();
+            añadirInstruccion(InstructionType.prod, tSuffix, "" + nBytes, tPrima);
             String arrayOrigin = t;
-            t = newVariable();
-            addInstruction(InstructionType.ind_val, arrayOrigin, tPrima, t);
+            t = nuevaVariableiable();
+            añadirInstruccion(InstructionType.ind_val, arrayOrigin, tPrima, t);
         }
 
         var.reference = t;
     }
 
-    private String newVariable(){
+    private String nuevaVariableiable(){
         String t = "t" + numT++;
         VTEntry vte = new VTEntry(t);
-        variableTable.put(currentFunction + currentSublevel + t, vte);
-        if(currentProcTable != null) currentProcTable.variableTable.put(currentSublevel + t, vte);
+        variableTable.put(funcionActual + subnivelActual + t, vte);
+        if(tablaProcesosActual != null) tablaProcesosActual.variableTable.put(subnivelActual + t, vte);
         return t;
     }
 
-    private String newTag(){
+    private String nuevaEtiqueta(){
         return "e" + numE++;
     }
 
-    private VTEntry getVar(String t){
-        VTEntry vte = variableTable.get(currentFunction + currentSublevel + t);
-        int i = currentSublevel-1;
+    private VTEntry getVariable(String t){
+        VTEntry vte = variableTable.get(funcionActual + subnivelActual + t);
+        int i = subnivelActual-1;
 
         // We check up until -1 since parameters are in sublevel -1
         while(vte == null && i >= -1) {
-            vte = variableTable.get(currentFunction + i-- + t);
+            vte = variableTable.get(funcionActual + i-- + t);
         }
         if(vte == null) {
             vte = variableTable.get(DEF_FUNCTION + 0 + t);
@@ -1007,11 +1050,11 @@ public class GeneradorCIntermedio {
         return vte;
     }
 
-    private void removeVar(String t){
-        VTEntry vte = variableTable.remove(currentFunction + currentSublevel + t);
-        int i = currentSublevel-1;
+    private void eliminarVariable(String t){
+        VTEntry vte = variableTable.remove(funcionActual + subnivelActual + t);
+        int i = subnivelActual-1;
         while(vte == null && i >= 0) {
-            vte = variableTable.remove(currentFunction + i-- + t);
+            vte = variableTable.remove(funcionActual + i-- + t);
         }
         if(vte == null) {
             vte = variableTable.remove(DEF_FUNCTION + 0 + t);
@@ -1019,30 +1062,30 @@ public class GeneradorCIntermedio {
     }
     
     private void replaceVarTableKey(String oldKey, String newKey){
-        VTEntry vte = getVar(oldKey);
-        removeVar(oldKey);
-        variableTable.put(currentFunction + currentSublevel + newKey, vte);
+        VTEntry vte = getVariable(oldKey);
+        eliminarVariable(oldKey);
+        variableTable.put(funcionActual + subnivelActual + newKey, vte);
     }
 
     private String createPTEntry(String procName){
         String internalFunctionName = procName + DEF_FUNCTION;
         PTEntry pte = new PTEntry();
-        pte.eStart = newTag();
+        pte.eStart = nuevaEtiqueta();
         procedureTable.put(internalFunctionName, pte);
         return internalFunctionName;
     }
 
-    private void addInstruction(InstructionType instruction, String left, String right, String destination){
+    private void añadirInstruccion(InstructionType instruction, String left, String right, String destination){
         Instruction i = new Instruction(instruction, left, right, destination);
         c3a.add(i);
     }
     
-    private void addInstruction(InstructionType instruction, String left, String destination){
+    private void añadirInstruccion(InstructionType instruction, String left, String destination){
         Instruction i = new Instruction(instruction, left, destination);
         c3a.add(i);
     }
     
-    private void addInstruction(InstructionType instruction, String destination){
+    private void añadirInstruccion(InstructionType instruction, String destination){
         Instruction i = new Instruction(instruction, destination);
         c3a.add(i);
     }
