@@ -1,5 +1,0 @@
-
-inmut ent b;
-f vacio inicio(string[]argumentos){
-	b: 2 + 5 + 3;
-}
