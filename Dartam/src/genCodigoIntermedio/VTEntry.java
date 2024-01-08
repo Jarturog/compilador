@@ -19,11 +19,13 @@ public class VTEntry {
     public static final int BOOL_BYTES = 1;
     public String tName;
     public int displacement;
+    public boolean isConstant;
     public int type;
     public int subyacentType;
     public ArrayList<String> dimensions;
     public String initialValue = "0";
-
+    public int operationType;
+    
     public VTEntry(String tName){
         this.tName = tName;
         type = ParserSym.KW_INT;

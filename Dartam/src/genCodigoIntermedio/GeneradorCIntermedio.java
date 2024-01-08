@@ -18,6 +18,9 @@ public class GeneradorCIntermedio {
     private PTEntry tablaProcesosActual;
     private String funcionActual;
     private int subnivelActual;
+    private SymbolTipo tipoActual;
+    private boolean esConstante;
+    private String valorAsignacion;
     static final String DEF_FUNCTION = ".";
     
     private String declaracionActual; // Variable used in array declaration
@@ -316,6 +319,143 @@ public class GeneradorCIntermedio {
     }
     
     
+    /*
+        DECS ::= KW_CONST:et1 TIPO:et2 DEC_ASIG_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}
+                | TIPO:et1 DEC_ASIG_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
+        ; 
+    */
+    private void procesar(SymbolDecs declaraciones){
+        if(declaraciones.isConst){ //Si es una declaración de varaibles constantes
+            this.esConstante = true;
+            this.tipoActual = declaraciones.tipo;
+            procesar(declaraciones.iddecslista);
+        }else{ //Si no son constantes
+            this.esConstante = true;
+            this.tipoActual = declaraciones.tipo;
+            procesar(declaraciones.iddecslista);
+        }
+            
+    }
+    
+    
+    /*
+        DEC_ASIG_LISTA ::= ID:et1 ASIG_BASICO:et2 COMMA DEC_ASIG_LISTA:et3       {: RESULT = new SymbolDecAsigLista(et1,et2,et3, et1xleft, et1xright); :}
+        | ID:et1 ASIG_BASICO:et2                                   {: RESULT = new SymbolDecAsigLista(et1,et2, et1xleft, et1xright); :}
+        ;
+
+    */
+    private void procesar(SymbolDecAsigLista dal){
+        String v = nuevaVariable();
+        VTEntry entrada = getVariable(v);
+        this.declaracionActual = dal.id;
+        
+        if(this.esConstante && !entrada.initialValue.equals("0")){ //Las variables son constantes y no se les a asignado nadas
+            procesar(dal.asignacion); //Vamos a procesarlo y recoger el valor de lo que asignamos
+            entrada.initialValue = this.valorAsignacion;
+            entrada.isConstant = true;
+        }else{
+            procesar(dal.asignacion); //Vamos a procesarlo y recoger el valor de lo que asignamos
+            entrada.initialValue = this.valorAsignacion;
+            entrada.isConstant = false;
+        }
+        
+        if(dal.siguienteDeclaracion != null){
+            procesar(dal.siguienteDeclaracion);
+        }      
+    }
+    
+    
+    /*
+        DIMENSIONES ::= LBRACKET:l OPERAND:et1 RBRACKET:r DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1, et2, l, r, et1xleft, et1xright); :}
+            | LBRACKET:l OPERAND:et1 RBRACKET:r                         {: RESULT = new SymbolDimensiones(et1, l, r, et1xleft, et1xright); :}
+            ;
+    */
+    private void procesar(SymbolDimensiones dim){
+        //TODO
+    }
+    
+    /*
+        ASIG_BASICO ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsigBasico(et, etxleft, etxright); :}
+        |                       {: RESULT = new SymbolAsigBasico(); :}
+        ;
+    */
+    private void procesar(SymbolAsigBasico asignBasico){
+        if(asignBasico.operando != null){ //Primer caso
+            procesar(asignBasico.operando);
+        }
+    }
+    
+    
+    /*
+        METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+        | LOOP:et               {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+        | IF:et                 {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+        | SWITCH:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolMetodoElemento metodo){
+        if(metodo.instruccion != null){
+            procesar(metodo.instruccion);
+        }else if(metodo.loop != null){
+            procesar(metodo.loop);
+        }else if(metodo.iff != null){
+            procesar(metodo.iff);
+        }else{
+            procesar(metodo.sw);
+        }
+    }
+    
+    /*
+        INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
+        | RETURN:et            {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
+        | DECS:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | ASIGS:et             {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | SWAP:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolInstr instr){
+        if(instr.ret != null){
+            procesar(instr.ret);
+        }else if(instr.fcall != null){
+            procesar(instr.fcall);
+        }else if(instr.decs != null){
+            procesar(instr.decs);
+        }else if(instr.asigs != null){
+            procesar(instr.asigs);
+        }else{
+            procesar(instr.swap);
+        }
+    }
+    
+    /*
+        FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new SymbolFCall(et1, et2, et1xleft, et1xright); :}
+                | METODO_NOMBRE:et1 LPAREN RPAREN   {: RESULT = new SymbolFCall(et1, et1xleft, et1xright); :}
+                ;
+    */
+    private void procesar(SymbolFCall fcall){
+        String nombre = (String)fcall.methodName.value;
+        SymbolOperandsLista operandos = fcall.operandsLista;
+        if(operandos != null){
+            generate(operandos);
+        }
+        
+        String etiqueta = nuevaVariable();
+        if(nombre == null){
+            nombre = ""+fcall.methodName.specialMethod;
+        }
+        añadirInstruccion(InstructionType.call, nombre, etiqueta);
+        fcall.setReferencia(etiqueta);
+    }
+    
+    /*
+        OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol, etxleft, etxright); :}
+        | OPERAND:et                                    {: RESULT = new SymbolOperandsLista(et, etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolOperandsLista opl){
+        
+    }
+    
     //POR COMPLETAR
    /* private void generate(SymbolLoop func){
         String nombre = func.nombreMetodo;
@@ -341,7 +481,12 @@ public class GeneradorCIntermedio {
     }*/
     
     
-    private void generate(SymbolReturn ret){
+    /*
+        RETURN ::= KW_RETURN ENDINSTR                               {: :} //Con este que hacemos?
+                   | KW_RETURN OPERAND:et ENDINSTR                     {: RESULT = new SymbolReturn(et, etxleft, etxright); :}
+                    ;
+    */
+    private void procesar(SymbolReturn ret){
         String t;
         SymbolOperand op = ret.op;
         if(op != null){
