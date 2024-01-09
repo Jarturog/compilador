@@ -130,12 +130,12 @@ public class SemanticAnalysis {
         procesarMain(scriptMainYElementos);
     }
 
-    private void procesarDeclaraciones(SymbolDecs decs, DescripcionSimbolo tupla) throws Exception {
+    private void procesarDeclaraciones(SymbolDecs decs, DescripcionSimbolo declaracionTipoTupla) throws Exception {
         SymbolDecAsigLista dec = decs.iddecslista;
         while (dec != null) {
             SymbolTipo tipo = decs.tipo;
             boolean error = false;
-            
+            DescripcionSimbolo descripcionTupla  = null;
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
             if (tablaSimbolos.consulta(id) != null) {
@@ -175,7 +175,8 @@ public class SemanticAnalysis {
                 if (tipo.isTupla()) {
                     String tuplaName = tipo.getTipo();
                     tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1, tipo.isArray() ? tuplaName.lastIndexOf(" ") : tuplaName.length());
-                    if (tablaSimbolos.consulta(tuplaName) == null) {
+                    descripcionTupla = tablaSimbolos.consulta(tuplaName);
+                    if (descripcionTupla == null) {
                         errores.add("No se ha encontrado ninguna tupla con el identificador "+tuplaName);
                         indicarLocalizacion(tipo);
                         error = true;
@@ -196,13 +197,14 @@ public class SemanticAnalysis {
             if (!error) {
                 DescripcionSimbolo d;
                 if (tipo.isArray()) {
-                    d = new DescripcionSimbolo(tipo.getTipo(), tipo.dimArray.getDimensiones(), tupla != null);
+                    d = new DescripcionSimbolo(tipo.getTipo(), tipo.dimArray.getDimensiones(), descripcionTupla);
                 } else {
-                    d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, tupla != null);
+                    d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, descripcionTupla);
                 }
-                tablaSimbolos.poner(id, d);
-                if (tupla != null) {
-                    tupla.anyadirMiembro(id, d);
+                if (declaracionTipoTupla != null) {
+                    declaracionTipoTupla.anyadirMiembro(id, d);
+                } else {
+                    tablaSimbolos.poner(id, d);
                 }
             }
             dec = dec.siguienteDeclaracion;
@@ -314,7 +316,7 @@ public class SemanticAnalysis {
                     } else {
                         DescripcionSimbolo miembro = d.getMember(asig.miembro);
                         if (miembro == null) {
-                            errores.add("El miembro " + asig.miembro + " no ha sido encontrado en la tupla " + asig.id);
+                            errores.add("El miembro " + asig.miembro + " no ha sido encontrado en la tupla " + d.getNombreTupla());
                             indicarLocalizacion(asig);
                             error = true;
                         } else {
@@ -361,7 +363,7 @@ public class SemanticAnalysis {
                 case TUPLA -> {
                     DescripcionSimbolo miembro = d.getMember(asig.miembro);
                     if (miembro.tieneValorAsignado() && miembro.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor al miembro constante '"+ asig.miembro+"' de la tupla '"+asig.id+"', el cual ya tenia un valor asignado");
+                        errores.add("Se esta intentado asignar un valor al miembro constante '"+ asig.miembro+"' de la variable '"+asig.id+"' de la tupla '"+d.getNombreTupla()+"', el cual ya tenia un valor asignado");
                         indicarLocalizacion(asig);
                         error = true;
                     }
@@ -569,7 +571,7 @@ public class SemanticAnalysis {
             }
             
             DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
-            DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, false);
+            DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, null);
             tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
             dFuncion.anyadirParametro(nombreParam, dParam);
             tablaSimbolos.poner(nombreParam, dParam);
@@ -591,8 +593,8 @@ public class SemanticAnalysis {
         SymbolBody body = main.main;
         tablaSimbolos.entraBloque();
         metodoActualmenteSiendoTratado = new Pair(main.nombreMain, tablaSimbolos.consulta(main.nombreMain));
-        String tipo = ParserSym.terminalNames[ParserSym.STRING] + " " + main.lBracket + " "+ Integer.MAX_VALUE + " " + main.rBracket;
-        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, false);
+        String tipo = ParserSym.terminalNames[ParserSym.STRING] + " " + main.lBracket + main.rBracket;
+        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null);
         tablaSimbolos.poner(main.nombreArgumentos, d);
         procesarBody(body);
         tablaSimbolos.salirBloque();

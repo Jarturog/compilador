@@ -10,6 +10,7 @@ import analizadorSintactico.symbols.SymbolParamsLista;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import jflex.base.Pair;
 
@@ -22,12 +23,12 @@ public class DescripcionSimbolo {
     private String tipo;
 
     private int nivel;
-    private boolean isConstante = false, valorAsignado = false, isMember = false;
+    private boolean isConstante = false, valorAsignado = false;
 
     private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
-    private HashMap<String, DescripcionSimbolo> miembros;
+    private final HashMap<String, DescripcionSimbolo> miembros;
     private ArrayList<SymbolOperand> dimensiones;
-
+    private DescripcionSimbolo memberOf = null;
 
     public int first;
     public int next;    //Apuntador al siguiente campo de una tupla
@@ -36,29 +37,71 @@ public class DescripcionSimbolo {
     public int dcamp; //Desplazamiento dentro del array
     
     /**
+     * Copia
+     */
+    public DescripcionSimbolo(DescripcionSimbolo d){
+        this.tipo = d.tipo;
+        this.nivel = d.nivel;
+        this.isConstante = d.isConstante;
+        this.valorAsignado = d.valorAsignado;
+
+        // Assuming Pair, SymbolOperand, and DescripcionSimbolo have their own copy constructors
+        if (d.parametros != null) {
+            this.parametros = new ArrayList<>(d.parametros);
+        }
+        if (d.miembros != null) {
+            this.miembros = new HashMap<>(d.miembros);
+        } else {
+            miembros = null;
+        }
+        if (d.dimensiones != null) {
+            this.dimensiones = new ArrayList<>(d.dimensiones);
+        }
+        
+        
+
+        this.memberOf = (d.memberOf != null) ? new DescripcionSimbolo(d.memberOf) : null;
+
+        this.first = d.first;
+        this.next = d.next;
+        this.idcamp = d.idcamp;
+        this.dcamp = d.dcamp;
+    }
+    
+    /**
      * Main
      */
     public DescripcionSimbolo(){
         tipo = null;
+        miembros = null;
     }
 
     /**
      * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v, boolean isMiembro){
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla){
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
-        isMember = isMiembro; // miembro de una tupla
+        memberOf = tupla; // miembro de una tupla
+        if (isTupla()){
+            miembros = new HashMap<String, DescripcionSimbolo>(); // copia
+            for (HashMap.Entry<String, DescripcionSimbolo> entry : memberOf.miembros.entrySet()) {
+                miembros.put(entry.getKey(), new DescripcionSimbolo(entry.getValue()));
+            }
+        } else {
+            miembros = null;
+        }
     }
     
     /**
      * Array
      */
-    public DescripcionSimbolo(String t, ArrayList<SymbolOperand> dim, boolean isMiembro){
+    public DescripcionSimbolo(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla){
         tipo = t;
         dimensiones = dim;
-        isMember = isMiembro; // miembro de una tupla
+        memberOf = tupla; // miembro de una tupla
+        miembros = null;
     }
     
     /**
@@ -75,6 +118,7 @@ public class DescripcionSimbolo {
     public DescripcionSimbolo(String tipoRetorno){
         tipo = tipoRetorno;
         parametros = new ArrayList<>();
+        miembros = null;
     }
     
     public void cambiarTipo(String t){
@@ -155,11 +199,20 @@ public class DescripcionSimbolo {
     }
     
     public boolean isTupla() {
-        return miembros != null;
+        //return miembros != null;
+        return tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE]);
     }
     
     public DescripcionSimbolo getMember(String id) {
         return miembros.get(id);
+
+    }
+    
+    public String getNombreTupla() {
+        if (memberOf == null || !isTupla()) {
+            return null;
+        }
+        return tipo.substring(tipo.indexOf(" ") + 1);
     }
     
     public void anyadirMiembro(String id, DescripcionSimbolo ds) {
