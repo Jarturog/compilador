@@ -194,8 +194,8 @@ public class SymbolOperand extends SymbolBase {
             return TIPO.ATOMIC_EXPRESSION;
         } else if (fcall != null) {
             return TIPO.FCALL;
-        } else if (op != null) {
-            return TIPO.OP_BETWEEN_PAREN;
+        } else if (casting != null) {
+            return TIPO.CASTING;
         } else if (idxArr != null) {
             return TIPO.IDX_ARRAY;
         } else if (unaryExp != null) {
@@ -207,7 +207,7 @@ public class SymbolOperand extends SymbolBase {
         } else if (member != null) {
             return TIPO.MEMBER_ACCESS;
         } else {
-            return TIPO.CASTING;
+            return TIPO.OP_BETWEEN_PAREN;
         }
     }
 

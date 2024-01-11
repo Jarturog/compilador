@@ -154,6 +154,16 @@ public class SemanticAnalysis {
                     indicarLocalizacion(dec);
                     error = true;
                 }
+                if (tipo.isTupla()) {
+                    String tuplaName = tipo.getTipo();
+                    tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1);
+                    descripcionTupla = tablaSimbolos.consulta(tuplaName);
+                    if (descripcionTupla == null) {
+                        errores.add("No se ha encontrado ninguna tupla con el identificador "+tuplaName);
+                        indicarLocalizacion(tipo);
+                        error = true;
+                    }
+                }
                 if(tipo.isArray()){
                     SymbolDimensiones dim = tipo.dimArray;
                     int n = 0;
@@ -172,16 +182,6 @@ public class SemanticAnalysis {
                         dim = dim.siguienteDimension;
                     }
                 }
-                if (tipo.isTupla()) {
-                    String tuplaName = tipo.getTipo();
-                    tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1, tipo.isArray() ? tuplaName.lastIndexOf(" ") : tuplaName.length());
-                    descripcionTupla = tablaSimbolos.consulta(tuplaName);
-                    if (descripcionTupla == null) {
-                        errores.add("No se ha encontrado ninguna tupla con el identificador "+tuplaName);
-                        indicarLocalizacion(tipo);
-                        error = true;
-                    }
-                }
             } else if (valorAsignado != null) {
                 String tipoValor = procesarOperando(valorAsignado);
                 if (tipoValor == null) {
@@ -197,7 +197,7 @@ public class SemanticAnalysis {
             if (!error) {
                 DescripcionSimbolo d;
                 if (tipo.isArray()) {
-                    d = new DescripcionSimbolo(tipo.getTipo(), tipo.dimArray.getDimensiones(), descripcionTupla);
+                    d = new DescripcionSimbolo(tipo.getTipo() + " " + tipo.dimArray.getEmptyBrackets(), tipo.dimArray.getDimensiones(), descripcionTupla);
                 } else {
                     d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, descripcionTupla);
                 }
@@ -814,13 +814,18 @@ public class SemanticAnalysis {
                     indicarLocalizacion(arr);
                     error = true;
                 }
-                if (!error && !tipoArr.endsWith(ParserSym.terminalNames[ParserSym.RBRACKET])) {
+                String aux = tipoArr;
+                if (aux != null && aux.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
+                    aux = aux.substring(aux.indexOf(" ") + 1);
+                }
+                aux = aux.substring(aux.indexOf(" ") + 1);
+                if (!error && (aux == null || aux.length() < 2)){// !tipoArr.endsWith("]")) {
                     errores.add("El operador "+arr+" del cual se quiere coger un indice no es un array, es de tipo " + tipoArr);
                     indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
                     error = true;
                 }
                 if (!error) {
-                    tipoArr = tipoArr.substring(0, tipoArr.length() - 2);
+                    tipoArr = tipoArr.substring(0, tipoArr.length() - 3);
                     if (tipoArr.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
                         String tipo = tipoArr.substring(tipoArr.indexOf(" ") + 1);
                         if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo)) {
@@ -859,7 +864,7 @@ public class SemanticAnalysis {
                     indicarLocalizacion(tupla);
                     return null;
                 }
-                String nombre = tipoTupla.substring(tipoTupla.indexOf(" ") + 1);
+                String nombre = (String)tupla.value;//tipoTupla.substring(tipoTupla.indexOf(" ") + 1);
                 DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
                 if (ds == null) {
                     errores.add("La tupla "+nombre+" no esta declarada");
