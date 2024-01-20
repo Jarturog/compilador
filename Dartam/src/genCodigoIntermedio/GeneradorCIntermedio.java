@@ -436,7 +436,7 @@ public class GeneradorCIntermedio {
         String nombre = (String)fcall.methodName.value;
         SymbolOperandsLista operandos = fcall.operandsLista;
         if(operandos != null){
-            generate(operandos);
+            procesar(operandos);
         }
         
         String etiqueta = nuevaVariable();
@@ -490,7 +490,7 @@ public class GeneradorCIntermedio {
         String t;
         SymbolOperand op = ret.op;
         if(op != null){
-            generate(op);
+            procesar(op);
             t = op.getReferencia();
         }else{
             t = "0";
@@ -500,34 +500,243 @@ public class GeneradorCIntermedio {
         añadirInstruccion(InstructionType.rtn, t, nombre);
     }
     
-    private void generate(SymbolSwap swap){
+    /* 
+        SWAP ::= ID:et1 OP_SWAP ID:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}
+        ;
+
+    
+    */
+    private void procesar(SymbolSwap swap){
+        String variable1 = swap.op1;
+        String variable2 = swap.op2;
+  
+        //Lo que haremos será intercambiar el contendio de referencia entre las 2
+        remplazarNombreVariable(variable1, variable2);
+        remplazarNombreVariable(variable2, variable1); 
+    }
+    
+    /*
+        ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
+        | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolAsigs asigs){
+        //Procesamos la primera asignación
+        procesar(asigs.asig);
+        if(asigs.siguienteAsig != null){ // Si tenemos más continuaremos procesando
+            procesar(asigs.siguienteAsig);
+        }
     
     }
     
-    private void generate(SymbolDecs decs){
-    
+    /*
+        ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                  {: RESULT = new SymbolAsig(et, aop, val, etxleft, etxright); :}
+        | ID:et1 LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
+        | ID:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val               {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
+        | ID:et1 OP_INC:et2             {: RESULT = new SymbolAsig(true, ParserSym.OP_INC, et1, et2, et1xleft, et1xright); :}  %prec PREC_R_U_EXP
+        | ID:et1 OP_DEC:et2             {: RESULT = new SymbolAsig(true, ParserSym.OP_DEC, et1, et2, et1xleft, et1xright); :}  %prec PREC_R_U_EXP
+        | OP_INC:et1 ID:et2             {: RESULT = new SymbolAsig(false, ParserSym.OP_INC, et2, et1, et1xleft, et1xright); :} %prec PREC_L_U_EXP
+        | OP_DEC:et1 ID:et2             {: RESULT = new SymbolAsig(false, ParserSym.OP_DEC, et2, et1, et1xleft, et1xright); :} %prec PREC_L_U_EXP
+        ;
+    */
+    private void procesar(SymbolAsig asig){
+        // TODO: asignaciones...
     }
+    
+    
+    
+    private void procesar(SymbolOperand op){
         
-    //FALTA POR MIRAR
-    private void generate(SymbolBody insBody){
-    
     }
     
-    private void generate(SymbolOperand op){
+   
+    /*
+        LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        ;
+
+    
+    */
+   private void procesar(SymbolLoop bucle){
+       
+       //Ahora estamos dentro de un nuevo bloque
+       this.subnivelActual += 1; //Estamos dentro!
+       
+       //Creamos la etiqueta de inicio
+       String etiquetaInicio = nuevaEtiqueta();
+       añadirInstruccion(InstructionType.skip, etiquetaInicio);
+       
+       SymbolLoopCond condicion = bucle.loopCond;
+       procesar(condicion);
+       String c = condicion.getReferencia();
+       
+       String etiquetaFin = nuevaEtiqueta();
+       //Etiqueta de final de bucle
+       añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+
+       //Ahora toda el contendido del for hay que procesarlo
+       SymbolBody cuerpo = bucle.cuerpo;
+       procesar(cuerpo);
+       
+       añadirInstruccion(InstructionType.go_to, etiquetaInicio);
+       añadirInstruccion(InstructionType.skip, etiquetaFin);
+       
+       //Ahora hemos salido del bucle, por lo que ascendemos un nivel
+       this.subnivelActual -= 1;
+       
+   }
+   
+   /*
+    LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}
+        | DECS:et1 ENDINSTR OPERAND:et2 ENDINSTR ASIGS:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}
+        ;
+   */
+   private void procesar(SymbolLoopCond cond){
+       if(cond.decs != null){
+           //Procesamos cada una de las partes
+           procesar(cond.decs);
+           
+           procesar(cond.cond);
+           
+           procesar(cond.asig);
+           
+       }else{
+           procesar(cond.cond);
+       }
+   }
+   
+   
+   
+   /*
+    IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          {: RESULT = new SymbolIf(et1, et2, et3, et4, et1xleft, et1xright); :}
+        ;
+
+   */
+    private void procesar(SymbolIf si){
+         //Ahora estamos dentro de un nuevo bloque
+       this.subnivelActual += 1; //Estamos dentro!
+       
+       //Creamos la etiqueta de inicio
+       String etiquetaInicio = nuevaEtiqueta();
+       añadirInstruccion(InstructionType.skip, etiquetaInicio);
+       
+       SymbolOperand condicion = si.cond;
+       procesar(condicion);
+       String c = condicion.getReferencia();
+       
+       String etiquetaFin = nuevaEtiqueta();
+       //Etiqueta de final de bucle
+       añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+
+       //Ahora toda el contendido del for hay que procesarlo
+       SymbolBody cuerpo = si.cuerpo;
+       procesar(cuerpo);
+       
+       añadirInstruccion(InstructionType.skip, etiquetaFin);
+       
+       //Si tenemos un elseif
+       if(si.elifs != null){
+           procesar(si.elifs);
+       }
+       
+       //Si tenemos else
+       if(si.els != null){
+           procesar(si.els);
+       }
+       
+       //Ahora hemos salido del bucle, por lo que ascendemos un nivel
+       this.subnivelActual -= 1;
+    }
+    
+    /*
+        ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(et1, et2, et1xleft, et1xright); :}
+        |                                           {: RESULT = new SymbolElifs(); :}
+        ;
+    */
+    
+    private void procesar(SymbolElifs elifs){
+        if(elifs.elif != null){
+            procesar(elifs.elif); //Procesamos el actual
+            procesar(elifs.elifs); //Procesamos el siguiente
+        }
+    }
+    
+    
+    /*
+        ELIF ::= KW_ELIF OPERAND:et1 LKEY BODY:et2 RKEY     {: RESULT = new SymbolElif(et1, et2, et1xleft, et1xright); :}
+        ;
+    */
+    private void procesar(SymbolElif elif){
+       
+       //Creamos la etiqueta de inicio
+       String etiquetaInicio = nuevaEtiqueta();
+       añadirInstruccion(InstructionType.skip, etiquetaInicio);
+       
+       SymbolOperand condicion = elif.cond;
+       procesar(condicion);
+       String c = condicion.getReferencia();
+       
+       String etiquetaFin = nuevaEtiqueta();
+       //Etiqueta de final de bucle
+       añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+
+       //Ahora toda el contendido del for hay que procesarlo
+       SymbolBody cuerpo = elif.cuerpo;
+       procesar(cuerpo);
+       
+       añadirInstruccion(InstructionType.skip, etiquetaFin);
         
     }
     
-    private void generate(SymbolOperandsLista opL){
+    /*
+        ELSE ::= KW_ELSE:pos LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(et, posxleft, posxright); :}
+        |                                           {: RESULT = new SymbolElse(); :}
+        ;
+
+    */
+    private void procesar(SymbolElse symElse){
+        if(symElse.cuerpo != null){
+            procesar(symElse.cuerpo);
+        }
+    }
+    
+    
+    
+    /*
+        
+        SWITCH ::= KW_SWITCH OPERAND:et1 RKEY CASO:et2 PRED:et3 LKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
+        ;   
+    */
+    private void procesar(SymbolSwitch swi){
+        
+        
         
     }
     
-    private void generate(SymbolTipo tipo){
+    /*
+        CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft, et1xright); :}
+        |                                            {: RESULT = new SymbolCaso(); :}
+        ;
+    */
+    private void procesar(SymbolCaso caso){
         
     }
     
-    private void procesar(SymbolMetodoElemento me){
-        
+    
+    /*
+        PRED ::= KW_CASE KW_DEFAULT ARROW BODY:et            {: RESULT = new SymbolPred(et, etxleft, etxright); :}
+        ;
+    */
+    private void procesar(SymbolPred pred){
+        if(pred.cuerpo != null){
+            procesar(pred.cuerpo);
+        }
     }
+    
+    
+    
+   
+   
         
         
         
