@@ -1,0 +1,18 @@
+f vacio inicio(string[]argumentos){
+	ent a: 16, b:20;
+	ent c: mcd(a, b);
+}
+
+f ent mcd(ent a0, ent b0) {
+	ent a, b;
+	a: a0;
+	b: b0;
+	loop (a /= b) {
+		si (a > b) {
+			a: a - b; // a -: b;
+		} no {
+			b: b - a; // b -: a;
+		}
+	}
+	pop a;
+}

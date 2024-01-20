@@ -368,7 +368,7 @@ ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(
 ELIF ::= KW_ELIF OPERAND:et1 LKEY BODY:et2 RKEY     {: RESULT = new SymbolElif(et1, et2, et1xleft, et1xright); :}
         ;
 
-ELSE ::= KW_ELSE LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(et, etxleft, etxright); :}
+ELSE ::= KW_ELSE:pos LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(et, posxleft, posxright); :}
         |                                           {: RESULT = new SymbolElse(); :}
         ;
 

@@ -29,7 +29,7 @@ public class SymbolElse extends SymbolBase {
     }
     
     public SymbolElse(SymbolBody b, Location l, Location r){
-        super("else", 0 ,l ,r);
+        super("else", l ,r);
         this.cuerpo = b;
         
     }
