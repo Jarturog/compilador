@@ -1,6 +1,6 @@
 /**
 * Assignatura 21780 - Compiladors
-* Estudis: Grau en Informàtica 
+* Estudis: Grau en Enginyeria Informàtica 
 * Itinerari: Intel·ligència Artificial i Computacio
 *
 * Equipo: Arturo, Dani y Marta
@@ -240,13 +240,13 @@ public class TablaSimbolos {
         return te.get(idx).next == 0;
     }
 
-    /*
-        Metodo para consultar una indice dentro de un array, en teoría mandara
-        la descripcion de dicho elemento
-     */
-    public DescripcionSimbolo consulta(int idx) {
-        return te.get(idx).descripcion;
-    }
+//    /*
+//        Metodo para consultar una indice dentro de un array, en teoría mandara
+//        la descripcion de dicho elemento
+//     */
+//    public DescripcionSimbolo consulta(int idx) {
+//        return te.get(idx).descripcion;
+//    }
 
     //Consulatamos una variable ya incorporada
     public DescripcionSimbolo consulta(String s) {

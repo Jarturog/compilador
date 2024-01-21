@@ -1,6 +1,6 @@
 /**
  * Assignatura 21780 - Compiladors
- * Estudis: Grau en Informatica
+ * Estudis: Grau en Enginyeria Informàtica
  * Itinerari: Inteligencia Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta

@@ -4,7 +4,7 @@
 
 /**
   * Assignatura 21742 - Compiladors I 
-  * Estudis: Grau en Informàtica 
+  * Estudis: Grau en Enginyeria Informàtica 
   * Itinerari: Computacio 
   * Curs: 2023-2024
   *
@@ -430,7 +430,7 @@ public String getErrores(){
 }
 
 private String errorToString(){
-  return "!!! Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+  return "Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
 }
 
 /**

@@ -1,6 +1,6 @@
 /** 
 * Assignatura 21780 - Compiladors
-* Estudis: Grau en Informàtica 
+* Estudis: Grau en Enginyeria Informàtica 
 * Itinerari: Intel·ligència Artificial i Computacio
 *
 * Equipo: Arturo, Dani y Marta
@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class Dartam {
 
-    private static final String ruta = "tests/";
+    private static final String RUTA = "scripts/";
     
     public static void main(String[] args) {
         try {
@@ -44,7 +44,7 @@ public class Dartam {
                     return;
                 }
             }
-            ficheroIn = new FileReader(ruta + nombreArchivo);
+            ficheroIn = new FileReader(RUTA + nombreArchivo);
             // Análisis léxico
             Scanner scanner = new Scanner(ficheroIn);
             // Análisis sintáctico

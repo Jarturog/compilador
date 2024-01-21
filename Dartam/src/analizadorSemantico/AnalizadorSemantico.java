@@ -1,6 +1,6 @@
 /**
 * Assignatura 21780 - Compiladors
-* Estudis: Grau en Informàtica 
+* Estudis: Grau en Enginyeria Informàtica 
 * Itinerari: Intel·ligència Artificial i Computacio
 *
 * Equipo: Arturo, Dani y Marta
@@ -418,7 +418,7 @@ public class AnalizadorSemantico {
     }
 
     private void procesarReturn(SymbolReturn ret) throws Exception {
-        String tipo = metodoActualmenteSiendoTratado.snd.getTipoRetorno();
+        String tipo = metodoActualmenteSiendoTratado.snd.getTipo();
         SymbolOperand op = ret.op;
         if (op == null) {
             if (tipo == null) {
