@@ -139,9 +139,9 @@ public class SymbolOperand extends SymbolBase {
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        value = arrayToString();
         this.lBracket = (String)lb;
         this.rBracket = (String)lr;
+        value = arrayToString();
         this.casting = null;
     }
 

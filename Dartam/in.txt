@@ -1,14 +1,15 @@
-inmut real k : 3.0 + 1;
-
+tupla a [2] arr;
 f vacio inicio(string[]argumentos){
-	ent a: 1;
-	ent b: 2;
-	ent c: a + b;
-	string s: "oki";
-	prop OK: isOK(s);
-	//pop;
+	
+	tupla a c;
+	tupla a d;
+	c.b:2;
+	d.b:4;
+	tupla a x;
+	ent y: x.arr[1];
 }
 
-f prop isOK(string s){
-	//pop s="ok" ? true -> false;
+tupla a {
+	inmut ent b;
+	ent [3] arr;
 }
