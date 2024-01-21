@@ -28,6 +28,8 @@ public class SymbolDecAsigLista extends SymbolBase {
         id = identificador;
         this.asignacion = asignacion;
         siguienteDeclaracion = null;
+        if (asignacion != null)
+            value = asignacion.value;
     }
     
     public SymbolDecAsigLista(String identificador, SymbolAsigBasico asignacion, SymbolDecAsigLista iddecslista, Location l, Location r){
@@ -35,6 +37,8 @@ public class SymbolDecAsigLista extends SymbolBase {
         id = identificador;
         this.asignacion = asignacion;
         siguienteDeclaracion = iddecslista;
+        if (asignacion != null)
+            value = asignacion.value;
     }
     
 }

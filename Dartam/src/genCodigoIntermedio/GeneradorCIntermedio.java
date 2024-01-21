@@ -2,7 +2,6 @@ package genCodigoIntermedio;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import analizadorSemantico.DescripcionSimbolo;
 import analizadorSemantico.TablaSimbolos;
@@ -15,8 +14,8 @@ public class GeneradorCIntermedio {
 
     private ArrayList<Instruction> c3a;
 
-    private Hashtable<String, VTEntry> variableTable;
-    private Hashtable<String, PTEntry> procedureTable;
+    private HashMap<String, VTEntry> variableTable;
+    private HashMap<String, PTEntry> procedureTable;
 
     private PTEntry tablaProcesosActual;
     private String funcionActual;
@@ -35,8 +34,8 @@ public class GeneradorCIntermedio {
 
     public GeneradorCIntermedio(SymbolScript script) {
         c3a = new ArrayList<>();
-        variableTable = new Hashtable<>();
-        procedureTable = new Hashtable<>();
+        variableTable = new HashMap<>();
+        procedureTable = new HashMap<>();
         numE = 0;
         numT = 0;
         funcionActual = DEF_FUNCTION; // We use the format function.variable to store and access the variable table
@@ -115,11 +114,11 @@ public class GeneradorCIntermedio {
         c3a.add(i);
     }
 
-    public Hashtable<String, VTEntry> getVariableTable() {
+    public HashMap<String, VTEntry> getVariableTable() {
         return variableTable;
     }
 
-    public Hashtable<String, PTEntry> getProcedureTable() {
+    public HashMap<String, PTEntry> getProcedureTable() {
         return procedureTable;
     }
 
@@ -350,37 +349,45 @@ public class GeneradorCIntermedio {
                 | TIPO:et1 DEC_ASIG_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
         ; 
      */
-    private void procesar(SymbolDecs declaraciones) {
-        this.esConstante = declaraciones.isConst;
-        this.tipoActual = declaraciones.tipo;
-        procesar(declaraciones.iddecslista);
-    }
-
     /*
         DEC_ASIG_LISTA ::= ID:et1 ASIG_BASICO:et2 COMMA DEC_ASIG_LISTA:et3       {: RESULT = new SymbolDecAsigLista(et1,et2,et3, et1xleft, et1xright); :}
         | ID:et1 ASIG_BASICO:et2                                   {: RESULT = new SymbolDecAsigLista(et1,et2, et1xleft, et1xright); :}
         ;
 
      */
-    private void procesar(SymbolDecAsigLista dal) {
-        String v = nuevaVariable();
-        VTEntry entrada = getVariable(v);
-        this.declaracionActual = dal.id;
+    private void procesar(SymbolDecs decs) {
+        SymbolDecAsigLista dec = decs.iddecslista;
+        while (dec != null) {
+            String v = nuevaVariable();
+            VTEntry entrada = getVariable(v);
 
-        if (this.esConstante && !entrada.initialValue.equals("0")) { //Las variables son constantes y no se les a asignado nadas
-            procesar(dal.asignacion); //Vamos a procesarlo y recoger el valor de lo que asignamos
-            entrada.initialValue = this.valorAsignacion;
-            entrada.isConstant = true;
-        } else {
-            procesar(dal.asignacion); //Vamos a procesarlo y recoger el valor de lo que asignamos
-            entrada.initialValue = this.valorAsignacion;
-            entrada.isConstant = false;
-        }
-
-        if (dal.siguienteDeclaracion != null) {
-            procesar(dal.siguienteDeclaracion);
+            this.declaracionActual = dec.id;
+            if(decs.isConst){
+                entrada.initialValue = (String)dec.value;
+                replaceVarTableKey(v, dec.id);
+                return;
+            }
+            replaceVarTableKey(v, dec.id);
+            SymbolOperand value = dec.value;
+            if(value != null){
+                if(value.isConstant) {
+                    Object val = value.value;
+                    if(val instanceof Boolean) val = (Boolean) val ? Constants.TRUE : Constants.FALSE;
+                    entrada.initialValue = val.toString();
+                } else {
+                    procesar(value);
+                    if(!v.equals(value.getReferencia())) añadirInstruccion(InstructionType.copy, value.getReferencia(), v);
+                }
+            }
+            dec.setReferencia(v);
+            this.declaracionActual = null;
+            currentDecLength = -1;
+            dec = dec.siguienteDeclaracion;
         }
     }
+
+    
+
 
     /*
         DIMENSIONES ::= LBRACKET:l OPERAND:et1 RBRACKET:r DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1, et2, l, r, et1xleft, et1xright); :}
