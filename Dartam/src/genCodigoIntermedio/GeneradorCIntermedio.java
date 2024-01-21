@@ -27,6 +27,13 @@ public class GeneradorCIntermedio {
     
     //Subnivel del bloque
     private int subnivelActual;
+    
+    private int numEtiqueta; //Contador de las etiquetas colocadas
+    private int numVariable; //Contador de variables
+    
+      //Declaraciones actuales
+    private String declaracionActual;
+    private int longitudDecs;
 
     //Tipo del de la variable tratada actualmente
     private SymbolTipo tipoActual;
@@ -38,15 +45,9 @@ public class GeneradorCIntermedio {
     private String valorAsignacion;
     
     static final String ES_FUNCION = ".";
-
-    //Declaraciones actuales
-    private String declaracionActual;
-    private int longitudDecs;
     
     private ArrayList<String> dimensionesTratar;
 
-    private int numEtiqueta; //Contador de las etiquetas colocadas
-    private int numVariable;
 
     //Método constructor del codigo intermedio
     public GeneradorCIntermedio(SymbolScript script) {

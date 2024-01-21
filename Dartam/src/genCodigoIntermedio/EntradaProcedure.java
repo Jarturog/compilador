@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import analizadorSintactico.ParserSym;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class EntradaProcedure {
@@ -29,10 +30,11 @@ public class EntradaProcedure {
     //Total de la ocupacion de la variables, en caso de haber una desconocida se devuelve -1
     public int getOcupacionVariables(){
         int tamaño = 0;
-        for (EntradaVariable vte : tablaVariables.values()) {
-            int val = vte.getOcupacion();
-            if(val == VAL_DESCONOCIDO) return VAL_DESCONOCIDO;
-            tamaño += val;
+        
+        for (Map.Entry<String, EntradaVariable> ent : tablaVariables.entrySet()) {
+            int valor = ent.getValue().getOcupacion();
+            if(valor == VAL_DESCONOCIDO) return VAL_DESCONOCIDO;
+            tamaño += valor;
         }
         return tamaño;
     }
@@ -41,6 +43,17 @@ public class EntradaProcedure {
     public void preaparacionCodigoMaquina(){
         limpiarVariables();
         calcularDesplazamientos();
+    }
+    
+    
+    //Vaciado de la tabla de variables
+    private void limpiarVariables(){
+        HashMap<String, EntradaVariable> limpio = new HashMap<>();
+        for (Map.Entry<String, EntradaVariable> ent : tablaVariables.entrySet()) {
+            EntradaVariable entrada = tablaVariables.get(ent);
+            limpio.put(entrada.tName, entrada);
+        }
+        tablaVariables = limpio;
     }
 
     //Calcularemos los desplazamientos de los diferentes parametros
@@ -59,23 +72,14 @@ public class EntradaProcedure {
 
         //Haremos lo mismo pero para variables
         int desplazamientoL = 0;
-        for (String s : tablaVariables.keySet()) {
-            entrada = tablaVariables.get(s);
+        
+        for (Map.Entry<String, EntradaVariable> ent : tablaVariables.entrySet()) {
+            entrada = tablaVariables.get(ent.getKey());
             if(entrada.desplazamiento == 0 && entrada.getOcupacion()!= VAL_DESCONOCIDO){
                 desplazamientoL -= entrada.getOcupacion();
                 entrada.desplazamiento = desplazamientoL;
             }
         }
-    }
-
-    //Vaciado de la tabla de variables
-    private void limpiarVariables(){
-        HashMap<String, EntradaVariable> limpio = new HashMap<>();
-        for (String s : tablaVariables.keySet()) {
-            EntradaVariable entrada = tablaVariables.get(s);
-            limpio.put(entrada.tName, entrada);
-        }
-        tablaVariables = limpio;
     }
 
     @Override

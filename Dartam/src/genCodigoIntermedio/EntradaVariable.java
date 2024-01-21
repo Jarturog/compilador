@@ -13,9 +13,9 @@ public class EntradaVariable {
     public static final byte FALSE = 0;
     public static final byte TRUE = -1;
 
-    public static final int BYTES_ENTERO = 4;
-    public static final int BYTES_CHAR = 1;
-    public static final int BYTES_BOOLEAN = 1;
+    public static final int BYTES_ENTERO = 4; //4 BYTES para un entero
+    public static final int BYTES_CHAR = 1; //1 BYTE para un char
+    public static final int BYTES_BOOLEAN = 1; //1 BYTE para un booleano
     
     public String tName;
     public int desplazamiento;
@@ -48,6 +48,7 @@ public class EntradaVariable {
         return rtn;
     }
 
+    //Recibiremos cuanto ocupa la variable
     public int getOcupacion(){
         int o;
         if(tipo == ParserSym.KW_INT){
@@ -66,11 +67,13 @@ public class EntradaVariable {
 
     @Override
     public String toString(){
-        String s = "[variable: " + this.tName + ", ocupacion: " + this.getOcupacion() + ", desplazamiento: " + this.desplazamiento + ", tipo: " + ParserSym.terminalNames[tipoSubyacente];
+        String s = "[variable: " + this.tName + ", tipo: " + ParserSym.terminalNames[tipoSubyacente]  + ", desplazamiento: " + this.desplazamiento + ", ocupacion: " + this.getOcupacion();
         for (String d : this.dimensiones) {
             s += "[" + d + "]";
         }
-        s += ", tsb: " + ParserSym.terminalNames[tipoSubyacente] + "]";
+        
+        s += ", tipoSubyacente: " + ParserSym.terminalNames[tipoSubyacente] + "]";
+        
         return s;
     }
 
