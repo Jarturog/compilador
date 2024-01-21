@@ -4,7 +4,7 @@
 
 /**
   * Assignatura 21742 - Compiladors I 
-  * Estudis: Grau en Informàtica 
+  * Estudis: Grau en Enginyeria Informàtica 
   * Itinerari: Computacio 
   * Curs: 2023-2024
   *

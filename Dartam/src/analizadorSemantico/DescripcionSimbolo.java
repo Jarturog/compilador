@@ -1,10 +1,10 @@
 /**
-* Assignatura 21780 - Compiladors
-* Estudis: Grau en Informàtica 
-* Itinerari: Intel·ligència Artificial i Computacio
-*
-* Equipo: Arturo, Dani y Marta
-*/
+ * Assignatura 21780 - Compiladors
+ * Estudis: Grau en Enginyeria Informàtica
+ * Itinerari: Intel·ligència Artificial i Computacio
+ *
+ * Equipo: Arturo, Dani y Marta
+ */
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
@@ -24,7 +24,7 @@ public class DescripcionSimbolo {
     private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
     private final HashMap<String, DescripcionSimbolo> miembros;
     private ArrayList<SymbolOperand> dimensiones;
-    private DescripcionSimbolo memberOf = null;
+    private DescripcionSimbolo memberOf = null; // apunta a la tupla de la cual es miembro
 
     public int first;
     public int next;    //Apuntador al siguiente campo de una tupla
@@ -122,22 +122,22 @@ public class DescripcionSimbolo {
         return tipo;
     }
 
-    //Array
-    public void setTipoBase(SymbolTipo base) {
-        //tipo.setTipoBase(base);
-    }
-
-    public String getTipoBase() {
-        return null;//tipo.getTipoBase();
-    }
-
-    public int getProfundidad() {
-        return -1;//tipo.getProfundidadArray();
-    }
-
-    public void setTamanyoArray(int n) {
-        //tipo.setTamanyoArray(n);
-    }
+//    //Array
+//    public void setTipoBase(SymbolTipo base) {
+//        //tipo.setTipoBase(base);
+//    }
+//
+//    public String getTipoBase() {
+//        return null;//tipo.getTipoBase();
+//    }
+//
+//    public int getProfundidad() {
+//        return -1;//tipo.getProfundidadArray();
+//    }
+//
+//    public void setTamanyoArray(int n) {
+//        //tipo.setTamanyoArray(n);
+//    }
 
     public int getNivel() {
         return this.nivel;
@@ -152,29 +152,25 @@ public class DescripcionSimbolo {
         parametros.add(new Pair(n, d));
     }
 
-    public int getNumeroParametros() {
-        return parametros.size();
-    }
+//    public int getNumeroParametros() {
+//        return parametros.size();
+//    }
 
     public ArrayList<Pair<String, DescripcionSimbolo>> getTiposParametros() {
         return new ArrayList<>(parametros);
     }
 
-    public HashMap<String, DescripcionSimbolo> getTiposMiembros() {
-        return new HashMap<>(miembros);
-    }
-
-    public void setTipoRetorno(String tv) throws Exception {
-        if (!this.isFunction()) {
-            throw new Exception("Error");
-        } else {
-            this.tipo = tv;
-        }
-    }
-
-    public String getTipoRetorno() {
-        return this.tipo;
-    }
+//    public HashMap<String, DescripcionSimbolo> getTiposMiembros() {
+//        return new HashMap<>(miembros);
+//    }
+//
+//    public void setTipoRetorno(String tv) throws Exception {
+//        if (!this.isFunction()) {
+//            throw new Exception("No es una función");
+//        } else {
+//            this.tipo = tv;
+//        }
+//    }
 
     public boolean isFunction() {
         return parametros != null;
@@ -191,7 +187,6 @@ public class DescripcionSimbolo {
 
     public DescripcionSimbolo getMember(String id) {
         return miembros.get(id);
-
     }
 
     public String getNombreTupla() {
@@ -216,5 +211,4 @@ public class DescripcionSimbolo {
     public boolean isConstante() {
         return isConstante;
     }
-
 }

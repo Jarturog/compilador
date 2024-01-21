@@ -807,7 +807,7 @@ public class Parser extends java_cup.runtime.lr_parser {
 
     /**
     * Assignatura 21780 - Compiladors
-    * Estudis: Grau en Informàtica 
+    * Estudis: Grau en Enginyeria Informàtica 
     * Itinerari: Intel·ligència Artificial i Computacio
     *
     * Equipo: Arturo, Dani y Marta
