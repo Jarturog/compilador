@@ -74,7 +74,7 @@ public class GeneradorCIntermedio {
         //Incorporamos dentro de la tabla
         tablaVariables.put(funcionActual + subnivelActual + nombre, vte); 
         if (tablaProcesosActual != null) {
-            tablaProcesosActual.variableTable.put(subnivelActual + nombre, vte);
+            tablaProcesosActual.tablaVariables.put(subnivelActual + nombre, vte);
         }
         return nombre; //Devolvemos el nombre de la variable creada
     }
@@ -129,7 +129,7 @@ public class GeneradorCIntermedio {
     private String crearEntradaProcedimiento(String nombre) {
         String nombreFuncion = nombre + ES_FUNCION;
         EntradaProcedure entrada = new EntradaProcedure();
-        entrada.eStart = nuevaEtiqueta();
+        entrada.eInicio = nuevaEtiqueta();
         tablaProcedures.put(nombreFuncion, entrada);
         return nombreFuncion;
     }
@@ -264,10 +264,10 @@ public class GeneradorCIntermedio {
             procesar(parametros);
 
             //Ahora la tabla de dicha funcion tiene incorporado cuantos parametros tiene 
-            tabla.numParams = parametros.paramsLista.numParametros;
+            tabla.numeroParametros = parametros.paramsLista.numParametros;
         }
 
-        añadirInstruccion(InstructionType.skip, tabla.eStart);
+        añadirInstruccion(InstructionType.skip, tabla.eInicio);
         añadirInstruccion(InstructionType.pmb, nombre);
 
         //Tratamiento del body
@@ -280,8 +280,8 @@ public class GeneradorCIntermedio {
         añadirInstruccion(InstructionType.rtn, "0", nombre);
 
         //Etiqueta para el final de la funcion
-        this.tablaProcesosActual.eEnd = nuevaEtiqueta();
-        añadirInstruccion(InstructionType.skip, tablaProcesosActual.eEnd);
+        this.tablaProcesosActual.eFin = nuevaEtiqueta();
+        añadirInstruccion(InstructionType.skip, tablaProcesosActual.eFin);
 
         //Ahora reseteamos la funcion actual y la tabla de procesos actual
         this.funcionActual = ES_FUNCION;
@@ -358,7 +358,7 @@ public class GeneradorCIntermedio {
         EntradaVariable entrada = this.getVariable(variable);
 
         //Como este parametro vendra de una funcion o llamada el tablaProcesosActual != null
-        this.tablaProcesosActual.params.add(variable); //Añadimos el parametro
+        this.tablaProcesosActual.parametros.add(variable); //Añadimos el parametro
 
         //Ahora meterelos el tipo dentro de la variable
         if (paramsLista.param.idTupla != null) { //Es una tupla

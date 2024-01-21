@@ -39,7 +39,7 @@ public class EntradaProcedure {
 
     //Preparacion para codigo maquina
     public void preaparacionCodigoMaquina(){
-        vaciarVariables();
+        limpiarVariables();
         calcularDesplazamientos();
     }
 
@@ -47,32 +47,35 @@ public class EntradaProcedure {
     private void calcularDesplazamientos(){
         EntradaVariable entrada;
 
-        // We calculate the displacements of the parameters. They are positive.
-        int paramDisplacement = TAMAÑO_REGISTRO * 2; // We reserve space for DISP and BP and for the return
+        //Tamaño inicial del desplazamiento: 16
+        int desplazamiento = TAMAÑO_REGISTRO * 2;
+        
+        //Ahora para cada parametro cogeremos su desplazamiento y lo sumaremos al total
         for(String s : parametros){
             entrada = tablaVariables.get(s);
-            entrada.displacement = paramDisplacement;
-            paramDisplacement += TAMAÑO_REGISTRO;
+            entrada.displacement = desplazamiento;
+            desplazamiento += TAMAÑO_REGISTRO;
         }
 
-        int localVarDisplacement = 0;
+        //Haremos lo mismo pero para variables
+        int desplazamientoL = 0;
         for (String s : tablaVariables.keySet()) {
             entrada = tablaVariables.get(s);
-            if(entrada.displacement == 0 && entrada.getOccupation() != VAL_DESCONOCIDO){
-                localVarDisplacement -= entrada.getOccupation();
-                entrada.displacement = localVarDisplacement;
+            if(entrada.displacement == 0 && entrada.getOccupation()!= VAL_DESCONOCIDO){
+                desplazamientoL -= entrada.getOccupation();
+                entrada.displacement = desplazamientoL;
             }
         }
     }
 
     //Vaciado de la tabla de variables
-    private void vaciarVariables(){
-        HashMap<String, EntradaVariable> cleanVariableTable = new HashMap<>();
+    private void limpiarVariables(){
+        HashMap<String, EntradaVariable> limpio = new HashMap<>();
         for (String s : tablaVariables.keySet()) {
-            EntradaVariable vte = tablaVariables.get(s);
-            cleanVariableTable.put(vte.tName, vte);
+            EntradaVariable entrada = tablaVariables.get(s);
+            limpio.put(entrada.tName, entrada);
         }
-        tablaVariables = cleanVariableTable;
+        tablaVariables = limpio;
     }
 
     @Override
