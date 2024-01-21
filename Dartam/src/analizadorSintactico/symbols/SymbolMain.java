@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -9,8 +8,6 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
  * MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY:et RKEY  

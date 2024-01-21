@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -36,18 +35,4 @@ public class SymbolScript extends SymbolBase {
         siguienteElemento = null;
     }
 
-    public SymbolScriptElemento getElemento() {
-        return elemento;
-    }
-
-    public SymbolScript getSiguienteElemento() {
-        return siguienteElemento;
-    }
-
-    public SymbolMain getMain() {
-        return main;
-    }
-    
-    
-    
 }

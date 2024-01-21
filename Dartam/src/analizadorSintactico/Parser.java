@@ -805,10 +805,15 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
 
-
     /**
-     * Metodo al que se llama automaticamente ante algun error sintactico 
-     * en el que ya no es posible una recuperacion de errores.
+    * Assignatura 21780 - Compiladors
+    * Estudis: Grau en Informàtica 
+    * Itinerari: Intel·ligència Artificial i Computacio
+    *
+    * Equipo: Arturo, Dani y Marta
+    */
+    /**
+     * Error cuando no es posible una recuperacion de errores.
     **/ 
     @Override
     public void unrecovered_syntax_error(Symbol cur_token) { 
@@ -822,11 +827,10 @@ public class Parser extends java_cup.runtime.lr_parser {
     }  
 
     /**
-     * Metodo al que se llama automaticamente ante algun error sintactico.
+     * Error sintactico.
     **/ 
     @Override
     public void syntax_error(Symbol cur_token){ 
-        
         report_error("Error sintactico: ", cur_token);
     } 
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -13,7 +9,6 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etleft, etright); :}   
         |                                             {: RESULT = new SymbolParams(); :}
         ;
-
  */
 public class SymbolParams extends SymbolBase {
     

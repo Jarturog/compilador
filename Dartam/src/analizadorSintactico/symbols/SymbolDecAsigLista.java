@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -9,8 +8,6 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
 DEC_ASIG_LISTA ::= ID:et1 ASIG_BASICO:et2 COMMA DEC_ASIG_LISTA:et3       {: RESULT = new SymbolDecAsigLista(et1,et2,et3, et1xleft, et1xright); :}
@@ -40,5 +37,5 @@ public class SymbolDecAsigLista extends SymbolBase {
         if (asignacion != null)
             value = asignacion.value;
     }
-    
+
 }

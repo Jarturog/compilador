@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -9,8 +8,6 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
 METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(ParserSym.ID, et, etxleft, etxright); :}

@@ -8,15 +8,11 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-import java_cup.runtime.ComplexSymbolFactory.Location;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramÃ tica.
- * 
- * BÃ sicament contÃ© un valor enter
+ * Classe que implementa la classe base a partir de la que s'implementen tots
+ * els symbols de la gramàtica.
  */
 public abstract class SymbolBase extends ComplexSymbol {
     private static int id = 0;
