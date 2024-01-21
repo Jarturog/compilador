@@ -535,7 +535,7 @@ public class GeneradorCIntermedio {
     }
 
     private void procesar(SymbolOperand op) {
-
+        // TODO: operandos
     }
 
     /*
