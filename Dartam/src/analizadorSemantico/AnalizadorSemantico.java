@@ -109,7 +109,7 @@ public class AnalizadorSemantico {
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO], dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            DescripcionSimbolo d = new DescripcionSimbolo(new HashMap<String, DescripcionSimbolo>());
+            DescripcionSimbolo d = new DescripcionSimbolo(tupla.id, new HashMap<String, DescripcionSimbolo>());
             tablaSimbolos.poner(tupla.id, d);
         }
         for (SymbolScriptElemento tupla : tuplas) {
@@ -616,7 +616,7 @@ public class AnalizadorSemantico {
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
         if (DEBUG) {
-            System.out.println(op.toString());
+            //System.out.println(op.toString());
         }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {

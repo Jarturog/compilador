@@ -99,8 +99,9 @@ public class DescripcionSimbolo {
     /**
      * Tupla
      */
-    public DescripcionSimbolo(HashMap<String, DescripcionSimbolo> m) {
+    public DescripcionSimbolo(String nombre, HashMap<String, DescripcionSimbolo> m) {
         miembros = (HashMap<String, DescripcionSimbolo>) m;
+        tipo = nombre;
     }
 
     /**
@@ -183,6 +184,9 @@ public class DescripcionSimbolo {
 
     public boolean isTupla() {
         //return miembros != null;
+        if (tipo == null) {
+            return false;
+        }
         return tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE]);
     }
 
@@ -221,23 +225,25 @@ public class DescripcionSimbolo {
             for (Pair<String, DescripcionSimbolo> param : parametros) {
                 params += param.fst + " ";
             }
-            s = "Función de tipo " + tipo + " con argumentos " + params.substring(0, params.length() - 2);
+            params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 1) : "sin argumentos";
+            s = "Función de tipo '" + tipo + "'  " + params;
         } else if (isArray()) {
             String dim = "";
             for (SymbolOperand op : dimensiones) {
                 dim += op + " ";
             }
-            s = "Array de tipo " + tipo + " con dimensiones " + dim.substring(0, dim.length() - 2);
+            s = "Array de tipo '" + tipo + "' con dimensiones " + dim.substring(0, dim.length() - 1);
         } else if (isTupla()) {
             String m = "";
             for (String miembro : miembros.keySet()) {
                 m += miembro + " ";
             }
-            s = "Tupla con miembros " + m.substring(0, m.length() - 2);
+            m = m.length() > 0 ? "con miembros" + m.substring(0, m.length() - 1) : "sin miembros";
+            s = "Tupla " + m;
         } else {
             String c = (isConstante() ? "consante" : "");
             String v = (valorAsignado ? "con" : "sin");
-            s = "Variable "+c+" de tipo " + tipo + v + " valor asignado";
+            s = "Variable "+c+" de tipo '" + tipo + "' " + v + " valor asignado";
         }
         return s + " declarado en el nivel " + nivel;
     }

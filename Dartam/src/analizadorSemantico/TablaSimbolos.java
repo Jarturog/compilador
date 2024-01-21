@@ -41,7 +41,7 @@ public class TablaSimbolos {
         
         @Override
         public String toString(){
-            return "Variable: " + nombreVariable + "\nDescripción: " + descripcion + "\n";
+            return "Variable: '" + nombreVariable + "'\t Descripción: " + descripcion + "\n";
         }
     }
 
@@ -300,12 +300,23 @@ public class TablaSimbolos {
     
     @Override
     public String toString() {
-        String s = "Nivel actual: " + n + ". Tabla de símbolos:\n";
+        int nChars = 13;
+        String s = "";//"Tabla de símbolos:\n";
         for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
-            s += e.getKey() + ":\n\t" + e.getValue() + "\n";
+            s += e.getKey() + ":" + calcularTabuladores(nChars + 1, e.getKey()) + e.getValue() + "\n";
         }
-        s += "\nAmbit table:" + ta.toString() + "\nExpansion table:" + te.toString() + "\n";
+        //s += "\nTabla de ámbitos:" + ta.toString() + "\n\nTabla de expansión:" + te.toString() + "\n";
         return s;
+    }
+    
+    private static String calcularTabuladores(int numChars, String s) {
+        int charsPorTab = 4;
+        int tabs = Math.max(0, (numChars - s.length()) / charsPorTab);
+        StringBuilder tabuladores = new StringBuilder();
+        for (int i = 0; i < tabs; i++) {
+            tabuladores.append('\t');
+        }
+        return tabuladores.toString();
     }
 
 }
