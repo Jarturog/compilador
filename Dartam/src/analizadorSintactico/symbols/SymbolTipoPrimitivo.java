@@ -39,4 +39,6 @@ public class SymbolTipoPrimitivo extends SymbolBase {
                 || t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
 
+    public static final String STRING = "STRING", CAR = "CAR", ENT = "ENT", PROP = "PROP", REAL = "REAL";
+    
 }

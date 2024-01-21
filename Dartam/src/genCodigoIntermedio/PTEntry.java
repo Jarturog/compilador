@@ -1,8 +1,9 @@
 package genCodigoIntermedio;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+
 import analizadorSintactico.ParserSym;
+import java.util.HashMap;
 
 /**
  * Proc.. table entry
@@ -15,13 +16,13 @@ public class PTEntry {
     public String eEnd;
     public int numParams;
     public ArrayList<String> params; // Arraylist to have the parameters in order
-    public Hashtable<String, VTEntry> variableTable;
+    public HashMap<String, VTEntry> variableTable;
 
     public PTEntry(){
         // default values
         depth = 1;
         numParams = 0;
-        variableTable = new Hashtable<>();
+        variableTable = new HashMap<>();
         params = new ArrayList<>();
     }
 
@@ -62,7 +63,7 @@ public class PTEntry {
     }
 
     private void cleanVariables(){
-        Hashtable<String, VTEntry> cleanVariableTable = new Hashtable<>();
+        HashMap<String, VTEntry> cleanVariableTable = new HashMap<>();
         for (String s : variableTable.keySet()) {
             VTEntry vte = variableTable.get(s);
             cleanVariableTable.put(vte.tName, vte);
