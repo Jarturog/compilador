@@ -12,6 +12,7 @@ import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import jflex.base.Pair;
 
 public class DescripcionSimbolo {
@@ -210,5 +211,34 @@ public class DescripcionSimbolo {
 
     public boolean isConstante() {
         return isConstante;
+    }
+    
+    @Override
+    public String toString() {
+        String s;
+        if (isFunction()) {
+            String params = "";
+            for (Pair<String, DescripcionSimbolo> param : parametros) {
+                params += param.fst + " ";
+            }
+            s = "Función de tipo " + tipo + " con argumentos " + params.substring(0, params.length() - 2);
+        } else if (isArray()) {
+            String dim = "";
+            for (SymbolOperand op : dimensiones) {
+                dim += op + " ";
+            }
+            s = "Array de tipo " + tipo + " con dimensiones " + dim.substring(0, dim.length() - 2);
+        } else if (isTupla()) {
+            String m = "";
+            for (String miembro : miembros.keySet()) {
+                m += miembro + " ";
+            }
+            s = "Tupla con miembros " + m.substring(0, m.length() - 2);
+        } else {
+            String c = (isConstante() ? "consante" : "");
+            String v = (valorAsignado ? "con" : "sin");
+            s = "Variable "+c+" de tipo " + tipo + v + " valor asignado";
+        }
+        return s + " declarado en el nivel " + nivel;
     }
 }
