@@ -1,70 +1,116 @@
 package genCodigoMaquina;
 
 public class Instruccion {
-    public enum InstructionType {
-        copy, add, sub, prod, div, mod, neg, and, or, not, ind_val, ind_ass, 
-        skip, go_to, if_LT, if_LE, if_EQ, if_NE, if_GE, if_GT, pmb, call, rtn, 
+
+    public enum Tipo {
+        copy, add, sub, prod, div, mod, neg, and, or, not, ind_val, ind_ass,
+        skip, go_to, if_LT, if_LE, if_EQ, if_NE, if_GE, if_GT, pmb, call, rtn,
         param_s, param_c, in, out, point
     }
 
-    public InstructionType instruction;
-    public String left;
-    public String right;
-    public String destination;
+    public Tipo instruccion;
+    public String izq;
+    public String der;
+    public String des;
 
-    public Instruccion(InstructionType instruction, String left, String right, String destination){
-        this.instruction = instruction;
-        this.left = left;
-        this.right = right;
-        this.destination = destination;
+    /*
+        Si tenemos las 4 casillas
+     */
+    public Instruccion(Tipo instruccion, String izq, String der, String des) {
+        this.instruccion = instruccion;
+        this.izq = izq;
+        this.der = der;
+        this.des = des;
     }
 
-    public Instruccion(InstructionType instruction, String left, String destination){
-        this.instruction = instruction;
-        this.left = left;
-        this.right = null;
-        this.destination = destination;
+    /*
+        Si tenemos únicamente 3 casillas
+     */
+    public Instruccion(Tipo instruccion, String izq, String des) {
+        this.instruccion = instruccion;
+        this.izq = izq;
+        this.der = null;
+        this.des = des;
     }
 
-    public Instruccion(InstructionType instruction, String destination){
-        this.instruction = instruction;
-        this.left = null;
-        this.right = null;
-        this.destination = destination;
+    /*
+        Si tenemos 2 casillas
+     */
+    public Instruccion(Tipo instruccion, String des) {
+        this.instruccion = instruccion;
+        this.izq = null;
+        this.der = null;
+        this.des = des;
     }
 
     @Override
-    public String toString(){
-        return switch (instruction) {
-            case copy -> "\t" + destination + " = " + left;
-            case add -> "\t" + destination + " = " + left + " + " + right;
-            case sub -> "\t" + destination + " = " + left + " - " + right;
-            case prod -> "\t" + destination + " = " + left + " * " + right;
-            case and -> "\t" + destination + " = " + left + " and " + right;
-            case call -> "\t" + destination + " = call " + left;
-            case div -> "\t" + destination + " = " + left + " / " + right;
-            case go_to -> "\tgoto " + destination;
-            case if_EQ -> "\tif " + left + "=" + right + " goto " + destination;
-            case if_GE -> "\tif " + left + ">=" + right + " goto " + destination;
-            case if_GT -> "\tif " + left + ">" + right + " goto " + destination;
-            case if_LE -> "\tif " + left + "<=" + right + " goto " + destination;
-            case if_LT -> "\tif " + left + "<" + right + " goto " + destination;
-            case if_NE -> "\tif " + left + "!=" + right + " goto " + destination;
-            case ind_ass -> "\t" + destination + "[" + left + "] = " + right;
-            case ind_val -> "\t" + destination + " = " + left + "[" + right + "]";
-            case mod -> "\t" + destination + " = " + left + " mod " + right;
-            case neg -> "\t" + destination + " = -" + left;
-            case not -> "\t" + destination + " = not " + left;
-            case or -> "\t" + destination + " = " + left + " or " + right;
-            case param_c -> "\tparam_c: " + destination + "[]";
-            case param_s -> "\tparam_s: " + destination;
-            case pmb -> "\tpmb " + destination;
-            case rtn -> "\trtn " + destination + ": " + left;
-            case skip -> destination + ": skip";
-            case in -> "\tin: " + destination;
-            case out -> "\tout: " + destination;
-            case point -> "\t" + destination + " => " + left;
-            default -> null;
-        }; // + left + "]";
+    public String toString() {
+        if (instruccion == null) {
+            return null;
+        }
+
+        String resultado;
+
+        if (instruccion == Tipo.copy) {
+            resultado = "\t" + des + " = " + izq;
+        } else if (instruccion == Tipo.add) {
+            resultado = "\t" + des + " = " + izq + " + " + der;
+        } else if (instruccion == Tipo.sub) {
+            resultado = "\t" + des + " = " + izq + " - " + der;
+        } else if (instruccion == Tipo.prod) {
+            resultado = "\t" + des + " = " + izq + " * " + der;
+        } else if (instruccion == Tipo.and) {
+            resultado = "\t" + des + " = " + izq + " and " + der;
+        } else if (instruccion == Tipo.call) {
+            resultado = "\t" + des + " = call " + izq;
+        } else if (instruccion == Tipo.div) {
+            resultado = "\t" + des + " = " + izq + " / " + der;
+        } else if (instruccion == Tipo.go_to) {
+            resultado = "\tgoto " + des;
+        } else if (instruccion == Tipo.if_EQ) {
+            resultado = "\tif " + izq + "=" + der + " goto " + des;
+        } else if (instruccion == Tipo.if_GE) {
+            resultado = "\tif " + izq + ">=" + der + " goto " + des;
+        } else if (instruccion == Tipo.if_GT) {
+            resultado = "\tif " + izq + ">" + der + " goto " + des;
+        } else if (instruccion == Tipo.if_LE) {
+            resultado = "\tif " + izq + "<=" + der + " goto " + des;
+        } else if (instruccion == Tipo.if_LT) {
+            resultado = "\tif " + izq + "<" + der + " goto " + des;
+        } else if (instruccion == Tipo.if_NE) {
+            resultado = "\tif " + izq + "!=" + der + " goto " + des;
+        } else if (instruccion == Tipo.ind_ass) {
+            resultado = "\t" + des + "[" + izq + "] = " + der;
+        } else if (instruccion == Tipo.ind_val) {
+            resultado = "\t" + des + " = " + izq + "[" + der + "]";
+        } else if (instruccion == Tipo.mod) {
+            resultado = "\t" + des + " = " + izq + " mod " + der;
+        } else if (instruccion == Tipo.neg) {
+            resultado = "\t" + des + " = -" + izq;
+        } else if (instruccion == Tipo.not) {
+            resultado = "\t" + des + " = not " + izq;
+        } else if (instruccion == Tipo.or) {
+            resultado = "\t" + des + " = " + izq + " or " + der;
+        } else if (instruccion == Tipo.param_c) {
+            resultado = "\tparam_c: " + des + "[]";
+        } else if (instruccion == Tipo.param_s) {
+            resultado = "\tparam_s: " + des;
+        } else if (instruccion == Tipo.pmb) {
+            resultado = "\tpmb " + des;
+        } else if (instruccion == Tipo.rtn) {
+            resultado = "\trtn " + des + ": " + izq;
+        } else if (instruccion == Tipo.skip) {
+            resultado = des + ": skip";
+        } else if (instruccion == Tipo.in) {
+            resultado = "\tin: " + des;
+        } else if (instruccion == Tipo.out) {
+            resultado = "\tout: " + des;
+        } else if (instruccion == Tipo.point) {
+            resultado = "\t" + des + " => " + izq;
+        } else {
+            resultado = null;
+        }
+
+        return resultado;
     }
 }

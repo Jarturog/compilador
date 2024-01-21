@@ -2,68 +2,75 @@ package genCodigoIntermedio;
 
 import java.util.ArrayList;
 import analizadorSintactico.ParserSym;
-/**
- * Variable table entry
- */
-public class EntradaVariable {
-    public static final int TYPE_ARRAY = Integer.MAX_VALUE;
-    public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
 
-    public static final int UNKNOWN = -1;
+
+public class EntradaVariable {
+    public static final int TIPO_ARRAY = Integer.MAX_VALUE; //identificador de que es un array
+    public static final int TYPE_FUNCTION = TIPO_ARRAY-1; //identificador de que es una funcion
+
+    public static final int VAL_DESCONOCIDO = -1; //VALORE DESCONOCIDO
 
     public static final byte FALSE = 0;
     public static final byte TRUE = -1;
 
-    public static final int INTEGER_BYTES = 4;
-    public static final int CHAR_BYTES = 1;
-    public static final int BOOL_BYTES = 1;
-    public String tName;
-    public int displacement;
-    public boolean isConstant;
-    public int type;
-    public int subyacentType;
-    public ArrayList<String> dimensions;
-    public String initialValue = "0";
-    public int operationType;
+    public static final int BYTES_ENTERO = 4;
+    public static final int BYTES_CHAR = 1;
+    public static final int BYTES_BOOLEAN = 1;
     
-    public EntradaVariable(String tName){
-        this.tName = tName;
-        type = ParserSym.KW_INT;
-        subyacentType = ParserSym.KW_INT;
-        dimensions = new ArrayList<>();
+    public String tName;
+    public int desplazamiento;
+    public boolean isConstant;
+    public int tipo;
+    public int tipoSubyacente;
+    public ArrayList<String> dimensiones;
+    public String valorInicial = "0";
+    public int tipoOperacion;
+    
+    //Constructor de una nueva variable
+    public EntradaVariable(String nombre){
+        //Nombre
+        this.tName = nombre;
+        
+        //Tipos
+        tipo = ParserSym.KW_INT;
+        tipoSubyacente = ParserSym.KW_INT;
+        
+        //Dimensiones
+        dimensiones = new ArrayList<>();
     }
 
-    public ArrayList<String> cloneDimensions(){
-        ArrayList<String> i = new ArrayList<>();
-        for (String d : dimensions) {
-            i.add(d);
+    //Clonaremos las dimensiones y los pasaremos a un nuevo array
+    public ArrayList<String> clonarDimensiones(){
+        ArrayList<String> rtn = new ArrayList<>();
+        for (String dim : dimensiones) {
+            rtn.add(dim);
         }
-        return i;
+        return rtn;
     }
 
-    public int getOccupation(){
-        int occupation;
-        if(type == ParserSym.KW_INT){
-            occupation = INTEGER_BYTES;
+    public int getOcupacion(){
+        int o;
+        if(tipo == ParserSym.KW_INT){
+            o = BYTES_ENTERO;
         }
-        else occupation = CHAR_BYTES;
-        for (String s : dimensions) {
+        else o = BYTES_CHAR;
+        for (String s : dimensiones) {
             try {
-                occupation *= Integer.parseInt(s);
-            } catch (NumberFormatException e){
-                occupation = UNKNOWN;
+                o *= Integer.parseInt(s);
+            } catch (Exception e){
+                o = VAL_DESCONOCIDO;
             }
         }
-        return occupation;
+        return o;
     }
 
     @Override
     public String toString(){
-        String s = "[var: " + tName + ", occup: " + getOccupation() + ", disp: " + displacement + ", type: " + ParserSym.terminalNames[subyacentType];
-        for (String d : dimensions) {
+        String s = "[variable: " + this.tName + ", ocupacion: " + this.getOcupacion() + ", desplazamiento: " + this.desplazamiento + ", tipo: " + ParserSym.terminalNames[tipoSubyacente];
+        for (String d : this.dimensiones) {
             s += "[" + d + "]";
         }
-        s += ", tsb: " + ParserSym.terminalNames[subyacentType] + "]";
+        s += ", tsb: " + ParserSym.terminalNames[tipoSubyacente] + "]";
         return s;
     }
 

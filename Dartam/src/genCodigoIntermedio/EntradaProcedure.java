@@ -30,7 +30,7 @@ public class EntradaProcedure {
     public int getOcupacionVariables(){
         int tamaño = 0;
         for (EntradaVariable vte : tablaVariables.values()) {
-            int val = vte.getOccupation();
+            int val = vte.getOcupacion();
             if(val == VAL_DESCONOCIDO) return VAL_DESCONOCIDO;
             tamaño += val;
         }
@@ -53,7 +53,7 @@ public class EntradaProcedure {
         //Ahora para cada parametro cogeremos su desplazamiento y lo sumaremos al total
         for(String s : parametros){
             entrada = tablaVariables.get(s);
-            entrada.displacement = desplazamiento;
+            entrada.desplazamiento = desplazamiento;
             desplazamiento += TAMAÑO_REGISTRO;
         }
 
@@ -61,9 +61,9 @@ public class EntradaProcedure {
         int desplazamientoL = 0;
         for (String s : tablaVariables.keySet()) {
             entrada = tablaVariables.get(s);
-            if(entrada.displacement == 0 && entrada.getOccupation()!= VAL_DESCONOCIDO){
-                desplazamientoL -= entrada.getOccupation();
-                entrada.displacement = desplazamientoL;
+            if(entrada.desplazamiento == 0 && entrada.getOcupacion()!= VAL_DESCONOCIDO){
+                desplazamientoL -= entrada.getOcupacion();
+                entrada.desplazamiento = desplazamientoL;
             }
         }
     }

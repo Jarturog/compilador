@@ -6,7 +6,7 @@ import java.util.HashMap;
 import analizadorSemantico.DescripcionSimbolo;
 import analizadorSemantico.TablaSimbolos;
 import analizadorSintactico.symbols.*;
-import genCodigoMaquina.Instruccion.InstructionType;
+import genCodigoMaquina.Instruccion.Tipo;
 import genCodigoMaquina.Instruccion;
 import analizadorSintactico.ParserSym;
 
@@ -135,19 +135,19 @@ public class GeneradorCIntermedio {
     }
 
     //Creacion de una nueva instruccion de 3 direcciones
-    private void añadirInstruccion(InstructionType tipo, String izq, String der, String des) {
+    private void añadirInstruccion(Tipo tipo, String izq, String der, String des) {
         Instruccion i = new Instruccion(tipo, izq, der, des);
         c3a.add(i);
     }
 
     //Creacion de una nueva instruccion de 3 direcciones
-    private void añadirInstruccion(InstructionType tipo, String izq, String des) {
+    private void añadirInstruccion(Tipo tipo, String izq, String des) {
         Instruccion i = new Instruccion(tipo, izq, des);
         c3a.add(i);
     }
 
      //Creacion de una nueva instruccion de 3 direcciones
-    private void añadirInstruccion(InstructionType tipo,String des) {
+    private void añadirInstruccion(Tipo tipo,String des) {
         Instruccion i = new Instruccion(tipo, des);
         c3a.add(i);
     }
@@ -267,8 +267,8 @@ public class GeneradorCIntermedio {
             tabla.numeroParametros = parametros.paramsLista.numParametros;
         }
 
-        añadirInstruccion(InstructionType.skip, tabla.eInicio);
-        añadirInstruccion(InstructionType.pmb, nombre);
+        añadirInstruccion(Tipo.skip, tabla.eInicio);
+        añadirInstruccion(Tipo.pmb, nombre);
 
         //Tratamiento del body
         SymbolBody cuerpo = main.main;
@@ -277,11 +277,11 @@ public class GeneradorCIntermedio {
         }
 
         //Al ser el main solo devolvera void, por lo que no hace nada
-        añadirInstruccion(InstructionType.rtn, "0", nombre);
+        añadirInstruccion(Tipo.rtn, "0", nombre);
 
         //Etiqueta para el final de la funcion
         this.tablaProcesosActual.eFin = nuevaEtiqueta();
-        añadirInstruccion(InstructionType.skip, tablaProcesosActual.eFin);
+        añadirInstruccion(Tipo.skip, tablaProcesosActual.eFin);
 
         //Ahora reseteamos la funcion actual y la tabla de procesos actual
         this.funcionActual = ES_FUNCION;
@@ -362,15 +362,15 @@ public class GeneradorCIntermedio {
 
         //Ahora meterelos el tipo dentro de la variable
         if (paramsLista.param.idTupla != null) { //Es una tupla
-            entrada.dimensions.add(nuevaVariable());
+            entrada.dimensiones.add(nuevaVariable());
         } else {
             //Tipo primitivo
             switch (paramsLista.param.tipo.getTipo()) { //Almacenaremos el tipo de variable que es
-                case SymbolTipoPrimitivo.STRING -> entrada.type = ParserSym.STRING;
-                case SymbolTipoPrimitivo.PROP -> entrada.type = ParserSym.PROP;
-                case SymbolTipoPrimitivo.ENT -> entrada.type = ParserSym.ENT;
-                case SymbolTipoPrimitivo.REAL -> entrada.type = ParserSym.REAL;
-                case SymbolTipoPrimitivo.CAR -> entrada.type = ParserSym.CAR;
+                case SymbolTipoPrimitivo.STRING -> entrada.tipo = ParserSym.STRING;
+                case SymbolTipoPrimitivo.PROP -> entrada.tipo = ParserSym.PROP;
+                case SymbolTipoPrimitivo.ENT -> entrada.tipo = ParserSym.ENT;
+                case SymbolTipoPrimitivo.REAL -> entrada.tipo = ParserSym.REAL;
+                case SymbolTipoPrimitivo.CAR -> entrada.tipo = ParserSym.CAR;
             }
             //Almacenaremos el tipo de variable que es
         }
@@ -460,7 +460,7 @@ public class GeneradorCIntermedio {
         if (nombre == null) {
             nombre = "" + fcall.methodName.specialMethod;
         }
-        añadirInstruccion(InstructionType.call, nombre, etiqueta);
+        añadirInstruccion(Tipo.call, nombre, etiqueta);
         fcall.setReferencia(etiqueta);
     }
 
@@ -491,8 +491,8 @@ public class GeneradorCIntermedio {
             pte.numParams = opL.numOperandos;
         }
         
-        añadirInstruccion(InstructionType.skip, pte.eStart);
-        añadirInstruccion(InstructionType.pmb, nombre);
+        añadirInstruccion(Tipo.skip, pte.eStart);
+        añadirInstruccion(Tipo.pmb, nombre);
         
        // SymbolCuerpo 
     }*/
@@ -512,7 +512,7 @@ public class GeneradorCIntermedio {
         }
 
         String nombre = funcionActual.replace(".", "");
-        añadirInstruccion(InstructionType.rtn, t, nombre);
+        añadirInstruccion(Tipo.rtn, t, nombre);
     }
 
     /* 
@@ -574,7 +574,7 @@ public class GeneradorCIntermedio {
 
         //Creamos la etiqueta de inicio
         String etiquetaInicio = nuevaEtiqueta();
-        añadirInstruccion(InstructionType.skip, etiquetaInicio);
+        añadirInstruccion(Tipo.skip, etiquetaInicio);
 
         SymbolLoopCond condicion = bucle.loopCond;
         procesar(condicion);
@@ -582,14 +582,14 @@ public class GeneradorCIntermedio {
 
         String etiquetaFin = nuevaEtiqueta();
         //Etiqueta de final de bucle
-        añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+        añadirInstruccion(Tipo.if_EQ, c, "0", etiquetaFin);
 
         //Ahora toda el contendido del for hay que procesarlo
         SymbolBody cuerpo = bucle.cuerpo;
         procesar(cuerpo);
 
-        añadirInstruccion(InstructionType.go_to, etiquetaInicio);
-        añadirInstruccion(InstructionType.skip, etiquetaFin);
+        añadirInstruccion(Tipo.go_to, etiquetaInicio);
+        añadirInstruccion(Tipo.skip, etiquetaFin);
 
         //Ahora hemos salido del bucle, por lo que ascendemos un nivel
         this.subnivelActual -= 1;
@@ -626,7 +626,7 @@ public class GeneradorCIntermedio {
 
         //Creamos la etiqueta de inicio
         String etiquetaInicio = nuevaEtiqueta();
-        añadirInstruccion(InstructionType.skip, etiquetaInicio);
+        añadirInstruccion(Tipo.skip, etiquetaInicio);
 
         SymbolOperand condicion = si.cond;
         procesar(condicion);
@@ -634,13 +634,13 @@ public class GeneradorCIntermedio {
 
         String etiquetaFin = nuevaEtiqueta();
         //Etiqueta de final de bucle
-        añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+        añadirInstruccion(Tipo.if_EQ, c, "0", etiquetaFin);
 
         //Ahora toda el contendido del for hay que procesarlo
         SymbolBody cuerpo = si.cuerpo;
         procesar(cuerpo);
 
-        añadirInstruccion(InstructionType.skip, etiquetaFin);
+        añadirInstruccion(Tipo.skip, etiquetaFin);
 
         //Si tenemos un elseif
         if (si.elifs != null) {
@@ -676,7 +676,7 @@ public class GeneradorCIntermedio {
 
         //Creamos la etiqueta de inicio
         String etiquetaInicio = nuevaEtiqueta();
-        añadirInstruccion(InstructionType.skip, etiquetaInicio);
+        añadirInstruccion(Tipo.skip, etiquetaInicio);
 
         SymbolOperand condicion = elif.cond;
         procesar(condicion);
@@ -684,13 +684,13 @@ public class GeneradorCIntermedio {
 
         String etiquetaFin = nuevaEtiqueta();
         //Etiqueta de final de bucle
-        añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+        añadirInstruccion(Tipo.if_EQ, c, "0", etiquetaFin);
 
         //Ahora toda el contendido del for hay que procesarlo
         SymbolBody cuerpo = elif.cuerpo;
         procesar(cuerpo);
 
-        añadirInstruccion(InstructionType.skip, etiquetaFin);
+        añadirInstruccion(Tipo.skip, etiquetaFin);
 
     }
 
@@ -716,7 +716,7 @@ public class GeneradorCIntermedio {
         this.subnivelActual += 1;
         //Creamos la etiqueta de inicio
         String etiquetaInicio = nuevaEtiqueta();
-        añadirInstruccion(InstructionType.skip, etiquetaInicio);
+        añadirInstruccion(Tipo.skip, etiquetaInicio);
 
         SymbolOperand condicion = swi.cond;
         procesar(condicion);
@@ -724,12 +724,12 @@ public class GeneradorCIntermedio {
 
         String etiquetaFin = nuevaEtiqueta();
         //Etiqueta de final de bucle
-        añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+        añadirInstruccion(Tipo.if_EQ, c, "0", etiquetaFin);
 
         procesar(swi.caso);
         procesar(swi.pred);
 
-        añadirInstruccion(InstructionType.skip, etiquetaFin);
+        añadirInstruccion(Tipo.skip, etiquetaFin);
 
         this.subnivelActual -= 1;
 
@@ -745,7 +745,7 @@ public class GeneradorCIntermedio {
             procesar(caso.caso);
             
             String etiquetaInicio = nuevaEtiqueta();
-            añadirInstruccion(InstructionType.skip, etiquetaInicio);
+            añadirInstruccion(Tipo.skip, etiquetaInicio);
 
             SymbolOperand condicion = caso.cond;
             procesar(condicion);
@@ -753,12 +753,12 @@ public class GeneradorCIntermedio {
 
             String etiquetaFin = nuevaEtiqueta();
             //Etiqueta de final de bucle
-            añadirInstruccion(InstructionType.if_EQ, c, "0", etiquetaFin);
+            añadirInstruccion(Tipo.if_EQ, c, "0", etiquetaFin);
 
             //Procesamos el cuerpo
             procesar(caso.cuerpo);
 
-            añadirInstruccion(InstructionType.skip, etiquetaFin);
+            añadirInstruccion(Tipo.skip, etiquetaFin);
         }
     }
 
