@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -9,8 +8,6 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
 CONDITIONAL_EXPRESSION ::= OPERAND:et1 OP_COND OPERAND:et2 ARROW OPERAND:et3   {: RESULT = new SymbolConditionalExpression(et1, et2, et3, et1xleft, et1xright);; :}

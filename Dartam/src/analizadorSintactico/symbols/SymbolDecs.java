@@ -1,5 +1,3 @@
-
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informatica 
@@ -10,7 +8,6 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
 
 /**
 DECS ::= KW_CONST:et1 TIPO:et2 DEC_ASIG_LISTA:et3 ENDINSTR     {: RESULT = new SymbolDecs(true,et2,et3, et1xleft, et1xright); :}

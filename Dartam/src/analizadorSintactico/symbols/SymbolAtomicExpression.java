@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -10,8 +9,6 @@ package analizadorSintactico.symbols;
 
 import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
 ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}

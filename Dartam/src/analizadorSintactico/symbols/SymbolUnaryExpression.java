@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -11,8 +10,6 @@ package analizadorSintactico.symbols;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
  * 
  * UNARY_EXPRESSION ::= L_UNARY_OPERATOR:et1 OPERAND:et2                       {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}
         | OPERAND:et1 R_UNARY_OPERATOR:et2                                  {: RESULT = new SymbolUnaryExpression(et1, et2, et1xleft, et1xright); :}

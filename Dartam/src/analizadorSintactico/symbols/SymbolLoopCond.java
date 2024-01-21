@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -10,11 +9,7 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-
-
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
  * 
  * LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}
         | DECS:et1 ENDINSTR OPERAND:et2 ENDINSTR OPERAND:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}

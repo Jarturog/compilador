@@ -1,25 +1,21 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+/**
+* Assignatura 21780 - Compiladors
+* Estudis: Grau en Informàtica 
+* Itinerari: Intel·ligència Artificial i Computacio
+*
+* Equipo: Arturo, Dani y Marta
+*/
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
-import analizadorSintactico.symbols.SymbolParamsLista;
 import analizadorSintactico.symbols.SymbolTipo;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import jflex.base.Pair;
 
-/**
- *
- * @author dasad
- */
 public class DescripcionSimbolo {
-    
+
     private String tipo;
 
     private int nivel;
@@ -33,19 +29,18 @@ public class DescripcionSimbolo {
     public int first;
     public int next;    //Apuntador al siguiente campo de una tupla
     public String idcamp;   //Identificador del campo de la tupla
-    
+
     public int dcamp; //Desplazamiento dentro del array
-    
+
     /**
-     * Copia
+     * Copia de la descripción (para copiar de una plantilla de un miembro de
+     * una tupla a una instancia de miembro de una instancia de tupla)
      */
-    public DescripcionSimbolo(DescripcionSimbolo d){
+    public DescripcionSimbolo(DescripcionSimbolo d) {
         this.tipo = d.tipo;
         this.nivel = d.nivel;
         this.isConstante = d.isConstante;
         this.valorAsignado = d.valorAsignado;
-
-        // Assuming Pair, SymbolOperand, and DescripcionSimbolo have their own copy constructors
         if (d.parametros != null) {
             this.parametros = new ArrayList<>(d.parametros);
         }
@@ -57,21 +52,17 @@ public class DescripcionSimbolo {
         if (d.dimensiones != null) {
             this.dimensiones = new ArrayList<>(d.dimensiones);
         }
-        
-        
-
         this.memberOf = (d.memberOf != null) ? new DescripcionSimbolo(d.memberOf) : null;
-
         this.first = d.first;
         this.next = d.next;
         this.idcamp = d.idcamp;
         this.dcamp = d.dcamp;
     }
-    
+
     /**
      * Main
      */
-    public DescripcionSimbolo(){
+    public DescripcionSimbolo() {
         tipo = null;
         miembros = null;
     }
@@ -79,12 +70,12 @@ public class DescripcionSimbolo {
     /**
      * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla){
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla) {
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
         memberOf = tupla; // miembro de una tupla
-        if (isTupla()){
+        if (isTupla()) {
             miembros = new HashMap<String, DescripcionSimbolo>(); // copia
             for (HashMap.Entry<String, DescripcionSimbolo> entry : memberOf.miembros.entrySet()) {
                 miembros.put(entry.getKey(), new DescripcionSimbolo(entry.getValue()));
@@ -93,142 +84,137 @@ public class DescripcionSimbolo {
             miembros = null;
         }
     }
-    
+
     /**
      * Array
      */
-    public DescripcionSimbolo(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla){
+    public DescripcionSimbolo(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla) {
         tipo = t;
         dimensiones = dim;
         memberOf = tupla; // miembro de una tupla
         miembros = null;
     }
-    
+
     /**
      * Tupla
      */
-    public DescripcionSimbolo(HashMap<String, DescripcionSimbolo> m){
+    public DescripcionSimbolo(HashMap<String, DescripcionSimbolo> m) {
         miembros = (HashMap<String, DescripcionSimbolo>) m;
     }
-    
+
     /**
-     * Funcion
-     * @param tipoRetorno
+     * Función
      */
-    public DescripcionSimbolo(String tipoRetorno){
+    public DescripcionSimbolo(String tipoRetorno) {
         tipo = tipoRetorno;
         parametros = new ArrayList<>();
         miembros = null;
     }
-    
-    public void cambiarTipo(String t){
-        this.tipo = t;
-    }
-    
-    public void cambiarTipo(int t){
-        if(t == ParserSym.KW_METHOD){
+
+    public void cambiarTipo(int t) {
+        if (t == ParserSym.KW_METHOD) {
             //this.tipo = new SymbolTipo();
             this.parametros = new ArrayList<>();
         }
     }
-    
-    public String getTipo(){
+
+    public String getTipo() {
         return tipo;
     }
-    
+
     //Array
-    public void setTipoBase(SymbolTipo base){
+    public void setTipoBase(SymbolTipo base) {
         //tipo.setTipoBase(base);
     }
-    
-    public String getTipoBase(){
+
+    public String getTipoBase() {
         return null;//tipo.getTipoBase();
     }
-    
-    public int getProfundidad(){
+
+    public int getProfundidad() {
         return -1;//tipo.getProfundidadArray();
     }
-    
-    public void setTamanyoArray(int n){
-       //tipo.setTamanyoArray(n);
+
+    public void setTamanyoArray(int n) {
+        //tipo.setTamanyoArray(n);
     }
-    
-    public int getNivel(){
+
+    public int getNivel() {
         return this.nivel;
     }
-    
-    public void setNivel(int n){
+
+    public void setNivel(int n) {
         this.nivel = n;
     }
-    
+
     //Funciones
-    public void anyadirParametro(String n, DescripcionSimbolo d){
+    public void anyadirParametro(String n, DescripcionSimbolo d) {
         parametros.add(new Pair(n, d));
     }
-    
-    public int getNumeroParametros(){
+
+    public int getNumeroParametros() {
         return parametros.size();
     }
-    
-    public ArrayList<Pair<String, DescripcionSimbolo>> getTiposParametros(){
+
+    public ArrayList<Pair<String, DescripcionSimbolo>> getTiposParametros() {
         return new ArrayList<>(parametros);
     }
-    
+
     public HashMap<String, DescripcionSimbolo> getTiposMiembros() {
         return new HashMap<>(miembros);
     }
-    
-    public void setTipoRetorno(String tv) throws Exception{
-        if(!this.isFunction()){
-           throw new Exception("Error");
-        }else{
+
+    public void setTipoRetorno(String tv) throws Exception {
+        if (!this.isFunction()) {
+            throw new Exception("Error");
+        } else {
             this.tipo = tv;
         }
     }
-    
-    public String getTipoRetorno(){
+
+    public String getTipoRetorno() {
         return this.tipo;
     }
-    
+
     public boolean isFunction() {
         return parametros != null;
     }
-    
+
     public boolean isArray() {
         return dimensiones != null;
     }
-    
+
     public boolean isTupla() {
         //return miembros != null;
         return tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE]);
     }
-    
+
     public DescripcionSimbolo getMember(String id) {
         return miembros.get(id);
 
     }
-    
+
     public String getNombreTupla() {
         if (memberOf == null || !isTupla()) {
             return null;
         }
         return tipo.substring(tipo.indexOf(" ") + 1);
     }
-    
+
     public void anyadirMiembro(String id, DescripcionSimbolo ds) {
         miembros.put(id, ds);
     }
-    
+
     public boolean tieneValorAsignado() {
         return valorAsignado;
     }
-    
+
     public void asignarValor() {
         valorAsignado = true;
     }
-    
+
     public boolean isConstante() {
         return isConstante;
     }
-    
+
 }

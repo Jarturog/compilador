@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -10,11 +9,7 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-
-
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
  * 
  * 
 CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft et1xright); :}

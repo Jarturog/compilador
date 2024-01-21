@@ -1,10 +1,10 @@
 /**
- * Asignatura: 21780 - Compiladores
- * Miembros:
- * 	- Korn, Andreas Manuel
- * 	- Roman Colom, Marc
- * 	- Vilella Candia, Joan
- */
+* Assignatura 21780 - Compiladors
+* Estudis: Grau en Informàtica 
+* Itinerari: Intel·ligència Artificial i Computacio
+*
+* Equipo: Arturo, Dani y Marta
+*/
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import jflex.base.Pair;
 
-public class SemanticAnalysis {
+public class AnalizadorSemantico {
 
     public TablaSimbolos tablaSimbolos;
     
@@ -53,7 +53,7 @@ public class SemanticAnalysis {
         errores.set(idx, loc + errores.get(idx));
     }
 
-    public SemanticAnalysis(SymbolScript scriptElementosAntesDeMain) throws Exception {
+    public AnalizadorSemantico(SymbolScript scriptElementosAntesDeMain) throws Exception {
         tablaSimbolos = new TablaSimbolos();
         errores = new ArrayList<>();
         ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
@@ -556,26 +556,30 @@ public class SemanticAnalysis {
     
     private void procesarParametros(SymbolParamsLista params) {
         while (params != null) {
-            String nombreParam = params.id;
-            //if (tablaSimbolos.contains(id)) { // imposible
-            if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
-                errores.add("El parametro " + nombreParam + " tiene el mismo nombre que el metodo en el que esta siendo declarado");
-                indicarLocalizacion(params);
-                params = params.siguienteParam;
-                continue;
-            } else if (tablaSimbolos.consulta(nombreParam) != null) {
-                errores.add("El identificador " + nombreParam + " ya está declarado en este ámbito y por lo tanto no se puede llamar así al parámetro");
-                indicarLocalizacion(params);
-                params = params.siguienteParam;
-                continue;
+            
+                String nombreParam = params.id;
+                //if (tablaSimbolos.contains(id)) { // imposible
+                if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
+                    errores.add("El parametro " + nombreParam + " tiene el mismo nombre que el metodo en el que esta siendo declarado");
+                    indicarLocalizacion(params);
+                    params = params.siguienteParam;
+                    continue;
+                } else if (tablaSimbolos.consulta(nombreParam) != null) {
+                    errores.add("El identificador " + nombreParam + " ya está declarado en este ámbito y por lo tanto no se puede llamar así al parámetro");
+                    indicarLocalizacion(params);
+                    params = params.siguienteParam;
+                    continue;
+                }
+                
+                DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
+                DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, null);
+            try {
+                tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
+                tablaSimbolos.poner(nombreParam, dParam);
+                dFuncion.anyadirParametro(nombreParam, dParam);
+            } catch (Exception ex) {
+                errores.add(ex.getMessage());
             }
-            
-            DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
-            DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, null);
-            tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
-            dFuncion.anyadirParametro(nombreParam, dParam);
-            tablaSimbolos.poner(nombreParam, dParam);
-            
             params = params.siguienteParam;
         }
     }

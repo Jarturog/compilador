@@ -10,11 +10,7 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-
-
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
  * 
  * Reglas:
  * 
@@ -57,6 +53,5 @@ public class SymbolFCall extends SymbolBase {
         }
         return ops.substring(0, ops.length() - 2) + ")";
     }
-    
-    
+
 }

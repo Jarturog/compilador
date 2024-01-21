@@ -18,6 +18,13 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 import analizadorSintactico.ParserSym;
 
 %%
+/**
+ * Assignatura 21780 - Compiladors
+ * Estudis: Grau en Informàtica 
+ * Itinerari: Intel·ligència Artificial i Computacio
+ *
+ * Equipo: Arturo, Dani y Marta
+ */
 /****
   %standalone
 ****/

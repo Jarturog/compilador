@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -10,11 +9,7 @@ package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
-
-
 /**
- * Classe que implementa la classe base a partir de la que s'implementen totes
- * les variables de la gramàtica.
  * 
  * OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol, etxleft, etxright); :}
         | OPERAND:et                                    {: RESULT = new SymbolOperandsLista(et, etxleft, etxright); :}

@@ -1,79 +1,78 @@
+/** 
+* Assignatura 21780 - Compiladors
+* Estudis: Grau en Informàtica 
+* Itinerari: Intel·ligència Artificial i Computacio
+*
+* Equipo: Arturo, Dani y Marta
+*/
 package dartam;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.FileReader;
 import java_cup.runtime.ComplexSymbolFactory;
-import java_cup.runtime.SymbolFactory;
 import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
-import analizadorSemantico.SemanticAnalysis;
+import analizadorSemantico.AnalizadorSemantico;
 import genCodigoIntermedio.GeneradorCIntermedio;
 import genCodigoMaquina.GeneradorCMaquina;
+import java.io.BufferedReader;
 import optimizaciones.Optimizador;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.ClassCastException;
 
 public class Dartam {
 
-    private static String inputPath = "in.txt", outputPath = "out.txt";
+    private static final String ruta = "tests/";
     
-    /**
-    /**
-     * @param args arguments de linia de comanda
-     */
     public static void main(String[] args) {
-        Reader input;
-        // cutre lo de abajo
-        args = new String[1];
-        args[0] = inputPath;
         try {
+            Reader ficheroIn;
+            String nombreArchivo = "";
             if (args.length > 0) {
-                input = new FileReader(args[0]);
+                nombreArchivo = args[0];
             } else {
-                System.out.println("Escriu l'expressio que vols calcular (help; per ajuda):");
+                System.out.println("Indica el fichero a compilar");
                 System.out.print(">>> ");
-                input = new InputStreamReader(System.in);
+                try {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                    nombreArchivo = br.readLine();
+                    br.close();
+                } catch (IOException e) {
+                    System.err.println("Error al abrir el fichero '" + nombreArchivo + "'");
+                    return;
+                }
             }
-            Scanner scanner = new Scanner(input);
-            
-            // sintactico
+            ficheroIn = new FileReader(ruta + nombreArchivo);
+            // Análisis léxico
+            Scanner scanner = new Scanner(ficheroIn);
+            // Análisis sintáctico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
-            SymbolScript script;
-            try {
-                script = (SymbolScript) parser.parse().value;
-            } catch (NullPointerException | ClassCastException e) { // analisis sintactico ha ido mal o no se ha encontrado main
-                System.err.println("error: "+e);
-                e.printStackTrace(System.err);
-                return;
-            }
-            
-            //dump(outputPath, scanner.getTokens());
+            SymbolScript script = (SymbolScript) parser.parse().value;
+            escribir("tokens.txt", scanner.getTokens());
             System.out.println(scanner.getTokens());
-            // Semantic analysis
-            SemanticAnalysis sem = new SemanticAnalysis(script);
+            // Análisis semántico
+            AnalizadorSemantico sem = new AnalizadorSemantico(script);
             System.err.println(sem.getErrors());
-            // Intermediate code generation
-            GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
-            // Machine code generation
-            GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
+            // Generación de código intermedio
+            //GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
+            //escribir("codigoIntermedio.txt", codigoIntermedio.getCodigo());
+            // Generación de código máquina
+            //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
             // Optimzaciones
-            Optimizador op = new Optimizador(); // pasar por parametro codigomaQUINA
+            //Optimizador op = new Optimizador();
             
-            System.out.println("DONE");
+            System.out.println("Codigo compilado");
             
         } catch(Exception e) {
-            System.err.println("error: "+e);
-            e.printStackTrace(System.err);
+            System.err.println("Error inesperado de compilación: "+e.getMessage());
         }
     }
 
-    static public void dump(String file, String content) throws IOException {
-        // We write the file with the tokens
-        FileWriter fileOut = new FileWriter(file);
-        fileOut.write(content);
+    static public void escribir(String fileName, String str) throws IOException {
+        FileWriter fileOut = new FileWriter(fileName);
+        fileOut.write(str);
         fileOut.close();
     }
 

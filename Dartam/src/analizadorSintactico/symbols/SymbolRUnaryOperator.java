@@ -1,4 +1,3 @@
-
 /**
  * Assignatura 21780 - Compiladors
  * Estudis: Grau en Informàtica 
@@ -9,8 +8,6 @@
 package analizadorSintactico.symbols;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
-
-
 
 /**
 R_UNARY_OPERATOR ::= OP_PCT:et  {: RESULT = new SymbolRUnaryOperator(ParserSym.OP_PCT, et, etxleft, etxright); :}
