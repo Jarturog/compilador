@@ -5,8 +5,8 @@ import java.util.Hashtable;
 import java.util.Stack;
 
 import genCodigoIntermedio.GeneradorCIntermedio;
-import genCodigoIntermedio.PTEntry;
-import genCodigoIntermedio.VTEntry;
+import genCodigoIntermedio.EntradaProcedure;
+import genCodigoIntermedio.EntradaVariable;
 import analizadorSintactico.ParserSym;
 
 public class GeneradorCMaquina {
@@ -14,15 +14,15 @@ public class GeneradorCMaquina {
     public ArrayList<String> data;
     public ArrayList<String> text;
 
-    private ArrayList<Instruction> instructions;
+    private ArrayList<Instruccion> instructions;
 
-    private Hashtable<String, VTEntry> variableTable;
+    private Hashtable<String, EntradaVariable> variableTable;
     private Hashtable<String, String> variableDictionary;
-    private Hashtable<String, PTEntry> procedureTable;
+    private Hashtable<String, EntradaProcedure> procedureTable;
 
     // Info from the current process
-    private Stack<PTEntry> pteStack;
-    private PTEntry currentPte;
+    private Stack<EntradaProcedure> pteStack;
+    private EntradaProcedure currentPte;
     private boolean firstParam = true;
 
     private boolean printUsed = false;
@@ -39,8 +39,8 @@ public class GeneradorCMaquina {
     }
 
     public void generateCode(){
-        PTEntry pte = new PTEntry();
-        VTEntry vte;
+        EntradaProcedure pte = new EntradaProcedure();
+        EntradaVariable vte;
         // Declarations initialization
         data.add("\tsection .data");
 
@@ -75,7 +75,7 @@ public class GeneradorCMaquina {
                 + "\tmov rbp,rsp\n"
                 + "\tpush rbp\n");
 
-        for (Instruction instruction : instructions) {
+        for (Instruccion instruction : instructions) {
             //if (LenguaG.DEBUGGING)     text.add("\t; " + instruction);
             
             String des = instruction.destination;

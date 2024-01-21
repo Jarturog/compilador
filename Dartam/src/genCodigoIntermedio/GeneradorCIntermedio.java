@@ -6,123 +6,162 @@ import java.util.HashMap;
 import analizadorSemantico.DescripcionSimbolo;
 import analizadorSemantico.TablaSimbolos;
 import analizadorSintactico.symbols.*;
-import genCodigoMaquina.Instruction.InstructionType;
-import genCodigoMaquina.Instruction;
+import genCodigoMaquina.Instruccion.InstructionType;
+import genCodigoMaquina.Instruccion;
 import analizadorSintactico.ParserSym;
 
 public class GeneradorCIntermedio {
 
-    private ArrayList<Instruction> c3a;
+    //Array que guardará el código de 3 direcciones resultante de el procesamiento de cada Simbolo
+    private ArrayList<Instruccion> c3a;
 
-    private HashMap<String, VTEntry> variableTable;
-    private HashMap<String, PTEntry> procedureTable;
+    //Tablas de variables y de funciones
+    private HashMap<String, EntradaVariable> tablaVariables;
+    private HashMap<String, EntradaProcedure> tablaProcedures;
 
-    private PTEntry tablaProcesosActual;
+    //Proceso actual en tratamiento
+    private EntradaProcedure tablaProcesosActual;
+    
+    //Funcion actual en tratamiento
     private String funcionActual;
+    
+    //Subnivel del bloque
     private int subnivelActual;
+
+    //Tipo del de la variable tratada actualmente
     private SymbolTipo tipoActual;
+    
+    //Indicador de si es constante
     private boolean esConstante;
+    
+    //Valor de la operacion
     private String valorAsignacion;
-    static final String DEF_FUNCTION = ".";
+    
+    static final String ES_FUNCION = ".";
 
-    private String declaracionActual; // Variable used in array declaration
-    private int currentDecLength;
-    private ArrayList<String> dimensionsToCheck;
+    //Declaraciones actuales
+    private String declaracionActual;
+    private int longitudDecs;
+    
+    private ArrayList<String> dimensionesTratar;
 
-    private int numE;
-    private int numT;
+    private int numEtiqueta; //Contador de las etiquetas colocadas
+    private int numVariable;
 
+    //Método constructor del codigo intermedio
     public GeneradorCIntermedio(SymbolScript script) {
-        c3a = new ArrayList<>();
-        variableTable = new HashMap<>();
-        procedureTable = new HashMap<>();
-        numE = 0;
-        numT = 0;
-        funcionActual = DEF_FUNCTION; // We use the format function.variable to store and access the variable table
-        // This avoids the very real possibility of the user creating a variable of format tN (where N is a natural) 
-        // which would cause undesired behaviour
-        subnivelActual = 0;
-        currentDecLength = -1;
+        //Inicializamos código de 3 direcciones
+        c3a = new ArrayList<>(); 
+        numEtiqueta = 0; //A 0 porque no tenemos etiquetas
+        numVariable = 0; //A 0 porque no tenemos variables
+        
+        //Inicializacion de tablas de variables y procedures
+        tablaVariables = new HashMap<>();
+        tablaProcedures = new HashMap<>();
+        funcionActual = ES_FUNCION;
+        
+        subnivelActual = 0; //Nivel actual 0, 
+        longitudDecs = -1; //No hay declaraciones
         procesar(script);
     }
 
+    //Método para crear nuevas variables, devol
     private String nuevaVariable() {
-        String t = "t" + numT++;
-        VTEntry vte = new VTEntry(t);
-        variableTable.put(funcionActual + subnivelActual + t, vte);
+        String nombre = "t" + numVariable++;
+        //Nueva entrada
+        EntradaVariable vte = new EntradaVariable(nombre);
+        
+        //Incorporamos dentro de la tabla
+        tablaVariables.put(funcionActual + subnivelActual + nombre, vte); 
         if (tablaProcesosActual != null) {
-            tablaProcesosActual.variableTable.put(subnivelActual + t, vte);
+            tablaProcesosActual.variableTable.put(subnivelActual + nombre, vte);
         }
-        return t;
+        return nombre; //Devolvemos el nombre de la variable creada
     }
 
+    //La creacion de una nueva etiqueta será unicamente devolver el nombre con el incremental de
+    //las etiquetas actuales
     private String nuevaEtiqueta() {
-        return "e" + numE++;
+        return "e" + numEtiqueta++; //1+
     }
 
-    private VTEntry getVariable(String t) {
-        VTEntry vte = variableTable.get(funcionActual + subnivelActual + t);
+    //Para recoger una variable lo que haremos serña recorrer la tabla de variables buscando
+    private EntradaVariable getVariable(String t) {
+        EntradaVariable vte = tablaVariables.get(funcionActual + subnivelActual + t);
         int i = subnivelActual - 1;
-
-        // We check up until -1 since parameters are in sublevel -1
-        while (vte == null && i >= -1) {
-            vte = variableTable.get(funcionActual + i-- + t);
+        
+        //Lo buscamos
+        for(; vte == null && i >= -1; i--){
+            vte = tablaVariables.get(funcionActual + i-- + t);
         }
+        
+        //Si no encontramos la variable
         if (vte == null) {
-            vte = variableTable.get(DEF_FUNCTION + 0 + t);
+            vte = tablaVariables.get(ES_FUNCION + 0 + t);
         }
         return vte;
     }
 
+    //Para eliminar uan variable de la tabla, lo que haremos serña encontrarla y hacerle remove
     private void eliminarVariable(String t) {
-        VTEntry vte = variableTable.remove(funcionActual + subnivelActual + t);
+        EntradaVariable vte = tablaVariables.remove(funcionActual + subnivelActual + t);
         int i = subnivelActual - 1;
-        while (vte == null && i >= 0) {
-            vte = variableTable.remove(funcionActual + i-- + t);
+        
+        for (;vte == null && i >= 0;) {
+            vte = tablaVariables.remove(funcionActual + i-- + t);
         }
         if (vte == null) {
-            vte = variableTable.remove(DEF_FUNCTION + 0 + t);
+            vte = tablaVariables.remove(ES_FUNCION + 0 + t);
         }
     }
 
-    private void remplazarNombreVariable(String oldKey, String newKey) {
-        VTEntry vte = getVariable(oldKey);
-        eliminarVariable(oldKey);
-        variableTable.put(funcionActual + subnivelActual + newKey, vte);
+    private void remplazarNombreVariable(String anterior, String nueva) {
+        //Buscamos la variable
+        EntradaVariable vte = getVariable(anterior);
+        
+        //La eliminamos
+        eliminarVariable(anterior);
+        
+        //Insertamos la nueva variable pero con la informacion de la anterior
+        tablaVariables.put(funcionActual + subnivelActual + nueva, vte);
     }
 
-    private String crearEntradaProcedimiento(String procName) {
-        String internalFunctionName = procName + DEF_FUNCTION;
-        PTEntry pte = new PTEntry();
-        pte.eStart = nuevaEtiqueta();
-        procedureTable.put(internalFunctionName, pte);
-        return internalFunctionName;
+    private String crearEntradaProcedimiento(String nombre) {
+        String nombreFuncion = nombre + ES_FUNCION;
+        EntradaProcedure entrada = new EntradaProcedure();
+        entrada.eStart = nuevaEtiqueta();
+        tablaProcedures.put(nombreFuncion, entrada);
+        return nombreFuncion;
     }
 
-    private void añadirInstruccion(InstructionType instruction, String left, String right, String destination) {
-        Instruction i = new Instruction(instruction, left, right, destination);
+    //Creacion de una nueva instruccion de 3 direcciones
+    private void añadirInstruccion(InstructionType tipo, String izq, String der, String des) {
+        Instruccion i = new Instruccion(tipo, izq, der, des);
         c3a.add(i);
     }
 
-    private void añadirInstruccion(InstructionType instruction, String left, String destination) {
-        Instruction i = new Instruction(instruction, left, destination);
+    //Creacion de una nueva instruccion de 3 direcciones
+    private void añadirInstruccion(InstructionType tipo, String izq, String des) {
+        Instruccion i = new Instruccion(tipo, izq, des);
         c3a.add(i);
     }
 
-    private void añadirInstruccion(InstructionType instruction, String destination) {
-        Instruction i = new Instruction(instruction, destination);
+     //Creacion de una nueva instruccion de 3 direcciones
+    private void añadirInstruccion(InstructionType tipo,String des) {
+        Instruccion i = new Instruccion(tipo, des);
         c3a.add(i);
     }
-
-    public HashMap<String, VTEntry> getVariableTable() {
-        return variableTable;
+    
+    
+    public HashMap<String, EntradaVariable> getTablaVariables() {
+        return tablaVariables;
     }
 
-    public HashMap<String, PTEntry> getProcedureTable() {
-        return procedureTable;
+    public HashMap<String, EntradaProcedure> getTablaProcedures() {
+        return tablaProcedures;
     }
 
-    public ArrayList<Instruction> getInstructions() {
+    public ArrayList<Instruccion> getC3A() {
         return c3a;
     }
 
@@ -217,7 +256,7 @@ public class GeneradorCIntermedio {
         SymbolParams parametros = null;
 
         //Recibimos la tabla de procedimientos de esta funcion
-        PTEntry tabla = this.procedureTable.get(nombre);
+        EntradaProcedure tabla = this.tablaProcedures.get(nombre);
         this.tablaProcesosActual = tabla; //Cambiamos a la actual
 
         //Tratando parametros
@@ -245,7 +284,7 @@ public class GeneradorCIntermedio {
         añadirInstruccion(InstructionType.skip, tablaProcesosActual.eEnd);
 
         //Ahora reseteamos la funcion actual y la tabla de procesos actual
-        this.funcionActual = DEF_FUNCTION;
+        this.funcionActual = ES_FUNCION;
         this.tablaProcesosActual = null;
         
     }
@@ -316,7 +355,7 @@ public class GeneradorCIntermedio {
     private void procesar(SymbolParamsLista paramsLista) {
         //Crearemos una nueva variable
         String variable = this.nuevaVariable();
-        VTEntry entrada = this.getVariable(variable);
+        EntradaVariable entrada = this.getVariable(variable);
 
         //Como este parametro vendra de una funcion o llamada el tablaProcesosActual != null
         this.tablaProcesosActual.params.add(variable); //Añadimos el parametro
@@ -356,34 +395,7 @@ public class GeneradorCIntermedio {
 
      */
     private void procesar(SymbolDecs decs) {
-        SymbolDecAsigLista dec = decs.iddecslista;
-        while (dec != null) {
-            String v = nuevaVariable();
-            VTEntry entrada = getVariable(v);
-
-            this.declaracionActual = dec.id;
-            if(decs.isConst){
-                entrada.initialValue = (String)dec.value;
-                replaceVarTableKey(v, dec.id);
-                return;
-            }
-            replaceVarTableKey(v, dec.id);
-            SymbolOperand value = dec.value;
-            if(value != null){
-                if(value.isConstant) {
-                    Object val = value.value;
-                    if(val instanceof Boolean) val = (Boolean) val ? Constants.TRUE : Constants.FALSE;
-                    entrada.initialValue = val.toString();
-                } else {
-                    procesar(value);
-                    if(!v.equals(value.getReferencia())) añadirInstruccion(InstructionType.copy, value.getReferencia(), v);
-                }
-            }
-            dec.setReferencia(v);
-            this.declaracionActual = null;
-            currentDecLength = -1;
-            dec = dec.siguienteDeclaracion;
-        }
+        //TODO:
     }
 
     
@@ -395,7 +407,7 @@ public class GeneradorCIntermedio {
             ;
      */
     private void procesar(SymbolDimensiones dim) {
-        //TODO
+        //TODO:
     }
 
     /*
@@ -471,7 +483,7 @@ public class GeneradorCIntermedio {
         }
         
         SymbolOperandsLista opL = fcall.operandsLista;
-        PTEntry pte = procedureTable.get(funcionActual);
+        PTEntry pte = tablaProcedures.get(funcionActual);
         tablaProcesosActual = pte;
         
         if(opL != null){

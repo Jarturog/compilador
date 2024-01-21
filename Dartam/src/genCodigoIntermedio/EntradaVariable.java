@@ -5,7 +5,7 @@ import analizadorSintactico.ParserSym;
 /**
  * Variable table entry
  */
-public class VTEntry {
+public class EntradaVariable {
     public static final int TYPE_ARRAY = Integer.MAX_VALUE;
     public static final int TYPE_FUNCTION = TYPE_ARRAY-1;
 
@@ -26,7 +26,7 @@ public class VTEntry {
     public String initialValue = "0";
     public int operationType;
     
-    public VTEntry(String tName){
+    public EntradaVariable(String tName){
         this.tName = tName;
         type = ParserSym.KW_INT;
         subyacentType = ParserSym.KW_INT;

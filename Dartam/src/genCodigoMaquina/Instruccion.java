@@ -1,6 +1,6 @@
 package genCodigoMaquina;
 
-public class Instruction {
+public class Instruccion {
     public enum InstructionType {
         copy, add, sub, prod, div, mod, neg, and, or, not, ind_val, ind_ass, 
         skip, go_to, if_LT, if_LE, if_EQ, if_NE, if_GE, if_GT, pmb, call, rtn, 
@@ -12,21 +12,21 @@ public class Instruction {
     public String right;
     public String destination;
 
-    public Instruction(InstructionType instruction, String left, String right, String destination){
+    public Instruccion(InstructionType instruction, String left, String right, String destination){
         this.instruction = instruction;
         this.left = left;
         this.right = right;
         this.destination = destination;
     }
 
-    public Instruction(InstructionType instruction, String left, String destination){
+    public Instruccion(InstructionType instruction, String left, String destination){
         this.instruction = instruction;
         this.left = left;
         this.right = null;
         this.destination = destination;
     }
 
-    public Instruction(InstructionType instruction, String destination){
+    public Instruccion(InstructionType instruction, String destination){
         this.instruction = instruction;
         this.left = null;
         this.right = null;
