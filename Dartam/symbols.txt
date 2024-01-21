@@ -1,12 +1,5 @@
-arr:		Array de tipo 'KW_TUPLE a []' con dimensiones 2 declarado en el nivel 0
-a:			Variable  de tipo 'a' sin valor asignado declarado en el nivel 0
 INTO:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0
 ENTER:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0
 inicio:		Variable  de tipo 'null' sin valor asignado declarado en el nivel 0
 SHOW:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0
 FROM:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0
-
-Ambit table:[0]
-Expansion table:[Variable: 'b'	 Descripción: Variable consante de tipo 'ENT' con valor asignado declarado en el nivel -1
-, Variable: 'b'	 Descripción: Variable consante de tipo 'ENT' con valor asignado declarado en el nivel -1
-]
