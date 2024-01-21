@@ -177,7 +177,7 @@ public String getErrores(){
 }
 
 private String errorToString(){
-  return "!!! Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+  return "Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
 }
 
 /**
