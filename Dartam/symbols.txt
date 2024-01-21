@@ -1,0 +1,18 @@
+Nivel actual: 0. Tabla de símbolos:
+arr:
+	analizadorSemantico.DescripcionSimbolo@5f4da5c3
+a:
+	analizadorSemantico.DescripcionSimbolo@443b7951
+INTO:
+	analizadorSemantico.DescripcionSimbolo@14514713
+ENTER:
+	analizadorSemantico.DescripcionSimbolo@69663380
+inicio:
+	analizadorSemantico.DescripcionSimbolo@5b37e0d2
+SHOW:
+	analizadorSemantico.DescripcionSimbolo@4459eb14
+FROM:
+	analizadorSemantico.DescripcionSimbolo@5a2e4553
+
+Ambit table:[0]
+Expansion table:[analizadorSemantico.TablaSimbolos$Entrada@28c97a5, analizadorSemantico.TablaSimbolos$Entrada@6659c656]

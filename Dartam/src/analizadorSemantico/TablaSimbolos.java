@@ -38,6 +38,11 @@ public class TablaSimbolos {
             this.descripcion = d;
             this.np = np;
         }
+        
+        @Override
+        public String toString(){
+            return "Variable: " + nombreVariable + "\nDescripción: " + descripcion + "\n";
+        }
     }
 
     /**
@@ -291,6 +296,16 @@ public class TablaSimbolos {
         }
 
         te.add(idxe, ent);
+    }
+    
+    @Override
+    public String toString() {
+        String s = "Nivel actual: " + n + ". Tabla de símbolos:\n";
+        for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
+            s += e.getKey() + ":\n\t" + e.getValue() + "\n";
+        }
+        s += "\nAmbit table:" + ta.toString() + "\nExpansion table:" + te.toString() + "\n";
+        return s;
     }
 
 }

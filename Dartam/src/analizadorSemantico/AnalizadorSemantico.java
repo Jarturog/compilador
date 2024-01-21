@@ -24,8 +24,7 @@ public class AnalizadorSemantico {
     private Pair<String, DescripcionSimbolo> metodoActualmenteSiendoTratado;
     // When checking if a function's parameters are correct, we use this stack to store the declared function's types.
     // We use a stack because we will be taking elements out every time we process them.
-    private Stack<SymbolTipoPrimitivo> currentArgs;
-    private List<String> errores;
+    private List<String> errores, symbols;
     private static final boolean DEBUG = true;
     
     public String getErrors() {
@@ -37,6 +36,10 @@ public class AnalizadorSemantico {
             s += e + "\n";
         }
         return s;
+    }
+    
+    public String getSymbols() {
+        return tablaSimbolos.toString();
     }
     
     private void indicarLocalizacion(SymbolBase s) {

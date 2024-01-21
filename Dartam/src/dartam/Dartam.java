@@ -54,6 +54,7 @@ public class Dartam {
             System.out.println(scanner.getTokens());
             // Análisis semántico
             AnalizadorSemantico sem = new AnalizadorSemantico(script);
+            escribir("symbols.txt", sem.getSymbols());
             System.err.println(sem.getErrors());
             // Generación de código intermedio
             //GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
@@ -66,7 +67,7 @@ public class Dartam {
             System.out.println("Codigo compilado");
             
         } catch(Exception e) {
-            System.err.println("Error inesperado de compilación: "+e.getMessage());
+            System.err.println("Error inesperado de compilacion: "+e.getMessage());
         }
     }
 
