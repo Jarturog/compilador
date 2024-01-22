@@ -108,13 +108,15 @@ public class TablaSimbolos {
         int lfi = ta.get(this.n);
 
         //Pasamos todas las declaraciones anteriores a la td
-        for (Entrada entrada : te.subList(lfi, lini)) {
-            if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
-                td.replace(entrada.nombreVariable, entrada.descripcion);
+        if (lfi < lini && lini <= te.size()) {
+            for (Entrada entrada : te.subList(lfi, lini)) {
+                if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
+                    td.replace(entrada.nombreVariable, entrada.descripcion);
+                }
             }
+            te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
         }
-        te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
-
+        
         //Vaciamos entradas del nivel del bloque del que salimos
         Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
         while (iterador.hasNext()) {
@@ -294,8 +296,12 @@ public class TablaSimbolos {
         } else {
             te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
         }
-
-        te.add(idxe, ent);
+        
+        if (idxe > te.size()) { // auxiliar
+            te.add(ent);
+        } else {
+            te.add(idxe, ent);
+        }
     }
     
     @Override

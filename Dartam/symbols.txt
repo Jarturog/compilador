@@ -1,4 +1,8 @@
+A:			Tupla con miembrosdatos filas columnas declarado en el nivel 0
 INTO:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0
+B:			Tupla con miembrosdatos filas columnas declarado en el nivel 0
+resultado:	Tupla con miembrosdatos filas columnas declarado en el nivel 0
+matriz3:	Variable  de tipo 'matriz3' sin valor asignado declarado en el nivel 0
 ENTER:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0
 inicio:		Variable  de tipo 'null' sin valor asignado declarado en el nivel 0
 SHOW:		Función de tipo 'ENT'  sin argumentos declarado en el nivel 0

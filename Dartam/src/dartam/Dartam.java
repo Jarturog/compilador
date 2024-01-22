@@ -43,6 +43,9 @@ public class Dartam {
                     System.err.println("Error al abrir el fichero '" + nombreArchivo + "'");
                     return;
                 }
+                if (!nombreArchivo.contains(".")) {
+                    nombreArchivo += ".dtm";
+                }
             }
             ficheroIn = new FileReader(RUTA + nombreArchivo);
             // Análisis léxico
@@ -68,6 +71,7 @@ public class Dartam {
             
         } catch(Exception e) {
             System.err.println("Error inesperado de compilacion: "+e.getMessage());
+            e.printStackTrace();
         }
     }
 

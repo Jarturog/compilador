@@ -9,9 +9,7 @@ public class Instruccion {
     }
 
     public Tipo instruccion;
-    public String izq;
-    public String der;
-    public String des;
+    public String izq, der, des;
 
     /*
         Si tenemos las 4 casillas

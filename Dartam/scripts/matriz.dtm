@@ -8,22 +8,12 @@ tupla matriz3 {
 f vacio inicio(string[] argumentos) {
 
     // Inicializar matrices A y B
-    inicializarMatriz(A, 3);
-    inicializarMatriz(B, 2);
+    //inicializarMatriz(A, 3);
+    //inicializarMatriz(B, 2);
     
     // Multiplicar matrices A y B
-    multiplicarMatrices(A, B, resultado);
+    //multiplicarMatrices(A, B, resultado);
     
     // Mostrar resultado
     //mostrarMatriz(resultado);
 }
-
-f vacio inicializarMatriz(tupla matriz3 m, ent modo) {
-	loop ent i: 0; i < m.filas; i++; {
-		ent [m.filas] aux: m.datos[i];
-		loop ent j: 0; j < m.columnas; j++; {
-			aux[j]: i+j\c;
-		}
-	}
-}
-

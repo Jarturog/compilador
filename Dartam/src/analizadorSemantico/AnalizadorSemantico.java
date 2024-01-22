@@ -435,7 +435,7 @@ public class AnalizadorSemantico {
         if (tipoOp == null) {
             errores.add("Se ha intentado hacer pop de una operacion no valida en la funcion " + metodoActualmenteSiendoTratado.fst);
             indicarLocalizacion(ret);
-        } else if (tipoOp != tipo) {
+        } else if (!tipoOp.equals(tipo)) {
             errores.add("Se ha intentado hacer pop de un tipo (" + tipoOp + ") diferente al que devuelve la funcion (" + tipo + ")");
             indicarLocalizacion(ret);
         }
@@ -575,9 +575,13 @@ public class AnalizadorSemantico {
                 }
                 
                 DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
-                DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, null);
+                DescripcionSimbolo tupla = null;
+                if (params.param.isTupla()) {
+                    tupla = tablaSimbolos.consulta(params.param.idTupla);
+                }
+                DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, tupla);
             try {
-                tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
+                //tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
                 tablaSimbolos.poner(nombreParam, dParam);
                 dFuncion.anyadirParametro(nombreParam, dParam);
             } catch (Exception ex) {
