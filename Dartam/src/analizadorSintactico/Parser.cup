@@ -249,17 +249,17 @@ FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new S
 
 METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(null, et, etxleft, etxright); :}
         | ENTER:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.ENTER, et, etxleft, etxright); :}
-        | SHOW:et                     {: RESULT = new SymbolMetodoNombre(ParserSym.SHOW, et, etxleft, etxright); :}
-        | INTO:et                   {: RESULT = new SymbolMetodoNombre(ParserSym.INTO, et, etxleft, etxright); :}
-        | FROM:et                    {: RESULT = new SymbolMetodoNombre(ParserSym.FROM, et, etxleft, etxright); :}
+        | SHOW:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.SHOW, et, etxleft, etxright); :}
+        | INTO:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.INTO, et, etxleft, etxright); :}
+        | FROM:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.FROM, et, etxleft, etxright); :}
         ;
 
 OPERANDS_LISTA ::= OPERAND:et COMMA OPERANDS_LISTA:ol     {: RESULT = new SymbolOperandsLista(et, ol, etxleft, etxright); :}
         | OPERAND:et                                    {: RESULT = new SymbolOperandsLista(et, etxleft, etxright); :}
         ;
 
-RETURN ::= KW_RETURN ENDINSTR                               {: :} //Con este que hacemos?
-        | KW_RETURN OPERAND:et ENDINSTR                     {: RESULT = new SymbolReturn(et, etxleft, etxright); :}
+RETURN ::= KW_RETURN:pos ENDINSTR                               {: RESULT = new SymbolReturn(null, posxleft, posxright); :} 
+        | KW_RETURN:pos OPERAND:et ENDINSTR                     {: RESULT = new SymbolReturn(et, posxleft, posxright); :}
         ;
 
 SWAP ::= ID:et1 OP_SWAP ID:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1, et2, et1xleft, et1xright); :}

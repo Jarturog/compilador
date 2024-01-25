@@ -682,22 +682,6 @@ public class AnalizadorSemantico {
                         indicarLocalizacion(exp);
                         return null;
                     }
-//                    DescripcionSimbolo d = tablaSimbolos.consulta(id);
-//                    if (d == null) {
-//                        errores.add("No se puede realizar una operacion de "+s+" en la variable no declarada "+id);
-//                        indicarLocalizacion(exp);
-//                    } else if (!d.tieneValorAsignado()) {
-//                        errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' no ha sido asignada de forma simple anteriormente");
-//                        indicarLocalizacion(asig.operacion);
-//                    }
-//                    String s2 = "";
-//                    if (d.isFunction()) s2 = "una funcion";
-//                    else if (d.isTupla()) s2 = "una tupla";
-//                    else if (d.isArray()) s2 = "un array";
-//                    if (!s2.isEmpty()) {
-//                        errores.add("No se puede realizar una operacion de "+s+" en el identificador "+id+" que corresponde a "+s2);
-//                        indicarLocalizacion(asig.operacion);
-//                    }
                 }
                 if (exp.isLeftUnaryOperator()) {
                     if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {

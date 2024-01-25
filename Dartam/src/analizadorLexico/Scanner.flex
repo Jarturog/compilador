@@ -211,7 +211,7 @@ private Symbol symbol(int type, Object value) {
 
 // operadores
 {op_and_asig}               { tokens += "OP_AND_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ANDA, yytext()); }
-{op_or_asig}                { tokens += "OP_OR_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ORA, yytext()); }
+{op_or_asig}                { tokens += "OP_OR_ASSIGNMENT: " +yytext()+"\n"; return symbol(ParserSym.AS_ORA, yytext()); }
 {op_sum_asig}               { tokens += "OP_SUM_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ADDA, yytext()); }
 {op_res_asig}               { tokens += "OP_RES_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_SUBA, yytext()); }
 {op_mul_asig}               { tokens += "OP_MUL_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_MULA, yytext()); }
@@ -225,62 +225,62 @@ private Symbol symbol(int type, Object value) {
 {op_mul}                    { tokens += "OP_MUL: "+yytext()+"\n"; return symbol(ParserSym.OP_MUL, yytext()); }
 {op_div}                    { tokens += "OP_DIV: "+yytext()+"\n"; return symbol(ParserSym.OP_DIV, yytext()); }
 {op_mod}                    { tokens += "OP_MOD: "+yytext()+"\n"; return symbol(ParserSym.OP_MOD, yytext()); }
-{op_eq}                     { tokens += "OP_EQ: "+yytext()+"\n"; return symbol(ParserSym.OP_EQ, yytext()); }
-{op_mayorEq}                { tokens += "OP_MAYOREQ: "+yytext()+"\n"; return symbol(ParserSym.OP_BEQ, yytext()); }
-{op_mayor}                  { tokens += "OP_MAYOR: "+yytext()+"\n"; return symbol(ParserSym.OP_BT, yytext()); }
-{op_menorEq}                { tokens += "OP_MENOREQ: "+yytext()+"\n"; return symbol(ParserSym.OP_LEQ, yytext()); }
-{op_menor}                  { tokens += "OP_MENOR: "+yytext()+"\n"; return symbol(ParserSym.OP_LT, yytext()); }
+{op_eq}                     { tokens += "OP_EQ: " +yytext()+"\n"; return symbol(ParserSym.OP_EQ, yytext()); }
+{op_mayorEq}                { tokens += "OP_MAYOREQ: " +yytext()+"\n"; return symbol(ParserSym.OP_BEQ, yytext()); }
+{op_mayor}                  { tokens += "OP_MAYOR: "   +yytext()+"\n"; return symbol(ParserSym.OP_BT, yytext()); }
+{op_menorEq}                { tokens += "OP_MENOREQ: " +yytext()+"\n"; return symbol(ParserSym.OP_LEQ, yytext()); }
+{op_menor}                  { tokens += "OP_MENOR: "   +yytext()+"\n"; return symbol(ParserSym.OP_LT, yytext()); }
 {op_diferent}               { tokens += "OP_DIFERENT: "+yytext()+"\n"; return symbol(ParserSym.OP_NEQ, yytext()); }
 {op_pot}                    { tokens += "OP_POTENCIA: "+yytext()+"\n"; return symbol(ParserSym.OP_POT, yytext()); }
-{op_porcent}                { tokens += "OP_PORCENT: "+yytext()+"\n"; return symbol(ParserSym.OP_PCT, yytext()); }
-{op_neg}                    { tokens += "OP_NEG: "+yytext()+"\n"; return symbol(ParserSym.OP_NOT, yytext()); }
-{op_or}                     { tokens += "OP_OR: "+yytext()+"\n"; return symbol(ParserSym.OP_OR, yytext()); }
-{op_and}                    { tokens += "OP_AND: "+yytext()+"\n"; return symbol(ParserSym.OP_AND, yytext()); }
-{op_asig}                   { tokens += "OP_ASIG: "+yytext()+"\n"; return symbol(ParserSym.AS_ASSIGN, yytext()); }
-{op_swap}                   { tokens += "OP_SWAP: "+yytext()+"\n"; return symbol(ParserSym.OP_SWAP, yytext()); }
-{op_cond}                   { tokens += "OP_COND: "+yytext()+"\n"; return symbol(ParserSym.OP_COND, yytext()); }
+{op_porcent}                { tokens += "OP_PORCENT: " +yytext()+"\n"; return symbol(ParserSym.OP_PCT, yytext()); }
+{op_neg}                    { tokens += "OP_NEG: "  +yytext()+"\n"; return symbol(ParserSym.OP_NOT, yytext()); }
+{op_or}                     { tokens += "OP_OR: "   +yytext()+"\n"; return symbol(ParserSym.OP_OR, yytext()); }
+{op_and}                    { tokens += "OP_AND: "  +yytext()+"\n"; return symbol(ParserSym.OP_AND, yytext()); }
+{op_asig}                   { tokens += "OP_ASIG: " +yytext()+"\n"; return symbol(ParserSym.AS_ASSIGN, yytext()); }
+{op_swap}                   { tokens += "OP_SWAP: " +yytext()+"\n"; return symbol(ParserSym.OP_SWAP, yytext()); }
+{op_cond}                   { tokens += "OP_COND: " +yytext()+"\n"; return symbol(ParserSym.OP_COND, yytext()); }
 {op_arrow}                  { tokens += "OP_ARROW: "+yytext()+"\n"; return symbol(ParserSym.ARROW, yytext()); }
 
 // tipos
 {type_double}           { tokens += "TYPE_DOUBLE: "+yytext()+"\n"; return symbol(ParserSym.KW_DOUBLE, yytext()); }
-{type_int}              { tokens += "TYPE_INT: "+yytext()+"\n"; return symbol(ParserSym.KW_INT, yytext()); }
-{type_char}             { tokens += "TYPE_CHAR: "+yytext()+"\n"; return symbol(ParserSym.KW_CHAR, yytext()); }
-{type_bool}             { tokens += "TYPE_BOOL: "+yytext()+"\n"; return symbol(ParserSym.KW_BOOL, yytext()); }
-{type_void}             { tokens += "TYPE_VOID: "+yytext()+"\n"; return symbol(ParserSym.KW_VOID, yytext()); }
+{type_int}              { tokens += "TYPE_INT: "   +yytext()+"\n"; return symbol(ParserSym.KW_INT, yytext()); }
+{type_char}             { tokens += "TYPE_CHAR: "  +yytext()+"\n"; return symbol(ParserSym.KW_CHAR, yytext()); }
+{type_bool}             { tokens += "TYPE_BOOL: "  +yytext()+"\n"; return symbol(ParserSym.KW_BOOL, yytext()); }
+{type_void}             { tokens += "TYPE_VOID: "  +yytext()+"\n"; return symbol(ParserSym.KW_VOID, yytext()); }
 {type_string}           { tokens += "TYPE_STRING: "+yytext()+"\n"; return symbol(ParserSym.KW_STRING, yytext()); }
 
 // simbolos
-{sym_parenIzq}          { tokens += "SYM_LPAREN: "+yytext()+"\n"; return symbol(ParserSym.LPAREN, yytext()); }
-{sym_parenDer}          { tokens += "SYM_RPAREN: "+yytext()+"\n"; return symbol(ParserSym.RPAREN, yytext()); }
-{sym_llaveIzq}          { tokens += "SYM_LKEY: "+yytext()+"\n"; return symbol(ParserSym.LKEY, yytext()); }
-{sym_llaveDer}          { tokens += "SYM_RKEY: "+yytext()+"\n"; return symbol(ParserSym.RKEY, yytext()); }
+{sym_parenIzq}          { tokens += "SYM_LPAREN: "  +yytext()+"\n"; return symbol(ParserSym.LPAREN, yytext()); }
+{sym_parenDer}          { tokens += "SYM_RPAREN: "  +yytext()+"\n"; return symbol(ParserSym.RPAREN, yytext()); }
+{sym_llaveIzq}          { tokens += "SYM_LKEY: "    +yytext()+"\n"; return symbol(ParserSym.LKEY, yytext()); }
+{sym_llaveDer}          { tokens += "SYM_RKEY: "    +yytext()+"\n"; return symbol(ParserSym.RKEY, yytext()); }
 {sym_bracketIzq}        { tokens += "SYM_LBRACKET: "+yytext()+"\n"; return symbol(ParserSym.LBRACKET, yytext()); }
 {sym_bracketDer}        { tokens += "SYM_RBRACKET: "+yytext()+"\n"; return symbol(ParserSym.RBRACKET, yytext()); }
 {sym_endInstr}          { tokens += "SYM_ENDINSTR: "+yytext()+"\n"; return symbol(ParserSym.ENDINSTR, yytext()); }
-{sym_coma}              { tokens += "SYM_COMMA: "+yytext()+"\n"; return symbol(ParserSym.COMMA, yytext()); }
+{sym_coma}              { tokens += "SYM_COMMA: "   +yytext()+"\n"; return symbol(ParserSym.COMMA, yytext()); }
 {sym_comillaS}          {}//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE, yytext()); }
 {sym_comillaD}          {}//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE, yytext()); }
-{sym_punto}             { tokens += "SYM_PUNTO: "+yytext()+"\n"; return symbol(ParserSym.OP_MEMBER, yytext()); }
+{sym_punto}             { tokens += "SYM_PUNTO: "   +yytext()+"\n"; return symbol(ParserSym.OP_MEMBER, yytext()); }
 
 // keywords
-{kw_main}               { tokens += "KW_MAIN: "+yytext()+"\n"; return symbol(ParserSym.KW_MAIN, yytext()); }
-{kw_args}               { tokens += "KW_ARGS: "+yytext()+"\n"; return symbol(ParserSym.KW_ARGS, yytext()); }
-{kw_method}             { tokens += "KW_METHOD: "+yytext()+"\n"; return symbol(ParserSym.KW_METHOD, yytext()); }
-{kw_const}              { tokens += "KW_CONST: "+yytext()+"\n"; return symbol(ParserSym.KW_CONST, yytext()); }
-{kw_if}                 { tokens += "KW_IF: "+yytext()+"\n"; return symbol(ParserSym.KW_IF, yytext()); }
-{kw_elif}               { tokens += "KW_ELIF: "+yytext()+"\n"; return symbol(ParserSym.KW_ELIF, yytext()); }
-{kw_else}               { tokens += "KW_ELSE: "+yytext()+"\n"; return symbol(ParserSym.KW_ELSE, yytext()); }
-{kw_while}              { tokens += "KW_WHILE: "+yytext()+"\n"; return symbol(ParserSym.KW_LOOP, yytext()); }
-{kw_doLoop}             { tokens += "KW_DO: "+yytext()+"\n"; return symbol(ParserSym.KW_DO, yytext()); }
-{kw_switch}             { tokens += "KW_SWITCH: "+yytext()+"\n"; return symbol(ParserSym.KW_SWITCH, yytext()); }
-{kw_case}               { tokens += "KW_CASE: "+yytext()+"\n"; return symbol(ParserSym.KW_CASE, yytext()); }
+{kw_main}               { tokens += "KW_MAIN: "   +yytext()+"\n"; return symbol(ParserSym.KW_MAIN, yytext()); }
+{kw_args}               { tokens += "KW_ARGS: "   +yytext()+"\n"; return symbol(ParserSym.KW_ARGS, yytext()); }
+{kw_method}             { tokens += "KW_METHOD: " +yytext()+"\n"; return symbol(ParserSym.KW_METHOD, yytext()); }
+{kw_const}              { tokens += "KW_CONST: "  +yytext()+"\n"; return symbol(ParserSym.KW_CONST, yytext()); }
+{kw_if}                 { tokens += "KW_IF: "     +yytext()+"\n"; return symbol(ParserSym.KW_IF, yytext()); }
+{kw_elif}               { tokens += "KW_ELIF: "   +yytext()+"\n"; return symbol(ParserSym.KW_ELIF, yytext()); }
+{kw_else}               { tokens += "KW_ELSE: "   +yytext()+"\n"; return symbol(ParserSym.KW_ELSE, yytext()); }
+{kw_while}              { tokens += "KW_WHILE: "  +yytext()+"\n"; return symbol(ParserSym.KW_LOOP, yytext()); }
+{kw_doLoop}             { tokens += "KW_DO: "     +yytext()+"\n"; return symbol(ParserSym.KW_DO, yytext()); }
+{kw_switch}             { tokens += "KW_SWITCH: " +yytext()+"\n"; return symbol(ParserSym.KW_SWITCH, yytext()); }
+{kw_case}               { tokens += "KW_CASE: "   +yytext()+"\n"; return symbol(ParserSym.KW_CASE, yytext()); }
 {kw_default}            { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT, yytext()); }
-{kw_return}             { tokens += "KW_RETURN: "+yytext()+"\n"; return symbol(ParserSym.KW_RETURN, yytext()); }
-{kw_in}                 { tokens += "ENTER: "+yytext()+"\n"; return symbol(ParserSym.ENTER, yytext()); }
-{kw_out}                { tokens += "SHOW: "+yytext()+"\n"; return symbol(ParserSym.SHOW, yytext()); }
-{kw_read}               { tokens += "FROM: "+yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
-{kw_write}              { tokens += "INTO: "+yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }
-{kw_tuple}              { tokens += "KW_TUPLE: "+yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
+{kw_return}             { tokens += "KW_RETURN: " +yytext()+"\n"; return symbol(ParserSym.KW_RETURN, yytext()); }
+{kw_in}                 { tokens += "ENTER: "     +yytext()+"\n"; return symbol(ParserSym.ENTER, yytext()); }
+{kw_out}                { tokens += "SHOW: "      +yytext()+"\n"; return symbol(ParserSym.SHOW, yytext()); }
+{kw_read}               { tokens += "FROM: "      +yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
+{kw_write}              { tokens += "INTO: "      +yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }
+{kw_tuple}              { tokens += "KW_TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
 
 // valores
 {val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
