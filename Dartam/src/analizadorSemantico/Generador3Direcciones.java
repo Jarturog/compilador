@@ -54,26 +54,31 @@ public class Generador3Direcciones {
         return nombre;
     }
     
+    //Permite añadir una nueva funcion
     public void añadirFuncion(String id){
         this.listaProcedimientos.add(id);
     }
     
+    //Permite crear un nuevo procedimiento y añadirlo a la tabla
     public int nuevoProcedimiento(String id, int profundidad, String etiqueta){
         int contador = this.tablaProcedimientos.getContador();
-        PData data = new PData(profundida, etiqueta, -1, -1);
-        this.tablaProcedimientos.put(data);
+        PData data = new PData(profundidad, etiqueta, -1, -1);
+        this.tablaProcedimientos.put(id, data);
         return contador;
     }
     
+    //Recibimos los datos de un procedimiento con el nombre pasado por parametro
     public PData getProcedimeinto(String id){
         return this.tablaProcedimientos.get(id);
     }
     
+    //Crearemos la instruccion de 3 direcciones y almacenaremos en el array list
     public void generarInstruccion(String instruccion, Operador op1, Operador op2, Operador dst){
         Instruccion3Direcciones ins = new Instruccion3Direcciones(instruccion, op1, op2, dst);
         this.instrucciones.add(ins);
     }
     
+    //Metodo que nos devolvera el arraylist con los objetos de 3 direcciones 
     public ArrayList<Instruccion3Direcciones> instrucciones(){
         return this.instrucciones;
     }

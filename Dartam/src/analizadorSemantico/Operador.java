@@ -5,37 +5,35 @@
 package analizadorSemantico;
 
 /**
- *
+ *Clase Operador, objecto referente a un operando de
+ *  las 3 direcciones, ya sea op1 | op2 | 
  * @author dasad
  */
 public class Operador {
     private String nombre;
     private Object valor;
-    private TipoCast tipoCasting;
-    private Tipo tipo;
+    private Tipo tipoCasting;
+    private TipoReferencia tipo;
     private int referencia;
     
-    public static enum Tipo{
+    public static enum TipoReferencia{
         literal, referencia
     }
     
-    public static enum TipoCast {
-        INT, CHAR, BOOL, STRING, DOUBLE
-    }
     
     public Operador(String nombre){
         this.nombre = nombre;
     }
     
     public Operador(int referencia){
-        this.tipo = Tipo.referencia;
+        this.tipo = TipoReferencia.referencia;
         this.referencia = referencia;
     }
     
-    public Operador(TipoCast tipo, Object valor){
+    public Operador(Tipo tipo, Object valor){
         this.tipoCasting = tipo;
         this.valor = valor;
-        this.tipo = Tipo.literal;
+        this.tipo = TipoReferencia.literal;
     }
 
     public String getNombre() {
@@ -46,11 +44,11 @@ public class Operador {
         return valor;
     }
 
-    public TipoCast getTipoCasting() {
+    public Tipo getTipoCasting() {
         return tipoCasting;
     }
 
-    public Tipo getTipo() {
+    public TipoReferencia getTipo() {
         return tipo;
     }
 
@@ -62,7 +60,7 @@ public class Operador {
     @Override
     public String toString(){
         if(this.nombre != null){ //O es una referencia o un valor
-            if(this.tipo == Tipo.literal){ //valor
+            if(this.tipo == TipoReferencia.literal){ //valor
                 return "Valor( " + this.valor  + ")";
             }else{ //Es una referencia a otro valor
                 return "Referencia( " + this.referencia + ")";
