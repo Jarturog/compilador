@@ -1,0 +1,4 @@
+f vacio inicio(string[]argumentos){
+	inmut ent a, b:20;
+	b: 40;
+}

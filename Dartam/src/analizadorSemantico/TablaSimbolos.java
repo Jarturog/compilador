@@ -41,7 +41,7 @@ public class TablaSimbolos {
         
         @Override
         public String toString(){
-            return "Variable: " + nombreVariable + "\nDescripción: " + descripcion + "\n";
+            return "Variable: '" + nombreVariable + "'\t Descripción: " + descripcion + "\n";
         }
     }
 
@@ -108,13 +108,15 @@ public class TablaSimbolos {
         int lfi = ta.get(this.n);
 
         //Pasamos todas las declaraciones anteriores a la td
-        for (Entrada entrada : te.subList(lfi, lini)) {
-            if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
-                td.replace(entrada.nombreVariable, entrada.descripcion);
+        if (lfi < lini && lini <= te.size()) {
+            for (Entrada entrada : te.subList(lfi, lini)) {
+                if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
+                    td.replace(entrada.nombreVariable, entrada.descripcion);
+                }
             }
+            te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
         }
-        te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
-
+        
         //Vaciamos entradas del nivel del bloque del que salimos
         Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
         while (iterador.hasNext()) {
@@ -294,18 +296,33 @@ public class TablaSimbolos {
         } else {
             te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
         }
-
-        te.add(idxe, ent);
+        
+        if (idxe > te.size()) { // auxiliar
+            te.add(ent);
+        } else {
+            te.add(idxe, ent);
+        }
     }
     
     @Override
     public String toString() {
-        String s = "Nivel actual: " + n + ". Tabla de símbolos:\n";
+        int nChars = 13;
+        String s = "";//"Tabla de símbolos:\n";
         for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
-            s += e.getKey() + ":\n\t" + e.getValue() + "\n";
+            s += e.getKey() + ":" + calcularTabuladores(nChars + 1, e.getKey()) + e.getValue() + "\n";
         }
-        s += "\nAmbit table:" + ta.toString() + "\nExpansion table:" + te.toString() + "\n";
+        //s += "\nTabla de ámbitos:" + ta.toString() + "\n\nTabla de expansión:" + te.toString() + "\n";
         return s;
+    }
+    
+    private static String calcularTabuladores(int numChars, String s) {
+        int charsPorTab = 4;
+        int tabs = Math.max(0, (numChars - s.length()) / charsPorTab);
+        StringBuilder tabuladores = new StringBuilder();
+        for (int i = 0; i < tabs; i++) {
+            tabuladores.append('\t');
+        }
+        return tabuladores.toString();
     }
 
 }

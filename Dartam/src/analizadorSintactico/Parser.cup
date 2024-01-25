@@ -351,7 +351,7 @@ LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESUL
         ;
 
 LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}
-        | DECS:et1 ENDINSTR OPERAND:et2 ENDINSTR ASIGS:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}
+        | DECS:et1 OPERAND:et2 ENDINSTR ASIGS:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}
         ;
 
 IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          {: RESULT = new SymbolIf(et1, et2, et3, et4, et1xleft, et1xright); :}

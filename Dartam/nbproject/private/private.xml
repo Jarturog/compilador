@@ -4,6 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Universidad/Compiladores/compilador/Dartam/src/genCodigoIntermedio/GeneradorCIntermedio.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/dartam/Dartam.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/DescripcionSimbolo.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSintactico/symbols/SymbolReturn.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/TablaSimbolos.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/genCodigoMaquina/GeneradorCMaquina.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/genCodigoMaquina/Instruccion.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/AnalizadorSemantico.java</file>
         </group>
     </open-files>
 </project-private>
