@@ -5,12 +5,13 @@
 package genCodigoIntermedio;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
  * @author dasad
  */
-public class TablaVariables {
+public class TablaVariables implements Iterable<VData> {
     
     //Aquí iremos almacenando las variables    
     private ArrayList<VData> tablaVariables;
@@ -29,7 +30,6 @@ public class TablaVariables {
         return data;
     }
     
-    
     public VData put(VData v){
         this.contador++;
         this.tablaVariables.add(v);
@@ -44,5 +44,30 @@ public class TablaVariables {
         this.contador--;
     }
 
+    @Override
+    public Iterator<VData> iterator() {
+        return new TablaVariablesIterator();
+    }
+
+    private class TablaVariablesIterator implements Iterator<VData> {
+        private int indiceActual;
+
+        public TablaVariablesIterator() {
+            this.indiceActual = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return indiceActual < tablaVariables.size();
+        }
+
+        @Override
+        public VData next() {
+            if (!hasNext()) {
+                throw new IndexOutOfBoundsException("No hay más elementos en la lista");
+            }
+            return tablaVariables.get(indiceActual++);
+        }
+    }
 
 }

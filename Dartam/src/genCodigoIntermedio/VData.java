@@ -19,8 +19,7 @@ public class VData {
     private String idProcedimiento;
     private int bytes;
     private Tipo tipo;
-    private boolean isArray;
-    private boolean isTupla;
+    private boolean isArray, isTupla;
     private int offset;
     private ArrayList<Pair<Integer, Tipo>> parametrosTupla; //Elementos de la tupla
     

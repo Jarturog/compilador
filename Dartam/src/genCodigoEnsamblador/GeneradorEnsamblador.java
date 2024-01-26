@@ -52,31 +52,31 @@ public class GeneradorEnsamblador {
     }
 
     private void inicializarVariablesQuiza() {
-        for (String s : variableTable.keySet()) {
-            VData vte = variableTable.get(s);
-            if (s.startsWith(IntermediateCodeGenerator.DEF_FUNCTION)) {
-                String t = vte.tName;
-                switch (vte.type) {
-                    case Tipo.BOOL ->
-                        data.add(t + ":\tdb " + vte.initialValue);
-                    case Tipo.CHAR -> {
+        for (VData vte : variableTable) {
+            String identificador = vte.getIdProcedimiento() + vte.getNombre();
+            if (identificador.startsWith(ParserSym.terminalNames[ParserSym.KW_METHOD])) {
+                String nombre = vte.getNombre();
+                switch (vte.getTipo()) {
+                    case BOOL ->
+                        data.add(nombre + ":\tdb " + vte.initialValue);
+                    case CHAR -> {
                         if (vte.dimensions.size() > 0) {
-                            data.add(t + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
+                            data.add(nombre + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
                             data.add("\tdb 0");
                         } else {
-                            data.add(t + ":\tdb " + vte.initialValue);
+                            data.add(nombre + ":\tdb " + vte.initialValue);
                         }
                     }
-                    case Tipo.INT -> {
+                    case INT -> {
                         if (vte.dimensions.size() > 0) {
-                            data.add(t + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
+                            data.add(nombre + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
                         } else {
-                            data.add(t + ":\tdd " + vte.initialValue);
+                            data.add(nombre + ":\tdd " + vte.initialValue);
                         }
                     }
                 }
             } else {
-                variableDictionary.put(vte.tName, s);
+                variableDictionary.put(vte.tName, identificador);
             }
         }
     }
