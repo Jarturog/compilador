@@ -6,8 +6,8 @@ import java.util.HashMap;
 import analizadorSemantico.DescripcionSimbolo;
 import analizadorSemantico.TablaSimbolos;
 import analizadorSintactico.symbols.*;
-import genCodigoMaquina.Instruccion.Tipo;
-import genCodigoMaquina.Instruccion;
+import genCodigoEnsamblador.Instruccion.Tipo;
+import genCodigoEnsamblador.Instruccion;
 import analizadorSintactico.ParserSym;
 
 public class GeneradorCIntermedio {
