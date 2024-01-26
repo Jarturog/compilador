@@ -99,17 +99,17 @@ public class AnalizadorSemantico {
             elem = scriptMainYElementos.elemento;
         }
         // metodos especiales
-        DescripcionSimbolo dEnter = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
+        DescripcionSimbolo dEnter = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.ENTER], dEnter);
-        DescripcionSimbolo dShow = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
+        DescripcionSimbolo dShow = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.SHOW], dShow);
-        DescripcionSimbolo dFrom = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
+        DescripcionSimbolo dFrom = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.FROM], dFrom);
-        DescripcionSimbolo dInto = new DescripcionSimbolo(ParserSym.terminalNames[ParserSym.ENT]);
+        DescripcionSimbolo dInto = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO], dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            DescripcionSimbolo d = new DescripcionSimbolo(tupla.id, new HashMap<String, DescripcionSimbolo>());
+            DescripcionSimbolo d = new DescripcionDefinicionTupla(tupla.id, new HashMap<String, DescripcionSimbolo>());
             tablaSimbolos.poner(tupla.id, d);
         }
         for (SymbolScriptElemento tupla : tuplas) {
@@ -121,7 +121,7 @@ public class AnalizadorSemantico {
         }
         // metodos
         for (SymbolScriptElemento metodo : metodos) {
-            DescripcionSimbolo d = new DescripcionSimbolo(metodo.tipoRetorno.getTipo());
+            DescripcionSimbolo d = new DescripcionFuncion(metodo.tipoRetorno.getTipo());
             tablaSimbolos.poner(metodo.id, d);
         }
         for (SymbolScriptElemento metodo : metodos) {
@@ -200,7 +200,7 @@ public class AnalizadorSemantico {
             if (!error) {
                 DescripcionSimbolo d;
                 if (tipo.isArray()) {
-                    d = new DescripcionSimbolo(tipo.getTipo() + " " + tipo.dimArray.getEmptyBrackets(), tipo.dimArray.getDimensiones(), descripcionTupla);
+                    d = new DescripcionArray(tipo.getTipo() + " " + tipo.dimArray.getEmptyBrackets(), tipo.dimArray.getDimensiones(), descripcionTupla);
                 } else {
                     d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, descripcionTupla);
                 }
@@ -392,6 +392,7 @@ public class AnalizadorSemantico {
             indicarLocalizacion(fcall);
             return;
         }
+        ds = (DescripcionFuncion) ds;
         ArrayList<Pair<String, DescripcionSimbolo>> params = ds.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
         int n = 0;

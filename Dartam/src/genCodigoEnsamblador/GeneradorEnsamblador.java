@@ -53,31 +53,31 @@ public class GeneradorEnsamblador {
 
     private void inicializarVariablesQuiza() {
         for (VData vte : variableTable) {
-            String identificador = vte.getIdProcedimiento() + vte.getNombre();
-            if (identificador.startsWith(ParserSym.terminalNames[ParserSym.KW_METHOD])) {
-                String nombre = vte.getNombre();
-                switch (vte.getTipo()) {
-                    case BOOL ->
-                        data.add(nombre + ":\tdb " + vte.initialValue);
-                    case CHAR -> {
-                        if (vte.dimensions.size() > 0) {
-                            data.add(nombre + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
-                            data.add("\tdb 0");
-                        } else {
-                            data.add(nombre + ":\tdb " + vte.initialValue);
-                        }
-                    }
-                    case INT -> {
-                        if (vte.dimensions.size() > 0) {
-                            data.add(nombre + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
-                        } else {
-                            data.add(nombre + ":\tdd " + vte.initialValue);
-                        }
-                    }
-                }
-            } else {
-                variableDictionary.put(vte.tName, identificador);
-            }
+//            String identificador = vte.getIdProcedimiento() + vte.getNombre();
+//            if (identificador.startsWith(ParserSym.terminalNames[ParserSym.KW_METHOD])) {
+//                String nombre = vte.getNombre();
+//                switch (vte.getTipo()) {
+//                    case BOOL ->
+//                        data.add(nombre + ":\tdb " + vte.initialValue);
+//                    case CHAR -> {
+//                        if (vte.dimensions.size() > 0) {
+//                            data.add(nombre + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
+//                            data.add("\tdb 0");
+//                        } else {
+//                            data.add(nombre + ":\tdb " + vte.initialValue);
+//                        }
+//                    }
+//                    case INT -> {
+//                        if (vte.dimensions.size() > 0) {
+//                            data.add(nombre + ":\t times " + vte.getOccupation() + " db " + vte.initialValue);
+//                        } else {
+//                            data.add(nombre + ":\tdd " + vte.initialValue);
+//                        }
+//                    }
+//                }
+//            } else {
+//                variableDictionary.put(vte.tName, identificador);
+//            }
         }
     }
     
