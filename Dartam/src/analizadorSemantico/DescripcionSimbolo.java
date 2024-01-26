@@ -7,6 +7,7 @@
  */
 package analizadorSemantico;
 
+import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolTipo;
@@ -17,115 +18,67 @@ import jflex.base.Pair;
 
 public class DescripcionSimbolo {
 
-    private String tipo;
+    protected final String tipo;
 
-    private int nivel;
+    protected int nivel;
     private boolean isConstante = false, valorAsignado = false;
 
-    
-    private final HashMap<String, DescripcionSimbolo> miembros;
-    
-    private DescripcionSimbolo memberOf = null; // apunta a la tupla de la cual es miembro
+    private final HashMap<String, DescripcionSimbolo> miembros; // por si su tipo es de tupla
+    private final DescripcionSimbolo memberOf; // apunta a la tupla de la cual es miembro
+    private final DescripcionDefinicionTupla tipoTupla;
 
     public int first;
     public int next;    //Apuntador al siguiente campo de una tupla
     public String idcamp;   //Identificador del campo de la tupla
 
-    
-
-    /**
-     * Copia de la descripción (para copiar de una plantilla de un miembro de
-     * una tupla a una instancia de miembro de una instancia de tupla)
-     */
-    public DescripcionSimbolo(DescripcionSimbolo d) {
-        this.tipo = d.tipo;
-        this.nivel = d.nivel;
-        this.isConstante = d.isConstante;
-        this.valorAsignado = d.valorAsignado;
-        if (d.parametros != null) {
-            this.parametros = new ArrayList<>(d.parametros);
-        }
-        if (d.miembros != null) {
-            this.miembros = new HashMap<>(d.miembros);
-        } else {
-            miembros = null;
-        }
-        if (d.dimensiones != null) {
-            this.dimensiones = new ArrayList<>(d.dimensiones);
-        }
-        this.memberOf = (d.memberOf != null) ? new DescripcionSimbolo(d.memberOf) : null;
-        this.first = d.first;
-        this.next = d.next;
-        this.idcamp = d.idcamp;
-        this.dcamp = d.dcamp;
-    }
-
-    /**
-     * Main
-     */
-    public DescripcionSimbolo() {
-        tipo = null;
-        miembros = null;
-    }
-    
-    /**
-     * Otro?
-     */
-    public DescripcionSimbolo(String tipo) {
-        this.tipo = tipo;
-        miembros = null;
-    }
-
     /**
      * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla) {
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla) {
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
         memberOf = tupla; // miembro de una tupla
-        if (isTupla()) {
-            miembros = new HashMap<String, DescripcionSimbolo>(); // copia
-            for (HashMap.Entry<String, DescripcionSimbolo> entry : memberOf.miembros.entrySet()) {
-                miembros.put(entry.getKey(), new DescripcionSimbolo(entry.getValue()));
+        this.tipoTupla = tipoTupla;
+        if (tipoTupla != null) {
+            miembros = new HashMap<>();
+            for (DefinicionMiembro m : tipoTupla.miembros) {
+                DescripcionSimbolo ds = new DescripcionSimbolo(m.tipo, m.isConst, m.valorAsignado, this, m.tipoTupla);
+                miembros.put(m.nombre, ds);
             }
         } else {
             miembros = null;
         }
     }
 
-    
+    public String getTipo() {
+        return tipo;
+    }
 
-    
+    public int getNivel() {
+        return this.nivel;
+    }
 
-    
+    public void setNivel(int n) {
+        this.nivel = n;
+    }
 
-    
-
-
-
-//    public int getNivel() {
-//        return this.nivel;
-//    }
-//
-//    public void setNivel(int n) {
-//        this.nivel = n;
-//    }
-
-
-
-    public boolean isFunction() {
+    public final boolean isFunction() {
         return this instanceof DescripcionFuncion;
     }
 
-    public boolean isArray() {
+    public final boolean isArray() {
         return this instanceof DescripcionArray;
     }
 
-    public boolean isTupla() {
+    public final boolean isTipoTupla() {
+        return miembros != null;
+    }
+
+    public final boolean isDefinicionTupla() {
         return this instanceof DescripcionDefinicionTupla;
     }
-    
+
     private boolean isVariableTipoTupla() {
         if (tipo == null) {
             return false;
@@ -165,35 +118,12 @@ public class DescripcionSimbolo {
     public boolean isConstante() {
         return isConstante;
     }
-    
+
     @Override
     public String toString() {
-        String s;
-        if (isFunction()) {
-            String params = "";
-            for (Pair<String, DescripcionSimbolo> param : parametros) {
-                params += param.fst + " ";
-            }
-            params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 1) : "sin argumentos";
-            s = "Función de tipo '" + tipo + "'  " + params;
-        } else if (isArray()) {
-            String dim = "";
-            for (SymbolOperand op : dimensiones) {
-                dim += op + " ";
-            }
-            s = "Array de tipo '" + tipo + "' con dimensiones " + dim.substring(0, dim.length() - 1);
-        } else if (isTupla()) {
-            String m = "";
-            for (String miembro : miembros.keySet()) {
-                m += miembro + " ";
-            }
-            m = m.length() > 0 ? "con miembros" + m.substring(0, m.length() - 1) : "sin miembros";
-            s = "Tupla " + m;
-        } else {
-            String c = (isConstante() ? "consante" : "");
-            String v = (valorAsignado ? "con" : "sin");
-            s = "Variable "+c+" de tipo '" + tipo + "' " + v + " valor asignado";
-        }
+        String c = (isConstante() ? "constante " : "");
+        String v = (valorAsignado ? "con" : "sin");
+        String s = "Variable " + c + "de tipo '" + tipo + "' " + v + " valor asignado";
         return s + " declarado en el nivel " + nivel;
     }
 }

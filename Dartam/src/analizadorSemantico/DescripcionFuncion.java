@@ -1,20 +1,22 @@
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
+import analizadorSintactico.symbols.SymbolOperand;
 import java.util.ArrayList;
 import jflex.base.Pair;
 
 public class DescripcionFuncion extends DescripcionSimbolo {
+
     private ArrayList<Pair<String, DescripcionSimbolo>> parametros;
-    
+
     /**
      * Función
      */
     public DescripcionFuncion(String tipoRetorno) {
-        super(tipoRetorno);
+        super(tipoRetorno, false, false, null, null);
         parametros = new ArrayList<>();
     }
-    
+
     public void cambiarTipo(int t) {
         if (t == ParserSym.KW_METHOD) {
             //this.tipo = new SymbolTipo();
@@ -22,11 +24,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         }
     }
 
-    public String getTipo() {
-        return super.tipo;
-    }
-    
-        //Funciones
+    //Funciones
     public void anyadirParametro(String n, DescripcionSimbolo d) {
         parametros.add(new Pair(n, d));
     }
@@ -34,7 +32,6 @@ public class DescripcionFuncion extends DescripcionSimbolo {
 //    public int getNumeroParametros() {
 //        return parametros.size();
 //    }
-
     public ArrayList<Pair<String, DescripcionSimbolo>> getTiposParametros() {
         return new ArrayList<>(parametros);
     }
@@ -50,4 +47,15 @@ public class DescripcionFuncion extends DescripcionSimbolo {
 //            this.tipo = tv;
 //        }
 //    }
+    @Override
+    public String toString() {
+
+        String params = "";
+        for (Pair<String, DescripcionSimbolo> param : parametros) {
+            params += param.fst + " ";
+        }
+        params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 1) : "sin argumentos";
+
+        return "Función de tipo '" + tipo + "'  " + params + " declarado en el nivel " + nivel;
+    }
 }

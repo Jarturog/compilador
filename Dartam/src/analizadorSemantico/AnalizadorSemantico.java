@@ -1,10 +1,10 @@
 /**
-* Assignatura 21780 - Compiladors
-* Estudis: Grau en Enginyeria Informàtica 
-* Itinerari: Intel·ligència Artificial i Computacio
-*
-* Equipo: Arturo, Dani y Marta
-*/
+ * Assignatura 21780 - Compiladors
+ * Estudis: Grau en Enginyeria Informàtica
+ * Itinerari: Intel·ligència Artificial i Computacio
+ *
+ * Equipo: Arturo, Dani y Marta
+ */
 package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
@@ -19,14 +19,14 @@ import jflex.base.Pair;
 public class AnalizadorSemantico {
 
     public TablaSimbolos tablaSimbolos;
-    
+
     // Description to the function in which we are currently.
-    private Pair<String, DescripcionSimbolo> metodoActualmenteSiendoTratado;
+    private Pair<String, DescripcionFuncion> metodoActualmenteSiendoTratado;
     // When checking if a function's parameters are correct, we use this stack to store the declared function's types.
     // We use a stack because we will be taking elements out every time we process them.
     private List<String> errores, symbols;
     private static final boolean DEBUG = true;
-    
+
     public String getErrors() {
         if (errores.isEmpty()) {
             return "";
@@ -37,11 +37,11 @@ public class AnalizadorSemantico {
         }
         return s;
     }
-    
+
     public String getSymbols() {
         return tablaSimbolos.toString();
     }
-    
+
     private void indicarLocalizacion(SymbolBase s) {
         String loc;
         int idx = errores.size() - 1;
@@ -52,7 +52,7 @@ public class AnalizadorSemantico {
         } else {
             loc = "ERROR: Desde (" + s.xleft.getLine() + ", " + s.xleft.getColumn() + ") hasta (" + s.xright.getLine() + ", " + s.xright.getColumn() + "): ";
         }
-        
+
         errores.set(idx, loc + errores.get(idx));
     }
 
@@ -109,7 +109,7 @@ public class AnalizadorSemantico {
         tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO], dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            DescripcionSimbolo d = new DescripcionDefinicionTupla(tupla.id, new HashMap<String, DescripcionSimbolo>());
+            DescripcionSimbolo d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>());
             tablaSimbolos.poner(tupla.id, d);
         }
         for (SymbolScriptElemento tupla : tuplas) {
@@ -128,17 +128,17 @@ public class AnalizadorSemantico {
             procesarDefinicionMetodo(metodo);
         }
         // main
-        DescripcionSimbolo d = new DescripcionSimbolo();
+        DescripcionFuncion d = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID]);
         tablaSimbolos.poner(scriptMainYElementos.nombreMain, d);
         procesarMain(scriptMainYElementos);
     }
 
-    private void procesarDeclaraciones(SymbolDecs decs, DescripcionSimbolo declaracionTipoTupla) throws Exception {
+    private void procesarDeclaraciones(SymbolDecs decs, DescripcionDefinicionTupla declaracionTipoTupla) throws Exception {
         SymbolDecAsigLista dec = decs.iddecslista;
         while (dec != null) {
             SymbolTipo tipo = decs.tipo;
             boolean error = false;
-            DescripcionSimbolo descripcionTupla  = null;
+            DescripcionSimbolo descripcionTupla = null;
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
             if (tablaSimbolos.consulta(id) != null) {
@@ -162,23 +162,23 @@ public class AnalizadorSemantico {
                     tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1);
                     descripcionTupla = tablaSimbolos.consulta(tuplaName);
                     if (descripcionTupla == null) {
-                        errores.add("No se ha encontrado ninguna tupla con el identificador "+tuplaName);
+                        errores.add("No se ha encontrado ninguna tupla con el identificador " + tuplaName);
                         indicarLocalizacion(tipo);
                         error = true;
                     }
                 }
-                if(tipo.isArray()){
+                if (tipo.isArray()) {
                     SymbolDimensiones dim = tipo.dimArray;
                     int n = 0;
-                    while(dim != null) {
+                    while (dim != null) {
                         n++;
                         String tipoIdx = procesarOperando(dim.operando);
                         if (tipoIdx == null) {
-                            errores.add("Se realizan operaciones no validas para el calculo del indice "+n+" del array "+id);
+                            errores.add("Se realizan operaciones no validas para el calculo del indice " + n + " del array " + id);
                             indicarLocalizacion(dim.operando);
                             error = true;
                         } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                            errores.add("Las operaciones para el calculo del indice "+n+" del array " + id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
+                            errores.add("Las operaciones para el calculo del indice " + n + " del array " + id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
                             indicarLocalizacion(dim.operando);
                             error = true;
                         }
@@ -188,25 +188,29 @@ public class AnalizadorSemantico {
             } else if (valorAsignado != null) {
                 String tipoValor = procesarOperando(valorAsignado);
                 if (tipoValor == null) {
-                    errores.add("Los valores del operando "+valorAsignado+" no son compatibles");
+                    errores.add("Los valores del operando " + valorAsignado + " no son compatibles");
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 } else if (!tipoValor.equals(tipo.getTipo())) {
-                    errores.add("El tipo "+tipo.getTipo()+" con el que se ha declarado no es compatible con el que se esta intentado asignar a la variable ("+tipoValor+")");
+                    errores.add("El tipo " + tipo.getTipo() + " con el que se ha declarado no es compatible con el que se esta intentado asignar a la variable (" + tipoValor + ")");
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 }
             }
             if (!error) {
-                DescripcionSimbolo d;
-                if (tipo.isArray()) {
-                    d = new DescripcionArray(tipo.getTipo() + " " + tipo.dimArray.getEmptyBrackets(), tipo.dimArray.getDimensiones(), descripcionTupla);
-                } else {
-                    d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, descripcionTupla);
-                }
+                DescripcionDefinicionTupla dt = descripcionTupla == null ? null : (DescripcionDefinicionTupla) descripcionTupla;
                 if (declaracionTipoTupla != null) {
-                    declaracionTipoTupla.anyadirMiembro(id, d);
+                    declaracionTipoTupla.anyadirMiembro(
+                            new DescripcionDefinicionTupla.DefinicionMiembro(
+                                    id, tipo.getTipo(), decs.isConst,
+                                    valorAsignado != null, dt));
                 } else {
+                    DescripcionSimbolo d;
+                    if (tipo.isArray()) {
+                        d = new DescripcionArray(tipo.getTipo() + " " + tipo.dimArray.getEmptyBrackets(), tipo.dimArray.getDimensiones(), null, dt);
+                    } else {
+                        d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, null, dt);
+                    }
                     tablaSimbolos.poner(id, d);
                 }
             }
@@ -275,7 +279,7 @@ public class AnalizadorSemantico {
             String tipoVariable = null;
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
-                    if (d.isArray() || d.isTupla()) {
+                    if (d.isArray() || d.isTipoTupla()) {
                         String estructura = "una tupla";
                         if (d.isArray()) {
                             estructura = "un array";
@@ -288,7 +292,7 @@ public class AnalizadorSemantico {
                 }
                 case ARRAY -> {
                     if (!d.isArray()) {
-                        errores.add("Se ha intentado acceder a un elemento de la variable "+asig.id+" que no es un array (es de tipo "+d.getTipo()+")");
+                        errores.add("Se ha intentado acceder a un elemento de la variable " + asig.id + " que no es un array (es de tipo " + d.getTipo() + ")");
                         indicarLocalizacion(asig);
                         error = true;
                     }
@@ -306,14 +310,14 @@ public class AnalizadorSemantico {
                         tipoVariable = d.getTipo();
                     }
                     if (!asig.operacion.isBasicAsig()) {
-                        errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' es un array");
+                        errores.add("No se puede realizar asignacion compuesta si la variable '" + asig.id + "' es un array");
                         indicarLocalizacion(asig.operacion);
                         error = true;
                     }
                 }
                 case TUPLA -> {
-                    if (!d.isTupla()) {
-                        errores.add("Se ha intentado acceder a un miembro de la variable "+asig.id+" que no es una tupla (es de tipo "+d.getTipo()+")");
+                    if (!d.isTipoTupla()) {
+                        errores.add("Se ha intentado acceder a un miembro de la variable " + asig.id + " que no es una tupla (es de tipo " + d.getTipo() + ")");
                         indicarLocalizacion(asig);
                         error = true;
                     } else {
@@ -333,12 +337,12 @@ public class AnalizadorSemantico {
                 continue;
             }
             if (!tipoValor.equals(tipoVariable)) {
-                errores.add("Se esta intentado asignar un valor de tipo "+tipoValor+" a una variable de tipo " + tipoVariable);
+                errores.add("Se esta intentado asignar un valor de tipo " + tipoValor + " a una variable de tipo " + tipoVariable);
                 indicarLocalizacion(asig.valor);
                 error = true;
             }
             if (!error && !asig.operacion.doesOperationResultInSameType(tipoValor)) {
-                errores.add("Se esta intentado aplicar una operacion no valida entre los tipos "+tipoVariable+" y "+ tipoValor);
+                errores.add("Se esta intentado aplicar una operacion no valida entre los tipos " + tipoVariable + " y " + tipoValor);
                 indicarLocalizacion(asig);
                 error = true;
             }
@@ -347,14 +351,14 @@ public class AnalizadorSemantico {
                 continue;
             }
             if (!asig.operacion.isBasicAsig() && !d.tieneValorAsignado()) {
-                errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' no ha sido asignada de forma simple anteriormente");
+                errores.add("No se puede realizar asignacion compuesta si la variable '" + asig.id + "' no ha sido asignada de forma simple anteriormente");
                 indicarLocalizacion(asig.operacion);
                 error = true;
             }
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
                     if (d.tieneValorAsignado() && d.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor a la constante '"+ asig.id+"' que ya tenia valor");
+                        errores.add("Se esta intentado asignar un valor a la constante '" + asig.id + "' que ya tenia valor");
                         indicarLocalizacion(asig);
                         error = true;
                     }
@@ -366,7 +370,7 @@ public class AnalizadorSemantico {
                 case TUPLA -> {
                     DescripcionSimbolo miembro = d.getMember(asig.miembro);
                     if (miembro.tieneValorAsignado() && miembro.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor al miembro constante '"+ asig.miembro+"' de la variable '"+asig.id+"' de la tupla '"+d.getNombreTupla()+"', el cual ya tenia un valor asignado");
+                        errores.add("Se esta intentado asignar un valor al miembro constante '" + asig.miembro + "' de la variable '" + asig.id + "' de la tupla '" + d.getNombreTupla() + "', el cual ya tenia un valor asignado");
                         indicarLocalizacion(asig);
                         error = true;
                     }
@@ -392,8 +396,8 @@ public class AnalizadorSemantico {
             indicarLocalizacion(fcall);
             return;
         }
-        ds = (DescripcionFuncion) ds;
-        ArrayList<Pair<String, DescripcionSimbolo>> params = ds.getTiposParametros();
+        DescripcionFuncion df = (DescripcionFuncion) ds;
+        ArrayList<Pair<String, DescripcionSimbolo>> params = df.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
         int n = 0;
         for (Pair<String, DescripcionSimbolo> tipoParam : params) {
@@ -406,10 +410,10 @@ public class AnalizadorSemantico {
             SymbolOperand op = opLista.operand;
             String tipoOp = procesarOperando(op);
             if (tipoOp == null) {
-                errores.add("Se ha intentado pasar por parametros operacions no validas en el parametro " + n + " de la funcion "+nombre);
+                errores.add("Se ha intentado pasar por parametros operacions no validas en el parametro " + n + " de la funcion " + nombre);
                 indicarLocalizacion(op);
             } else if (!tipoOp.equals(tipoParam.snd.getTipo())) {
-                errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion "+nombre+" que es de tipo " + tipoParam.snd.getTipo());
+                errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + tipoParam.snd.getTipo());
                 indicarLocalizacion(op);
                 return;
             }
@@ -428,7 +432,7 @@ public class AnalizadorSemantico {
             if (tipo == null) {
                 return;
             }
-            errores.add("Se ha realizado pop sin nada de la funcion "+metodoActualmenteSiendoTratado.fst+" que devuelve valores de tipo " + tipo);
+            errores.add("Se ha realizado pop sin nada de la funcion " + metodoActualmenteSiendoTratado.fst + " que devuelve valores de tipo " + tipo);
             indicarLocalizacion(ret);
             return;
         }
@@ -460,7 +464,7 @@ public class AnalizadorSemantico {
             return;
         }
         if (!ds1.getTipo().equals(ds2.getTipo())) {
-            errores.add("La variable " + swap.op1 + " y la variable " + swap.op2 + " son de tipos diferentes ("+ds1.getTipo()+", "+ds2.getTipo()+"), no se puede realizar el swap");
+            errores.add("La variable " + swap.op1 + " y la variable " + swap.op2 + " son de tipos diferentes (" + ds1.getTipo() + ", " + ds2.getTipo() + "), no se puede realizar el swap");
             indicarLocalizacion(swap);
         }
     }
@@ -470,7 +474,7 @@ public class AnalizadorSemantico {
         if (tipoCond == null) {
             errores.add("La condicion del 'si' realiza una operacion no valida");
             indicarLocalizacion(cond.cond);
-        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])){
+        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])) {
             errores.add("La condicion del 'si' no resulta en una proposicion evualable como verdadera o falsa");
             indicarLocalizacion(cond.cond);
         }
@@ -484,7 +488,7 @@ public class AnalizadorSemantico {
             if (tipoCond == null) {
                 errores.add("La condicion del 'sino' realiza una operacion no valida");
                 indicarLocalizacion(elif.cond);
-            } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])){
+            } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])) {
                 errores.add("La condicion del 'sino' no resulta en una proposicion evualable como verdadera o falsa");
                 indicarLocalizacion(elif.cond);
             }
@@ -511,7 +515,7 @@ public class AnalizadorSemantico {
         if (tipoCond == null) {
             errores.add("La condicion del 'loop' realiza una operacion no valida");
             indicarLocalizacion(loopCond.cond);
-        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])){
+        } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])) {
             errores.add("La condicion del 'loop' no resulta en una proposicion evualable como verdadera o falsa");
             indicarLocalizacion(loopCond.cond);
         }
@@ -538,7 +542,7 @@ public class AnalizadorSemantico {
                 errores.add("La operacion del 'caso' realiza una operacion no valida");
                 indicarLocalizacion(caso.cond);
             } else if (tipo1 != null && tipo1 != tipo2) {
-                errores.add("Los tipos de la condicion ("+tipo1+") del select y del caso "+n+" ("+tipo2+") no coinciden");
+                errores.add("Los tipos de la condicion (" + tipo1 + ") del select y del caso " + n + " (" + tipo2 + ") no coinciden");
                 indicarLocalizacion(caso.cond);
             }
             procesarBody(caso.cuerpo);
@@ -557,30 +561,36 @@ public class AnalizadorSemantico {
         procesarBody(metodo.cuerpo);
         tablaSimbolos.salirBloque();
     }
-    
-    private void procesarParametros(SymbolParamsLista params) {
+
+    private void procesarParametros(SymbolParamsLista params) throws Exception {
         while (params != null) {
-            
-                String nombreParam = params.id;
-                //if (tablaSimbolos.contains(id)) { // imposible
-                if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
-                    errores.add("El parametro " + nombreParam + " tiene el mismo nombre que el metodo en el que esta siendo declarado");
-                    indicarLocalizacion(params);
-                    params = params.siguienteParam;
-                    continue;
-                } else if (tablaSimbolos.consulta(nombreParam) != null) {
-                    errores.add("El identificador " + nombreParam + " ya está declarado en este ámbito y por lo tanto no se puede llamar así al parámetro");
-                    indicarLocalizacion(params);
-                    params = params.siguienteParam;
-                    continue;
-                }
-                
-                DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
-                DescripcionSimbolo tupla = null;
-                if (params.param.isTupla()) {
-                    tupla = tablaSimbolos.consulta(params.param.idTupla);
-                }
-                DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, tupla);
+
+            String nombreParam = params.id;
+            //if (tablaSimbolos.contains(id)) { // imposible
+            if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
+                errores.add("El parametro " + nombreParam + " tiene el mismo nombre que el metodo en el que esta siendo declarado");
+                indicarLocalizacion(params);
+                params = params.siguienteParam;
+                continue;
+            } else if (tablaSimbolos.consulta(nombreParam) != null) {
+                errores.add("El identificador " + nombreParam + " ya está declarado en este ámbito y por lo tanto no se puede llamar así al parámetro");
+                indicarLocalizacion(params);
+                params = params.siguienteParam;
+                continue;
+            }
+
+            DescripcionFuncion dFuncion = metodoActualmenteSiendoTratado.snd;
+            DescripcionSimbolo tupla = null;
+            if (params.param.isTupla()) {
+                tupla = tablaSimbolos.consulta(params.param.idTupla);
+            }
+            DescripcionDefinicionTupla dt = null;
+            try {
+                dt = (DescripcionDefinicionTupla) tupla;
+            } catch (ClassCastException e) {
+                throw new Exception("Se ha intentado realizar casting de símbolo a tupla");
+            }
+            DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, null, dt);
             try {
                 //tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
                 tablaSimbolos.poner(nombreParam, dParam);
@@ -591,12 +601,18 @@ public class AnalizadorSemantico {
             params = params.siguienteParam;
         }
     }
-    
+
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) throws Exception {
         SymbolMiembrosTupla miembros = tupla.miembrosTupla;
         DescripcionSimbolo d = tablaSimbolos.consulta(tupla.id);
         while (miembros != null) {
-            procesarDeclaraciones(miembros.decs, d);
+            DescripcionDefinicionTupla dt = null;
+            try {
+                dt = (DescripcionDefinicionTupla) d;
+            } catch (ClassCastException e) {
+                throw new Exception("Se ha intentado realizar casting de símbolo a tupla");
+            }
+            procesarDeclaraciones(miembros.decs, dt);
             miembros = miembros.siguienteDeclaracion;
         }
     }
@@ -606,7 +622,7 @@ public class AnalizadorSemantico {
         tablaSimbolos.entraBloque();
         metodoActualmenteSiendoTratado = new Pair(main.nombreMain, tablaSimbolos.consulta(main.nombreMain));
         String tipo = ParserSym.terminalNames[ParserSym.STRING] + " " + main.lBracket + main.rBracket;
-        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null);
+        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null, null);
         tablaSimbolos.poner(main.nombreArgumentos, d);
         procesarBody(body);
         tablaSimbolos.salirBloque();
@@ -627,10 +643,10 @@ public class AnalizadorSemantico {
             case ATOMIC_EXPRESSION -> {
                 SymbolAtomicExpression literal = op.atomicExp;
                 String tipo = literal.tipo;
-                if (!tipo.equals(ParserSym.terminalNames[ParserSym.ID])){
+                if (!tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
                     return tipo; // si no es ID
                 }
-                String nombreID = (String)literal.value;
+                String nombreID = (String) literal.value;
                 DescripcionSimbolo ds = tablaSimbolos.consulta(nombreID);
                 if (ds == null) {
                     errores.add("No se ha declarado con anterioridad la variable " + nombreID);
@@ -670,46 +686,48 @@ public class AnalizadorSemantico {
                 }
                 if (ParserSym.OP_INC == operation || ParserSym.OP_DEC == operation) {
                     String s = "incremento";
-                    if (ParserSym.OP_DEC == operation) s = "decremento";
+                    if (ParserSym.OP_DEC == operation) {
+                        s = "decremento";
+                    }
                     if (exp.op.atomicExp == null || !exp.op.atomicExp.tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
-                        errores.add("No se puede realizar un "+s+" sobre un operando diferente a una variable primitiva ("+exp+")");
+                        errores.add("No se puede realizar un " + s + " sobre un operando diferente a una variable primitiva (" + exp + ")");
                         indicarLocalizacion(exp);
                         return null;
                     }
                     int nErrors = errores.size();
                     procesarAsignaciones(new SymbolAsigs(new SymbolAsig(!exp.isLeftUnaryOperator(), operation, exp.op.toString(), exp.value, exp.xleft, exp.xright), exp.xleft, exp.xright));
                     if (errores.size() != nErrors) {
-                        errores.add("No se ha podido realizar la operacion de "+s+" "+exp);
+                        errores.add("No se ha podido realizar la operacion de " + s + " " + exp);
                         indicarLocalizacion(exp);
                         return null;
                     }
                 }
                 if (exp.isLeftUnaryOperator()) {
                     if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
+                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
                         indicarLocalizacion(exp);
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT != operation) {
-                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
+                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
                         indicarLocalizacion(exp);
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && (ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
-                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar booleano con signo +/-
+                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar booleano con signo +/-
                         indicarLocalizacion(exp);
                         return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation && ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
-                        errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar entero con not
+                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar entero con not
                         indicarLocalizacion(exp);
                         return null;
                     }
                     return tipo;
                 }
                 if (!tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                    errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
-                    indicarLocalizacion(exp); 
+                    errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
+                    indicarLocalizacion(exp);
                     return null;
                 } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && ParserSym.OP_PCT != operation) {
-                    errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar double con inc/dec
+                    errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar double con inc/dec
                     indicarLocalizacion(exp);
                     return null;
                 } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation)) {
@@ -722,31 +740,31 @@ public class AnalizadorSemantico {
                 String tipo1 = procesarOperando(exp.op1);
                 boolean error = false;
                 if (tipo1 == null) {
-                    errores.add("El primer operando de la expresion binaria realiza una operacion "+exp.op1+" no valida");
+                    errores.add("El primer operando de la expresion binaria realiza una operacion " + exp.op1 + " no valida");
                     indicarLocalizacion(exp);
                     error = true;
                 }
                 String tipo2 = procesarOperando(exp.op2);
                 if (tipo2 == null) {
-                    errores.add("El segundo operando de la expresion binaria realiza una operacion "+exp.op2+" no valida");
+                    errores.add("El segundo operando de la expresion binaria realiza una operacion " + exp.op2 + " no valida");
                     indicarLocalizacion(exp);
                     error = true;
                 }
-                if (error){
+                if (error) {
                     return null;
                 }
                 boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
                         || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
                 if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " entre " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
                     error = true;
                 } else if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo1)) {
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre tipos no primitivos ("+tipo1 + ") en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " entre tipos no primitivos (" + tipo1 + ") en la expresion binaria " + exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tuplas y arrays
                     error = true;
                 }
-                if (error){
+                if (error) {
                     return null;
                 }
                 SymbolBinaryOperator operator = exp.bop;
@@ -754,12 +772,12 @@ public class AnalizadorSemantico {
                     if (operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
                         return ParserSym.terminalNames[ParserSym.REAL];
                     }
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " entre tipos " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
                     indicarLocalizacion(exp);// error, operando no valido para operar con ints y doubles
                     return null;
                 }
                 if (!operator.isForOperandsOfType(tipo1)) {
-                    errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" para los tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
+                    errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " para los tipos " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
                     indicarLocalizacion(exp);
                     return null; // error, operandos no pueden operar con operador
                 }
@@ -772,22 +790,22 @@ public class AnalizadorSemantico {
                 SymbolConditionalExpression exp = op.conditionalExp;
                 String tipoCond = procesarOperando(exp.cond);
                 if (tipoCond == null) {
-                    errores.add("La condicion "+exp.cond+" de la expresion ternaria "+exp+" realiza una operacion no valida");
+                    errores.add("La condicion " + exp.cond + " de la expresion ternaria " + exp + " realiza una operacion no valida");
                     indicarLocalizacion(exp.cond);
                 } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])) {
-                    errores.add("La condicion "+exp.cond+" de la expresion ternaria "+exp+" no resulta en una proposicion evualable como verdadera o falsa, sino en " + tipoCond);
+                    errores.add("La condicion " + exp.cond + " de la expresion ternaria " + exp + " no resulta en una proposicion evualable como verdadera o falsa, sino en " + tipoCond);
                     indicarLocalizacion(exp.cond); // error, no se puede utilizar de condicion algo que no sea una proposicion
                 }
                 boolean error = false;
                 String tipo1 = procesarOperando(exp.caseTrue);
                 if (tipo1 == null) {
-                    errores.add("El operando a asignar en caso positivo "+exp.caseTrue+" de la expresion ternaria "+exp+" realiza operaciones no validas");
+                    errores.add("El operando a asignar en caso positivo " + exp.caseTrue + " de la expresion ternaria " + exp + " realiza operaciones no validas");
                     indicarLocalizacion(exp.caseTrue);
                     error = true;
                 }
                 String tipo2 = procesarOperando(exp.caseFalse);
                 if (tipo2 == null) {
-                    errores.add("El operando a asignar en caso negativo "+exp.caseFalse+" de la expresion ternaria "+exp+" realiza operaciones no validas");
+                    errores.add("El operando a asignar en caso negativo " + exp.caseFalse + " de la expresion ternaria " + exp + " realiza operaciones no validas");
                     indicarLocalizacion(exp.caseFalse);
                     error = true;
                 }
@@ -795,7 +813,7 @@ public class AnalizadorSemantico {
                     return null;
                 }
                 if (!tipo1.equals(tipo2)) {
-                    errores.add("No se puede operar con tipos diferentes (" + tipo1 + ", " +tipo2+ ") en la operacion ternaria "+exp);
+                    errores.add("No se puede operar con tipos diferentes (" + tipo1 + ", " + tipo2 + ") en la operacion ternaria " + exp);
                     indicarLocalizacion(exp);
                     return null;
                 }
@@ -806,7 +824,7 @@ public class AnalizadorSemantico {
                 String tipoArr = procesarOperando(arr);
                 boolean error = false;
                 if (tipoArr == null) {
-                    errores.add("Se realizan operaciones no validas en el array "+arr+" del cual se quiere coger un indice");
+                    errores.add("Se realizan operaciones no validas en el array " + arr + " del cual se quiere coger un indice");
                     indicarLocalizacion(arr);
                     error = true;
                 }
@@ -815,8 +833,8 @@ public class AnalizadorSemantico {
                     aux = aux.substring(aux.indexOf(" ") + 1);
                 }
                 aux = aux.substring(aux.indexOf(" ") + 1);
-                if (!error && (aux == null || aux.length() < 2)){// !tipoArr.endsWith("]")) {
-                    errores.add("El operador "+arr+" del cual se quiere coger un indice no es un array, es de tipo " + tipoArr);
+                if (!error && (aux == null || aux.length() < 2)) {// !tipoArr.endsWith("]")) {
+                    errores.add("El operador " + arr + " del cual se quiere coger un indice no es un array, es de tipo " + tipoArr);
                     indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
                     error = true;
                 }
@@ -828,7 +846,7 @@ public class AnalizadorSemantico {
                             DescripcionSimbolo ds = tablaSimbolos.consulta(tipo);
                             if (ds == null) {
                                 // error, tupla no encontrada
-                                errores.add("El tipo del array "+arr+" es de una tupla no declarada (" + tipo+")");
+                                errores.add("El tipo del array " + arr + " es de una tupla no declarada (" + tipo + ")");
                                 indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
                             }
                         }
@@ -837,12 +855,12 @@ public class AnalizadorSemantico {
                 SymbolOperand idx = op.idxArr;
                 String tipoIdx = procesarOperando(idx);
                 if (tipoIdx == null) {
-                    errores.add("Se realizan operaciones no validas ("+idx+") en el calculo del indice");
+                    errores.add("Se realizan operaciones no validas (" + idx + ") en el calculo del indice");
                     indicarLocalizacion(idx);
                     return null;
                 }
                 if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                    errores.add("El operador que se quiere usar como indice ("+idx+") no es un entero, es de tipo " + tipoIdx);
+                    errores.add("El operador que se quiere usar como indice (" + idx + ") no es un entero, es de tipo " + tipoIdx);
                     indicarLocalizacion(idx); // indice es otra cosa que un entero
                     return null;
                 }
@@ -856,24 +874,24 @@ public class AnalizadorSemantico {
                 SymbolOperand tupla = op.op;
                 String tipoTupla = procesarOperando(tupla);
                 if (tipoTupla == null) {
-                    errores.add("Se realizan operaciones no validas ("+tupla+") en la tupla de la cual se quiere coger un miembro");
+                    errores.add("Se realizan operaciones no validas (" + tupla + ") en la tupla de la cual se quiere coger un miembro");
                     indicarLocalizacion(tupla);
                     return null;
                 }
-                String nombre = (String)tupla.value;//tipoTupla.substring(tipoTupla.indexOf(" ") + 1);
+                String nombre = (String) tupla.value;//tipoTupla.substring(tipoTupla.indexOf(" ") + 1);
                 DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
                 if (ds == null) {
-                    errores.add("La tupla "+nombre+" no esta declarada");
+                    errores.add("La tupla " + nombre + " no esta declarada");
                     indicarLocalizacion(tupla);
                     return null;
-                } else if (!ds.isTupla()) {
-                    errores.add("Se ha intentado acceder a un miembro de una variable ("+nombre+") no tupla");
+                } else if (!ds.isTipoTupla()) {
+                    errores.add("Se ha intentado acceder a un miembro de una variable (" + nombre + ") no tupla");
                     indicarLocalizacion(tupla);
                     return null;
                 }
                 DescripcionSimbolo miembro = ds.getMember(op.member);
-                if (miembro == null){
-                    errores.add("El miembro "+op.member+" no existe en la tupla "+nombre);
+                if (miembro == null) {
+                    errores.add("El miembro " + op.member + " no existe en la tupla " + nombre);
                     indicarLocalizacion(tupla);
                     return null;
                 }
@@ -884,16 +902,16 @@ public class AnalizadorSemantico {
                 String casting = op.casting.getTipo();
                 String tipo = procesarOperando(operando);
                 if (tipo == null) {
-                    errores.add("Se realizan operaciones no validas ("+operando+") en antes de aplicar el casting");
+                    errores.add("Se realizan operaciones no validas (" + operando + ") en antes de aplicar el casting");
                     indicarLocalizacion(operando);
                     return null;
                 }
-                boolean opIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) ||tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
-                boolean castIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) ||casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
-                if ((opIntCharDouble && castIntCharDouble) || (casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]))){ 
+                boolean opIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                boolean castIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) || casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                if ((opIntCharDouble && castIntCharDouble) || (casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]))) {
                     return casting; // casting posible entre int <-> char <-> double <-> int y de char -> string
                 }
-                errores.add("Se ha intentado realizar un casting no permitido ("+op.toString()+") de "+tipo+" a "+casting);
+                errores.add("Se ha intentado realizar un casting no permitido (" + op.toString() + ") de " + tipo + " a " + casting);
                 indicarLocalizacion(operando);
                 return null;
             }

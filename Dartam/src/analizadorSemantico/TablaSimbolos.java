@@ -1,10 +1,10 @@
 /**
-* Assignatura 21780 - Compiladors
-* Estudis: Grau en Enginyeria Informàtica 
-* Itinerari: Intel·ligència Artificial i Computacio
-*
-* Equipo: Arturo, Dani y Marta
-*/
+ * Assignatura 21780 - Compiladors
+ * Estudis: Grau en Enginyeria Informàtica
+ * Itinerari: Intel·ligència Artificial i Computacio
+ *
+ * Equipo: Arturo, Dani y Marta
+ */
 package analizadorSemantico;
 
 import java.util.ArrayList;
@@ -38,9 +38,9 @@ public class TablaSimbolos {
             this.descripcion = d;
             this.np = np;
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             return "Variable: '" + nombreVariable + "'\t Descripción: " + descripcion + "\n";
         }
     }
@@ -116,7 +116,7 @@ public class TablaSimbolos {
             }
             te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
         }
-        
+
         //Vaciamos entradas del nivel del bloque del que salimos
         Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
         while (iterador.hasNext()) {
@@ -132,7 +132,7 @@ public class TablaSimbolos {
     //idc es el campo de la tupla
     public void ponerCampo(String idr, String idc, DescripcionSimbolo dCamp) throws Exception {
         DescripcionSimbolo d = td.get(idr);
-        if (!d.isTupla()) {
+        if (!d.isTipoTupla()) {
             throw new Exception("Error, no es una tupla!");
         }
         int i = d.first;
@@ -165,7 +165,7 @@ public class TablaSimbolos {
      */
     public Entrada consultaCamp(String idr, String idc) throws Exception {
         DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
-        if (!d.isTupla()) {
+        if (!d.isTipoTupla()) {
             throw new Exception("No es una tupla!");
         }
 
@@ -221,7 +221,7 @@ public class TablaSimbolos {
     /*
         Método auxiliar por si necesitamos saber si es el primer indice
      */
-    private Integer first(String id) throws Exception{
+    private Integer first(String id) throws Exception {
         DescripcionSimbolo sd = td.get(id);
         if (!sd.isArray()) {
             throw new Exception("No es un array el elemento");
@@ -232,7 +232,7 @@ public class TablaSimbolos {
     /*
         Método auxiliar para saber el siguiente indice
      */
-    private Integer next(int idx) throws Exception{
+    private Integer next(int idx) throws Exception {
         int ent = te.get(idx).next;
         if (ent == 0) {
             throw new Exception("Error al conseguir la sigueinte dimension");
@@ -254,7 +254,6 @@ public class TablaSimbolos {
 //    public DescripcionSimbolo consulta(int idx) {
 //        return te.get(idx).descripcion;
 //    }
-
     //Consulatamos una variable ya incorporada
     public DescripcionSimbolo consulta(String s) {
         DescripcionSimbolo e = td.get(s);
@@ -296,14 +295,14 @@ public class TablaSimbolos {
         } else {
             te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
         }
-        
+
         if (idxe > te.size()) { // auxiliar
             te.add(ent);
         } else {
             te.add(idxe, ent);
         }
     }
-    
+
     @Override
     public String toString() {
         int nChars = 13;
@@ -314,7 +313,7 @@ public class TablaSimbolos {
         //s += "\nTabla de ámbitos:" + ta.toString() + "\n\nTabla de expansión:" + te.toString() + "\n";
         return s;
     }
-    
+
     private static String calcularTabuladores(int numChars, String s) {
         int charsPorTab = 4;
         int tabs = Math.max(0, (numChars - s.length()) / charsPorTab);
