@@ -4,6 +4,9 @@
  */
 package analizadorSemantico;
 
+import java.util.ArrayList;
+import jflex.base.Pair;
+
 /**
  *
  * @author dasad
@@ -19,14 +22,15 @@ public class VData {
     private boolean isArray;
     private boolean isTupla;
     private int offset;
+    private ArrayList<Pair<Integer, Tipo>> parametrosTupla; //Elementos de la tupla
     
    
-    
     public VData(String nombre, TipoReferencia tv, Tipo tipo, String idp, boolean isArray, boolean isTupla){
         this.nombre = nombre;
         this.tipoVariable = tv;
         this.tipo = tipo;
         this.idProcedimiento = idp;
+        this.parametrosTupla = new ArrayList<>();
         
         switch (tipo){
             case INT -> this.bytes = Integer.BYTES;
@@ -34,6 +38,7 @@ public class VData {
             case BOOL -> this.bytes = 1;
             case STRING -> this.bytes = 128;
             case DOUBLE -> this.bytes = Double.BYTES;
+            default -> this.bytes = -1; //En caso de tupla y array calcularemos diferente
         }
         
         this.isArray = isArray;
@@ -55,6 +60,10 @@ public class VData {
     public int getBytes() {
         return bytes;
     }
+    
+    public void setBytes(int b){
+        this.bytes = b;
+    }
 
     public Tipo getTipo() {
         return tipo;
@@ -74,6 +83,11 @@ public class VData {
     
     public void actualizarOffset(int o){
         this.offset = o;
+    }
+    
+    //Metodo para añadir elementos a una tupla
+    public void añadirElementoTupla(Pair<Integer, Tipo> e){
+        this.parametrosTupla.add(e);
     }
     
 }

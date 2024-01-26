@@ -16,7 +16,6 @@ public class PData {
         private int profundidad; //Nivel de profundidad
         private String etiqueta;
         private int cantidadParametros;
-        private int tamañoVariables; //Tamaño total
         private ArrayList<Pair<Integer, Tipo>> parametros;
         
         public PData(int profundidad, String etiqueta, int totalBytes, int cantidadParametros){
@@ -50,10 +49,11 @@ public class PData {
         public void añadirParametro(int i, Tipo t){
             Pair<Integer, Tipo> param = new Pair(i,t);
             this.parametros.add(param);
+            this.cantidadParametros++;
         }
         
         //Metodo con el que podemos modificar la cantidad de parametros
-        public void setCantidadParametros(int i){
-            this.cantidadParametros = i;
-        }
+        //public void setCantidadParametros(int i){
+        //    this.cantidadParametros = i;
+        //}
 }
