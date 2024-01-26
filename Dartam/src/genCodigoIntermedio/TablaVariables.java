@@ -43,6 +43,10 @@ public class TablaVariables implements Iterable<VData> {
     public void decrementarContador(){
         this.contador--;
     }
+    
+    public void reemplazar(){
+        
+    }
 
     @Override
     public Iterator<VData> iterator() {

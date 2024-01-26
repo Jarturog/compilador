@@ -32,7 +32,7 @@ public class Generador3Direcciones {
     }
     
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public int nuevaVariable(TipoReferencia tipoVariable, Tipo tipo, boolean isArray, boolean isTupla){
+    public int nuevaVariable(TipoReferencia tipoVariable, String tipo, boolean isArray, boolean isTupla){
         int numeroVariable = this.tablaVariables.getContador();
         String nombre = "var" + numeroVariable;
         VData data = new VData(nombre, tipoVariable, tipo, funcionActual(), isArray, isTupla);

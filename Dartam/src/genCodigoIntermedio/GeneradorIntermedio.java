@@ -150,7 +150,8 @@ public class GeneradorIntermedio {
           
         procesarMain(scriptMainYElementos);
     }
-
+    
+    //TODO: Revisar asignaciones
     private void procesarDeclaraciones(SymbolDecs decs, DescripcionSimbolo declaracionTipoTupla) throws Exception {
         SymbolDecAsigLista dec = decs.iddecslista;
         
@@ -189,6 +190,7 @@ public class GeneradorIntermedio {
                         error = true;
                     }
                 }
+                
                 if(tipo.isArray()){
                     SymbolDimensiones dim = tipo.dimArray;
                     int n = 0;
@@ -220,6 +222,7 @@ public class GeneradorIntermedio {
                 }
             }
             
+            //No hay errores
             if (!error) {
                 DescripcionSimbolo d;
                 if (tipo.isArray()) {
@@ -227,9 +230,15 @@ public class GeneradorIntermedio {
                 } else {
                     d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, descripcionTupla);
                 }
+                
+                //Añadiendo un miembro de tupla
                 if (declaracionTipoTupla != null) {
                     declaracionTipoTupla.anyadirMiembro(id, d);
-                } else {
+                } else { //Declaracion de dato
+                    
+                    SymbolOperand valor = (dec.asignacion == null) ? null : dec.asignacion.operando;
+                    int numeroVariable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, false);
+                    this.g3d.generarInstruccion(TipoInstruccion.ASIGN.getDescripcion(), null,null, new Operador(numeroVariable)); //De momento no asignamos nada                
                     tablaSimbolos.poner(id, d);
                 }
             }
@@ -240,7 +249,6 @@ public class GeneradorIntermedio {
     private void procesarBody(SymbolBody body) throws Exception {
         while (body != null) {
             SymbolMetodoElemento elem = body.metodo;
-
             switch (elem.getTipo()) {
                 case SymbolMetodoElemento.INSTR ->
                     procesarInstruccion(elem.instruccion);
@@ -485,10 +493,18 @@ public class GeneradorIntermedio {
             errores.add("La variable " + swap.op1 + " y la variable " + swap.op2 + " son de tipos diferentes ("+ds1.getTipo()+", "+ds2.getTipo()+"), no se puede realizar el swap");
             indicarLocalizacion(swap);
         }
+        
+        //Todo correcto!
+        this.g3d.generarInstruccion(TipoInstruccion.SWAP.getDescripcion(), new Operador(swap.op2), new Operador(swap.op1), new Operador(swap.op2));
+        this.g3d.generarInstruccion(TipoInstruccion.SWAP.getDescripcion(), new Operador(swap.op1), new Operador(swap.op2), new Operador(swap.op1));
+        
     }
 
     private void procesarIf(SymbolIf cond) throws Exception {
         String tipoCond = procesarOperando(cond.cond);
+        //Creamos la etiqueta
+        String etiquetaIf = this.g3d.nuevaEtiqueta(); //Nueva etiqueta para el if
+        
         if (tipoCond == null) {
             errores.add("La condicion del 'si' realiza una operacion no valida");
             indicarLocalizacion(cond.cond);
@@ -496,9 +512,13 @@ public class GeneradorIntermedio {
             errores.add("La condicion del 'si' no resulta en una proposicion evualable como verdadera o falsa");
             indicarLocalizacion(cond.cond);
         }
+        
+        
         tablaSimbolos.entraBloque();
         procesarBody(cond.cuerpo);
         tablaSimbolos.salirBloque();
+       
+        
         SymbolElifs elifs = cond.elifs;
         while (elifs != null) {
             SymbolElif elif = elifs.elif;
@@ -520,6 +540,9 @@ public class GeneradorIntermedio {
             procesarBody(cond.els.cuerpo);
             tablaSimbolos.salirBloque();
         }
+        
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(etiquetaIf));
+       
     }
 
     private void procesarLoop(SymbolLoop loop) throws Exception {
