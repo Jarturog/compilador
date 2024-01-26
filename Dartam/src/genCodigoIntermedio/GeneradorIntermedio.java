@@ -20,6 +20,9 @@ import jflex.base.Pair;
 public class GeneradorIntermedio {
 
     public TablaSimbolos tablaSimbolos;
+    public Generador3Direcciones g3d;
+    public TablaVariables tablaVariables;
+    public TablaProcedimientos tablaProcedimientos;
     
     // Description to the function in which we are currently.
     private Pair<String, DescripcionSimbolo> metodoActualmenteSiendoTratado;
@@ -57,9 +60,17 @@ public class GeneradorIntermedio {
         errores.set(idx, loc + errores.get(idx));
     }
 
+    //Nodo padre del resto de nodos...
     public GeneradorIntermedio(SymbolScript scriptElementosAntesDeMain) throws Exception {
         tablaSimbolos = new TablaSimbolos();
         errores = new ArrayList<>();
+        
+        //Creamos las 2 tablas, tanto de procedimientos como de variables
+        this.tablaProcedimientos = new TablaProcedimientos();
+        this.tablaVariables = new TablaVariables();
+        g3d = new Generador3Direcciones(this.tablaVariables, this.tablaProcedimientos);
+        
+        
         ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
         ArrayList<SymbolScriptElemento> tuplas = new ArrayList<>();
         ArrayList<SymbolScriptElemento> metodos = new ArrayList<>();
@@ -87,6 +98,7 @@ public class GeneradorIntermedio {
         SymbolMain scriptMainYElementos = scriptElementosAntesDeMain.main;
         // elementos despues del main
         elem = scriptMainYElementos.elemento;
+        
         while (elem != null) {
             switch (elem.getTipo()) {
                 case DECS ->
@@ -113,13 +125,16 @@ public class GeneradorIntermedio {
             DescripcionSimbolo d = new DescripcionSimbolo(tupla.id, new HashMap<String, DescripcionSimbolo>());
             tablaSimbolos.poner(tupla.id, d);
         }
+        
         for (SymbolScriptElemento tupla : tuplas) {
             procesarDeclaracionTupla(tupla);
         }
+        
         // declaraciones
         for (SymbolDecs decs : declaraciones) {
             procesarDeclaraciones(decs, null);
         }
+        
         // metodos
         for (SymbolScriptElemento metodo : metodos) {
             DescripcionSimbolo d = new DescripcionSimbolo(metodo.tipoRetorno.getTipo());
@@ -128,25 +143,31 @@ public class GeneradorIntermedio {
         for (SymbolScriptElemento metodo : metodos) {
             procesarDefinicionMetodo(metodo);
         }
+        
         // main
         DescripcionSimbolo d = new DescripcionSimbolo();
         tablaSimbolos.poner(scriptMainYElementos.nombreMain, d);
+          
         procesarMain(scriptMainYElementos);
     }
 
     private void procesarDeclaraciones(SymbolDecs decs, DescripcionSimbolo declaracionTipoTupla) throws Exception {
         SymbolDecAsigLista dec = decs.iddecslista;
+        
         while (dec != null) {
             SymbolTipo tipo = decs.tipo;
             boolean error = false;
             DescripcionSimbolo descripcionTupla  = null;
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
+            
+            //Comprueba si existe el elemento en la tabla de simbolos
             if (tablaSimbolos.consulta(id) != null) {
                 errores.add("El identificador '" + id + "' ya ha sido declarado con anterioridad");
                 indicarLocalizacion(dec);
                 error = true;
             }
+            
             if (tipo.isArray() || tipo.isTupla()) {
                 if (decs.isConst) {
                     errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
@@ -198,6 +219,7 @@ public class GeneradorIntermedio {
                     error = true;
                 }
             }
+            
             if (!error) {
                 DescripcionSimbolo d;
                 if (tipo.isArray()) {
