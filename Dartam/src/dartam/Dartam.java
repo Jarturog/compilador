@@ -16,7 +16,7 @@ import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSemantico.AnalizadorSemantico;
 import genCodigoIntermedio.GeneradorCIntermedio;
-import genCodigoMaquina.GeneradorCMaquina;
+import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import optimizaciones.Optimizador;
 import java.io.FileWriter;

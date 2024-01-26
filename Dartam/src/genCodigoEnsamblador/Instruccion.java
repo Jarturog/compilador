@@ -1,4 +1,4 @@
-package genCodigoMaquina;
+package genCodigoEnsamblador;
 
 public class Instruccion {
 
