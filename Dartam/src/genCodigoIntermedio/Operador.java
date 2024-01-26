@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package analizadorSemantico;
+package genCodigoIntermedio;
 
 /**
  *Clase Operador, objecto referente a un operando de
@@ -10,16 +10,15 @@ package analizadorSemantico;
  * @author dasad
  */
 public class Operador {
-    private String nombre;
-    private Object valor;
-    private Tipo tipoCasting;
+    private String nombre; //Nombre de la variable / campo
+    private Object valor; //Valor
+    private Tipo tipoCasting; //Que tipo de dato es: BOOLEAN, STRING...
     private TipoReferencia tipo;
-    private int referencia;
+    private int referencia; //Referencia de la tabla de datos o procedimientos
     
     public static enum TipoReferencia{
         literal, referencia
     }
-    
     
     public Operador(String nombre){
         this.nombre = nombre;
