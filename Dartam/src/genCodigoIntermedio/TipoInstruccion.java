@@ -29,16 +29,18 @@ public enum TipoInstruccion {
     CALL("call"),
     RETURN("return"),
     READ("read"),
-    PRINT("print");
+    WRITE("write"),
+    SCAN("scan"),
+    PRINT("print"),
     SWAP("swap");
     
-    String t;
+    public final String tipo;
     
     TipoInstruccion(String t){
-        this.t = t;
+        this.tipo = t;
     }
     String getDescripcion() {
-        return this.t;
+        return this.tipo;
     }
     
     
