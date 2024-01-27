@@ -695,6 +695,7 @@ public class GeneradorIntermedio {
     private void procesarParametros(SymbolParamsLista params) {
         
         String idFuncion = this.g3d.funcionActual(); //Los parametros pertenecen a este metodo
+        PData data = this.g3d.getProcedimeinto(idFuncion);
         
         while (params != null) {
                 String nombreParam = params.id;
@@ -716,12 +717,30 @@ public class GeneradorIntermedio {
                 if (params.param.isTupla()) {
                     tupla = tablaSimbolos.consulta(params.param.idTupla);
                 }
+                
                 DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, tupla);
             try {
+                int variable = 0;
+                String tipo = "";
+                if(params.param.isTupla()){
+                    tipo = params.param.getTipo();
+                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.param.getTipo(), false, true);
+                }else if(params.param.isArray()){
+                    tipo = params.param.getTipo();
+                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.param.getTipo(), true, false);
+                }else{                    
+                    tipo = params.param.getTipo();
+                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.param.getTipo(), false, false);
+                }
+     
                 //tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
                 tablaSimbolos.poner(nombreParam, dParam);
                 dFuncion.anyadirParametro(nombreParam, dParam);
+                
+                data.añadirParametro(variable, tipo); //Le añadimos el parametro
+                
             } catch (Exception ex) {
+                
                 errores.add(ex.getMessage());
             }
             params = params.siguienteParam;

@@ -16,7 +16,7 @@ public class PData {
         private int profundidad; //Nivel de profundidad
         private String etiqueta;
         private int cantidadParametros;
-        private ArrayList<Pair<Integer, Tipo>> parametros;
+        private ArrayList<Pair<Integer, String>> parametros;
         
         public PData(int profundidad, String etiqueta, int totalBytes, int cantidadParametros){
             this.profundidad = profundidad;
@@ -36,7 +36,7 @@ public class PData {
         }
         
         //Metodo con el que podemos recuperar los parametros del procedimiento
-        public ArrayList<Pair<Integer, Tipo>> getParametros(){
+        public ArrayList<Pair<Integer, String>> getParametros(){
             return this.parametros;
         }
         
@@ -46,8 +46,8 @@ public class PData {
         }
         
         //Metodo que permite añadir un nuevo parametro al procedimiento
-        public void añadirParametro(int i, Tipo t){
-            Pair<Integer, Tipo> param = new Pair(i,t);
+        public void añadirParametro(int i, String t){
+            Pair<Integer, String> param = new Pair(i,t);
             this.parametros.add(param);
             this.cantidadParametros++;
         }
