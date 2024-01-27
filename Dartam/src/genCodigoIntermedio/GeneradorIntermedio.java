@@ -306,7 +306,7 @@ public class GeneradorIntermedio {
             String tipoVariable = null;
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
-                    if (d.isArray() || d.isTupla()) {
+                    if (d.isArray() || d.isTipoTupla()) {
                         String estructura = "una tupla";
                         if (d.isArray()) {
                             estructura = "un array";
@@ -343,7 +343,7 @@ public class GeneradorIntermedio {
                     }
                 }
                 case TUPLA -> {
-                    if (!d.isTupla()) {
+                    if (!d.isTipoTupla()) {
                         errores.add("Se ha intentado acceder a un miembro de la variable "+asig.id+" que no es una tupla (es de tipo "+d.getTipo()+")");
                         indicarLocalizacion(asig);
                         error = true;
@@ -503,7 +503,9 @@ public class GeneradorIntermedio {
     private void procesarIf(SymbolIf cond) throws Exception {
         String tipoCond = procesarOperando(cond.cond);
         //Creamos la etiqueta
-        String etiquetaIf = this.g3d.nuevaEtiqueta(); //Nueva etiqueta para el if
+        String efi = this.g3d.nuevaEtiqueta(); //Nueva etiqueta para el if
+        String e = this.g3d.nuevaEtiqueta();
+        String eElse = this.g3d.nuevaEtiqueta();
         
         if (tipoCond == null) {
             errores.add("La condicion del 'si' realiza una operacion no valida");
@@ -512,15 +514,21 @@ public class GeneradorIntermedio {
             errores.add("La condicion del 'si' no resulta en una proposicion evualable como verdadera o falsa");
             indicarLocalizacion(cond.cond);
         }
-        
+        //Llegados aquí si la condicion es falsa salta, sino ejecuta
+        this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(e)); //Si es falso saltaremos
         
         tablaSimbolos.entraBloque();
         procesarBody(cond.cuerpo);
         tablaSimbolos.salirBloque();
-       
+        //Si se cumplio la condicion no continuares revisando el resto
+        this.g3d.generarInstruccion(TipoInstruccion.GOTO.getDescripcion(), null, null, new Operador(efi));
         
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(e));
         SymbolElifs elifs = cond.elifs;
+        
+        String elseIf2 = this.g3d.nuevaEtiqueta();           
         while (elifs != null) {
+            
             SymbolElif elif = elifs.elif;
             tipoCond = procesarOperando(elif.cond);
             if (tipoCond == null) {
@@ -530,18 +538,43 @@ public class GeneradorIntermedio {
                 errores.add("La condicion del 'sino' no resulta en una proposicion evualable como verdadera o falsa");
                 indicarLocalizacion(elif.cond);
             }
+            
+            
+            if(elifs.elifs == null && cond.els != null){
+                //Llegados aquí si la condicion es falsa salta, sino ejecuta
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(eElse)); //Si es falso saltaremos
+            }else if(elifs.elifs != null){
+                //Llegados aquí si la condicion es falsa salta, sino ejecuta
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(elseIf2)); //Si es falso saltaremos
+            }else{
+                //Llegados aquí si la condicion es falsa salta, sino ejecuta
+                 this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(efi)); //Si es falso saltaremos
+            }
+            
             tablaSimbolos.entraBloque();
             procesarBody(elif.cuerpo);
             tablaSimbolos.salirBloque();
+            
+            //Como ha ejecutado saltamos al fin del if
+            this.g3d.generarInstruccion(TipoInstruccion.GOTO.getDescripcion(), null, null, new Operador(efi)); //Si es falso saltaremos
+        
+            
             elifs = elifs.elifs;
+            if(elifs != null){ //Si existe creamos la siguiente etiqueta
+                this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(elseIf2));          
+                elseIf2 = this.g3d.nuevaEtiqueta();
+            }
         }
+
         if (cond.els != null) {
             tablaSimbolos.entraBloque();
             procesarBody(cond.els.cuerpo);
             tablaSimbolos.salirBloque();
         }
         
-        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(etiquetaIf));
+        //Fin del bloque if
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(efi));
+        
        
     }
 
@@ -911,7 +944,7 @@ public class GeneradorIntermedio {
                     errores.add("La tupla "+nombre+" no esta declarada");
                     indicarLocalizacion(tupla);
                     return null;
-                } else if (!ds.isTupla()) {
+                } else if (!ds.isTipoTupla()) {
                     errores.add("Se ha intentado acceder a un miembro de una variable ("+nombre+") no tupla");
                     indicarLocalizacion(tupla);
                     return null;
