@@ -750,6 +750,12 @@ public class GeneradorIntermedio {
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) throws Exception {
         SymbolMiembrosTupla miembros = tupla.miembrosTupla;
         DescripcionSimbolo d = tablaSimbolos.consulta(tupla.id);
+        
+        String identificador = tupla.id; //Identificador
+        
+        //Como nuestras tuplas pueden tener datos de diferentes tipo, tipo=null
+        int varNumero = this.g3d.nuevaVariable(TipoReferencia.var, null, false, true);
+        
         while (miembros != null) {
             procesarDeclaraciones(miembros.decs, d);
             miembros = miembros.siguienteDeclaracion;
@@ -757,14 +763,30 @@ public class GeneradorIntermedio {
     }
 
     private void procesarMain(SymbolMain main) throws Exception {
-        SymbolBody body = main.main;
+        SymbolBody body = main.main;    
+        
+        this.g3d.añadirFuncion("main");
+        String etiquetaMain = this.g3d.nuevaEtiqueta(); //Etiqueta main
+        
+        //Lo añadimos a la tabla de funciones TODO: Revisar tema de profundidad!!
+        int numeroProcedure = this.g3d.nuevoProcedimiento("main", 0, etiquetaMain);
+        
         tablaSimbolos.entraBloque();
         metodoActualmenteSiendoTratado = new Pair(main.nombreMain, tablaSimbolos.consulta(main.nombreMain));
         String tipo = ParserSym.terminalNames[ParserSym.STRING] + " " + main.lBracket + main.rBracket;
         DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null);
         tablaSimbolos.poner(main.nombreArgumentos, d);
+        
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(etiquetaMain));
+        this.g3d.generarInstruccion(TipoInstruccion.INIT.getDescripcion(), null, null, new Operador("main"));
+        
         procesarBody(body);
+        
+        this.g3d.eliminarFuncion();
+        
         tablaSimbolos.salirBloque();
+        
+    
     }
 
     /**
