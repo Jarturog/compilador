@@ -616,6 +616,9 @@ public class GeneradorIntermedio {
     }
 
     private void procesarSwitch(SymbolSwitch sw) throws Exception {
+        String fiSwitch = this.g3d.nuevaEtiqueta();
+        String pred = ""; //Guardaremos la etiqueta para el default del swtich
+        
         tablaSimbolos.entraBloque();
         Object tipo1 = procesarOperando(sw.cond);
         if (tipo1 == null) {
@@ -624,6 +627,7 @@ public class GeneradorIntermedio {
         }
         SymbolCaso caso = sw.caso;
         int n = 0;
+        String cases = this.g3d.nuevaEtiqueta(); //Etiquetas para los casos
         while (caso != null) {
             n++;
             Object tipo2 = procesarOperando(caso.cond);
@@ -634,13 +638,34 @@ public class GeneradorIntermedio {
                 errores.add("Los tipos de la condicion ("+tipo1+") del select y del caso "+n+" ("+tipo2+") no coinciden");
                 indicarLocalizacion(caso.cond);
             }
+            
+            if(caso.caso != null){ //Tenemos mas casos, saltamos al siguiente ya que no cumplimos condicion
+                cases = this.g3d.nuevaEtiqueta();
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(caso.cond.getReferencia()),new Operador(Tipo.INT,0), new Operador(cases) );           
+            }else if(sw.pred != null){ //No hay siguiente caso pero hay un default, saltamos al default
+                pred = this.g3d.nuevaEtiqueta();
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(),new Operador(caso.cond.getReferencia()),new Operador(Tipo.INT,0), new Operador(pred));
+            }else{ //Swithc solo con cases y no hay mas saltamos al final del bloque switch
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(caso.cond.getReferencia()),new Operador(Tipo.INT,0), new Operador(fiSwitch) );
+            }
+            
             procesarBody(caso.cuerpo);
+            //Se proceso el body, por lo que la condicion era correcta, saltamos al final del switch
+            this.g3d.generarInstruccion(TipoInstruccion.GOTO.getDescripcion(), null, null, new Operador(fiSwitch));
+       
+            
             caso = caso.caso;
+            
+            //Para el siguiente case
+            this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(cases));
+            
         }
         if (sw.pred != null) {
+            this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(pred));
             procesarBody(sw.pred.cuerpo);
         }
         tablaSimbolos.salirBloque();
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(fiSwitch));
     }
 
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) throws Exception {
