@@ -323,5 +323,10 @@ public class TablaSimbolos {
         }
         return tabuladores.toString();
     }
+    
+    
+    public int getProfundidad(){
+        return this.n; 
+    }
 
 }

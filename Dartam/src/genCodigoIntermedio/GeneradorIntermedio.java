@@ -669,16 +669,34 @@ public class GeneradorIntermedio {
     }
 
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) throws Exception {
+       
+        //Añadimos el metodo
+        this.g3d.añadirFuncion(metodo.id);
+        String fEtiqueta = this.g3d.nuevaEtiqueta(); //Creamos la etiqeuta de la funcion
+        
+        //Añadimos la funcion a la tabla
+        int numeroProcedure = this.g3d.nuevoProcedimiento(metodo.id, this.tablaSimbolos.getProfundidad(), fEtiqueta);
+        
         tablaSimbolos.entraBloque();
         metodoActualmenteSiendoTratado = new Pair(metodo.id, tablaSimbolos.consulta(metodo.id));
         procesarParametros(metodo.parametros.paramsLista);
+        
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(fEtiqueta));
+        this.g3d.generarInstruccion(TipoInstruccion.INIT.getDescripcion(), null, null, new Operador(metodo.id));
+        
         procesarBody(metodo.cuerpo);
+        
+        this.g3d.eliminarFuncion();
+        this.g3d.generarInstruccion(TipoInstruccion.RETURN.getDescripcion(), new Operador(metodo.id), null, new Operador(metodo.getReferencia()));
+        
         tablaSimbolos.salirBloque();
     }
     
     private void procesarParametros(SymbolParamsLista params) {
+        
+        String idFuncion = this.g3d.funcionActual(); //Los parametros pertenecen a este metodo
+        
         while (params != null) {
-            
                 String nombreParam = params.id;
                 //if (tablaSimbolos.contains(id)) { // imposible
                 if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
