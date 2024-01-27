@@ -580,6 +580,13 @@ public class GeneradorIntermedio {
 
     private void procesarLoop(SymbolLoop loop) throws Exception {
         // no importa que sea while o do while
+        
+        //Creamos la etiqueta para volver al bucle si se cumple la condicion
+        String inicioLoop = this.g3d.nuevaEtiqueta();
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(inicioLoop));
+        
+        
+        String salirLoop = this.g3d.nuevaEtiqueta();
         tablaSimbolos.entraBloque();
         SymbolLoopCond loopCond = loop.loopCond;
         if (loopCond.decs != null) {
@@ -596,8 +603,16 @@ public class GeneradorIntermedio {
         if (loopCond.asig != null) {
             procesarAsignaciones(loopCond.asig);
         }
+        
+        //En el caso de no cumplirse la condicion saltaremos al fin del bucle
+        this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(loopCond.cond.getReferencia()), new Operador(Tipo.INT,0), new Operador(salirLoop));
+        
         procesarBody(loop.cuerpo);
         tablaSimbolos.salirBloque();
+        
+        this.g3d.generarInstruccion(TipoInstruccion.GOTO.getDescripcion(), null, null, new Operador(inicioLoop)); //Saltaremos al mismo bucle
+        this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(salirLoop)); //Etiqueta para fin de bucle
+        
     }
 
     private void procesarSwitch(SymbolSwitch sw) throws Exception {
