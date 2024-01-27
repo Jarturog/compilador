@@ -470,6 +470,9 @@ public class GeneradorIntermedio {
             errores.add("Se ha intentado hacer pop de un tipo (" + tipoOp + ") diferente al que devuelve la funcion (" + tipo + ")");
             indicarLocalizacion(ret);
         }
+        
+        //TODO: revisar
+        this.g3d.generarInstruccion(TipoInstruccion.RETURN.getDescripcion(), new Operador(metodoActualmenteSiendoTratado.fst), null, null);
     }
 
     private void procesarSwap(SymbolSwap swap) {
