@@ -162,12 +162,15 @@ public class GeneradorIntermedio {
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
             
+            
             //Comprueba si existe el elemento en la tabla de simbolos
             if (tablaSimbolos.consulta(id) != null) {
                 errores.add("El identificador '" + id + "' ya ha sido declarado con anterioridad");
                 indicarLocalizacion(dec);
                 error = true;
             }
+            
+            int variable = 0; //Contendra el numero de la variable creada
             
             if (tipo.isArray() || tipo.isTupla()) {
                 if (decs.isConst) {
@@ -189,11 +192,16 @@ public class GeneradorIntermedio {
                         indicarLocalizacion(tipo);
                         error = true;
                     }
+                    variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, true);
+                    
                 }
                 
                 if(tipo.isArray()){
                     SymbolDimensiones dim = tipo.dimArray;
                     int n = 0;
+                    
+                    variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), true, false);
+                    
                     while(dim != null) {
                         n++;
                         String tipoIdx = procesarOperando(dim.operando);
@@ -207,6 +215,7 @@ public class GeneradorIntermedio {
                             error = true;
                         }
                         dim = dim.siguienteDimension;
+                        
                     }
                 }
             } else if (valorAsignado != null) {
@@ -220,9 +229,11 @@ public class GeneradorIntermedio {
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 }
+                
+                variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, false);
             }
             
-            //No hay errores
+            //No hays errores
             if (!error) {
                 DescripcionSimbolo d;
                 if (tipo.isArray()) {
@@ -237,8 +248,6 @@ public class GeneradorIntermedio {
                 } else { //Declaracion de dato
                     
                     SymbolOperand valor = (dec.asignacion == null) ? null : dec.asignacion.operando;
-                    int numeroVariable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, false);
-                    this.g3d.generarInstruccion(TipoInstruccion.ASIGN.getDescripcion(), null,null, new Operador(numeroVariable)); //De momento no asignamos nada                
                     tablaSimbolos.poner(id, d);
                 }
             }
