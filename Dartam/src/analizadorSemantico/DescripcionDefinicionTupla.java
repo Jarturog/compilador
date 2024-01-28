@@ -17,6 +17,15 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
     public void anyadirMiembro(DefinicionMiembro dm) {
         miembros.add(dm);
     }
+    
+    public DefinicionMiembro getMiembro(String nombre) {
+        for (DefinicionMiembro m : miembros) {
+            if (nombre.equals(m.nombre)) {
+                return m;
+            }
+        }
+        return null;
+    }
 
     public static class DefinicionMiembro {
 

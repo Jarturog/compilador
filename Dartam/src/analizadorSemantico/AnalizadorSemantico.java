@@ -141,8 +141,9 @@ public class AnalizadorSemantico {
             DescripcionSimbolo descripcionTupla = null;
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
-            if (tablaSimbolos.consulta(id) != null) {
-                errores.add("El identificador '" + id + "' ya ha sido declarado con anterioridad");
+            String errMsg = tablaSimbolos.sePuedeDeclarar(id);
+            if (!errMsg.isEmpty()) {
+                errores.add(errMsg);
                 indicarLocalizacion(dec);
                 error = true;
             }
@@ -216,7 +217,7 @@ public class AnalizadorSemantico {
                     } else {
                         d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, null, dt);
                     }
-                    tablaSimbolos.poner(tupla + id, d);
+                    tablaSimbolos.poner(tupla + id, d); // --------------------------------------------------------------------- quitar tupla +
                 }
             }
             dec = dec.siguienteDeclaracion;
@@ -226,19 +227,26 @@ public class AnalizadorSemantico {
     private void procesarBody(SymbolBody body) throws Exception {
         while (body != null) {
             SymbolMetodoElemento elem = body.metodo;
-
             switch (elem.getTipo()) {
-                case SymbolMetodoElemento.INSTR ->
+                case INSTR ->
                     procesarInstruccion(elem.instruccion);
-                case SymbolMetodoElemento.IF ->
+                case IF ->
                     procesarIf(elem.iff);
-                case SymbolMetodoElemento.LOOP ->
+                case LOOP ->
                     procesarLoop(elem.loop);
-                case SymbolMetodoElemento.SWITCH ->
+                case SWITCH ->
                     procesarSwitch(elem.sw);
+                case BLOQUE ->
+                    procesarBloque(elem.block);
             }
             body = body.siguienteMetodo;
         }
+    }
+    
+    private void procesarBloque(SymbolBloque bloque) throws Exception {
+        tablaSimbolos.entraBloque();
+        procesarBody(bloque.cuerpo);
+        tablaSimbolos.salirBloque();
     }
 
     private void procesarInstruccion(SymbolInstr instr) throws Exception {
@@ -433,7 +441,7 @@ public class AnalizadorSemantico {
             SymbolOperand op = opLista.operand;
             String tipoOp = procesarOperando(op);
             if (tipoOp == null) {
-                errores.add("Se ha intentado pasar por parametros operacions no validas en el parametro " + n + " de la funcion " + nombre);
+                errores.add("Se ha intentado pasar por parametros operaciones no validas en el parametro " + n + " de la funcion " + nombre);
                 indicarLocalizacion(op);
             } else if (!tipoOp.equals(tipoParam.snd.getTipo())) {
                 errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + tipoParam.snd.getTipo());
@@ -595,8 +603,10 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(params);
                 params = params.siguienteParam;
                 continue;
-            } else if (tablaSimbolos.consulta(nombreParam) != null) {
-                errores.add("El identificador " + nombreParam + " ya está declarado en este ámbito y por lo tanto no se puede llamar así al parámetro");
+            }
+            String errMsg = tablaSimbolos.sePuedeDeclarar(nombreParam);
+            if (!errMsg.isEmpty()) {
+                errores.add(errMsg);
                 indicarLocalizacion(params);
                 params = params.siguienteParam;
                 continue;
@@ -864,9 +874,9 @@ public class AnalizadorSemantico {
                     error = true;
                 }
                 if (!error) {
-                    tipoArr = tipoArr.substring(0, tipoArr.length() - 3);
+                    tipoArr = tipoArr.substring(0, tipoArr.lastIndexOf("[")).trim();
                     if (tipoArr.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
-                        String tipo = tipoArr.substring(tipoArr.indexOf(" ") + 1);
+                        String tipo = tipoArr.substring(tipoArr.indexOf(" ") + 1); // -------------------------------------------------------------------------------------------------
                         if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo)) {
                             DescripcionSimbolo ds = tablaSimbolos.consulta(tipo);
                             if (ds == null) {
@@ -914,13 +924,20 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(tupla);
                     return null;
                 }
-                DescripcionSimbolo miembro = tablaSimbolos.consulta(ds.getNombreTupla() + "." + op.member);
+                DescripcionSimbolo aux = tablaSimbolos.consulta(ds.getNombreTupla());
+                if (aux == null) {
+                    errores.add("Se ha intentado acceder a un miembro de una tupla (" + nombre + ") que es de un tipo no declarado anteriormente (" + ds.getNombreTupla() + ")");
+                    indicarLocalizacion(tupla);
+                    return null;
+                }
+                DescripcionDefinicionTupla dt = (DescripcionDefinicionTupla) aux;
+                DescripcionDefinicionTupla.DefinicionMiembro miembro = dt.getMiembro(op.member);
                 if (miembro == null) {
                     errores.add("El miembro " + op.member + " no existe en la tupla " + nombre);
                     indicarLocalizacion(tupla);
                     return null;
                 }
-                return miembro.getTipo();
+                return miembro.tipo;
             }
             case CASTING -> {
                 SymbolOperand operando = op.op;

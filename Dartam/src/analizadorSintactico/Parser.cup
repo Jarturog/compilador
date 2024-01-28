@@ -156,6 +156,8 @@ non terminal SymbolScript SCRIPT;
 non terminal SymbolScriptElemento SCRIPT_ELEMENTO;
 non terminal SymbolDimensiones DIMENSIONES;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
+non terminal SymbolBloque BLOQUE
+//PAREN_LOOP_COND
 
 precedence right CASTING;
 precedence left PREC_B_EXP;
@@ -239,12 +241,16 @@ METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft
         | LOOP:et               {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
         | IF:et                 {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
         | SWITCH:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+        | BLOQUE:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+        ;
+
+BLOQUE ::= LKEY BODY:et RKEY    {: RESULT = new SymbolBloque(et, etxleft, etxright); :}
         ;
 
 INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
         | RETURN:et            {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
         | DECS:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
-        | ASIGS:et             {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | ASIGS:et ENDINSTR            {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
         | SWAP:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
         ;
 
@@ -271,7 +277,7 @@ SWAP ::= ID:et1 OP_SWAP ID:et2 ENDINSTR           {: RESULT = new SymbolSwap(et1
         ;
 
 ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new SymbolAsigs(et1, et2, et1xleft, et1xright); :}
-        | ASIG:et ENDINSTR                                      {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
+        | ASIG:et                                       {: RESULT = new SymbolAsigs(et, etxleft, etxright); :}
         ;
 
 ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                  {: RESULT = new SymbolAsig(et, aop, val, etxleft, etxright); :}
@@ -351,8 +357,12 @@ BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.O
         | OP_OR:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_OR, et, etxleft, etxright); :}
         ;
 
-LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
-        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+LOOP ::= KW_LOOP:et1 PAREN_LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        | KW_DO:et1 LKEY BODY:et2 RKEY PAREN_LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        ;
+
+PAREN_LOOP_COND ::= LPAREN PAREN_LOOP_COND:lc RPAREN                        {: RESULT = lc; :}
+        | LOOP_COND:lc                                                      {: RESULT = lc; :}
         ;
 
 LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}

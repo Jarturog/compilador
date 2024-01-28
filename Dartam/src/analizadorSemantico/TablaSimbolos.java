@@ -9,54 +9,75 @@ package analizadorSemantico;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 public class TablaSimbolos {
 
     private int n; //Nivel actual
     private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private ArrayList<Integer> ta; //Tabla de ambitos
-    private ArrayList<Entrada> te; //Table de expansion
+    private HashMap<Integer, Entrada> te; //Table de expansion
 
     public TablaSimbolos() {
-        n = 0;
-        td = new HashMap();
-        ta = new ArrayList();
-        te = new ArrayList();
-        ta.add(n, 0);
+        vaciar();
     }
 
     //Clase entrada usado para la tabla de expansión!
     public class Entrada {
 
-        public String nombreVariable, idcamp; //Identificador
-        public DescripcionSimbolo descripcion;
-        public int d, next, np;
+        /**
+         * Nombre
+         */
+        public final String id;
 
-        public Entrada(String n, DescripcionSimbolo d, int np) {
-            this.nombreVariable = n;
-            this.descripcion = d;
+        protected String idcamp; //Identificador
+
+        /**
+         * Descripción
+         */
+        private final DescripcionSimbolo d;
+        protected int dAntigua, next;
+        /**
+         * Nivel
+         */
+        protected int np;
+
+        public Entrada(String n, DescripcionSimbolo ds, int np) {
+            this.id = n;
+            this.d = ds;
+            this.np = np;
+        }
+
+        public Entrada(String n, int np, DescripcionSimbolo ds) {
+            this.id = n;
+            this.d = ds;
             this.np = np;
         }
 
         @Override
         public String toString() {
-            return "Variable: '" + nombreVariable + "'\t Descripción: " + descripcion + "\n";
+            return "Variable: '" + id + "'\t Descripción: " + d + "\n";
+        }
+
+        public int getNivel() {
+            return np;
         }
     }
 
     /**
      * Vaciamos todas las tablas y ponemos a n = 1
      */
-    public void vaciar() {
+    public final void vaciar() {
         this.n = 0; //Nivel actual
         this.td = new HashMap();
         this.ta = new ArrayList();
-        this.te = new ArrayList();
+        this.te = new HashMap();
 
-        //ta.add(n, 0);
-        //this.n += 1;
-        //ta.add(n,0);
+        ta.add(n, 0);
+//        this.n++;
+//        ta.add(n, 0);
     }
 
     /**
@@ -65,7 +86,7 @@ public class TablaSimbolos {
     public void poner(String id, DescripcionSimbolo d) throws Exception {
         //Comprobamos si existe dentro de la tabla de descriptores
 
-        DescripcionSimbolo sd = td.get(id);
+        DescripcionSimbolo sd = td.get(id); // = consulta(id);
 
         if (sd != null) { //Existe actualmente
             if (sd.getNivel() == this.n) { //Si ya hay uno al mismo nivel error
@@ -73,9 +94,14 @@ public class TablaSimbolos {
             }
 
             //Si no estan declaradas al mismo nivel
-            int indice = ta.get(this.n) + 1;
-            ta.set(n, indice);
-            te.add(new Entrada(id, sd, n)); //Ya que existia de antes, pero ahora a otro nivel
+            int indice = ta.get(n) + 1;
+            if (n == ta.size()) {
+                ta.add(n, indice);
+            } else {
+                ta.set(n, indice);
+            }
+            te.put(indice, new Entrada(id, sd.getNivel(), sd)); //Ya que existia de antes, pero ahora a otro nivel
+
         }
 
         //Ya sea si no existia el simbolo, como si ha sido movido el actual de td
@@ -88,44 +114,54 @@ public class TablaSimbolos {
      * Entramos a un nuevo bloque de codigo EJ: int a = 0; -> if(){...}
      * ----------------- int a = 0; if(){ -> }
      */
-    public void entraBloque() {
-        this.n += 1; //Actualizamos el nivel
-        int valor = ta.get(n - 1);
-
+    public void entraBloque() throws Exception {
+        n++; //Actualizamos el nivel
         //ta valdrá lo mismo que la entrada anterior
         //A medida que se añadan simbolos este valor ta variara
-        ta.add(valor);
+        if (n == ta.size()) {
+            ta.add(n, ta.get(n - 1));
+        } else if (n < ta.size()) {
+            ta.set(n, ta.get(n - 1));
+        } else {
+            throw new Exception("Error grave del compilador, contacta con los desarrolladores por favor\n");
+        }
     }
 
     public void salirBloque() throws Exception {
-
-        if (this.n == 0) { //Error grave del compilador
-            throw new Exception("Error grave del compilador, contacta con los desarrolladores por favor"); //Cambiar mas adelante
+        if (this.n <= 0) { //Error grave del compilador
+            throw new Exception("Error grave del compilador, contacta con los desarrolladores por favor\n");
         }
+//        for (Map.Entry<Integer, Entrada> e : te.entrySet()) {
+//            System.out.println(e);
+//        }
         int lini = ta.get(this.n);
-        ta.remove(this.n); //Esto revisarlo
-        this.n -= 1;
+        //ta.remove(this.n); //Esto revisarlo
+        n--;
         int lfi = ta.get(this.n);
 
         //Pasamos todas las declaraciones anteriores a la td
-        if (lfi < lini && lini <= te.size()) {
-            for (Entrada entrada : te.subList(lfi, lini)) {
-                if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
-                    td.replace(entrada.nombreVariable, entrada.descripcion);
-                }
-            }
-            te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
+        for (int i = lfi; i > lini; i--) { // <= ?
+            Entrada entrada = te.get(i);
+            DescripcionSimbolo ds = td.put(entrada.id, entrada.d);
+            ds.setNivel(entrada.getNivel());
+//            if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
+//                td.replace(entrada.id, entrada.descripcion);
+//            }
         }
-
-        //Vaciamos entradas del nivel del bloque del que salimos
-        Iterator<HashMap.Entry<String, DescripcionSimbolo>> iterador = td.entrySet().iterator();
-        while (iterador.hasNext()) {
-            //Si son de un nivel de profundidad superior, se quita
-            if (iterador.next().getValue().getNivel() > this.n) {
-                iterador.remove();
+        HashSet<String> elementosAEliminar = new HashSet<>(); //Vaciamos entradas del nivel del bloque del que salimos
+        for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
+            if (e.getValue().getNivel() > n) { //Si son de un nivel de profundidad superior, se quita
+                elementosAEliminar.add(e.getKey());
             }
         }
-
+        for (String e : elementosAEliminar) {
+            td.remove(e);
+        }
+//        for (String id : elementosAEliminar) {
+//            Entrada e = te.get(id);
+//            
+//        }
+//        te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
     }
 
     //idr es la tupla
@@ -138,8 +174,8 @@ public class TablaSimbolos {
         int i = d.first;
 
         //Buscamos dentro una variable con el mismo nombre dentro de la tupla
-        while (i != 0 && !te.get(i).nombreVariable.equals(idc)) {
-            i = te.get(i).descripcion.next;
+        while (i != 0 && !te.get(i).id.equals(idc)) {
+            i = te.get(i).d.next;
         }
 
         //Si hemos salido o porque no hay mas variables, o hemos encontrado una con el mismo nombre
@@ -151,11 +187,11 @@ public class TablaSimbolos {
         ta.set(this.n, idxe); //Actualizamos tabla de ambitos porque añadimos un nuevo parametro
 
         Entrada e = new Entrada(idc, dCamp, n); // Nueva entrada
-        e.descripcion.setNivel(-1); //No se copiará al hacer el salir bloque, es unicamente un indicador
-        e.descripcion.next = td.get(idr).first;
-        e.descripcion.first = idxe;
+        e.d.setNivel(-1); //No se copiará al hacer el salir bloque, es unicamente un indicador
+        e.d.next = td.get(idr).first;
+        e.d.first = idxe;
         td.get(idr).next = idxe; //Referenciamos al añadido para crear una lista
-        te.add(e); //Ahora la añadimos a la tabla de expansion
+        te.put(idxe, e); //Ahora la añadimos a la tabla de expansion 
     }
 
     /*
@@ -170,8 +206,8 @@ public class TablaSimbolos {
         }
 
         int i = d.first;
-        while (i != 0 && !te.get(i).nombreVariable.equals(idc)) {
-            i = te.get(i).descripcion.next;
+        while (i != 0 && !te.get(i).id.equals(idc)) {
+            i = te.get(i).d.next;
         }
 
         if (i != 0) {
@@ -215,38 +251,37 @@ public class TablaSimbolos {
         } else {  //En el caso de que haya mas indices, es decir mas elementeos lo actualizamos
             te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte al nuevo
         }
-        te.add(idxe, ent); //Finalmente añadimos la entrada a la tabla de expansion
+        te.put(idxe, ent); //Finalmente añadimos la entrada a la tabla de expansion
     }
+//
+//    /*
+//        Método auxiliar por si necesitamos saber si es el primer indice
+//     */
+//    private Integer first(String id) throws Exception {
+//        DescripcionSimbolo sd = td.get(id);
+//        if (!sd.isArray()) {
+//            throw new Exception("No es un array el elemento");
+//        }
+//        return sd.first;
+//    }
 
-    /*
-        Método auxiliar por si necesitamos saber si es el primer indice
-     */
-    private Integer first(String id) throws Exception {
-        DescripcionSimbolo sd = td.get(id);
-        if (!sd.isArray()) {
-            throw new Exception("No es un array el elemento");
-        }
-        return sd.first;
-    }
-
-    /*
-        Método auxiliar para saber el siguiente indice
-     */
-    private Integer next(int idx) throws Exception {
-        int ent = te.get(idx).next;
-        if (ent == 0) {
-            throw new Exception("Error al conseguir la sigueinte dimension");
-        }
-        return ent;
-    }
-
-    /*
-        Metodo auxiliar para saber si es el ultimo indice
-     */
-    private boolean last(int idx) {
-        return te.get(idx).next == 0;
-    }
-
+//    /*
+//        Método auxiliar para saber el siguiente indice
+//     */
+//    private Integer next(int idx) throws Exception {
+//        int ent = te.get(idx).next;
+//        if (ent == 0) {
+//            throw new Exception("Error al conseguir la sigueinte dimension");
+//        }
+//        return ent;
+//    }
+//
+//    /*
+//        Metodo auxiliar para saber si es el ultimo indice
+//     */
+//    private boolean last(int idx) {
+//        return te.get(idx).next == 0;
+//    }
 //    /*
 //        Metodo para consultar una indice dentro de un array, en teoría mandara
 //        la descripcion de dicho elemento
@@ -255,9 +290,27 @@ public class TablaSimbolos {
 //        return te.get(idx).descripcion;
 //    }
     //Consulatamos una variable ya incorporada
-    public DescripcionSimbolo consulta(String s) {
-        DescripcionSimbolo e = td.get(s);
-        return e;
+    public DescripcionSimbolo consulta(String id) {
+        return td.get(id);
+    }
+
+    /**
+     * Comprueba si ya ha estado declarado y es visible o si el id corresponde a una función o tupla
+     * @param id
+     * @return 
+     */
+    public String sePuedeDeclarar(String id) {
+        DescripcionSimbolo ds = td.get(id);
+        if (ds == null) {
+            return "";
+        }
+        if (ds.isDefinicionTupla() || ds.isFunction()) {
+            return "El identificador '" + id + "' ha intentado hacer override de una función o de una tupla";
+        }
+        if (ds.nivel != n) {
+            return "";
+        }
+        return "El identificador '" + id + "' ya ha sido declarado con anterioridad";
     }
 
     /*
@@ -273,7 +326,7 @@ public class TablaSimbolos {
 
         int idxe = td.get(idpr).first;
         int idxep = 0;
-        while (idxe != 0 && te.get(idxe).nombreVariable.equals(idparam)) {
+        while (idxe != 0 && te.get(idxe).id.equals(idparam)) {
             idxep = idxe;
             idxe = te.get(idxe).next;
         }
@@ -296,11 +349,8 @@ public class TablaSimbolos {
             te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
         }
 
-        if (idxe > te.size()) { // auxiliar
-            te.add(ent);
-        } else {
-            te.add(idxe, ent);
-        }
+        te.put(idxe, ent);
+
     }
 
     @Override
@@ -323,10 +373,9 @@ public class TablaSimbolos {
         }
         return tabuladores.toString();
     }
-    
-    
-    public int getProfundidad(){
-        return this.n; 
+
+    public int getProfundidad() {
+        return this.n;
     }
 
 }

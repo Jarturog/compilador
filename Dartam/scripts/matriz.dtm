@@ -6,13 +6,13 @@ tupla matriz3 {
 }
 
 f vacio inicio(string[] argumentos) {
-
+	tupla matriz3 A;
     // Inicializar matrices A y B
     inicializarMatriz(A, 3);
     inicializarMatriz(B, 2);
     
     // Multiplicar matrices A y B
-    tupla matriz3 resultado: multiplicarMatrices(A, B);
+    tupla matriz3 resultado: multiplicarMatrices(A, B); // asignacion = null???
     
     // Mostrar resultado
     //mostrarMatriz(resultado);
@@ -48,7 +48,7 @@ f tupla matriz3 multiplicarMatrices(tupla matriz3 A, tupla matriz3 B) {
 				ent[A.filas][A.columnas] auxA: A.datos;
 				ent[B.filas][B.columnas] auxB: B.datos;
 				ent[A.filas][B.columnas] auxC: C.datos;
-                auxC[i][j]+: auxA[i][k] * auxB[k][j];
+                auxC[i][j]: auxC[i][j] + auxA[i][k] * auxB[k][j];
             }
         }
     }

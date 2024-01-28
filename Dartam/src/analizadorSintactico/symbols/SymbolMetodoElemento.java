@@ -17,6 +17,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         | LOOP:et               {: RESULT = new SymbolMetodoElemento(et, etleft, etright); :}
         | IF:et                 {: RESULT = new SymbolMetodoElemento(et, etleft, etright); :}
         | SWITCH:et             {: RESULT = new SymbolMetodoElemento(et, etleft, etright); :}
+        | BLOQUE
  */
 public class SymbolMetodoElemento extends SymbolBase {
     
@@ -24,6 +25,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     public final SymbolLoop   loop;
     public final SymbolIf     iff;
     public final SymbolSwitch sw;
+    public final SymbolBloque block;
     
     public SymbolMetodoElemento(SymbolInstr instruccion, Location l, Location r) {
         super("elementoMetodo");
@@ -31,6 +33,7 @@ public class SymbolMetodoElemento extends SymbolBase {
         this.loop = null;
         this.iff = null;
         this.sw = null;
+        this.block = null;
     }
     
     public SymbolMetodoElemento(SymbolLoop insLoop, Location l, Location r) {
@@ -39,6 +42,7 @@ public class SymbolMetodoElemento extends SymbolBase {
         this.instruccion = null;
         this.iff = null;
         this.sw = null;
+        this.block = null;
     }
     
     public SymbolMetodoElemento(SymbolIf insIf, Location l, Location r) {
@@ -47,6 +51,7 @@ public class SymbolMetodoElemento extends SymbolBase {
         this.instruccion = null;
         this.loop = null;
         this.sw = null;
+        this.block = null;
     }
     
     public SymbolMetodoElemento(SymbolSwitch insSwitch, Location l, Location r) {
@@ -55,23 +60,33 @@ public class SymbolMetodoElemento extends SymbolBase {
         this.instruccion = null;
         this.loop = null;
         this.iff = null;
+        this.block = null;
+    }
+    
+    public SymbolMetodoElemento(SymbolBloque b, Location l, Location r) {
+        super("elementoMetodo");
+        this.sw = null;
+        this.instruccion = null;
+        this.loop = null;
+        this.iff = null;
+        this.block = b;
     }
 
-    public static final String INSTR = "i", IF = "c", LOOP = "l", SWITCH = "s";
+    public static enum TIPO {
+        INSTR, IF, LOOP, SWITCH, BLOQUE;
+    }
 
-    /**
-     * instruccion, if, loop, switch
-     * @return i, c, l or s
-     */
-    public String getTipo() {
+    public TIPO getTipo() {
         if (instruccion != null) {
-            return INSTR;
+            return TIPO.INSTR;
         } else if (iff != null) {
-            return IF;
+            return TIPO.IF;
         } else if (loop != null) {
-            return LOOP;
+            return TIPO.LOOP;
+        } else if (sw != null) {
+            return TIPO.SWITCH;
         } else {
-            return SWITCH;
+            return TIPO.BLOQUE;
         }
     }
     
