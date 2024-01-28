@@ -44,8 +44,15 @@ public class TablaVariables implements Iterable<VData> {
         this.contador--;
     }
     
-    public void reemplazar(){
-        
+    //Metodo para buscar el numero de variable dado el nombre
+    public int recibirNumeroVariable(String s){
+        for(int i = 0; i<this.tablaVariables.size(); i++){
+            VData v = this.tablaVariables.get(i);
+            if(v.getNombre().equals(s)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override

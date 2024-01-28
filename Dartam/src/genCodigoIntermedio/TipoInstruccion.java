@@ -32,7 +32,8 @@ public enum TipoInstruccion {
     WRITE("write"),
     SCAN("scan"),
     PRINT("print"),
-    SWAP("swap");
+    SWAP("swap"),
+    COPY("copy"),
     INIT("init");
     
     public final String tipo;

@@ -22,11 +22,13 @@ ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et, etxle
 public class SymbolAtomicExpression extends SymbolBase {
     
     public final String tipo;
+    public String id;
     
     public SymbolAtomicExpression(boolean isID, String et, Location l, Location r) {
         super("literal", isID ? et : et.substring(1, et.length() - 1), l, r);
         if (isID) {
             tipo = ParserSym.terminalNames[ParserSym.ID];
+            id = et.substring(1, et.length() - 1);
         } else {
             tipo = ParserSym.terminalNames[ParserSym.STRING];
         }

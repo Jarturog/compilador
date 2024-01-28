@@ -26,6 +26,8 @@ public class GeneradorIntermedio {
     
     // Description to the function in which we are currently.
     private Pair<String, DescripcionSimbolo> metodoActualmenteSiendoTratado;
+    private int variableTratadaActualmente;
+    
     // When checking if a function's parameters are correct, we use this stack to store the declared function's types.
     // We use a stack because we will be taking elements out every time we process them.
     private List<String> errores, symbols;
@@ -69,7 +71,7 @@ public class GeneradorIntermedio {
         this.tablaProcedimientos = new TablaProcedimientos();
         this.tablaVariables = new TablaVariables();
         g3d = new Generador3Direcciones(this.tablaVariables, this.tablaProcedimientos);
-        
+        this.variableTratadaActualmente = -1;
         
         ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
         ArrayList<SymbolScriptElemento> tuplas = new ArrayList<>();
@@ -171,7 +173,7 @@ public class GeneradorIntermedio {
             }
             
             int variable = 0; //Contendra el numero de la variable creada
-            
+
             if (tipo.isArray() || tipo.isTupla()) {
                 if (decs.isConst) {
                     errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
@@ -192,8 +194,10 @@ public class GeneradorIntermedio {
                         indicarLocalizacion(tipo);
                         error = true;
                     }
+                
                     variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, true);
-                    
+                    this.variableTratadaActualmente = variable;
+                
                 }
                 
                 if(tipo.isArray()){
@@ -201,6 +205,7 @@ public class GeneradorIntermedio {
                     int n = 0;
                     
                     variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), true, false);
+                    this.variableTratadaActualmente = variable;
                     
                     while(dim != null) {
                         n++;
@@ -231,6 +236,7 @@ public class GeneradorIntermedio {
                 }
                 
                 variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, false);
+                this.variableTratadaActualmente = variable;
             }
             
             //No hays errores
@@ -813,10 +819,15 @@ public class GeneradorIntermedio {
             //System.out.println(op.toString());
         }
         switch (op.getTipo()) {
-            case ATOMIC_EXPRESSION -> {
+            case ATOMIC_EXPRESSION -> { //Se asignan valores string, bool... o alguno con id
+                
                 SymbolAtomicExpression literal = op.atomicExp;
                 String tipo = literal.tipo;
                 if (!tipo.equals(ParserSym.terminalNames[ParserSym.ID])){
+                    
+                    //Copiamos el valor x -> A
+                    this.g3d.generarInstruccion(TipoInstruccion.COPY.getDescripcion(), new Operador(op.getReferencia()), null, new Operador(this.variableTratadaActualmente)); 
+                    
                     return tipo; // si no es ID
                 }
                 String nombreID = (String)literal.value;
@@ -826,6 +837,13 @@ public class GeneradorIntermedio {
                     indicarLocalizacion(literal);
                     return null;
                 }
+                
+                //Copiamos el valor de la variable B -> A
+                int variableAsignado = this.tablaVariables.recibirNumeroVariable(nombreID);
+                this.g3d.generarInstruccion(TipoInstruccion.COPY.getDescripcion(), new Operador(variableAsignado), null, new Operador(this.variableTratadaActualmente));
+                
+                
+                
                 return ds.getTipo();
             }
             case FCALL -> {
