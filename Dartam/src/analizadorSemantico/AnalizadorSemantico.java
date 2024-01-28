@@ -146,46 +146,47 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(dec);
                 error = true;
             }
-            if (tipo.isArray() || tipo.isTupla()) {
-                if (decs.isConst) {
-                    errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
-                    indicarLocalizacion(dec);
+//            if (tipo.isArray() || tipo.isTupla()) {
+//                if (decs.isConst) {
+//                    errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
+//                    indicarLocalizacion(dec);
+//                    error = true;
+//                }
+//                if (valorAsignado != null) {
+//                    errores.add("Se ha intentado asignar un valor a " + id + ", pero solo se les pueden asignar valores a los tipos primitivos");
+//                    indicarLocalizacion(dec);
+//                    error = true;
+//                }
+            if (tipo.isTupla()) {
+                String tuplaName = tipo.getTipo();
+                tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1);
+                descripcionTupla = tablaSimbolos.consulta(tuplaName);
+                if (descripcionTupla == null) {
+                    errores.add("No se ha encontrado ninguna tupla con el identificador " + tuplaName);
+                    indicarLocalizacion(tipo);
                     error = true;
                 }
-                if (valorAsignado != null) {
-                    errores.add("Se ha intentado asignar un valor a " + id + ", pero solo se les pueden asignar valores a los tipos primitivos");
-                    indicarLocalizacion(dec);
-                    error = true;
-                }
-                if (tipo.isTupla()) {
-                    String tuplaName = tipo.getTipo();
-                    tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1);
-                    descripcionTupla = tablaSimbolos.consulta(tuplaName);
-                    if (descripcionTupla == null) {
-                        errores.add("No se ha encontrado ninguna tupla con el identificador " + tuplaName);
-                        indicarLocalizacion(tipo);
+            }
+            if (tipo.isArray()) {
+                SymbolDimensiones dim = tipo.dimArray;
+                int n = 0;
+                while (dim != null) {
+                    n++;
+                    String tipoIdx = procesarOperando(dim.operando);
+                    if (tipoIdx == null) {
+                        errores.add("Se realizan operaciones no validas para el calculo del indice " + n + " del array " + id);
+                        indicarLocalizacion(dim.operando);
+                        error = true;
+                    } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
+                        errores.add("Las operaciones para el calculo del indice " + n + " del array " + id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
+                        indicarLocalizacion(dim.operando);
                         error = true;
                     }
+                    dim = dim.siguienteDimension;
                 }
-                if (tipo.isArray()) {
-                    SymbolDimensiones dim = tipo.dimArray;
-                    int n = 0;
-                    while (dim != null) {
-                        n++;
-                        String tipoIdx = procesarOperando(dim.operando);
-                        if (tipoIdx == null) {
-                            errores.add("Se realizan operaciones no validas para el calculo del indice " + n + " del array " + id);
-                            indicarLocalizacion(dim.operando);
-                            error = true;
-                        } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                            errores.add("Las operaciones para el calculo del indice " + n + " del array " + id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
-                            indicarLocalizacion(dim.operando);
-                            error = true;
-                        }
-                        dim = dim.siguienteDimension;
-                    }
-                }
-            } else if (valorAsignado != null) {
+            }
+//            }
+            if (valorAsignado != null) {
                 String tipoValor = procesarOperando(valorAsignado);
                 if (tipoValor == null) {
                     errores.add("Los valores del operando " + valorAsignado + " no son compatibles");
@@ -205,13 +206,17 @@ public class AnalizadorSemantico {
                                     id, tipo.getTipo(), decs.isConst,
                                     valorAsignado != null, dt));
                 } else {
+                    String tupla = "";
+                    if (declaracionTipoTupla != null) {
+                        tupla = declaracionTipoTupla.getNombreTupla() + ".";
+                    }
                     DescripcionSimbolo d;
                     if (tipo.isArray()) {
                         d = new DescripcionArray(tipo.getTipo() + " " + tipo.dimArray.getEmptyBrackets(), tipo.dimArray.getDimensiones(), null, dt);
                     } else {
                         d = new DescripcionSimbolo(tipo.getTipo(), decs.isConst, valorAsignado != null, null, dt);
                     }
-                    tablaSimbolos.poner(id, d);
+                    tablaSimbolos.poner(tupla + id, d);
                 }
             }
             dec = dec.siguienteDeclaracion;
@@ -296,18 +301,36 @@ public class AnalizadorSemantico {
                         indicarLocalizacion(asig);
                         error = true;
                     }
-                    String idx = procesarOperando(asig.idx);
-                    if (tipoValor == null) {
-                        errores.add("Se realizan operaciones no validas en el indice del array " + asig.id);
-                        indicarLocalizacion(asig.idx);
-                        error = true;
-                    } else if (!idx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                        errores.add("El indice del array " + asig.id + " no resulta en un entero");
-                        indicarLocalizacion(asig.idx);
+                    SymbolDimensiones dim = asig.dim;
+                    int n = 0, ind = -2;
+                    String tipoDesplazado = d.getTipo();
+                    while (dim != null) {
+                        n++;
+                        if (ind != -1) {
+                            ind = tipoDesplazado.lastIndexOf("[");
+                        }
+                        if (ind > -1) {
+                            tipoDesplazado = tipoDesplazado.substring(0, ind);
+                        }
+                        String tipoIdx = procesarOperando(dim.operando);
+                        if (tipoIdx == null) {
+                            errores.add("Se realizan operaciones no validas para el calculo del indice " + n + " del array " + asig.id);
+                            indicarLocalizacion(dim.operando);
+                            error = true;
+                        } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
+                            errores.add("Las operaciones para el calculo del indice " + n + " del array " + asig.id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
+                            indicarLocalizacion(dim.operando);
+                            error = true;
+                        }
+                        dim = dim.siguienteDimension;
+                    }
+                    if (ind < 0) {
+                        errores.add("Se ha intentado acceder a dimensiones no definidas en el array " + asig.id);
+                        indicarLocalizacion(dim);
                         error = true;
                     }
                     if (!error) {
-                        tipoVariable = d.getTipo();
+                        tipoVariable = tipoDesplazado.trim();
                     }
                     if (!asig.operacion.isBasicAsig()) {
                         errores.add("No se puede realizar asignacion compuesta si la variable '" + asig.id + "' es un array");
@@ -365,7 +388,7 @@ public class AnalizadorSemantico {
                     d.asignarValor();
                 }
                 case ARRAY -> {
-                    tablaSimbolos.ponerIndice(asig.id, d);
+                    //tablaSimbolos.ponerIndice(asig.id, d);
                 }
                 case TUPLA -> {
                     DescripcionSimbolo miembro = d.getMember(asig.miembro);
@@ -605,6 +628,7 @@ public class AnalizadorSemantico {
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) throws Exception {
         SymbolMiembrosTupla miembros = tupla.miembrosTupla;
         DescripcionSimbolo d = tablaSimbolos.consulta(tupla.id);
+//        tablaSimbolos.entraBloque();
         while (miembros != null) {
             DescripcionDefinicionTupla dt = null;
             try {
@@ -615,6 +639,7 @@ public class AnalizadorSemantico {
             procesarDeclaraciones(miembros.decs, dt);
             miembros = miembros.siguienteDeclaracion;
         }
+//        tablaSimbolos.salirBloque();
     }
 
     private void procesarMain(SymbolMain main) throws Exception {
@@ -832,7 +857,7 @@ public class AnalizadorSemantico {
                 if (aux != null && aux.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
                     aux = aux.substring(aux.indexOf(" ") + 1);
                 }
-                aux = aux.substring(aux.indexOf(" ") + 1);
+                //aux = aux.substring(aux.indexOf(" ") + 1);
                 if (!error && (aux == null || aux.length() < 2)) {// !tipoArr.endsWith("]")) {
                     errores.add("El operador " + arr + " del cual se quiere coger un indice no es un array, es de tipo " + tipoArr);
                     indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
@@ -889,7 +914,7 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(tupla);
                     return null;
                 }
-                DescripcionSimbolo miembro = ds.getMember(op.member);
+                DescripcionSimbolo miembro = tablaSimbolos.consulta(ds.getNombreTupla() + "." + op.member);
                 if (miembro == null) {
                     errores.add("El miembro " + op.member + " no existe en la tupla " + nombre);
                     indicarLocalizacion(tupla);

@@ -78,8 +78,13 @@ parser code {:
             if (!tokens.isEmpty()) {
                 tokens = "Se esperaba algun lexema de los siguientes tipos: " + tokens.substring(0, tokens.length() - 2) + ".\n";
             }
-            System.err.println(message + "Desde la linea " + token.xleft.getLine() + " y columna " + token.xleft.getColumn() + " hasta la linea " + token.xright.getLine() + " y columna " + token.xright.getColumn() + ". \n"
-                    + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
+            String loc;
+            if (token.xleft.getLine() == token.xright.getLine()) {
+                loc = "En la linea " + token.xleft.getLine() + " entre las columnas " + token.xleft.getColumn() + " y " + token.xright.getColumn();
+            } else {
+                loc = "Desde la linea " + token.xleft.getLine() + " y columna " + token.xleft.getColumn() + " hasta la linea " + token.xright.getLine() + " y columna " + token.xright.getColumn();
+            }
+            System.err.println(message + loc + ". \n" + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
         } else {
             System.err.println(message + "No se esperaba este componente\n: " +cur_token.value+".");  
         }
@@ -270,7 +275,7 @@ ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new 
         ;
 
 ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                  {: RESULT = new SymbolAsig(et, aop, val, etxleft, etxright); :}
-        | ID:et1 LBRACKET OPERAND:et2 RBRACKET ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
+        | ID:et1 DIMENSIONES:dim ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, dim, aop, val, et1xleft, et1xright); :}
         | ID:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val               {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
         | ID:et1 OP_INC:et2             {: RESULT = new SymbolAsig(true, ParserSym.OP_INC, et1, et2, et1xleft, et1xright); :}  %prec PREC_R_U_EXP
         | ID:et1 OP_DEC:et2             {: RESULT = new SymbolAsig(true, ParserSym.OP_DEC, et1, et2, et1xleft, et1xright); :}  %prec PREC_R_U_EXP

@@ -26,7 +26,7 @@ public class SymbolAsig extends SymbolBase {
     public final SymbolAsigOp operacion;
     public final SymbolOperand valor;
     // array
-    public final SymbolOperand idx;
+    public final SymbolDimensiones dim;
     // tupla
     public final String miembro;
     private final Boolean isPost, isIncrement;
@@ -36,7 +36,7 @@ public class SymbolAsig extends SymbolBase {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
-        this.idx = null;
+        this.dim = null;
         this.miembro = null;
         operacion = op;
         this.isPost = null;
@@ -44,11 +44,11 @@ public class SymbolAsig extends SymbolBase {
     }
 
     // elemento array
-    public SymbolAsig(String id, SymbolOperand dimensiones, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
+    public SymbolAsig(String id, SymbolDimensiones dimensiones, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
-        this.idx = dimensiones;
+        this.dim = dimensiones;
         this.miembro = null;
         operacion = op;
         this.isPost = null;
@@ -60,7 +60,7 @@ public class SymbolAsig extends SymbolBase {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
-        this.idx = null;
+        this.dim = null;
         this.miembro = miembro;
         operacion = op;
         this.isPost = null;
@@ -71,7 +71,7 @@ public class SymbolAsig extends SymbolBase {
     public SymbolAsig(boolean postOperation, int numOperacion, String id, Object v, Location l, Location r) {
         super("asig", l, r);
         this.id = id;
-        this.idx = null;
+        this.dim = null;
         this.miembro = null;
         this.isIncrement = numOperacion == ParserSym.OP_INC;
         operacion = new SymbolAsigOp(isIncrement ? ParserSym.AS_ADDA : ParserSym.AS_SUBA, v, l, r);
@@ -84,9 +84,9 @@ public class SymbolAsig extends SymbolBase {
     }
 
     public TIPO getTipo() {
-        if (idx == null && miembro == null) {
+        if (dim == null && miembro == null) {
             return TIPO.PRIMITIVA;
-        } else if (idx != null) {
+        } else if (dim != null) {
             return TIPO.ARRAY;
         } else {
             return TIPO.TUPLA;

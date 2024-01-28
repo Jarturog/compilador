@@ -38,6 +38,11 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         }
 
     }
+    
+    @Override
+    public String getNombreTupla() throws Exception {
+        return super.tipo;
+    }
 
     @Override
     public String toString() {

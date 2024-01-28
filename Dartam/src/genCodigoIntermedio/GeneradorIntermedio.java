@@ -338,14 +338,14 @@ public class GeneradorIntermedio {
                         indicarLocalizacion(asig);
                         error = true;
                     }
-                    String idx = procesarOperando(asig.idx);
+                    String idx = procesarOperando(asig.dim);
                     if (tipoValor == null) {
                         errores.add("Se realizan operaciones no validas en el indice del array " + asig.id);
-                        indicarLocalizacion(asig.idx);
+                        indicarLocalizacion(asig.dim);
                         error = true;
                     } else if (!idx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                         errores.add("El indice del array " + asig.id + " no resulta en un entero");
-                        indicarLocalizacion(asig.idx);
+                        indicarLocalizacion(asig.dim);
                         error = true;
                     }
                     if (!error) {
