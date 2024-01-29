@@ -873,6 +873,8 @@ public class GeneradorIntermedio {
                     SymbolRUnaryOperator operator = exp.rightOp;
                     operation = operator.unaryOperator;
                 }
+                
+                //R_OPERATOR -> SOLO INC Y DEC
                 if (ParserSym.OP_INC == operation || ParserSym.OP_DEC == operation) {
                     String s = "incremento";
                     if (ParserSym.OP_DEC == operation) s = "decremento";
@@ -898,11 +900,13 @@ public class GeneradorIntermedio {
                             this.g3d.generarInstruccion(TipoInstruccion.SUB.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
                         }
                     }else{ //Insertamos directamente en la varaible a la que hacia referencia anteriormente
+                        
+                        //TODO: mirar que el valor pasado como op.getReferencia() sea en verdad el valor a incrementar
                         numeroVariable = this.g3d.nuevaVariable(TipoReferencia.var, tipo, false, false);
                         if(s.equals("incremento")){ //Incrementamos variable
-                            this.g3d.generarInstruccion(TipoInstruccion.ADD.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
+                            this.g3d.generarInstruccion(TipoInstruccion.ADD.getDescripcion(), new Operador(Tipo.INT,1), new Operador(op.getReferencia()), new Operador(numeroVariable));
                         }else if(s.equals("decremento")){ //Decrementamos variable
-                            this.g3d.generarInstruccion(TipoInstruccion.SUB.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
+                            this.g3d.generarInstruccion(TipoInstruccion.SUB.getDescripcion(), new Operador(Tipo.INT,1), new Operador(op.getReferencia()), new Operador(numeroVariable));
                         }
                     }
                     
@@ -910,6 +914,8 @@ public class GeneradorIntermedio {
                     //TODO: Incorporar alguna manera de indicar que ya hemos finalizado con una varaible para no asignar valores a variables pasadas
                     this.g3d.generarInstruccion(TipoInstruccion.COPY.getDescripcion(), new Operador(numeroVariable), null, new Operador(this.variableTratadaActualmente));
                 }
+                
+                //SOLO L_OPERATIONS
                 if (exp.isLeftUnaryOperator()) {
                     if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
                         errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
@@ -927,9 +933,12 @@ public class GeneradorIntermedio {
                         errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // no se puede operar entero con not
                         indicarLocalizacion(exp);
                         return null;
-                    }
+                    } 
                     return tipo;
                 }
+                
+                
+                
                 if (!tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                     errores.add("Se ha intentado realizar una operacion "+exp+" no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
                     indicarLocalizacion(exp); 
@@ -941,10 +950,14 @@ public class GeneradorIntermedio {
                 } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_INC != operation && ParserSym.OP_DEC != operation)) {
                     return ParserSym.terminalNames[ParserSym.REAL]; // !!! se puede operar entero con OP_PCT
                 }
+                
+                
+                
                 return tipo;
             }
             case BINARY_EXPRESSION -> {
                 SymbolBinaryExpression exp = op.binaryExp;
+                
                 String tipo1 = procesarOperando(exp.op1);
                 boolean error = false;
                 if (tipo1 == null) {
@@ -952,6 +965,7 @@ public class GeneradorIntermedio {
                     indicarLocalizacion(exp);
                     error = true;
                 }
+                
                 String tipo2 = procesarOperando(exp.op2);
                 if (tipo2 == null) {
                     errores.add("El segundo operando de la expresion binaria realiza una operacion "+exp.op2+" no valida");
@@ -961,6 +975,7 @@ public class GeneradorIntermedio {
                 if (error){
                     return null;
                 }
+                
                 boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
                         || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
                 if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
@@ -978,6 +993,13 @@ public class GeneradorIntermedio {
                 SymbolBinaryOperator operator = exp.bop;
                 if (unoIntOtroDouble) {
                     if (operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
+                        
+                        //---->Se puede hacer operacion
+                        TipoInstruccion ti = recibirTipoInstruccion(operator.nombreOperador());
+                        int var = this.g3d.nuevaVariable(TipoReferencia.var, ParserSym.terminalNames[ParserSym.REAL], false, false);
+                        //TODO: Mirar lo de la referecia
+                        this.g3d.generarInstruccion(ti.getDescripcion(), new Operador(exp.op1.getReferencia()), new Operador(exp.op2.getReferencia()), new Operador(this.variableTratadaActualmente));
+                        
                         return ParserSym.terminalNames[ParserSym.REAL];
                     }
                     errores.add("Se ha intentado realizar una operacion ilegal "+exp.bop+" entre tipos "+tipo1 + " y "+tipo2+" en la expresion binaria "+exp);
@@ -990,8 +1012,22 @@ public class GeneradorIntermedio {
                     return null; // error, operandos no pueden operar con operador
                 }
                 if (operator.doesOperationResultInBoolean()) {
+                    
+                    //---->se peude hacer operacion
+                    TipoInstruccion ti = recibirTipoInstruccion(operator.nombreOperador());
+                    int var = this.g3d.nuevaVariable(TipoReferencia.var, ParserSym.terminalNames[ParserSym.PROP], false, false);
+                    //TODO: Mirar lo de la referecia
+                    this.g3d.generarInstruccion(ti.getDescripcion(), new Operador(exp.op1.getReferencia()), new Operador(exp.op2.getReferencia()), new Operador(this.variableTratadaActualmente));
+                        
                     return ParserSym.terminalNames[ParserSym.PROP];
                 }
+                
+                //---->se puede hacer operacion
+                TipoInstruccion ti = recibirTipoInstruccion(operator.nombreOperador());
+                int var = this.g3d.nuevaVariable(TipoReferencia.var, tipo1, false, false);
+                //TODO: Mirar lo de la referecia
+                this.g3d.generarInstruccion(ti.getDescripcion(), new Operador(exp.op1.getReferencia()), new Operador(exp.op2.getReferencia()), new Operador(this.variableTratadaActualmente));
+                        
                 return tipo1; // en caso contrario resulta en el mismo tipo
             }
             case CONDITIONAL_EXPRESSION -> {
@@ -1125,6 +1161,41 @@ public class GeneradorIntermedio {
             }
         }
         return null; // error, no es ninguno de los casos
+    }
+    
+    
+    private TipoInstruccion recibirTipoInstruccion(String s){
+        if(s.equals("OP_ADD")){
+            return TipoInstruccion.ADD;
+        }else if(s.equals("OP_SUB")){
+            return TipoInstruccion.SUB;
+        }else if(s.equals("OP_MUL")){
+            return TipoInstruccion.MUL;
+        }else if(s.equals("OP_DIV")){
+            return TipoInstruccion.DIV;
+        }else if(s.equals("OP_MOD")){
+            return TipoInstruccion.MOD;
+        }else if(s.equals("OP_POT")){
+            return TipoInstruccion.POT;
+        }else if(s.equals("OP_EQ")){
+            return TipoInstruccion.IFEQ;
+        }else if(s.equals("OP_BEQ")){
+            return TipoInstruccion.IFGE;
+        }else if(s.equals("OP_BT")){
+            return TipoInstruccion.IFGT;
+        }else if(s.equals("OP_LEQ")){
+            return TipoInstruccion.IFLE;
+        }else if(s.equals("OP_LT")){
+            return TipoInstruccion.IFLT;
+        }else if(s.equals("OP_NEQ")){
+            return TipoInstruccion.NOT;
+        }else if(s.equals("OP_AND")){
+            return TipoInstruccion.AND;
+        }else if(s.equals("OP_OR")){
+            return TipoInstruccion.OR;
+        }else{
+            return null;
+        }
     }
 
 }

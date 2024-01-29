@@ -34,8 +34,9 @@ public enum TipoInstruccion {
     PRINT("print"),
     SWAP("swap"),
     COPY("copy"),
-    INIT("init");
-    
+    INIT("init"),
+    POT("pot"),
+    PCT("pct");
     public final String tipo;
     
     TipoInstruccion(String t){

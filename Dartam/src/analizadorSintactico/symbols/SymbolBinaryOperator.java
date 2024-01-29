@@ -97,5 +97,9 @@ public class SymbolBinaryOperator extends SymbolBase {
         }
         return false;
     }
+    
+    public String nombreOperador(){
+        return ParserSym.terminalNames[this.operador];
+    }
 
 }
