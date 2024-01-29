@@ -28,7 +28,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     public final SymbolBloque block;
     
     public SymbolMetodoElemento(SymbolInstr instruccion, Location l, Location r) {
-        super("elementoMetodo");
+        super("elementoMetodo", l, r);
         this.instruccion = instruccion;
         this.loop = null;
         this.iff = null;
@@ -37,7 +37,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     }
     
     public SymbolMetodoElemento(SymbolLoop insLoop, Location l, Location r) {
-        super("elementoMetodo");
+        super("elementoMetodo", l, r);
         this.loop = insLoop;
         this.instruccion = null;
         this.iff = null;
@@ -46,7 +46,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     }
     
     public SymbolMetodoElemento(SymbolIf insIf, Location l, Location r) {
-        super("elementoMetodo");
+        super("elementoMetodo", l, r);
         this.iff = insIf;
         this.instruccion = null;
         this.loop = null;
@@ -55,7 +55,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     }
     
     public SymbolMetodoElemento(SymbolSwitch insSwitch, Location l, Location r) {
-        super("elementoMetodo");
+        super("elementoMetodo", l, r);
         this.sw = insSwitch;
         this.instruccion = null;
         this.loop = null;
@@ -64,7 +64,7 @@ public class SymbolMetodoElemento extends SymbolBase {
     }
     
     public SymbolMetodoElemento(SymbolBloque b, Location l, Location r) {
-        super("elementoMetodo");
+        super("elementoMetodo", l, r);
         this.sw = null;
         this.instruccion = null;
         this.loop = null;

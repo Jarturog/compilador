@@ -144,7 +144,7 @@ non terminal SymbolBinaryOperator BINARY_OPERATOR;
 non terminal SymbolLUnaryOperator L_UNARY_OPERATOR;
 non terminal SymbolRUnaryOperator R_UNARY_OPERATOR;
 non terminal SymbolLoop LOOP;
-non terminal SymbolLoopCond LOOP_COND;
+non terminal SymbolLoopCond LOOP_COND, PAREN_LOOP_COND;
 non terminal SymbolIf IF;
 non terminal SymbolElifs ELIFS;
 non terminal SymbolElif ELIF;
@@ -156,8 +156,7 @@ non terminal SymbolScript SCRIPT;
 non terminal SymbolScriptElemento SCRIPT_ELEMENTO;
 non terminal SymbolDimensiones DIMENSIONES;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
-non terminal SymbolBloque BLOQUE
-//PAREN_LOOP_COND
+//non terminal SymbolBloque BLOQUE;
 
 precedence right CASTING;
 precedence left PREC_B_EXP;
@@ -241,11 +240,11 @@ METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft
         | LOOP:et               {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
         | IF:et                 {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
         | SWITCH:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
-        | BLOQUE:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
+//        | BLOQUE:et             {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
         ;
 
-BLOQUE ::= LKEY BODY:et RKEY    {: RESULT = new SymbolBloque(et, etxleft, etxright); :}
-        ;
+//BLOQUE ::= LKEY BODY:et RKEY    {: RESULT = new SymbolBloque(et, etxleft, etxright); :}
+//        ;
 
 INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
         | RETURN:et            {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
@@ -357,19 +356,19 @@ BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.O
         | OP_OR:et              {: RESULT = new SymbolBinaryOperator(ParserSym.OP_OR, et, etxleft, etxright); :}
         ;
 
-LOOP ::= KW_LOOP:et1 PAREN_LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
-        | KW_DO:et1 LKEY BODY:et2 RKEY PAREN_LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
         ;
 
 PAREN_LOOP_COND ::= LPAREN PAREN_LOOP_COND:lc RPAREN                        {: RESULT = lc; :}
-        | LOOP_COND:lc                                                      {: RESULT = lc; :}
+        | DECS:et1 OPERAND:et2 ENDINSTR ASIGS:et3                           {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}                           
         ;
 
 LOOP_COND ::= OPERAND:et                                                {: RESULT = new SymbolLoopCond(et, etxleft, etxright); :}
-        | DECS:et1 OPERAND:et2 ENDINSTR ASIGS:et3            {: RESULT = new SymbolLoopCond(et1, et2, et3, et1xleft, et1xright); :}
+        | PAREN_LOOP_COND:lc                                            {: RESULT = lc; :}
         ;
 
-IF ::= KW_IF OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          {: RESULT = new SymbolIf(et1, et2, et3, et4, et1xleft, et1xright); :}
+IF ::= KW_IF:et0 OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          {: RESULT = new SymbolIf(et1, et2, et3, et4, et0xleft, et0xright); :}
         ;
 
 ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(et1, et2, et1xleft, et1xright); :}

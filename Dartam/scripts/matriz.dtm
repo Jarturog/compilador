@@ -6,6 +6,7 @@ tupla matriz3 {
 }
 
 f vacio inicio(string[] argumentos) {
+ 
 	tupla matriz3 A;
     // Inicializar matrices A y B
     inicializarMatriz(A, 3);
@@ -29,13 +30,14 @@ f vacio inicializarMatriz(tupla matriz3 m, ent modo) {
 }
 
 f tupla matriz3 multiplicarMatrices(tupla matriz3 A, tupla matriz3 B) {
+si cierto{}  sino falso {} sino cierto{}// no {}
     // Verificar si las matrices son multiplicables
-    #si ¬(A.columnas = B.filas) {
+    //si cierto {// ¬(A.columnas = B.filas) {
         // Las matrices no son compatibles para la multiplicación
         // Puedes manejar este caso de acuerdo a tus necesidades
         //show("No se pueden multiplicar estas matrices.");
-        pop;
-    }#
+        //pop;
+    //}
 
 	tupla matriz3 C;
     // Inicializar matriz resultado con ceros

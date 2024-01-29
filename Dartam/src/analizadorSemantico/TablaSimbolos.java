@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class TablaSimbolos {
 
@@ -131,37 +132,24 @@ public class TablaSimbolos {
         if (this.n <= 0) { //Error grave del compilador
             throw new Exception("Error grave del compilador, contacta con los desarrolladores por favor\n");
         }
-//        for (Map.Entry<Integer, Entrada> e : te.entrySet()) {
-//            System.out.println(e);
-//        }
         int lini = ta.get(this.n);
         //ta.remove(this.n); //Esto revisarlo
         n--;
         int lfi = ta.get(this.n);
 
         //Pasamos todas las declaraciones anteriores a la td
-        for (int i = lfi; i > lini; i--) { // <= ?
-            Entrada entrada = te.get(i);
+        for (int i = lini; i > lfi; i--) { // <= ?
+            Entrada entrada = te.remove(i);//te.get(i);
             DescripcionSimbolo ds = td.put(entrada.id, entrada.d);
-            ds.setNivel(entrada.getNivel());
-//            if (entrada.descripcion.getNivel() != -1) { //Si es -1, es una entrada que no se mete en la tabla de descriptores
-//                td.replace(entrada.id, entrada.descripcion);
-//            }
+            ds.setNivel(entrada.getNivel()); // sobra -------------------------------------
         }
-        HashSet<String> elementosAEliminar = new HashSet<>(); //Vaciamos entradas del nivel del bloque del que salimos
-        for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
+        //Vaciamos entradas del nivel del bloque del que salimos
+        for (Iterator<Map.Entry<String, DescripcionSimbolo>> it = td.entrySet().iterator(); it.hasNext();) {
+            HashMap.Entry<String, DescripcionSimbolo> e = it.next();
             if (e.getValue().getNivel() > n) { //Si son de un nivel de profundidad superior, se quita
-                elementosAEliminar.add(e.getKey());
+                it.remove();//td.remove(e.getKey());
             }
         }
-        for (String e : elementosAEliminar) {
-            td.remove(e);
-        }
-//        for (String id : elementosAEliminar) {
-//            Entrada e = te.get(id);
-//            
-//        }
-//        te.subList(lini, lini).clear(); //Las eleminimos ya que las metimos dentro de la td
     }
 
     //idr es la tupla

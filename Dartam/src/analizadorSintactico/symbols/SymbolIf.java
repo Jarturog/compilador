@@ -21,7 +21,7 @@ public class SymbolIf extends SymbolBase {
     public final SymbolElse els;
 
     public SymbolIf(SymbolOperand op, SymbolBody cuerpo, SymbolElifs elifs, SymbolElse els, Location l, Location r) {
-        super("if", 0 ,l , r);
+        super("if" ,l , r);
         this.cond = op;
         this.cuerpo = cuerpo;
         this.elifs = elifs;

@@ -27,7 +27,7 @@ public class SymbolElifs extends SymbolBase {
     }
     
     public SymbolElifs(SymbolElif elif, SymbolElifs elifs, Location l, Location r){
-        super("elif", 0, l, r);
+        super("elif", l, r);
         this.elif = elif;
         this.elifs = elifs;
     }
