@@ -533,7 +533,7 @@ public class GeneradorIntermedio {
             indicarLocalizacion(cond.cond);
         }
         //Llegados aquí si la condicion es falsa salta, sino ejecuta
-        this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(e)); //Si es falso saltaremos
+        this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(e)); //Si es falso saltaremos
         
         tablaSimbolos.entraBloque();
         procesarBody(cond.cuerpo);
@@ -560,13 +560,13 @@ public class GeneradorIntermedio {
             
             if(elifs.elifs == null && cond.els != null){
                 //Llegados aquí si la condicion es falsa salta, sino ejecuta
-                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(eElse)); //Si es falso saltaremos
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(eElse)); //Si es falso saltaremos
             }else if(elifs.elifs != null){
                 //Llegados aquí si la condicion es falsa salta, sino ejecuta
-                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(elseIf2)); //Si es falso saltaremos
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(elseIf2)); //Si es falso saltaremos
             }else{
                 //Llegados aquí si la condicion es falsa salta, sino ejecuta
-                 this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(efi)); //Si es falso saltaremos
+                 this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(efi)); //Si es falso saltaremos
             }
             
             tablaSimbolos.entraBloque();
@@ -1033,6 +1033,9 @@ public class GeneradorIntermedio {
             case CONDITIONAL_EXPRESSION -> {
                 SymbolConditionalExpression exp = op.conditionalExp;
                 String tipoCond = procesarOperando(exp.cond);
+                String etiquetaFin = this.g3d.nuevaEtiqueta();
+                String etiquetaFalse = this.g3d.nuevaEtiqueta();
+
                 if (tipoCond == null) {
                     errores.add("La condicion "+exp.cond+" de la expresion ternaria "+exp+" realiza una operacion no valida");
                     indicarLocalizacion(exp.cond);
@@ -1040,6 +1043,8 @@ public class GeneradorIntermedio {
                     errores.add("La condicion "+exp.cond+" de la expresion ternaria "+exp+" no resulta en una proposicion evualable como verdadera o falsa, sino en " + tipoCond);
                     indicarLocalizacion(exp.cond); // error, no se puede utilizar de condicion algo que no sea una proposicion
                 }
+                this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(exp.cond.getReferencia()), new Operador(Tipo.INT, 1), new Operador(etiquetaFalse));
+                
                 boolean error = false;
                 String tipo1 = procesarOperando(exp.caseTrue);
                 if (tipo1 == null) {
@@ -1047,6 +1052,9 @@ public class GeneradorIntermedio {
                     indicarLocalizacion(exp.caseTrue);
                     error = true;
                 }
+                this.g3d.generarInstruccion(TipoInstruccion.GOTO.getDescripcion(), null, null, new Operador(etiquetaFin));
+                
+                this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(etiquetaFalse));
                 String tipo2 = procesarOperando(exp.caseFalse);
                 if (tipo2 == null) {
                     errores.add("El operando a asignar en caso negativo "+exp.caseFalse+" de la expresion ternaria "+exp+" realiza operaciones no validas");
@@ -1061,6 +1069,8 @@ public class GeneradorIntermedio {
                     indicarLocalizacion(exp);
                     return null;
                 }
+                
+                this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(etiquetaFin));
                 return tipo1;
             }
             case IDX_ARRAY -> {
