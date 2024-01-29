@@ -216,10 +216,10 @@ public class SymbolOperand extends SymbolBase {
     }
     
     private String arrayToString(){
-        return "("+op.value+lBracket+idxArr.value+rBracket+")";
+        return op.value+lBracket+idxArr.value+rBracket;
     }
     
     private String tuplaToString(){
-        return "("+op.value+"."+member+")";
+        return op.value+"."+member;
     }
 }

@@ -1,10 +1,10 @@
-/** 
-* Assignatura 21780 - Compiladors
-* Estudis: Grau en Enginyeria Informàtica 
-* Itinerari: Intel·ligència Artificial i Computacio
-*
-* Equipo: Arturo, Dani y Marta
-*/
+/**
+ * Assignatura 21780 - Compiladors
+ * Estudis: Grau en Enginyeria Informàtica
+ * Itinerari: Intel·ligència Artificial i Computacio
+ *
+ * Equipo: Arturo, Dani y Marta
+ */
 package dartam;
 
 import java.io.InputStreamReader;
@@ -24,8 +24,8 @@ import java.io.IOException;
 
 public class Dartam {
 
-    private static final String RUTA = "scripts/";
-    
+    private static final String RUTA = "scripts/", LOG = "log.txt";
+
     public static void main(String[] args) {
         try {
             Reader ficheroIn;
@@ -52,7 +52,7 @@ public class Dartam {
             Scanner scanner = new Scanner(ficheroIn);
             // Análisis sintáctico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
-            SymbolScript script = (SymbolScript) parser.parse().value;
+            Object resultado = parser.parse().value;
             escribir("tokens.txt", scanner.getTokens());
             if (!scanner.getErrores().isEmpty()) {
                 System.err.println(scanner.getErrores());
@@ -62,6 +62,7 @@ public class Dartam {
                 return;
             }
             System.out.println(scanner.getTokens());
+            SymbolScript script = (SymbolScript) resultado;
             // Análisis semántico
             AnalizadorSemantico sem = new AnalizadorSemantico(script);
             escribir("symbols.txt", sem.getSymbols());
@@ -73,19 +74,22 @@ public class Dartam {
             //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
             // Optimzaciones
             //Optimizador op = new Optimizador();
-            
+
             System.out.println("Codigo compilado");
-            
-        } catch(Exception e) {
-            System.err.println("Error inesperado de compilacion: "+e.getMessage());
-            e.printStackTrace();
+
+        } catch (Exception e) {
+            System.err.println("Error inesperado de compilacion: " + e.getMessage());//System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
+            try {
+                escribir(LOG, e.getMessage());
+            } catch (IOException ex) {
+                System.err.println("No se ha podido guardar el error en el " + LOG + "\nContacta con los desarrolladores: " + e.getMessage());
+            }
         }
     }
 
     static public void escribir(String fileName, String str) throws IOException {
-        FileWriter fileOut = new FileWriter(fileName);
-        fileOut.write(str);
-        fileOut.close();
+        try (FileWriter fileOut = new FileWriter(fileName)) {
+            fileOut.write(str);
+        }
     }
-
 }

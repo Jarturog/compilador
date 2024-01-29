@@ -64,7 +64,7 @@ import analizadorSintactico.ParserSym;
 sub_digit   = [0-9]
 sub_letra   = [A-Za-z] // no confundir con caracter
 sub_car     = {sub_digit}|{sub_letra}
-sub_elem_string = "\r"|"\n"|"\t"|" "|"_"|"["|"]"|"^"|"ç"|"·"|"¬"|"¡"|"!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | {sub_car} | ":" | ";" | "<" | "=" | ">" |"¿"| "?" | "@" | "{" | "|" | "}" | "~"
+//sub_elem_string = "\r"|"\n"|"\t"|" "|"_"|"["|"]"|"^"|"ç"|"·"|"¬"|"¡"|"!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | {sub_car} | ":" | ";" | "<" | "=" | ">" |"¿"| "?" | "@" | "{" | "|" | "}" | "~"
 //sub_signo   = [+|-]? 
 
 // simbolos
@@ -76,8 +76,8 @@ sym_bracketIzq	= \[
 sym_bracketDer	= \]
 sym_endInstr    = \;
 sym_coma	   = \,
-sym_comillaS = \'
-sym_comillaD = \"
+//sym_comillaS = \'
+//sym_comillaD = \"
 sym_punto    = \.
 
 // operadores
@@ -149,8 +149,8 @@ val_octal   = 0o[0-7]+
 val_hex     = 0x[A-Fa-f0-9]+
 val_real    = {val_decimal}?\.{val_decimal}?([Ee]{val_decimal})?
 val_prop    = {kw_true}|{kw_false}
-val_char    = {sym_comillaS}{sub_elem_string}{sym_comillaS}
-val_cadena  = {sym_comillaD}{sub_elem_string}*{sym_comillaD}
+val_char    = "'"[^"'"]"'"
+val_cadena  = "\""[^"\""]*"\""
 id          = ({sub_letra}|_)({sub_car}|_)*
 
 // casos especiales
@@ -210,6 +210,10 @@ private Symbol symbol(int type, Object value) {
 // Regles/accions
 // És molt important l'ordre de les regles!!!
 
+// valores chars y strings
+{val_char}                  { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(0)); }
+{val_cadena}                { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext()); }
+
 // operadores
 {op_and_asig}               { tokens += "OP_AND_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ANDA, yytext()); }
 {op_or_asig}                { tokens += "OP_OR_ASSIGNMENT: " +yytext()+"\n"; return symbol(ParserSym.AS_ORA, yytext()); }
@@ -259,8 +263,8 @@ private Symbol symbol(int type, Object value) {
 {sym_bracketDer}        { tokens += "SYM_RBRACKET: "+yytext()+"\n"; return symbol(ParserSym.RBRACKET, yytext()); }
 {sym_endInstr}          { tokens += "SYM_ENDINSTR: "+yytext()+"\n"; return symbol(ParserSym.ENDINSTR, yytext()); }
 {sym_coma}              { tokens += "SYM_COMMA: "   +yytext()+"\n"; return symbol(ParserSym.COMMA, yytext()); }
-{sym_comillaS}          {}//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE, yytext()); }
-{sym_comillaD}          {}//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE, yytext()); }
+//{sym_comillaS}          {}//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE, yytext()); }
+//{sym_comillaD}          {}//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE, yytext()); }
 {sym_punto}             { tokens += "SYM_PUNTO: "   +yytext()+"\n"; return symbol(ParserSym.OP_MEMBER, yytext()); }
 
 // keywords
@@ -289,9 +293,7 @@ private Symbol symbol(int type, Object value) {
 {val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),8)); }
 {val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext())); }
 {val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); }
-{val_char}          { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(0)); }
 {val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.PROP, "cierto".equals(yytext())); }
-{val_cadena}        { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext()); }
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
 
 // casos especiales

@@ -680,7 +680,7 @@ public class AnalizadorSemantico {
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
         if (DEBUG) {
-            //System.out.println(op.toString());
+            System.out.println(op.toString());
         }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {
