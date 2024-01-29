@@ -842,11 +842,9 @@ public class GeneradorIntermedio {
                 int variableAsignado = this.tablaVariables.recibirNumeroVariable(nombreID);
                 this.g3d.generarInstruccion(TipoInstruccion.COPY.getDescripcion(), new Operador(variableAsignado), null, new Operador(this.variableTratadaActualmente));
                 
-                
-                
                 return ds.getTipo();
             }
-            case FCALL -> {
+            case FCALL -> { //TODO: Mirar llamadaFuncion que sera donde se asigne el valor a la variable si es asi
                 SymbolFCall fcall = op.fcall;
                 int nErrores = errores.size();
                 procesarLlamadaFuncion(fcall);
@@ -856,7 +854,7 @@ public class GeneradorIntermedio {
                 DescripcionSimbolo ds = tablaSimbolos.consulta((String) fcall.methodName.value);
                 return ds.getTipo();
             }
-            case OP_BETWEEN_PAREN -> {
+            case OP_BETWEEN_PAREN -> { //Se encaragara de continuar procesandose
                 return procesarOperando(op.op);
             }
             case UNARY_EXPRESSION -> {
@@ -890,6 +888,27 @@ public class GeneradorIntermedio {
                         indicarLocalizacion(exp);
                         return null;
                     }
+                    
+                    //En el caso de no haber errores se eesta haciendo un a++ o un a-- por lo que actualizaremos la variable a la que se haga referencia
+                    int numeroVariable = this.tablaVariables.recibirNumeroVariable((String) op.value); //TODO: Revisar
+                    if(numeroVariable != -1){ //Variable encontrada
+                        if(s.equals("incremento")){ //Incrementamos variable
+                            this.g3d.generarInstruccion(TipoInstruccion.ADD.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
+                        }else if(s.equals("decremento")){ //Decrementamos variable
+                            this.g3d.generarInstruccion(TipoInstruccion.SUB.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
+                        }
+                    }else{ //Insertamos directamente en la varaible a la que hacia referencia anteriormente
+                        numeroVariable = this.g3d.nuevaVariable(TipoReferencia.var, tipo, false, false);
+                        if(s.equals("incremento")){ //Incrementamos variable
+                            this.g3d.generarInstruccion(TipoInstruccion.ADD.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
+                        }else if(s.equals("decremento")){ //Decrementamos variable
+                            this.g3d.generarInstruccion(TipoInstruccion.SUB.getDescripcion(), new Operador(Tipo.INT,1), new Operador(numeroVariable), new Operador(numeroVariable));
+                        }
+                    }
+                    
+                    //Ahora si, podemos pasar la variable incrementada o decrementada a su origen si es necesario
+                    //TODO: Incorporar alguna manera de indicar que ya hemos finalizado con una varaible para no asignar valores a variables pasadas
+                    this.g3d.generarInstruccion(TipoInstruccion.COPY.getDescripcion(), new Operador(numeroVariable), null, new Operador(this.variableTratadaActualmente));
                 }
                 if (exp.isLeftUnaryOperator()) {
                     if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
