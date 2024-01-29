@@ -19,7 +19,7 @@ public class SymbolElif extends SymbolBase {
     public final SymbolBody cuerpo;
     
     public SymbolElif(SymbolOperand op, SymbolBody b, Location l, Location r){
-        super("elif", 0 ,l ,r);
+        super("elif",l ,r);
         this.cond = op;
         this.cuerpo = b;
     }

@@ -558,10 +558,10 @@ public class GeneradorIntermedio {
             }
             
             
-            if(elifs.elifs == null && cond.els != null){
+            if(elifs.siguienteElif == null && cond.els != null){
                 //Llegados aquí si la condicion es falsa salta, sino ejecuta
                 this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(eElse)); //Si es falso saltaremos
-            }else if(elifs.elifs != null){
+            }else if(elifs.siguienteElif != null){
                 //Llegados aquí si la condicion es falsa salta, sino ejecuta
                 this.g3d.generarInstruccion(TipoInstruccion.IFEQ.getDescripcion(), new Operador(cond.cond.getReferencia()), new Operador(Tipo.INT, 0), new Operador(elseIf2)); //Si es falso saltaremos
             }else{
@@ -577,7 +577,7 @@ public class GeneradorIntermedio {
             this.g3d.generarInstruccion(TipoInstruccion.GOTO.getDescripcion(), null, null, new Operador(efi)); //Si es falso saltaremos
         
             
-            elifs = elifs.elifs;
+            elifs = elifs.siguienteElif;
             if(elifs != null){ //Si existe creamos la siguiente etiqueta
                 this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(elseIf2));          
                 elseIf2 = this.g3d.nuevaEtiqueta();
@@ -716,7 +716,7 @@ public class GeneradorIntermedio {
         PData data = this.g3d.getProcedimeinto(idFuncion);
         
         while (params != null) {
-                String nombreParam = params.id;
+                String nombreParam = params.idParam;
                 //if (tablaSimbolos.contains(id)) { // imposible
                 if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
                     errores.add("El parametro " + nombreParam + " tiene el mismo nombre que el metodo en el que esta siendo declarado");
@@ -732,23 +732,23 @@ public class GeneradorIntermedio {
                 
                 DescripcionSimbolo dFuncion = metodoActualmenteSiendoTratado.snd;
                 DescripcionSimbolo tupla = null;
-                if (params.param.isTupla()) {
-                    tupla = tablaSimbolos.consulta(params.param.idTupla);
+                if (params.tipoParam.isTupla()) {
+                    tupla = tablaSimbolos.consulta(params.tipoParam.idTupla);
                 }
                 
-                DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, tupla);
+                DescripcionSimbolo dParam = new DescripcionSimbolo(params.tipoParam.getTipo(), false, false, tupla);
             try {
                 int variable = 0;
                 String tipo = "";
-                if(params.param.isTupla()){
-                    tipo = params.param.getTipo();
-                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.param.getTipo(), false, true);
-                }else if(params.param.isArray()){
-                    tipo = params.param.getTipo();
-                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.param.getTipo(), true, false);
+                if(params.tipoParam.isTupla()){
+                    tipo = params.tipoParam.getTipo();
+                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.tipoParam.getTipo(), false, true);
+                }else if(params.tipoParam.isArray()){
+                    tipo = params.tipoParam.getTipo();
+                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.tipoParam.getTipo(), true, false);
                 }else{                    
-                    tipo = params.param.getTipo();
-                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.param.getTipo(), false, false);
+                    tipo = params.tipoParam.getTipo();
+                    variable = this.g3d.nuevaVariable(TipoReferencia.param, params.tipoParam.getTipo(), false, false);
                 }
      
                 //tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);

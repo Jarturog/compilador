@@ -12,8 +12,8 @@ public class SymbolMiembrosTupla extends SymbolBase {
     public final SymbolDecs decs;
     public final SymbolMiembrosTupla siguienteDeclaracion;
     
-    public SymbolMiembrosTupla(){
-        super("miembrosTupla");
+    public SymbolMiembrosTupla(Location l, Location r){
+        super("miembrosTupla", l, r);
         decs = null;
         siguienteDeclaracion = null;
     }

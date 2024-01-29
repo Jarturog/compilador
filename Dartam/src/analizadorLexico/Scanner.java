@@ -884,7 +884,7 @@ private Symbol symbol(int type, Object value) {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { errores += errorToString(); System.err.println(errorToString()); return symbol(ParserSym.error);
+            { errores += errorToString(); return symbol(ParserSym.error);
             }
           // fall through
           case 77: break;

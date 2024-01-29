@@ -28,7 +28,7 @@ public class SymbolInstr extends SymbolBase {
     public final SymbolReturn ret;
     
     public SymbolInstr(SymbolFCall fcall, Location l, Location r) {
-        super("instruccion", 0, l,r);
+        super("instruccion", l,r);
         this.fcall = fcall;
         this.decs = null;
         this.asigs = null;
@@ -37,7 +37,7 @@ public class SymbolInstr extends SymbolBase {
     }
     
     public SymbolInstr(SymbolDecs decs,  Location l, Location r) {
-        super("instruccion", 0, l, r);
+        super("instruccion", l, r);
         this.decs = decs;
         this.fcall = null;
         this.asigs = null;
@@ -46,7 +46,7 @@ public class SymbolInstr extends SymbolBase {
     }
     
     public SymbolInstr(SymbolAsigs asigs,  Location l, Location r) {
-        super("instruccion", 0 , l , r);
+        super("instruccion", l , r);
         this.asigs = asigs;
         this.decs = null;
         this.fcall = null;
@@ -55,7 +55,7 @@ public class SymbolInstr extends SymbolBase {
     }
     
     public SymbolInstr(SymbolSwap swap,  Location l, Location r) {
-        super("instruccion", 0 , l , r);
+        super("instruccion", l , r);
         this.swap = swap;
         this.decs = null;
         this.fcall = null;
@@ -64,7 +64,7 @@ public class SymbolInstr extends SymbolBase {
     }
 
     public SymbolInstr(SymbolReturn et, Location l, Location r) {
-        super("instruccion", 0 ,l ,r);
+        super("instruccion",l ,r);
         this.decs = null;
         this.fcall = null;
         this.asigs = null;

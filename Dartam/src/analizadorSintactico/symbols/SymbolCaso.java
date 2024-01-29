@@ -21,15 +21,15 @@ public class SymbolCaso extends SymbolBase {
     public final SymbolOperand cond;
     public final SymbolBody cuerpo;
 
-    public SymbolCaso() {
-        super("caso");
+    public SymbolCaso(Location l, Location r) {
+        super("caso", l, r);
         this.caso = null;
         this.cond = null;
         this.cuerpo = null;
     }
     
     public SymbolCaso(SymbolCaso caso, SymbolOperand op, SymbolBody b, Location l , Location r){
-        super("caso",0 , l ,r );
+        super("caso", l ,r );
         this.caso = caso;
         this.cond = op;
         this.cuerpo = b;

@@ -54,11 +54,18 @@ public class Dartam {
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
             SymbolScript script = (SymbolScript) parser.parse().value;
             escribir("tokens.txt", scanner.getTokens());
+            if (!scanner.getErrores().isEmpty()) {
+                System.err.println(scanner.getErrores());
+                return;
+            } else if (!parser.getErrores().isEmpty()) {
+                System.err.println(parser.getErrores());
+                return;
+            }
             System.out.println(scanner.getTokens());
             // Análisis semántico
             AnalizadorSemantico sem = new AnalizadorSemantico(script);
             escribir("symbols.txt", sem.getSymbols());
-            System.err.println(sem.getErrors());
+            System.err.println(sem.getErrores());
             // Generación de código intermedio
             //GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
             //escribir("codigoIntermedio.txt", codigoIntermedio.getCodigo());

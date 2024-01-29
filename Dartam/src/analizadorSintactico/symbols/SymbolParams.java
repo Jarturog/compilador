@@ -19,8 +19,8 @@ public class SymbolParams extends SymbolBase {
         this.paramsLista = pl;
     }
     
-    public SymbolParams(){
-        super("");
+    public SymbolParams(Location l, Location r){
+        super("params", l, r);
         this.paramsLista = null;
     }
 

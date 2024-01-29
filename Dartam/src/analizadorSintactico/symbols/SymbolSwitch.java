@@ -21,7 +21,7 @@ public class SymbolSwitch extends SymbolBase {
     
 
     public SymbolSwitch(SymbolOperand op, SymbolCaso caso, SymbolPred pred, Location l, Location r) {
-        super("switch", 0, l, r);
+        super("switch", l, r);
         this.cond = op;
         this.caso = caso;
         this.pred = pred;

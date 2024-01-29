@@ -21,8 +21,8 @@ f vacio inicio(string[] argumentos) {
 
 f vacio inicializarMatriz(tupla matriz3 m, ent modo) {
 	inmut ent c: modo;
-	loop ent i: 0; i < m.filas; i++; {
-		loop ent j: 0; j < m.columnas; j++; {
+	loop ent i: 0; i < m.filas; i++ {
+		loop ent j: 0; j < m.columnas; j++ {
 			ent[m.filas][m.columnas] aux: m.datos;
 			aux[i][j]: i+j\c;
 		}
@@ -30,23 +30,22 @@ f vacio inicializarMatriz(tupla matriz3 m, ent modo) {
 }
 
 f tupla matriz3 multiplicarMatrices(tupla matriz3 A, tupla matriz3 B) {
-si cierto{}  sino falso {} sino cierto{}// no {}
+	tupla matriz3 C;
     // Verificar si las matrices son multiplicables
-    //si cierto {// ¬(A.columnas = B.filas) {
+    si cierto {// ¬(A.columnas = B.filas) {
         // Las matrices no son compatibles para la multiplicación
         // Puedes manejar este caso de acuerdo a tus necesidades
-        //show("No se pueden multiplicar estas matrices.");
-        //pop;
-    //}
-
-	tupla matriz3 C;
+        show("No se pueden multiplicar estas matrices.");
+        pop C;
+    }
+	
     // Inicializar matriz resultado con ceros
     inicializarMatriz(C, 0);
 
     // Realizar la multiplicación de matrices
-    loop ent i: 0; i < A.filas; i++; {
-        loop ent j: 0; j < B.columnas; j++; {
-            loop ent k: 0; k < A.columnas; k++; {
+    loop ent i: 0; i < A.filas; i++ {
+        loop ent j: 0; j < B.columnas; j++ {
+            loop ent k: 0; k < A.columnas; k++ {
 				ent[A.filas][A.columnas] auxA: A.datos;
 				ent[B.filas][B.columnas] auxB: B.datos;
 				ent[A.filas][B.columnas] auxC: C.datos;
@@ -54,4 +53,5 @@ si cierto{}  sino falso {} sino cierto{}// no {}
             }
         }
     }
+	pop C;
 }
