@@ -21,13 +21,13 @@ public class SymbolOperandsLista extends SymbolBase {
     public final SymbolOperandsLista siguienteOperando;
     
     public SymbolOperandsLista(SymbolOperand op, SymbolOperandsLista opl, Location l, Location r) {
-        super("operandsLista",0, l, r);
+        super("operandsLista", l, r);
         this.operand = op;
         this.siguienteOperando = opl;
     }
 
     public SymbolOperandsLista(SymbolOperand et, Location l, Location r) {
-        super("operandsLista", 0 , l , r);
+        super("operandsLista", l , r);
         this.operand = et;
         this.siguienteOperando = null;
     }

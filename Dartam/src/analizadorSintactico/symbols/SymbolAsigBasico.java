@@ -22,12 +22,12 @@ public class SymbolAsigBasico extends SymbolBase {
     public final SymbolOperand operando;
     
     public SymbolAsigBasico(SymbolOperand operando, Location l, Location r){
-        super("asig",0, l, r);
+        super("asig", l, r);
         this.operando = operando;
     }
     
-    public SymbolAsigBasico() {
-        super("asig");
+    public SymbolAsigBasico(Location l, Location r) {
+        super("asig", l, r);
         operando = null;
     }
 

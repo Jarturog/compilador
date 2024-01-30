@@ -26,7 +26,7 @@ public class SymbolConditionalExpression extends SymbolBase {
     
     @Override
     public String toString() {
-        return "(" + cond.value + " ? " + caseTrue.value + " -> " + caseFalse.value + ")";
+        return cond.value + " ? " + caseTrue.value + " -> " + caseFalse.value;
     }
     
 }

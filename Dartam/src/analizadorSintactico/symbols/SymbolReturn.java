@@ -21,7 +21,7 @@ public class SymbolReturn extends SymbolBase {
     public final SymbolOperand op;
     
     public SymbolReturn(SymbolOperand op, Location l, Location r){
-        super("operand", 0, l , r);
+        super("operand", l , r);
         this.op = op;
     }
 

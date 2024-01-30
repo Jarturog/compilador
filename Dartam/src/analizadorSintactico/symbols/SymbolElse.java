@@ -18,8 +18,8 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 public class SymbolElse extends SymbolBase {
     public final SymbolBody cuerpo;
 
-    public SymbolElse() {
-        super("else");
+    public SymbolElse(Location l, Location r) {
+        super("else", l, r);
         this.cuerpo = null;
     }
     

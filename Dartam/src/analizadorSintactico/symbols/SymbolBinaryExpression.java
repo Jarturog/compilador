@@ -29,7 +29,7 @@ public class SymbolBinaryExpression extends SymbolBase {
     }
     
     public String toString(){
-        return "(" + op1.value + " " + bop.value + " " + op2.value +")";
+        return op1.value + " " + bop.value + " " + op2.value;
     }
 
 }

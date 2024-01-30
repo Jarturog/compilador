@@ -22,8 +22,8 @@ public class SymbolBody extends SymbolBase {
     public final SymbolMetodoElemento metodo;
     public final SymbolBody  siguienteMetodo; 
 
-    public SymbolBody() {
-        super("body");
+    public SymbolBody(Location l, Location r) {
+        super("body", l, r);
         this.metodo = null;
         this.siguienteMetodo = null;
     }

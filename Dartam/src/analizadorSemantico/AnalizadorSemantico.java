@@ -27,7 +27,7 @@ public class AnalizadorSemantico {
     private List<String> errores, symbols;
     private static final boolean DEBUG = true;
 
-    public String getErrors() {
+    public String getErrores() {
         if (errores.isEmpty()) {
             return "";
         }
@@ -99,17 +99,17 @@ public class AnalizadorSemantico {
             elem = scriptMainYElementos.elemento;
         }
         // metodos especiales
-        DescripcionSimbolo dEnter = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
-        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.ENTER], dEnter);
-        DescripcionSimbolo dShow = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
-        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.SHOW], dShow);
-        DescripcionSimbolo dFrom = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
-        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.FROM], dFrom);
-        DescripcionSimbolo dInto = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.ENT]);
-        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO], dInto);
+        DescripcionFuncion dEnter = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.STRING]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.ENTER].toLowerCase(), dEnter);
+        DescripcionFuncion dShow = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "output", ParserSym.terminalNames[ParserSym.STRING]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.SHOW].toLowerCase(), dShow);
+        DescripcionFuncion dFrom = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.STRING], "file", ParserSym.terminalNames[ParserSym.STRING]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.FROM].toLowerCase(), dFrom);
+        DescripcionFuncion dInto = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.PROP], "file", ParserSym.terminalNames[ParserSym.STRING], "content", ParserSym.terminalNames[ParserSym.STRING]);
+        tablaSimbolos.poner(ParserSym.terminalNames[ParserSym.INTO].toLowerCase(), dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            DescripcionSimbolo d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>());
+            DescripcionDefinicionTupla d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>());
             tablaSimbolos.poner(tupla.id, d);
         }
         for (SymbolScriptElemento tupla : tuplas) {
@@ -121,7 +121,10 @@ public class AnalizadorSemantico {
         }
         // metodos
         for (SymbolScriptElemento metodo : metodos) {
-            DescripcionSimbolo d = new DescripcionFuncion(metodo.tipoRetorno.getTipo());
+            tablaSimbolos.entraBloque();
+            ArrayList<DescripcionFuncion.DefinicionParametro> parametros = procesarParametros(metodo.parametros, metodo.id);
+            tablaSimbolos.salirBloque();
+            DescripcionFuncion d = new DescripcionFuncion(metodo.tipoRetorno.getTipo(), parametros);
             tablaSimbolos.poner(metodo.id, d);
         }
         for (SymbolScriptElemento metodo : metodos) {
@@ -242,7 +245,7 @@ public class AnalizadorSemantico {
             body = body.siguienteMetodo;
         }
     }
-    
+
     private void procesarBloque(SymbolBloque bloque) throws Exception {
         tablaSimbolos.entraBloque();
         procesarBody(bloque.cuerpo);
@@ -428,10 +431,10 @@ public class AnalizadorSemantico {
             return;
         }
         DescripcionFuncion df = (DescripcionFuncion) ds;
-        ArrayList<Pair<String, DescripcionSimbolo>> params = df.getTiposParametros();
+        ArrayList<String> params = df.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
         int n = 0;
-        for (Pair<String, DescripcionSimbolo> tipoParam : params) {
+        for (String tipoParam : params) {
             n++;
             if (opLista == null) {
                 errores.add("La funcion " + nombre + " tiene " + params.size() + " parametros, pero se han pasado mas al momento de llamarla");
@@ -443,8 +446,8 @@ public class AnalizadorSemantico {
             if (tipoOp == null) {
                 errores.add("Se ha intentado pasar por parametros operaciones no validas en el parametro " + n + " de la funcion " + nombre);
                 indicarLocalizacion(op);
-            } else if (!tipoOp.equals(tipoParam.snd.getTipo())) {
-                errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + tipoParam.snd.getTipo());
+            } else if (!tipoOp.equals(tipoParam)) {
+                errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + tipoParam);
                 indicarLocalizacion(op);
                 return;
             }
@@ -526,7 +529,7 @@ public class AnalizadorSemantico {
             tablaSimbolos.entraBloque();
             procesarBody(elif.cuerpo);
             tablaSimbolos.salirBloque();
-            elifs = elifs.elifs;
+            elifs = elifs.siguienteElif;
         }
         if (cond.els != null) {
             tablaSimbolos.entraBloque();
@@ -587,53 +590,58 @@ public class AnalizadorSemantico {
 
     private void procesarDefinicionMetodo(SymbolScriptElemento metodo) throws Exception {
         tablaSimbolos.entraBloque();
-        metodoActualmenteSiendoTratado = new Pair(metodo.id, tablaSimbolos.consulta(metodo.id));
-        procesarParametros(metodo.parametros.paramsLista);
+        DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(metodo.id);
+        metodoActualmenteSiendoTratado = new Pair(metodo.id, df);
+        for (DescripcionFuncion.DefinicionParametro p : df.getParametros()) {
+            DescripcionDefinicionTupla tupla = null;
+            if (p.tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
+                int from = p.tipo.indexOf(" ") + 1;
+                int to = p.tipo.length();
+                if (p.tipo.contains("[")) {
+                    to = p.tipo.indexOf("[");
+                }
+                String idTupla = p.tipo.substring(from, to);
+                tupla = (DescripcionDefinicionTupla) tablaSimbolos.consulta(idTupla);
+            }
+            try {
+                tablaSimbolos.poner(p.id, new DescripcionSimbolo(p.tipo, false, true, null, tupla));
+            } catch (Exception ex) {
+                errores.add(ex.getMessage());
+            }
+        }
         procesarBody(metodo.cuerpo);
         tablaSimbolos.salirBloque();
     }
 
-    private void procesarParametros(SymbolParamsLista params) throws Exception {
-        while (params != null) {
-
-            String nombreParam = params.id;
+    private ArrayList<DescripcionFuncion.DefinicionParametro> procesarParametros(SymbolParams params, String idMetodo) throws Exception {
+        ArrayList<DescripcionFuncion.DefinicionParametro> parametros = new ArrayList<>();
+        if (params == null) {
+            return parametros;
+        }
+        SymbolParamsLista param = params.paramsLista;
+        while (param != null) {
+            boolean error = false;
+            String nombreParam = param.idParam;
             //if (tablaSimbolos.contains(id)) { // imposible
-            if (nombreParam.equals(metodoActualmenteSiendoTratado.fst)) {
+            if (nombreParam.equals(idMetodo)) {
+                error = true;
                 errores.add("El parametro " + nombreParam + " tiene el mismo nombre que el metodo en el que esta siendo declarado");
-                indicarLocalizacion(params);
-                params = params.siguienteParam;
-                continue;
+                indicarLocalizacion(param);
             }
             String errMsg = tablaSimbolos.sePuedeDeclarar(nombreParam);
             if (!errMsg.isEmpty()) {
+                error = true;
                 errores.add(errMsg);
-                indicarLocalizacion(params);
-                params = params.siguienteParam;
-                continue;
+                indicarLocalizacion(param);
             }
-
-            DescripcionFuncion dFuncion = metodoActualmenteSiendoTratado.snd;
-            DescripcionSimbolo tupla = null;
-            if (params.param.isTupla()) {
-                tupla = tablaSimbolos.consulta(params.param.idTupla);
+            if (!error) {
+                parametros.add(new DescripcionFuncion.DefinicionParametro(nombreParam, param.tipoParam.getTipo()));
             }
-            DescripcionDefinicionTupla dt = null;
-            try {
-                dt = (DescripcionDefinicionTupla) tupla;
-            } catch (ClassCastException e) {
-                throw new Exception("Se ha intentado realizar casting de símbolo a tupla");
-            }
-            DescripcionSimbolo dParam = new DescripcionSimbolo(params.param.getTipo(), false, false, null, dt);
-            try {
-                //tablaSimbolos.posaparam(metodoActualmenteSiendoTratado.fst, nombreParam, dParam);
-                tablaSimbolos.poner(nombreParam, dParam);
-                dFuncion.anyadirParametro(nombreParam, dParam);
-            } catch (Exception ex) {
-                errores.add(ex.getMessage());
-            }
-            params = params.siguienteParam;
+            param = param.siguienteParam;
         }
+        return parametros;
     }
+    
 
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) throws Exception {
         SymbolMiembrosTupla miembros = tupla.miembrosTupla;
@@ -672,7 +680,7 @@ public class AnalizadorSemantico {
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
         if (DEBUG) {
-            //System.out.println(op.toString());
+            System.out.println(op.toString());
         }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {

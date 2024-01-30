@@ -20,7 +20,7 @@ public class SymbolSwap extends SymbolBase {
     public final String op1, op2;
 
     public SymbolSwap(String op1, String op2, Location l, Location r) {
-        super("swap", 0 , l ,r );
+        super("swap", l ,r );
         this.op1 = op1;
         this.op2 = op2;
     }

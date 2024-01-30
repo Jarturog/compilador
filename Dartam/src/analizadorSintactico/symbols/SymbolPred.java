@@ -18,7 +18,7 @@ public class SymbolPred extends SymbolBase {
     public final SymbolBody cuerpo;
 
     public SymbolPred(SymbolBody b, Location l, Location r) {
-        super("pred", 0 , l ,r );
+        super("pred", l ,r );
         this.cuerpo = b;
     }
 }

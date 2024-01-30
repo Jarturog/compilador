@@ -362,11 +362,11 @@ public class GeneradorCIntermedio {
         this.tablaProcesosActual.parametros.add(variable); //Añadimos el parametro
 
         //Ahora meterelos el tipo dentro de la variable
-        if (paramsLista.param.idTupla != null) { //Es una tupla
+        if (paramsLista.tipoParam.idTupla != null) { //Es una tupla
             entrada.dimensiones.add(nuevaVariable());
         } else {
             //Tipo primitivo
-            switch (paramsLista.param.tipo.getTipo()) { //Almacenaremos el tipo de variable que es
+            switch (paramsLista.tipoParam.tipo.getTipo()) { //Almacenaremos el tipo de variable que es
                 case SymbolTipoPrimitivo.STRING -> entrada.tipo = ParserSym.STRING;
                 case SymbolTipoPrimitivo.PROP -> entrada.tipo = ParserSym.PROP;
                 case SymbolTipoPrimitivo.ENT -> entrada.tipo = ParserSym.ENT;
@@ -665,7 +665,7 @@ public class GeneradorCIntermedio {
     private void procesar(SymbolElifs elifs) {
         if (elifs.elif != null) {
             procesar(elifs.elif); //Procesamos el actual
-            procesar(elifs.elifs); //Procesamos el siguiente
+            procesar(elifs.siguienteElif); //Procesamos el siguiente
         }
     }
 

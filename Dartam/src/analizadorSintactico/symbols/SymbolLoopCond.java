@@ -23,7 +23,7 @@ public class SymbolLoopCond extends SymbolBase {
     private final boolean isFor;
 
     public SymbolLoopCond(SymbolOperand op1, Location l, Location r) {
-        super("loopCond", 0 ,l ,r);
+        super("loopCond",l ,r);
         this.cond = op1;
         this.decs = null;
         this.asig = null;
@@ -31,7 +31,7 @@ public class SymbolLoopCond extends SymbolBase {
     }
     
     public SymbolLoopCond(SymbolDecs decs, SymbolOperand op1, SymbolAsigs op2, Location l, Location r) {
-        super("loopCond", 0 ,l ,r);
+        super("loopCond",l ,r);
         this.cond = op1;
         this.asig = op2;
         this.decs = decs;

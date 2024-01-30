@@ -281,8 +281,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\112\045\113\061\114\057\115\044\001\002\000\070\004" +
     "\uffa3\005\uffa3\006\uffa3\007\uffa3\010\uffa3\011\uffa3\012\uffa3" +
     "\024\uffa3\025\uffa3\026\uffa3\027\uffa3\030\uffa3\031\uffa3\032" +
-    "\uffa3\033\uffa3\036\uffa3\037\uffa3\040\uffa3\041\uffa3\042\uffa3" +
-    "\052\uffa3\053\uffa3\054\uffa3\055\uffa3\056\uffa3\057\uffa3\060" +
+    "\uffa3\033\uffa3\036\uffa3\037\uffa3\040\uffa3\041\uffa3\042\100" +
+    "\052\uffa3\053\uffa3\054\uffa3\055\076\056\uffa3\057\uffa3\060" +
     "\uffa3\001\002\000\070\004\uffa4\005\uffa4\006\106\007\102" +
     "\010\114\011\105\012\070\024\115\025\074\026\112\027" +
     "\111\030\072\031\113\032\071\033\075\036\073\037\077" +
@@ -303,8 +303,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\056\uffb1\057\uffb1\060\uffb1\001\002\000\070\004\uffae\005" +
     "\uffae\006\uffae\007\uffae\010\uffae\011\uffae\012\uffae\024\uffae" +
     "\025\uffae\026\uffae\027\uffae\030\uffae\031\uffae\032\uffae\033" +
-    "\uffae\036\uffae\037\uffae\040\uffae\041\uffae\042\uffae\052\uffae" +
-    "\053\uffae\054\uffae\055\uffae\056\uffae\057\uffae\060\uffae\001" +
+    "\uffae\036\uffae\037\uffae\040\uffae\041\uffae\042\100\052\uffae" +
+    "\053\uffae\054\uffae\055\076\056\uffae\057\uffae\060\uffae\001" +
     "\002\000\004\052\133\001\002\000\054\004\104\005\107" +
     "\006\106\007\102\010\114\011\105\012\070\024\115\025" +
     "\074\026\112\027\111\030\072\031\113\032\071\033\075" +
@@ -316,10 +316,10 @@ public class Parser extends java_cup.runtime.lr_parser {
     "\uffb5\057\uffb5\060\uffb5\001\002\000\042\004\051\005\055" +
     "\006\053\007\046\034\036\051\037\077\041\100\035\101" +
     "\033\102\060\110\042\111\047\112\045\113\061\114\057" +
-    "\115\044\001\002\000\070\004\uffaf\005\uffaf\006\106\007" +
-    "\102\010\114\011\105\012\070\024\115\025\074\026\112" +
-    "\027\111\030\072\031\113\032\071\033\075\036\073\037" +
-    "\077\040\116\041\uffaf\042\100\052\uffaf\053\uffaf\054\uffaf" +
+    "\115\044\001\002\000\070\004\uffaf\005\uffaf\006\uffaf\007" +
+    "\uffaf\010\uffaf\011\uffaf\012\uffaf\024\uffaf\025\uffaf\026\uffaf" +
+    "\027\uffaf\030\uffaf\031\uffaf\032\uffaf\033\uffaf\036\uffaf\037" +
+    "\uffaf\040\uffaf\041\uffaf\042\100\052\uffaf\053\uffaf\054\uffaf" +
     "\055\076\056\uffaf\057\uffaf\060\uffaf\001\002\000\006\055" +
     "\137\110\ufff1\001\002\000\004\110\ufff0\001\002\000\042" +
     "\004\051\005\055\006\053\007\046\034\036\051\037\077" +
@@ -815,6 +815,10 @@ public class Parser extends java_cup.runtime.lr_parser {
     *
     * Equipo: Arturo, Dani y Marta
     */
+    private String errores = "";
+    public String getErrores() {
+        return errores;
+    }
     /**
      * Error cuando no es posible una recuperacion de errores.
     **/ 
@@ -825,7 +829,7 @@ public class Parser extends java_cup.runtime.lr_parser {
             causa = "No se ha encontrado metodo main. Sintaxis: \n"+
                 "f void inicio(string[]argumentos){ # codigo # }\n";
         }
-        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + causa);
+        errores += "No se ha podido recuperar del ultimo error. \nCausa: " + causa;
         done_parsing();
     }  
 
@@ -842,6 +846,7 @@ public class Parser extends java_cup.runtime.lr_parser {
         if (cur_token.sym == ParserSym.EOF) {
             return;
         }
+        String err = message + "No se esperaba este componente\n: " +cur_token.value+".";
         if (info instanceof ComplexSymbol token) {
             List expected = expected_token_ids();
             String tokens = "";
@@ -857,10 +862,9 @@ public class Parser extends java_cup.runtime.lr_parser {
             } else {
                 loc = "Desde la linea " + token.xleft.getLine() + " y columna " + token.xleft.getColumn() + " hasta la linea " + token.xright.getLine() + " y columna " + token.xright.getColumn();
             }
-            System.err.println(message + loc + ". \n" + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
-        } else {
-            System.err.println(message + "No se esperaba este componente\n: " +cur_token.value+".");  
-        }
+            err = message + loc + ". \n" + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n";  
+        } 
+        errores += err;
     }
 
     @Override
@@ -1033,7 +1037,7 @@ class CUP$Parser$actions {
           case 9: // MIEMBROS_TUPLA ::= 
             {
               SymbolMiembrosTupla RESULT =null;
-		  RESULT = new SymbolMiembrosTupla(); 
+		  RESULT = new SymbolMiembrosTupla(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("MIEMBROS_TUPLA",41, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1099,7 +1103,7 @@ class CUP$Parser$actions {
           case 13: // BODY ::= 
             {
               SymbolBody RESULT =null;
-		 RESULT = new SymbolBody(); 
+		 RESULT = new SymbolBody(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("BODY",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1240,7 +1244,7 @@ class CUP$Parser$actions {
           case 24: // PARAMS ::= 
             {
               SymbolParams RESULT =null;
-		 RESULT = new SymbolParams(); 
+		 RESULT = new SymbolParams(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("PARAMS",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1399,7 +1403,7 @@ class CUP$Parser$actions {
           case 34: // ASIG_BASICO ::= 
             {
               SymbolAsigBasico RESULT =null;
-		 RESULT = new SymbolAsigBasico(); 
+		 RESULT = new SymbolAsigBasico(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ASIG_BASICO",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2590,7 +2594,7 @@ class CUP$Parser$actions {
           case 123: // ELIFS ::= 
             {
               SymbolElifs RESULT =null;
-		 RESULT = new SymbolElifs(); 
+		 RESULT = new SymbolElifs(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ELIFS",32, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2629,7 +2633,7 @@ class CUP$Parser$actions {
           case 126: // ELSE ::= 
             {
               SymbolElse RESULT =null;
-		 RESULT = new SymbolElse(); 
+		 RESULT = new SymbolElse(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ELSE",34, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -2674,7 +2678,7 @@ class CUP$Parser$actions {
           case 129: // CASO ::= 
             {
               SymbolCaso RESULT =null;
-		 RESULT = new SymbolCaso(); 
+		 RESULT = new SymbolCaso(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("CASO",36, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

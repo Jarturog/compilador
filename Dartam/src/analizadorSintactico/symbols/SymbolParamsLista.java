@@ -9,15 +9,15 @@ PARAMSLISTA ::= TIPO:et1 ID:id COMMA PARAMSLISTA:sig           {: RESULT = new S
  */
 public class SymbolParamsLista extends SymbolBase {
     
-    public final SymbolTipo param;
-    public final String id;
+    public final SymbolTipo tipoParam;
+    public final String idParam;
     public final SymbolParamsLista siguienteParam;
-    public int numParametros;
+    private final int numParametros;
     
     public SymbolParamsLista(SymbolTipo param, String id, Location l, Location r) {
         super("paramsLista" , l , r);
-        this.param = param;
-        this.id = id;
+        this.tipoParam = param;
+        this.idParam = id;
         this.siguienteParam = null;
         
         if(siguienteParam != null){
@@ -29,8 +29,8 @@ public class SymbolParamsLista extends SymbolBase {
     
     public SymbolParamsLista(SymbolTipo param, String id, SymbolParamsLista pl, Location l, Location r) {
         super("paramsLista" , l , r);
-        this.param = param;
-        this.id = id;
+        this.tipoParam = param;
+        this.idParam = id;
         this.siguienteParam = pl;
         this.numParametros = 1; //Revisar probando que no pase de una lista de params a solo 1
     }

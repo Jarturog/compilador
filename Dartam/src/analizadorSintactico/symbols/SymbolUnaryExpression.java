@@ -42,6 +42,6 @@ public class SymbolUnaryExpression extends SymbolBase {
     
     @Override
     public String toString(){
-        return "(" + (isLeftUnaryOperator() ? (leftOp.value + "" + op.value) : (op.value + "" + rightOp.value)) + ")";
+        return (isLeftUnaryOperator() ? (leftOp.value + "" + op.value) : (op.value + "" + rightOp.value));
     }
 }

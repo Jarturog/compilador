@@ -42,6 +42,10 @@ parser code {:
     *
     * Equipo: Arturo, Dani y Marta
     */
+    private String errores = "";
+    public String getErrores() {
+        return errores;
+    }
     /**
      * Error cuando no es posible una recuperacion de errores.
     **/ 
@@ -52,7 +56,7 @@ parser code {:
             causa = "No se ha encontrado metodo main. Sintaxis: \n"+
                 "f void inicio(string[]argumentos){ # codigo # }\n";
         }
-        System.err.println("No se ha podido recuperar del ultimo error. \nCausa: " + causa);
+        errores += "No se ha podido recuperar del ultimo error. \nCausa: " + causa;
         done_parsing();
     }  
 
@@ -69,6 +73,7 @@ parser code {:
         if (cur_token.sym == ParserSym.EOF) {
             return;
         }
+        String err = message + "No se esperaba este componente\n: " +cur_token.value+".";
         if (info instanceof ComplexSymbol token) {
             List expected = expected_token_ids();
             String tokens = "";
@@ -84,10 +89,9 @@ parser code {:
             } else {
                 loc = "Desde la linea " + token.xleft.getLine() + " y columna " + token.xleft.getColumn() + " hasta la linea " + token.xright.getLine() + " y columna " + token.xright.getColumn();
             }
-            System.err.println(message + loc + ". \n" + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n");  
-        } else {
-            System.err.println(message + "No se esperaba este componente\n: " +cur_token.value+".");  
-        }
+            err = message + loc + ". \n" + tokens + "Se ha encontrado '" + token.value + "' de tipo " + ParserSym.terminalNames[token.sym] + ".\n";  
+        } 
+        errores += err;
     }
 
     @Override
@@ -158,7 +162,6 @@ non terminal SymbolDimensiones DIMENSIONES;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
 //non terminal SymbolBloque BLOQUE;
 
-precedence right CASTING;
 precedence left PREC_B_EXP;
 precedence left OP_ADD, OP_SUB;
 precedence left OP_MUL, OP_DIV, OP_MOD;
@@ -167,10 +170,10 @@ precedence left OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 precedence left OP_AND, OP_OR;
 precedence left OP_PCT;
 precedence right OP_COND;
-precedence left OP_MEMBER, LBRACKET;
 precedence left PREC_C_EXP;
 precedence left PREC_L_U_EXP;
-precedence right PREC_R_U_EXP;
+precedence right PREC_R_U_EXP, CASTING;
+precedence left OP_MEMBER, LBRACKET;
 
 start with SCRIPT;
 
@@ -188,7 +191,7 @@ TIPO_RETORNO ::= TIPO:et            {: RESULT = new SymbolTipoRetorno(et, etxlef
         ;
 
 MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMiembrosTupla(et1,et2, et1xleft, et1xright); :}
-        |                                              {:  RESULT = new SymbolMiembrosTupla(); :}
+        |                                              {:  RESULT = new SymbolMiembrosTupla(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN KW_STRING LBRACKET:l RBRACKET:r KW_ARGS:args RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, args, l, r, et, posxleft, posxright); :}
@@ -196,7 +199,7 @@ MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN KW_STRING LBRACKET:l RBRACK
         ;
 
 BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1xleft, et1xright); :}
-        |                               {: RESULT = new SymbolBody(); :}
+        |                               {: RESULT = new SymbolBody(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, txleft, txright); :}
@@ -213,7 +216,7 @@ TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(e
         ;
 
 PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etxleft, etxright); :}   
-        |                                             {: RESULT = new SymbolParams(); :}
+        |                                             {: RESULT = new SymbolParams(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 PARAMSLISTA ::= TIPO:et1 ID:id COMMA PARAMSLISTA:sig           {: RESULT = new SymbolParamsLista(et1, id, sig, et1xleft, et1xright); :}
@@ -233,7 +236,7 @@ DEC_ASIG_LISTA ::= ID:et1 ASIG_BASICO:et2 COMMA DEC_ASIG_LISTA:et3       {: RESU
         ;
 
 ASIG_BASICO ::= AS_ASSIGN OPERAND:et   {: RESULT = new SymbolAsigBasico(et, etxleft, etxright); :}
-        |                       {: RESULT = new SymbolAsigBasico(); :}
+        |                       {: RESULT = new SymbolAsigBasico(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft, etxright); :}
@@ -372,21 +375,21 @@ IF ::= KW_IF:et0 OPERAND:et1 LKEY BODY:et2 RKEY ELIFS:et3 ELSE:et4          {: R
         ;
 
 ELIFS ::= ELIF:et1 ELIFS:et2                        {: RESULT = new SymbolElifs(et1, et2, et1xleft, et1xright); :}
-        |                                           {: RESULT = new SymbolElifs(); :}
+        |                                           {: RESULT = new SymbolElifs(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 ELIF ::= KW_ELIF OPERAND:et1 LKEY BODY:et2 RKEY     {: RESULT = new SymbolElif(et1, et2, et1xleft, et1xright); :}
         ;
 
 ELSE ::= KW_ELSE:pos LKEY BODY:et RKEY                  {: RESULT = new SymbolElse(et, posxleft, posxright); :}
-        |                                           {: RESULT = new SymbolElse(); :}
+        |                                           {: RESULT = new SymbolElse(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 SWITCH ::= KW_SWITCH OPERAND:et1 RKEY CASO:et2 PRED:et3 LKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
         ;   
 
 CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft, et1xright); :}
-        |                                            {: RESULT = new SymbolCaso(); :}
+        |                                            {: RESULT = new SymbolCaso(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
 PRED ::= KW_CASE KW_DEFAULT ARROW BODY:et            {: RESULT = new SymbolPred(et, etxleft, etxright); :}
