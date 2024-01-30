@@ -9,10 +9,7 @@ package analizadorSemantico;
 
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
-import java.util.Stack;
-
 import analizadorSintactico.symbols.*;
-import java.util.HashMap;
 import java.util.List;
 import jflex.base.Pair;
 
@@ -128,7 +125,7 @@ public class AnalizadorSemantico {
             tablaSimbolos.poner(metodo.id, d);
         }
         for (SymbolScriptElemento metodo : metodos) {
-            procesarDefinicionMetodo(metodo);
+            procesarMetodo(metodo);
         }
         // main
         DescripcionFuncion d = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID]);
@@ -144,12 +141,15 @@ public class AnalizadorSemantico {
             DescripcionSimbolo descripcionTupla = null;
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
-            String errMsg = tablaSimbolos.sePuedeDeclarar(id);
-            if (!errMsg.isEmpty()) {
-                errores.add(errMsg);
-                indicarLocalizacion(dec);
-                error = true;
+            if (declaracionTipoTupla == null) { // si forma parte de una tupla sí se puede declarar 
+                String errMsg = tablaSimbolos.sePuedeDeclarar(id);
+                if (!errMsg.isEmpty()) {
+                    errores.add(errMsg);
+                    indicarLocalizacion(dec);
+                    error = true;
+                }
             }
+            
 //            if (tipo.isArray() || tipo.isTupla()) {
 //                if (decs.isConst) {
 //                    errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
@@ -205,10 +205,15 @@ public class AnalizadorSemantico {
             if (!error) {
                 DescripcionDefinicionTupla dt = descripcionTupla == null ? null : (DescripcionDefinicionTupla) descripcionTupla;
                 if (declaracionTipoTupla != null) {
-                    declaracionTipoTupla.anyadirMiembro(
+                    if (declaracionTipoTupla.tieneMiembro(id)) {
+                        errores.add("Se ha intentado añadir el miembro repetido " + id + " a la tupla " + dt.getNombreTupla());
+                        indicarLocalizacion(dec);
+                    } else {
+                        declaracionTipoTupla.anyadirMiembro(
                             new DescripcionDefinicionTupla.DefinicionMiembro(
                                     id, tipo.getTipo(), decs.isConst,
                                     valorAsignado != null, dt));
+                    }
                 } else {
                     String tupla = "";
                     if (declaracionTipoTupla != null) {
@@ -588,7 +593,7 @@ public class AnalizadorSemantico {
         tablaSimbolos.salirBloque();
     }
 
-    private void procesarDefinicionMetodo(SymbolScriptElemento metodo) throws Exception {
+    private void procesarMetodo(SymbolScriptElemento metodo) throws Exception {
         tablaSimbolos.entraBloque();
         DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(metodo.id);
         metodoActualmenteSiendoTratado = new Pair(metodo.id, df);

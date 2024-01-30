@@ -1,6 +1,6 @@
 /**
  * Assignatura 21780 - Compiladors
- * Estudis: Grau en Enginyeria Informàtica 
+ * Estudis: Grau en Enginyeria Informàtica
  * Itinerari: Intel·ligència Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta
@@ -20,9 +20,10 @@ ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(et, etxle
         ;
  */
 public class SymbolAtomicExpression extends SymbolBase {
-    
+
+    public static final int LIMIT_INF = Integer.MIN_VALUE, LIMIT_SUP = Integer.MAX_VALUE;
     public final String tipo;
-    
+
     public SymbolAtomicExpression(boolean isID, String et, Location l, Location r) {
         super("literal", isID ? et : et.substring(1, et.length() - 1), l, r);
         if (isID) {
@@ -51,5 +52,11 @@ public class SymbolAtomicExpression extends SymbolBase {
         super("literal", et.toString(), l, r);
         tipo = ParserSym.terminalNames[ParserSym.PROP];
     }
-    
+
+    public boolean esNumerico() {
+        return tipo.equals(ParserSym.terminalNames[ParserSym.CAR])
+                || tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) 
+                || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
+    }
+
 }

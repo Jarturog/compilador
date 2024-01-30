@@ -1,12 +1,7 @@
-A:			Variable de tipo 'KW_TUPLE matriz3' sin valor asignado declarado en el nivel 0
-B:			Variable de tipo 'KW_TUPLE matriz3' sin valor asignado declarado en el nivel 0
-resultado:	Variable de tipo 'KW_TUPLE matriz3' sin valor asignado declarado en el nivel 0
-show:		Función de tipo 'KW_VOID'  con argumentosSTRING output declarado en el nivel 0
-inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 0
-into:		Función de tipo 'PROP'  con argumentosSTRING file, STRING content declarado en el nivel 0
-matriz3:	Tupla con miembrosconstante  constante  ENT datos declarado en el nivel 0
-inicializarMatriz:Función de tipo 'KW_VOID'  con argumentosKW_TUPLE matriz3 m, ENT modo declarado en el nivel 0
-multiplicarMatrices:Función de tipo 'KW_TUPLE matriz3'  con argumentosKW_TUPLE matriz3 A, KW_TUPLE matriz3 B declarado en el nivel 0
-from:		Función de tipo 'STRING'  con argumentosSTRING file declarado en el nivel 0
-enter:		Función de tipo 'STRING'  sin argumentos declarado en el nivel 0
-mostrarMatriz:Función de tipo 'KW_VOID'  con argumentosKW_TUPLE matriz3 m declarado en el nivel 0
+into:		Función de tipo 'PROP'  con argumentosSTRING file, STRING content declarado en el nivel 1
+persona:	Tupla con miembros constante  STRING nombre declarado en el nivel 1
+show:		Función de tipo 'KW_VOID'  con argumentosSTRING output declarado en el nivel 1
+inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
+from:		Función de tipo 'STRING'  con argumentosSTRING file declarado en el nivel 1
+nuevaPersona:Función de tipo 'KW_VOID'  con argumentosKW_TUPLE persona p, ENT idPersona, STRING nombrePersona declarado en el nivel 1
+enter:		Función de tipo 'STRING'  sin argumentos declarado en el nivel 1

@@ -77,8 +77,8 @@ public class TablaSimbolos {
         this.te = new HashMap();
 
         ta.add(n, 0);
-//        this.n++;
-//        ta.add(n, 0);
+        this.n++;
+        ta.add(n, 0);
     }
 
     /**
@@ -155,31 +155,31 @@ public class TablaSimbolos {
     //idr es la tupla
     //idc es el campo de la tupla
     public void ponerCampo(String idr, String idc, DescripcionSimbolo dCamp) throws Exception {
-        DescripcionSimbolo d = td.get(idr);
-        if (!d.isTipoTupla()) {
-            throw new Exception("Error, no es una tupla!");
-        }
-        int i = d.first;
-
-        //Buscamos dentro una variable con el mismo nombre dentro de la tupla
-        while (i != 0 && !te.get(i).id.equals(idc)) {
-            i = te.get(i).d.next;
-        }
-
-        //Si hemos salido o porque no hay mas variables, o hemos encontrado una con el mismo nombre
-        if (i != 0) {
-            throw new Exception("Ya hay un campo con el mismo identificador");
-        }
-
-        int idxe = ta.get(this.n) + 1;
-        ta.set(this.n, idxe); //Actualizamos tabla de ambitos porque añadimos un nuevo parametro
-
-        Entrada e = new Entrada(idc, dCamp, n); // Nueva entrada
-        e.d.setNivel(-1); //No se copiará al hacer el salir bloque, es unicamente un indicador
-        e.d.next = td.get(idr).first;
-        e.d.first = idxe;
-        td.get(idr).next = idxe; //Referenciamos al añadido para crear una lista
-        te.put(idxe, e); //Ahora la añadimos a la tabla de expansion 
+//        DescripcionSimbolo d = td.get(idr);
+//        if (!d.isTipoTupla()) {
+//            throw new Exception("Error, no es una tupla!");
+//        }
+//        int i = d.first;
+//
+//        //Buscamos dentro una variable con el mismo nombre dentro de la tupla
+//        while (i != 0 && !te.get(i).id.equals(idc)) {
+//            i = te.get(i).d.next;
+//        }
+//
+//        //Si hemos salido o porque no hay mas variables, o hemos encontrado una con el mismo nombre
+//        if (i != 0) {
+//            throw new Exception("Ya hay un campo con el mismo identificador");
+//        }
+//
+//        int idxe = ta.get(this.n) + 1;
+//        ta.set(this.n, idxe); //Actualizamos tabla de ambitos porque añadimos un nuevo parametro
+//
+//        Entrada e = new Entrada(idc, dCamp, n); // Nueva entrada
+//        e.d.setNivel(-1); //No se copiará al hacer el salir bloque, es unicamente un indicador
+//        e.d.next = td.get(idr).first;
+//        e.d.first = idxe;
+//        td.get(idr).next = idxe; //Referenciamos al añadido para crear una lista
+//        te.put(idxe, e); //Ahora la añadimos a la tabla de expansion 
     }
 
     /*

@@ -9,9 +9,9 @@ f ent mcd(ent a0, ent b0) {
 	b: b0;
 	loop (a /= b) {
 		si (a > b) {
-			a: a - b; // a -: b;
+			a-: b;
 		} no {
-			b: b - a; // b -: a;
+			b-: a;
 		}
 	}
 	pop a;

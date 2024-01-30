@@ -1,0 +1,5 @@
+java.lang.NullPointerException: Cannot invoke "analizadorSemantico.DescripcionSimbolo.setNivel(int)" because "ds" is null
+	at analizadorSemantico.TablaSimbolos.salirBloque(TablaSimbolos.java:144)
+	at analizadorSemantico.AnalizadorSemantico.procesarDefinicionMetodo(AnalizadorSemantico.java:618)
+	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:128)
+	at dartam.Dartam.main(Dartam.java:60)

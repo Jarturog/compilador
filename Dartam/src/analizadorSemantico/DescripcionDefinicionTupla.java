@@ -27,6 +27,10 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         return null;
     }
 
+    boolean tieneMiembro(String nombre) {
+        return getMiembro(nombre) != null;
+    }
+
     public static class DefinicionMiembro {
 
         protected final String nombre, tipo;
@@ -59,7 +63,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         for (DefinicionMiembro miembro : miembros) {
             m += miembro + " ";
         }
-        m = m.length() > 0 ? "con miembros" + m.substring(0, m.length() - 1) : "sin miembros";
+        m = m.length() > 0 ? "con miembros " + m.substring(0, m.length() - 1) : "sin miembros";
         return "Tupla " + m + " declarado en el nivel " + nivel;
     }
 }
