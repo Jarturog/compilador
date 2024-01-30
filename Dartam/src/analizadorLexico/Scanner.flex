@@ -204,17 +204,16 @@ private Symbol symbol(int type, Object value) {
 }
 
 private Symbol procesarNumero() {
-  Integer numero = null;
+  Integer numero;
   try {
       numero = Integer.parseInt(yytext());
-      tokens += "VAL_DECIMAL: "+yytext()+"\n";
   } catch (NumberFormatException ex) { /* No es un entero en base 10 */
     try {
       int base;
       switch (yytext().charAt(1)) {
-          case 'b' -> { base = 2; tokens += "VAL_BINARIO: "+yytext()+"\n"; }
-          case 'o' -> { base = 8; tokens += "VAL_OCTAL: "+yytext()+"\n"; }
-          case 'x' -> { base = 16; tokens += "VAL_HEX: "+yytext()+"\n"; }
+          case 'b' -> { base = 2; }
+          case 'o' -> { base = 8; }
+          case 'x' -> { base = 16; }
           default -> throw new NumberFormatException(); // por si acaso
       }
       numero = Integer.parseInt(yytext().substring(2), base);
@@ -222,10 +221,6 @@ private Symbol procesarNumero() {
       errores += errorToString();
       return symbol(ParserSym.error);
     }
-  }
-  if (numero == null) {
-    errores += errorToString();
-    return symbol(ParserSym.error);
   }
   return symbol(ParserSym.ENT, numero);
 }
@@ -315,11 +310,11 @@ private Symbol procesarNumero() {
 {kw_tuple}              { tokens += "KW_TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
 
 // valores
-{val_binario}       { return procesarNumero(); }
-{val_hex}           { return procesarNumero(); }
-{val_octal}         { return procesarNumero(); }
-{val_decimal}       { return procesarNumero(); }
-{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); }
+{val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return procesarNumero(); }
+{val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return procesarNumero(); }
+{val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return procesarNumero(); }
+{val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return procesarNumero(); }
+{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); } // posible control de errores?
 {val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.PROP, "cierto".equals(yytext())); }
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
 
