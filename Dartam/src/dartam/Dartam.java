@@ -19,11 +19,22 @@ import genCodigoIntermedio.GeneradorCIntermedio;
 import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import optimizaciones.Optimizador;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java_cup.Lexer;
+import java_cup.runtime.ScannerBuffer;
+import java_cup.runtime.XMLElement;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 public class Dartam {
 
@@ -42,6 +53,8 @@ public class Dartam {
             }
             ficheroIn = new FileReader(RUTA + nombreArchivo);
             // Análisis léxico
+            //String [] a = {(String)(RUTA + nombreArchivo)};
+            //visualizarArbol(a);
             Scanner scanner = new Scanner(ficheroIn);
             // Análisis sintáctico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
@@ -124,5 +137,37 @@ public class Dartam {
             }
         }
         System.out.println("Archivos en la ruta " + directorio.getAbsolutePath() + ": \n" + strArchvios.substring(0, strArchvios.length() - 2) + "\n");
+    }
+    
+    /**
+     * Código sacado de https://www2.cs.tum.edu/projects/cup/examples.php#gast
+     * Ahora mismo no funciona.
+     * Otra fuente para visualizar el árbol: https://www.skenz.it/compilers
+     * y https://www.skenz.it/compilers/install_windows
+     */
+    private static void visualizarArbol(String[] args) throws Exception {
+        // initialize the symbol factory
+      ComplexSymbolFactory csf = new ComplexSymbolFactory();
+      // create a buffering scanner wrapper
+      //ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0]))));
+      ScannerBuffer lexer = new ScannerBuffer(new Lexer(csf));
+      // start parsing
+      Parser p = new Parser(lexer,csf);
+      XMLElement e = (XMLElement)p.parse().value;
+      // create XML output file 
+      XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
+      XMLStreamWriter sw = outFactory.createXMLStreamWriter(new FileOutputStream(args[1]));
+      // dump XML output to the file
+      XMLElement.dump(lexer,sw,e,"expr","stmt");
+
+       // transform the parse tree into an AST and a rendered HTML version
+      Transformer transformer = TransformerFactory.newInstance()
+	    .newTransformer(new StreamSource(new File("tree.xsl")));
+      Source text = new StreamSource(new File(args[1]));
+      transformer.transform(text, new StreamResult(new File("output.xml")));
+      transformer = TransformerFactory.newInstance()
+	    .newTransformer(new StreamSource(new File("tree-view.xsl")));
+      text = new StreamSource(new File("output.xml"));
+      transformer.transform(text, new StreamResult(new File("ast.html")));
     }
 }
