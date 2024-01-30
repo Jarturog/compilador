@@ -15,8 +15,6 @@ import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSemantico.AnalizadorSemantico;
-import genCodigoIntermedio.GeneradorCIntermedio;
-import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -81,12 +79,9 @@ public class Dartam {
             //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
             // Optimzaciones
             //Optimizador op = new Optimizador();
-
-            System.out.println("Codigo compilado");
-
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error inesperado de compilacion: " + e.getMessage());//System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
+            //e.printStackTrace(); System.err.println("Error inesperado de compilacion: " + e.getMessage());
+            System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
@@ -98,6 +93,7 @@ public class Dartam {
                 e.printStackTrace();
             }
         }
+        System.out.println("Compilacion finalizada");
     }
 
     static public void escribir(String fileName, String str) throws IOException {
