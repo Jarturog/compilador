@@ -36,7 +36,9 @@ public enum TipoInstruccion {
     COPY("copy"),
     INIT("init"),
     POT("pot"),
-    PCT("pct");
+    PCT("pct"),
+    IND_ASS("ind_ass"),
+    IND_VAL("ind_val");
     public final String tipo;
     
     TipoInstruccion(String t){

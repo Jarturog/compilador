@@ -1092,10 +1092,12 @@ public class GeneradorIntermedio {
                     indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
                     error = true;
                 }
+                String idArray = "";
                 if (!error) {
                     tipoArr = tipoArr.substring(0, tipoArr.length() - 3);
                     if (tipoArr.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
                         String tipo = tipoArr.substring(tipoArr.indexOf(" ") + 1);
+                        idArray = tipo;
                         if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo)) {
                             DescripcionSimbolo ds = tablaSimbolos.consulta(tipo);
                             if (ds == null) {
@@ -1122,9 +1124,13 @@ public class GeneradorIntermedio {
                     return null;
                 }
                 // comprobacion de que el entero sea positivo???
+                
+                //TODO: Esto funcionaria unicamente para a = b[i], no para b[i] = a
+                this.g3d.generarInstruccion(TipoInstruccion.IND_VAL.getDescripcion(), new Operador(idArray), new Operador(idx.getReferencia()), new Operador(this.getErrors()));
+                
                 return tipoArr;
             }
-            case MEMBER_ACCESS -> {
+            case MEMBER_ACCESS -> { // TODO: 
                 SymbolOperand tupla = op.op;
                 String tipoTupla = procesarOperando(tupla);
                 if (tipoTupla == null) {
@@ -1163,6 +1169,12 @@ public class GeneradorIntermedio {
                 boolean opIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) ||tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 boolean castIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) ||casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 if ((opIntCharDouble && castIntCharDouble) || (casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]))){ 
+                    int var = this.g3d.nuevaVariable(TipoReferencia.var, tipo, false, false);
+                    this.g3d.generarInstruccion(TipoInstruccion.CAST.getDescripcion(), new Operador(tipo), new Operador(casting), new Operador(var));
+                    
+                    //TODO: Revisar si se asigna a otra variable o que
+                    this.g3d.generarInstruccion(TipoInstruccion.ASIGN.getDescripcion(), new Operador(var), null, new Operador(this.variableTratadaActualmente));
+                    
                     return casting; // casting posible entre int <-> char <-> double <-> int y de char -> string
                 }
                 errores.add("Se ha intentado realizar un casting no permitido ("+op.toString()+") de "+tipo+" a "+casting);
