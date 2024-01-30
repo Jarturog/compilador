@@ -265,7 +265,7 @@ public class GeneradorCIntermedio {
             procesar(parametros);
 
             //Ahora la tabla de dicha funcion tiene incorporado cuantos parametros tiene 
-            tabla.numeroParametros = parametros.paramsLista.numParametros;
+            tabla.numeroParametros = parametros.paramsLista.getNumeroParametros();
         }
 
         añadirInstruccion(Tipo.skip, tabla.eInicio);
@@ -301,13 +301,13 @@ public class GeneradorCIntermedio {
             SymbolMetodoElemento elem = cuerpo.metodo;
 
             switch (elem.getTipo()) {
-                case SymbolMetodoElemento.INSTR ->
+                case INSTR ->
                     procesar(elem.instruccion);
-                case SymbolMetodoElemento.IF ->
+                case IF ->
                     procesar(elem.iff);
-                case SymbolMetodoElemento.LOOP ->
+                case LOOP ->
                     procesar(elem.loop);
-                case SymbolMetodoElemento.SWITCH ->
+                case SWITCH ->
                     procesar(elem.sw);
             }
             cuerpo = cuerpo.siguienteMetodo;

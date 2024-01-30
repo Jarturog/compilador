@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java_cup.Lexer;
 import java_cup.runtime.ScannerBuffer;
+import java_cup.runtime.Symbol;
 import java_cup.runtime.XMLElement;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
@@ -58,7 +59,7 @@ public class Dartam {
             Scanner scanner = new Scanner(ficheroIn);
             // Análisis sintáctico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
-            Object resultado = parser.parse().value;
+            Symbol resultado = parser.parse();
             escribir("tokens.txt", scanner.getTokens());
             if (!scanner.getErrores().isEmpty()) {
                 System.err.println(scanner.getErrores());
@@ -68,7 +69,7 @@ public class Dartam {
                 return;
             }
             System.out.println(scanner.getTokens());
-            SymbolScript script = (SymbolScript) resultado;
+            SymbolScript script = (SymbolScript) resultado.value;
             // Análisis semántico
             AnalizadorSemantico sem = new AnalizadorSemantico(script);
             escribir("symbols.txt", sem.getSymbols());

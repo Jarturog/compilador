@@ -163,78 +163,21 @@ public class GeneradorIntermedio {
             DescripcionSimbolo descripcionTupla  = null;
             String id = dec.id;
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
-            
-            
-            //Comprueba si existe el elemento en la tabla de simbolos
-            if (tablaSimbolos.consulta(id) != null) {
-                errores.add("El identificador '" + id + "' ya ha sido declarado con anterioridad");
-                indicarLocalizacion(dec);
-                error = true;
-            }
-            
             int variable = 0; //Contendra el numero de la variable creada
 
             if (tipo.isArray() || tipo.isTupla()) {
-                if (decs.isConst) {
-                    errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
-                    indicarLocalizacion(dec);
-                    error = true;
-                }
-                if (valorAsignado != null) {
-                    errores.add("Se ha intentado asignar un valor a " + id + ", pero solo se les pueden asignar valores a los tipos primitivos");
-                    indicarLocalizacion(dec);
-                    error = true;
-                }
                 if (tipo.isTupla()) {
                     String tuplaName = tipo.getTipo();
                     tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1);
                     descripcionTupla = tablaSimbolos.consulta(tuplaName);
-                    if (descripcionTupla == null) {
-                        errores.add("No se ha encontrado ninguna tupla con el identificador "+tuplaName);
-                        indicarLocalizacion(tipo);
-                        error = true;
-                    }
-                
                     variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, true);
                     this.variableTratadaActualmente = variable;
-                
                 }
-                
                 if(tipo.isArray()){
-                    SymbolDimensiones dim = tipo.dimArray;
-                    int n = 0;
-                    
                     variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), true, false);
                     this.variableTratadaActualmente = variable;
-                    
-                    while(dim != null) {
-                        n++;
-                        String tipoIdx = procesarOperando(dim.operando);
-                        if (tipoIdx == null) {
-                            errores.add("Se realizan operaciones no validas para el calculo del indice "+n+" del array "+id);
-                            indicarLocalizacion(dim.operando);
-                            error = true;
-                        } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                            errores.add("Las operaciones para el calculo del indice "+n+" del array " + id + " resultan en " + tipoIdx + ", cuando tendria que ser un entero");
-                            indicarLocalizacion(dim.operando);
-                            error = true;
-                        }
-                        dim = dim.siguienteDimension;
-                        
-                    }
                 }
             } else if (valorAsignado != null) {
-                String tipoValor = procesarOperando(valorAsignado);
-                if (tipoValor == null) {
-                    errores.add("Los valores del operando "+valorAsignado+" no son compatibles");
-                    indicarLocalizacion(valorAsignado);
-                    error = true;
-                } else if (!tipoValor.equals(tipo.getTipo())) {
-                    errores.add("El tipo "+tipo.getTipo()+" con el que se ha declarado no es compatible con el que se esta intentado asignar a la variable ("+tipoValor+")");
-                    indicarLocalizacion(valorAsignado);
-                    error = true;
-                }
-                
                 variable = this.g3d.nuevaVariable(TipoReferencia.var, tipo.getTipo(), false, false);
                 this.variableTratadaActualmente = variable;
             }
@@ -265,13 +208,13 @@ public class GeneradorIntermedio {
         while (body != null) {
             SymbolMetodoElemento elem = body.metodo;
             switch (elem.getTipo()) {
-                case SymbolMetodoElemento.INSTR ->
+                case INSTR ->
                     procesarInstruccion(elem.instruccion);
-                case SymbolMetodoElemento.IF ->
+                case IF ->
                     procesarIf(elem.iff);
-                case SymbolMetodoElemento.LOOP ->
+                case LOOP ->
                     procesarLoop(elem.loop);
-                case SymbolMetodoElemento.SWITCH ->
+                case SWITCH ->
                     procesarSwitch(elem.sw);
             }
             body = body.siguienteMetodo;
@@ -295,127 +238,23 @@ public class GeneradorIntermedio {
 
     private void procesarAsignaciones(SymbolAsigs asigs) throws Exception {
         while (asigs != null) {
-            boolean error = false, errorOperandoInvalido = false;
             SymbolAsig asig = asigs.asig;
             DescripcionSimbolo d = tablaSimbolos.consulta(asig.id);
-            if (d == null) {
-                errores.add("La variable " + asig.id + " no ha sido declarada con anterioridad");
-                indicarLocalizacion(asig);
-                error = true;
-            } else if (d.isFunction()) {
-                errores.add("La variable " + asig.id + " corresponde a una funcion y no a una variable");
-                indicarLocalizacion(asig);
-                error = true;
-            }
             String tipoValor = procesarOperando(asig.valor);
-            if (tipoValor == null) {
-                errores.add("Se realizan operaciones no validas en el valor a asignar a '" + asig.id + "'");
-                indicarLocalizacion(asig.valor);
-                errorOperandoInvalido = true;
-            }
-            if (error) {
-                asigs = asigs.siguienteAsig;
-                continue;
-            }
-            error = errorOperandoInvalido;
             String tipoVariable = null;
             switch (asig.getTipo()) {
                 case PRIMITIVA -> {
-                    if (d.isArray() || d.isTipoTupla()) {
-                        String estructura = "una tupla";
-                        if (d.isArray()) {
-                            estructura = "un array";
-                        }
-                        errores.add("Se ha intentado asignar un valor a " + estructura + " en vez de a uno de sus elementos");
-                        indicarLocalizacion(asig);
-                        error = true;
-                    }
                     tipoVariable = d.getTipo();
-                }
-                case ARRAY -> {
-                    if (!d.isArray()) {
-                        errores.add("Se ha intentado acceder a un elemento de la variable "+asig.id+" que no es un array (es de tipo "+d.getTipo()+")");
-                        indicarLocalizacion(asig);
-                        error = true;
-                    }
-                    String idx = procesarOperando(asig.dim);
-                    if (tipoValor == null) {
-                        errores.add("Se realizan operaciones no validas en el indice del array " + asig.id);
-                        indicarLocalizacion(asig.dim);
-                        error = true;
-                    } else if (!idx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                        errores.add("El indice del array " + asig.id + " no resulta en un entero");
-                        indicarLocalizacion(asig.dim);
-                        error = true;
-                    }
-                    if (!error) {
-                        tipoVariable = d.getTipo();
-                    }
-                    if (!asig.operacion.isBasicAsig()) {
-                        errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' es un array");
-                        indicarLocalizacion(asig.operacion);
-                        error = true;
-                    }
-                }
-                case TUPLA -> {
-                    if (!d.isTipoTupla()) {
-                        errores.add("Se ha intentado acceder a un miembro de la variable "+asig.id+" que no es una tupla (es de tipo "+d.getTipo()+")");
-                        indicarLocalizacion(asig);
-                        error = true;
-                    } else {
-                        DescripcionSimbolo miembro = d.getMember(asig.miembro);
-                        if (miembro == null) {
-                            errores.add("El miembro " + asig.miembro + " no ha sido encontrado en la tupla " + d.getNombreTupla());
-                            indicarLocalizacion(asig);
-                            error = true;
-                        } else {
-                            tipoVariable = miembro.getTipo();
-                        }
-                    }
-                }
-            }
-            if (error) {
-                asigs = asigs.siguienteAsig;
-                continue;
-            }
-            if (!tipoValor.equals(tipoVariable)) {
-                errores.add("Se esta intentado asignar un valor de tipo "+tipoValor+" a una variable de tipo " + tipoVariable);
-                indicarLocalizacion(asig.valor);
-                error = true;
-            }
-            if (!error && !asig.operacion.doesOperationResultInSameType(tipoValor)) {
-                errores.add("Se esta intentado aplicar una operacion no valida entre los tipos "+tipoVariable+" y "+ tipoValor);
-                indicarLocalizacion(asig);
-                error = true;
-            }
-            if (error) {
-                asigs = asigs.siguienteAsig;
-                continue;
-            }
-            if (!asig.operacion.isBasicAsig() && !d.tieneValorAsignado()) {
-                errores.add("No se puede realizar asignacion compuesta si la variable '"+asig.id+"' no ha sido asignada de forma simple anteriormente");
-                indicarLocalizacion(asig.operacion);
-                error = true;
-            }
-            switch (asig.getTipo()) {
-                case PRIMITIVA -> {
-                    if (d.tieneValorAsignado() && d.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor a la constante '"+ asig.id+"' que ya tenia valor");
-                        indicarLocalizacion(asig);
-                        error = true;
-                    }
                     d.asignarValor();
                 }
                 case ARRAY -> {
+                    String idx = procesarOperando(asig.dim);
+                    tipoVariable = d.getTipo();
                     tablaSimbolos.ponerIndice(asig.id, d);
                 }
                 case TUPLA -> {
                     DescripcionSimbolo miembro = d.getMember(asig.miembro);
-                    if (miembro.tieneValorAsignado() && miembro.isConstante()) {
-                        errores.add("Se esta intentado asignar un valor al miembro constante '"+ asig.miembro+"' de la variable '"+asig.id+"' de la tupla '"+d.getNombreTupla()+"', el cual ya tenia un valor asignado");
-                        indicarLocalizacion(asig);
-                        error = true;
-                    }
+                    tipoVariable = miembro.getTipo();
                     tablaSimbolos.ponerCampo(asig.id, asig.miembro, miembro);
                     miembro.asignarValor();
                 }
