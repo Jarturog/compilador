@@ -18,6 +18,10 @@ import jflex.base.Pair;
 
 public class DescripcionSimbolo {
 
+    public static enum dtipus {
+        dnula, dvar, dconst, dtipus //, dproc, dcamp, darg_in, darg, dindex
+    }
+    
     protected final String tipo;
 
     protected int nivel;
@@ -27,9 +31,9 @@ public class DescripcionSimbolo {
     private final DescripcionSimbolo memberOf; // apunta a la tupla de la cual es miembro
     private final DescripcionDefinicionTupla tipoTupla;
 
-    public int first;
-    public int next;    //Apuntador al siguiente campo de una tupla
-    public String idcamp;   //Identificador del campo de la tupla
+//    public int first;
+//    public int next;    //Apuntador al siguiente campo de una tupla
+//    public String idcamp;   //Identificador del campo de la tupla
 
     /**
      * Variable

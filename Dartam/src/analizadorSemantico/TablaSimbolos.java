@@ -181,66 +181,66 @@ public class TablaSimbolos {
 //        td.get(idr).next = idxe; //Referenciamos al añadido para crear una lista
 //        te.put(idxe, e); //Ahora la añadimos a la tabla de expansion 
     }
-
-    /*
-        Vamos a buscar mediante el identificadar de la tupla
-        el una entrada de esta misma. Devolvera la entrada
-        que contiene tanto nombre + DescripcionSimbolo
-     */
-    public Entrada consultaCamp(String idr, String idc) throws Exception {
-        DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
-        if (!d.isTipoTupla()) {
-            throw new Exception("No es una tupla!");
-        }
-
-        int i = d.first;
-        while (i != 0 && !te.get(i).id.equals(idc)) {
-            i = te.get(i).d.next;
-        }
-
-        if (i != 0) {
-            return te.get(i);
-        } else {
-            return null;
-        }
-
-    }
-
-    /*
-      Vamos a meter un elemento de una tabla dentro de la tabla de simbolos
-      El id hace referencia al id del array, y descripcionSimbolo contendra lo necesirio
-        para identificar al propio dato a insertar
-     */
-    public void ponerIndice(String id, DescripcionSimbolo d) throws Exception {
-        DescripcionSimbolo da = td.get(id);
-        if (!da.isArray()) {
-            throw new Exception("No es un array");
-        }
-
-        int idxe = da.first;
-        int idxep = 0;
-
-        while (idxe != 0) {
-            idxep = idxe;
-            idxe = te.get(idxe).next;
-        }
-
-        idxe = ta.get(this.n) + 1;
-        ta.set(n, idxe); //Elemento nuevo dentro de la tabla de expansion, actualizamos contador
-
-        Entrada ent = new Entrada("", d, n); //No tienen nombre las entradas de valores de indices
-
-        ent.idcamp = ""; //No tiene identificador ya que será un valor unicamente o referencia a un valor
-        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
-        ent.next = 0;   //Si es el primer elemento no tendrá siguiente
-
-        if (idxep == 0) { //Si es el primer indice
-            td.get(id).first = idxe;
-        } else {  //En el caso de que haya mas indices, es decir mas elementeos lo actualizamos
-            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte al nuevo
-        }
-        te.put(idxe, ent); //Finalmente añadimos la entrada a la tabla de expansion
-    }
+//
+//    /*
+//        Vamos a buscar mediante el identificadar de la tupla
+//        el una entrada de esta misma. Devolvera la entrada
+//        que contiene tanto nombre + DescripcionSimbolo
+//     */
+//    public Entrada consultaCamp(String idr, String idc) throws Exception {
+//        DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
+//        if (!d.isTipoTupla()) {
+//            throw new Exception("No es una tupla!");
+//        }
+//
+//        int i = d.first;
+//        while (i != 0 && !te.get(i).id.equals(idc)) {
+//            i = te.get(i).d.next;
+//        }
+//
+//        if (i != 0) {
+//            return te.get(i);
+//        } else {
+//            return null;
+//        }
+//
+//    }
+//
+//    /*
+//      Vamos a meter un elemento de una tabla dentro de la tabla de simbolos
+//      El id hace referencia al id del array, y descripcionSimbolo contendra lo necesirio
+//        para identificar al propio dato a insertar
+//     */
+//    public void ponerIndice(String id, DescripcionSimbolo d) throws Exception {
+//        DescripcionSimbolo da = td.get(id);
+//        if (!da.isArray()) {
+//            throw new Exception("No es un array");
+//        }
+//
+//        int idxe = da.first;
+//        int idxep = 0;
+//
+//        while (idxe != 0) {
+//            idxep = idxe;
+//            idxe = te.get(idxe).next;
+//        }
+//
+//        idxe = ta.get(this.n) + 1;
+//        ta.set(n, idxe); //Elemento nuevo dentro de la tabla de expansion, actualizamos contador
+//
+//        Entrada ent = new Entrada("", d, n); //No tienen nombre las entradas de valores de indices
+//
+//        ent.idcamp = ""; //No tiene identificador ya que será un valor unicamente o referencia a un valor
+//        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
+//        ent.next = 0;   //Si es el primer elemento no tendrá siguiente
+//
+//        if (idxep == 0) { //Si es el primer indice
+//            td.get(id).first = idxe;
+//        } else {  //En el caso de que haya mas indices, es decir mas elementeos lo actualizamos
+//            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte al nuevo
+//        }
+//        te.put(idxe, ent); //Finalmente añadimos la entrada a la tabla de expansion
+//    }
 //
 //    /*
 //        Método auxiliar por si necesitamos saber si es el primer indice
@@ -306,40 +306,40 @@ public class TablaSimbolos {
         idpr es el nombre de la funcion, idparam el nombre del parametro
         y necesitamos la descripcion de dicho parameto
      */
-    public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception {
-        DescripcionSimbolo des = td.get(idpr);
-        if (!des.isFunction()) {
-            throw new Exception("Error, no es una funcion");
-        }
-
-        int idxe = td.get(idpr).first;
-        int idxep = 0;
-        while (idxe != 0 && te.get(idxe).id.equals(idparam)) {
-            idxep = idxe;
-            idxe = te.get(idxe).next;
-        }
-
-        if (idxe != 0) {
-            throw new Exception("Error, ya hay un parametro con el mismo nombre");
-        }
-
-        idxe = ta.get(this.n) + 1;
-        ta.set(this.n, idxe); //Hemos actualizado al tabla de expansion con una nueva entrada
-
-        Entrada ent = new Entrada(idparam, d, n);
-        ent.idcamp = idparam;
-        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
-        ent.next = 0;
-
-        if (idxep == 0) {
-            td.get(idpr).first = idxe;
-        } else {
-            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
-        }
-
-        te.put(idxe, ent);
-
-    }
+//    public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception {
+//        DescripcionSimbolo des = td.get(idpr);
+//        if (!des.isFunction()) {
+//            throw new Exception("Error, no es una funcion");
+//        }
+//
+//        int idxe = td.get(idpr).first;
+//        int idxep = 0;
+//        while (idxe != 0 && te.get(idxe).id.equals(idparam)) {
+//            idxep = idxe;
+//            idxe = te.get(idxe).next;
+//        }
+//
+//        if (idxe != 0) {
+//            throw new Exception("Error, ya hay un parametro con el mismo nombre");
+//        }
+//
+//        idxe = ta.get(this.n) + 1;
+//        ta.set(this.n, idxe); //Hemos actualizado al tabla de expansion con una nueva entrada
+//
+//        Entrada ent = new Entrada(idparam, d, n);
+//        ent.idcamp = idparam;
+//        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
+//        ent.next = 0;
+//
+//        if (idxep == 0) {
+//            td.get(idpr).first = idxe;
+//        } else {
+//            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
+//        }
+//
+//        te.put(idxe, ent);
+//
+//    }
 
     @Override
     public String toString() {

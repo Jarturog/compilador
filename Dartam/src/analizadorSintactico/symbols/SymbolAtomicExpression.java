@@ -25,7 +25,7 @@ public class SymbolAtomicExpression extends SymbolBase {
     public final String tipo;
 
     public SymbolAtomicExpression(boolean isID, String et, Location l, Location r) {
-        super("literal", isID ? et : et.substring(1, et.length() - 1), l, r);
+        super("literal", et, l, r); // isID ? et : et.substring(1, et.length() - 1), l, r);
         if (isID) {
             tipo = ParserSym.terminalNames[ParserSym.ID];
         } else {
@@ -34,22 +34,22 @@ public class SymbolAtomicExpression extends SymbolBase {
     }
 
     public SymbolAtomicExpression(Character et, Location l, Location r) {
-        super("literal", et.toString(), l, r);
+        super("literal", et, l, r);
         tipo = ParserSym.terminalNames[ParserSym.CAR];
     }
 
     public SymbolAtomicExpression(Double et, Location l, Location r) {
-        super("literal", et.toString(), l, r);
+        super("literal", et, l, r);
         tipo = ParserSym.terminalNames[ParserSym.REAL];
     }
 
     public SymbolAtomicExpression(Integer et, Location l, Location r) {
-        super("literal", et.toString(), l, r);
+        super("literal", et, l, r);
         tipo = ParserSym.terminalNames[ParserSym.ENT];
     }
 
     public SymbolAtomicExpression(Boolean et, Location l, Location r) {
-        super("literal", et.toString(), l, r);
+        super("literal", et, l, r);
         tipo = ParserSym.terminalNames[ParserSym.PROP];
     }
 

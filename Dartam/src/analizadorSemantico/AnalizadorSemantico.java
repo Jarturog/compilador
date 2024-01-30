@@ -149,7 +149,7 @@ public class AnalizadorSemantico {
                     error = true;
                 }
             }
-            
+
 //            if (tipo.isArray() || tipo.isTupla()) {
 //                if (decs.isConst) {
 //                    errores.add(id + " se ha intentado declarar constante, cuando solo los tipos primitivos pueden serlo");
@@ -210,9 +210,9 @@ public class AnalizadorSemantico {
                         indicarLocalizacion(dec);
                     } else {
                         declaracionTipoTupla.anyadirMiembro(
-                            new DescripcionDefinicionTupla.DefinicionMiembro(
-                                    id, tipo.getTipo(), decs.isConst,
-                                    valorAsignado != null, dt));
+                                new DescripcionDefinicionTupla.DefinicionMiembro(
+                                        id, tipo.getTipo(), decs.isConst,
+                                        valorAsignado != null, dt));
                     }
                 } else {
                     String tupla = "";
@@ -646,7 +646,6 @@ public class AnalizadorSemantico {
         }
         return parametros;
     }
-    
 
     private void procesarDeclaracionTupla(SymbolScriptElemento tupla) throws Exception {
         SymbolMiembrosTupla miembros = tupla.miembrosTupla;
@@ -691,7 +690,14 @@ public class AnalizadorSemantico {
             case ATOMIC_EXPRESSION -> {
                 SymbolAtomicExpression literal = op.atomicExp;
                 String tipo = literal.tipo;
+                
                 if (!tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
+                    if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])
+                            && ((Integer) literal.value > SymbolAtomicExpression.LIMIT_SUP || (Integer) literal.value < SymbolAtomicExpression.LIMIT_INF)) {
+                        errores.add("Se ha utilizado un valor " + literal.value.toString() + " fuera del rango " + SymbolAtomicExpression.LIMIT_INF + "..." + SymbolAtomicExpression.LIMIT_SUP);
+                        indicarLocalizacion(literal);
+                        return null;
+                    }
                     return tipo; // si no es ID
                 }
                 String nombreID = (String) literal.value;

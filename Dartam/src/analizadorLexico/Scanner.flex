@@ -202,6 +202,33 @@ private Symbol symbol(int type, Object value) {
 
   return new ComplexSymbol(ParserSym.terminalNames[type], type, esquerra, dreta, value);
 }
+
+private Symbol procesarNumero() {
+  Integer numero = null;
+  try {
+      numero = Integer.parseInt(yytext());
+      tokens += "VAL_DECIMAL: "+yytext()+"\n";
+  } catch (NumberFormatException ex) { /* No es un entero en base 10 */
+    try {
+      int base;
+      switch (yytext().charAt(1)) {
+          case 'b' -> { base = 2; tokens += "VAL_BINARIO: "+yytext()+"\n"; }
+          case 'o' -> { base = 8; tokens += "VAL_OCTAL: "+yytext()+"\n"; }
+          case 'x' -> { base = 16; tokens += "VAL_HEX: "+yytext()+"\n"; }
+          default -> throw new NumberFormatException(); // por si acaso
+      }
+      numero = Integer.parseInt(yytext().substring(2), base);
+    } catch (Exception e) { /* Error inesperado */
+      errores += errorToString();
+      return symbol(ParserSym.error);
+    }
+  }
+  if (numero == null) {
+    errores += errorToString();
+    return symbol(ParserSym.error);
+  }
+  return symbol(ParserSym.ENT, numero);
+}
 %}
 
 /****************************************************************************/
@@ -211,8 +238,8 @@ private Symbol symbol(int type, Object value) {
 // És molt important l'ordre de les regles!!!
 
 // valores chars y strings
-{val_char}                  { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(0)); }
-{val_cadena}                { tokens += "VAL_CADENA: "+yytext()+"\n"; return symbol(ParserSym.STRING, yytext()); }
+{val_char}                  { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(1)); } // 1 porque 0 es la comilla simple '
+{val_cadena}                { tokens += "VAL_CADENA: "+yytext()+"\n"; String s = yytext(); return symbol(ParserSym.STRING, s.substring(1, s.length() - 1)); }
 
 // operadores
 {op_and_asig}               { tokens += "OP_AND_ASSIGNMENT: "+yytext()+"\n"; return symbol(ParserSym.AS_ANDA, yytext()); }
@@ -288,10 +315,10 @@ private Symbol symbol(int type, Object value) {
 {kw_tuple}              { tokens += "KW_TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
 
 // valores
-{val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),2)); }
-{val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),16)); }
-{val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext().substring(2, yytext().length()),8)); }
-{val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return symbol(ParserSym.ENT, Integer.parseInt(yytext())); }
+{val_binario}       { return procesarNumero(); }
+{val_hex}           { return procesarNumero(); }
+{val_octal}         { return procesarNumero(); }
+{val_decimal}       { return procesarNumero(); }
 {val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); }
 {val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.PROP, "cierto".equals(yytext())); }
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }

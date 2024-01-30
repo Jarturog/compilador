@@ -1,0 +1,4 @@
+f vacio inicio(string[] argumentos) {
+	ent a: 0x0;
+
+}

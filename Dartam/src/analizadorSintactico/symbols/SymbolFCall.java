@@ -40,7 +40,7 @@ public class SymbolFCall extends SymbolBase {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         String nombre = ((String)methodName.value) + "(";
         if (operandsLista == null) {
             return nombre + ")";
