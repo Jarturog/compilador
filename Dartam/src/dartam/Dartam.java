@@ -73,8 +73,8 @@ public class Dartam {
             escribir("symbols.txt", sem.getSymbols());
             System.err.println(sem.getErrores());
             // Generación de código intermedio
-            //GeneradorCIntermedio codigoIntermedio = new GeneradorCIntermedio(script);
-            //escribir("codigoIntermedio.txt", codigoIntermedio.getCodigo());
+            System.out.println(sem.geetInstrucciones());
+            escribir("codigoIntermedio.txt", sem.geetInstrucciones());
             // Generación de código máquina
             //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
             // Optimzaciones

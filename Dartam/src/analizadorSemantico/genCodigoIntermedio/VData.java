@@ -5,7 +5,7 @@ import jflex.base.Pair;
 
 /**
  *
- * @author dasad
+ * 
  */
 public class VData {
     private int indiceTablaVariables;
@@ -14,30 +14,16 @@ public class VData {
     
     private String idProcedimiento;
     private int bytes;
-    private String tipo;
     private boolean isArray, isTupla;
     private int offset;
     private ArrayList<Pair<Integer, Tipo>> parametrosTupla; //Elementos de la tupla
     
    
-    public VData(String nombre, TipoReferencia tv, String tipo, String idp, boolean isArray, boolean isTupla){
+    public VData(String nombre, TipoReferencia tv, String idp){
         this.nombre = nombre;
         this.tipoVariable = tv;
-        this.tipo = tipo;
         this.idProcedimiento = idp;
         this.parametrosTupla = new ArrayList<>();
-        
-        switch (tipo){
-            case "ent" -> this.bytes = Integer.BYTES;
-            case "car" -> this.bytes = Character.BYTES;
-            case "prop" -> this.bytes = 1;
-            case "string" -> this.bytes = 128;
-            case "real" -> this.bytes = Double.BYTES;
-            default -> this.bytes = -1; //En caso de tupla y array calcularemos diferente
-        }
-        
-        this.isArray = isArray;
-        this.isTupla = isTupla;
     }
     
     public int getIndice(){
@@ -62,10 +48,6 @@ public class VData {
     
     public void setBytes(int b){
         this.bytes = b;
-    }
-
-    public String getTipo() {
-        return tipo;
     }
 
     public boolean isIsArray() {

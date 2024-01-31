@@ -8,6 +8,7 @@
 package analizadorSemantico;
 
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
+import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolTipo;
@@ -23,6 +24,7 @@ public class DescripcionSimbolo {
     }
     
     protected final String tipo;
+    protected final Tipo tipoBytes;
 
     protected int nivel;
     private boolean isConstante = false, valorAsignado = false;
@@ -53,6 +55,7 @@ public class DescripcionSimbolo {
         } else {
             miembros = null;
         }
+        this.tipoBytes = Tipo.getTipo(tipo);
     }
 
     public String getTipo() {

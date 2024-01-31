@@ -7,14 +7,26 @@ import jflex.base.Pair;
 public class DescripcionArray extends DescripcionSimbolo {
 
     private ArrayList<SymbolOperand> dimensiones;
-    public int dcamp; //Desplazamiento dentro del array
+    private ArrayList<String> variablesDimension;
+    private Integer valorConegutEnTC;
+//    public int dcamp; //Desplazamiento dentro del array
 
     /**
      * Array
      */
-    public DescripcionArray(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla) {
+    public DescripcionArray(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC) {
         super(t, false, false, tupla, tipoTupla);
         dimensiones = dim;
+        this.variablesDimension = variablesDimension;
+        this.valorConegutEnTC = valorConegutEnTC;
+    }
+    
+    public ArrayList<String> getVariablesDimension() {
+        return variablesDimension;
+    }
+    
+    public Integer getOffsetTempsCompilacio() {
+        return valorConegutEnTC;
     }
 
     //    //Array

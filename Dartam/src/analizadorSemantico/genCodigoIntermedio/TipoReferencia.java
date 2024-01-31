@@ -6,7 +6,7 @@ package analizadorSemantico.genCodigoIntermedio;
 
 /**
  *
- * @author dasad
+ * 
  */
 public enum TipoReferencia {
     param, var

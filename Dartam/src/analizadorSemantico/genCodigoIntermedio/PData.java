@@ -10,18 +10,16 @@ import jflex.base.Pair;
 
 /**
  *
- * @author dasad
+ * 
  */
 public class PData {
-        private int profundidad; //Nivel de profundidad
-        private String etiqueta;
-        private int cantidadParametros;
-        private ArrayList<Pair<Integer, String>> parametros;
+        private final int profundidad; //Nivel de profundidad
+        private final String etiqueta;
+        private final ArrayList<Pair<String, String>> parametros;
         
         public PData(int profundidad, String etiqueta, int totalBytes, int cantidadParametros){
             this.profundidad = profundidad;
             this.etiqueta = etiqueta;
-            this.cantidadParametros = 0;
             this.parametros = new ArrayList<>();
         }
         
@@ -36,20 +34,19 @@ public class PData {
         }
         
         //Metodo con el que podemos recuperar los parametros del procedimiento
-        public ArrayList<Pair<Integer, String>> getParametros(){
-            return this.parametros;
+        public ArrayList<Pair<String, String>> getParametros(){
+            return parametros;
         }
         
         //Metodo que nos devolvera la cantidad de parametros que tiene
         public int getCantidadParametros(){
-            return this.cantidadParametros;
+            return parametros.size();
         }
         
         //Metodo que permite añadir un nuevo parametro al procedimiento
-        public void añadirParametro(int i, String t){
-            Pair<Integer, String> param = new Pair(i,t);
+        public void añadirParametro(String i, String t){
+            Pair<String, String> param = new Pair(i,t);
             this.parametros.add(param);
-            this.cantidadParametros++;
         }
         
         //Metodo con el que podemos modificar la cantidad de parametros

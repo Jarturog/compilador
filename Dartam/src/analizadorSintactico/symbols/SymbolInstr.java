@@ -1,6 +1,6 @@
 /**
  * Assignatura 21780 - Compiladors
- * Estudis: Grau en Enginyeria Informàtica 
+ * Estudis: Grau en Enginyeria Informàtica
  * Itinerari: Intel·ligència Artificial i Computacio
  *
  * Equipo: Arturo, Dani y Marta
@@ -20,75 +20,93 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
         ;
  */
 public class SymbolInstr extends SymbolBase {
-    
+
     public final SymbolFCall fcall;
     public final SymbolDecs decs;
     public final SymbolAsigs asigs;
     public final SymbolSwap swap;
     public final SymbolReturn ret;
-    
+    public final Boolean continuaNotPara;
+
     public SymbolInstr(SymbolFCall fcall, Location l, Location r) {
-        super("instruccion", l,r);
+        super("instruccion", l, r);
         this.fcall = fcall;
         this.decs = null;
         this.asigs = null;
         this.swap = null;
         this.ret = null;
+        this.continuaNotPara = null;
     }
-    
-    public SymbolInstr(SymbolDecs decs,  Location l, Location r) {
+
+    public SymbolInstr(SymbolDecs decs, Location l, Location r) {
         super("instruccion", l, r);
         this.decs = decs;
         this.fcall = null;
         this.asigs = null;
         this.swap = null;
         this.ret = null;
+        this.continuaNotPara = null;
     }
-    
-    public SymbolInstr(SymbolAsigs asigs,  Location l, Location r) {
-        super("instruccion", l , r);
+
+    public SymbolInstr(SymbolAsigs asigs, Location l, Location r) {
+        super("instruccion", l, r);
         this.asigs = asigs;
         this.decs = null;
         this.fcall = null;
         this.swap = null;
         this.ret = null;
+        this.continuaNotPara = null;
     }
-    
-    public SymbolInstr(SymbolSwap swap,  Location l, Location r) {
-        super("instruccion", l , r);
+
+    public SymbolInstr(SymbolSwap swap, Location l, Location r) {
+        super("instruccion", l, r);
         this.swap = swap;
         this.decs = null;
         this.fcall = null;
         this.asigs = null;
         this.ret = null;
+        this.continuaNotPara = null;
     }
 
     public SymbolInstr(SymbolReturn et, Location l, Location r) {
-        super("instruccion",l ,r);
+        super("instruccion", l, r);
         this.decs = null;
         this.fcall = null;
         this.asigs = null;
         this.swap = null;
         this.ret = et;
+        this.continuaNotPara = null;
     }
-    
-    public static final String FCALL = "f", DECS = "d", ASIGS = "a", SWAP = "s", RET = "r";
-    
-    /**
-     * fcall, decs, asigs, swap, return
-     * @return f, d, a, s or r
-     */
-    public String getTipo() {
+
+    public SymbolInstr(boolean continua, Location l, Location r) {
+        super("instruccion", l, r);
+        this.decs = null;
+        this.fcall = null;
+        this.asigs = null;
+        this.swap = null;
+        this.ret = null;
+        this.continuaNotPara = continua;
+    }
+
+    public static enum TIPO {
+        FCALL, DECS, ASIGS, SWAP, RET, CONTINUE, BREAK
+    }
+
+    public TIPO getTipo() {
         if (fcall != null) {
-            return FCALL;
+            return TIPO.FCALL;
         } else if (decs != null) {
-            return DECS;
+            return TIPO.DECS;
         } else if (asigs != null) {
-            return ASIGS;
+            return TIPO.ASIGS;
         } else if (swap != null) {
-            return SWAP;
+            return TIPO.SWAP;
+        } else if (ret != null) {
+            return TIPO.RET;
+        } else if (continuaNotPara) {
+            return TIPO.CONTINUE;
         } else {
-            return RET;
+            return TIPO.BREAK;
         }
     }
 }

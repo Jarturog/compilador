@@ -7,7 +7,7 @@ package analizadorSemantico.genCodigoIntermedio;
 /**
  *Clase Operador, objecto referente a un operando de
  *  las 3 direcciones, ya sea op1 | op2 | 
- * @author dasad
+ * 
  */
 public class Operador {
     private String nombre; //Nombre de la variable / campo

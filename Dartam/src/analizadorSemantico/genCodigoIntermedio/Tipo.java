@@ -1,13 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package analizadorSemantico.genCodigoIntermedio;
 
-/**
- *
- * @author dasad
- */
+import analizadorSintactico.ParserSym;
+
 public enum Tipo {
-    INT, CHAR, BOOL, STRING, DOUBLE
+    INT(4), CHAR(1), BOOL(1), STRING(128), DOUBLE(4); // no es 4 creo
+
+    public static Tipo getTipo(String tipo) {
+        if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
+            return INT;
+        } else if(tipo.equals(ParserSym.terminalNames[ParserSym.CAR])) {
+            return CHAR;
+        } else if(tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
+            return BOOL;
+        } else if(tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+            return DOUBLE;
+        } else if(tipo.equals(ParserSym.terminalNames[ParserSym.STRING])) {
+            return STRING;
+        }
+        return null;
+    }
+
+    public final Integer bytes;
+
+    private Tipo(Integer t) {
+        bytes = t;
+    }
+
+    @Override
+    public String toString() {
+        return bytes.toString();
+    }
+    
 }
