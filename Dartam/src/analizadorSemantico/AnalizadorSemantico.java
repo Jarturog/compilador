@@ -278,6 +278,7 @@ public class AnalizadorSemantico {
         }
     }
 
+    //TODO: Codigo de 3 dir
     private void procesarAsignaciones(SymbolAsigs asigs) throws Exception {
         while (asigs != null) {
             boolean error = false, errorOperandoInvalido = false;
@@ -428,6 +429,7 @@ public class AnalizadorSemantico {
 
     }
 
+    //TODO: Codigo de 3 dir
     private void procesarLlamadaFuncion(SymbolFCall fcall) throws Exception {
         String nombre = (String) fcall.methodName.value;
         DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
@@ -572,6 +574,9 @@ public class AnalizadorSemantico {
             }// esto está bien dani? --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         }
         if (cond.els != null) {
+            //Etiqueta del else
+            this.g3d.generarInstruccion(TipoInstruccion.SKIP.getDescripcion(), null, null, new Operador(eElse));
+                
             tablaSimbolos.entraBloque();
             procesarBody(cond.els.cuerpo);
             tablaSimbolos.salirBloque();
