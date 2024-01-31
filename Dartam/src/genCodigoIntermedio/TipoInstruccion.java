@@ -38,6 +38,7 @@ public enum TipoInstruccion {
     POT("pot"),
     PCT("pct"),
     IND_ASS("ind_ass"),
+    CAST("cast"),
     IND_VAL("ind_val");
     public final String tipo;
     
