@@ -56,19 +56,30 @@ public class Operador {
     }
     
     
+//    @Override
+//    public String toString(){
+//        if(this.nombre != null){ //O es una referencia o un valor
+//            if(this.tipoReferencia == TipoReferencia.literal){ //valor
+//                return "Valor( " + this.valor  + ")";
+//            }else{ //Es una referencia a otro valor
+//                return "Referencia( " + this.referencia + ")";
+//            }
+//        }else{ //Variable
+//            return "Variable( " + this.nombre + ")"; 
+//        }
+//    }
+    
     @Override
     public String toString(){
-        if(this.nombre != null){ //O es una referencia o un valor
+        if(this.nombre == null){ //O es una referencia o un valor
             if(this.tipoReferencia == TipoReferencia.literal){ //valor
-                return "Valor( " + this.valor  + ")";
+                return ""+valor;
             }else{ //Es una referencia a otro valor
-                return "Referencia( " + this.referencia + ")";
+                return ""+referencia;
             }
         }else{ //Variable
-            return "Variable( " + this.nombre + ")"; 
+            return nombre; 
         }
     }
-    
-    
     
 }

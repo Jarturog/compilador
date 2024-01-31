@@ -66,15 +66,18 @@ public class Dartam {
                 System.err.println(parser.getErrores());
                 return;
             }
-            System.out.println(scanner.getTokens());
+            //System.out.println(scanner.getTokens());
             SymbolScript script = (SymbolScript) resultado.value;
             // Análisis semántico
             AnalizadorSemantico sem = new AnalizadorSemantico(script);
             escribir("symbols.txt", sem.getSymbols());
-            System.err.println(sem.getErrores());
+            if (!sem.getErrores().isEmpty()) {
+                System.err.println(sem.getErrores());
+                return;
+            }
             // Generación de código intermedio
-            System.out.println(sem.geetInstrucciones());
-            escribir("codigoIntermedio.txt", sem.geetInstrucciones());
+            System.out.println(sem.getInstrucciones());
+            escribir("codigoIntermedio.txt", sem.getInstrucciones());
             // Generación de código máquina
             //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
             // Optimzaciones
@@ -93,6 +96,7 @@ public class Dartam {
                 e.printStackTrace();
             }
         }
+        System.out.flush();
         System.out.println("Compilacion finalizada");
     }
 

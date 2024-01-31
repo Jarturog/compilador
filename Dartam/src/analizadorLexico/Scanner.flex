@@ -208,23 +208,28 @@ private Symbol symbol(int type, Object value) {
 private Symbol procesarNumero() {
   Integer numero;
   try {
-      numero = Integer.parseInt(yytext());
-  } catch (NumberFormatException ex) { /* No es un entero en base 10 */
-    try {
+    if (yytext().length()>1) {
       int base;
       switch (yytext().charAt(1)) {
           case 'b' -> { base = 2; }
           case 'o' -> { base = 8; }
           case 'x' -> { base = 16; }
-          default -> throw new NumberFormatException(); // por si acaso
+          default -> { base = 10; }
       }
-      numero = Integer.parseInt(yytext().substring(2), base);
-    } catch (Exception e) { /* Error inesperado */
-      errores += errorToString();
-      return symbol(ParserSym.error);
+      if (base == 10) {
+        numero = Integer.parseInt(yytext(), base);
+      } else {
+        numero = Integer.parseInt(yytext().substring(2), base);
+      }
+    } else {
+      numero = Integer.parseInt(yytext());
     }
+    return symbol(ParserSym.ENT, numero);
+  } catch (Exception e) { /* Error inesperado */
+    errores += errorToString();
+    errores += "No se permiten números fuera del rango " + Integer.MIN_VALUE + "..." +Integer.MAX_VALUE+"\n";
+    return symbol(ParserSym.error);
   }
-  return symbol(ParserSym.ENT, numero);
 }
 %}
 

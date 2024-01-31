@@ -1,0 +1,17 @@
+etinicio: skip
+pmb ninicio
+t1 = 123
+a = t1
+t3 = 2
+if a == t3 goto et1
+t4 = 0
+goto et2
+et1: skip
+t4 = -1
+et2: skip
+if t4 == 0 goto et4
+t5 = 987
+a = t5
+goto et3
+et4: skip
+et3: skip

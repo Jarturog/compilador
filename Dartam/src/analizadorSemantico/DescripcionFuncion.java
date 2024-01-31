@@ -9,21 +9,26 @@ import jflex.base.Pair;
 public class DescripcionFuncion extends DescripcionSimbolo {
 
     private ArrayList<DefinicionParametro> parametros;
+    private String nfuncion;
+    private boolean tieneReturnObligatorio = false; // que siempre se ejecuta independientemente de los ifs o loops que haya
     
     public DescripcionFuncion(String tipoRetorno) {
         super(tipoRetorno, false, false, null, null);
         parametros = new ArrayList<>();
+        this.nfuncion = null;
     }
     
     public DescripcionFuncion(String tipoRetorno, ArrayList<DefinicionParametro> params) {
         super(tipoRetorno, false, false, null, null);
         parametros = params;
+        this.nfuncion = null;
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam) {
         super(tipoRetorno, false, false, null, null);
         parametros = new ArrayList<>();
         parametros.add(new DefinicionParametro(idParam, tipoParam));
+        this.nfuncion = null;
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2) {
@@ -31,6 +36,15 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         parametros = new ArrayList<>();
         parametros.add(new DefinicionParametro(idParam1, tipoParam1));
         parametros.add(new DefinicionParametro(idParam2, tipoParam2));
+        this.nfuncion = null;
+    }
+    
+    public void setNFuncion(String nfuncion) {
+        this.nfuncion = nfuncion;
+    }
+    
+    public String getNFuncion() {
+        return nfuncion;
     }
 
     public void cambiarTipo(int t) {
@@ -81,6 +95,23 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 2) : "sin argumentos";
 
         return "Función de tipo '" + tipo + "'  " + params + " declarado en el nivel " + nivel;
+    }
+
+    public boolean necesitaReturnStatement() {
+        return !tipo.equals(ParserSym.terminalNames[ParserSym.KW_VOID]);
+    }
+
+    public boolean tieneReturnStatement() {
+        return tieneReturnObligatorio;
+    }
+
+    /**
+     * Si un if tiene un return y su else también, no cuenta para el método
+     * porque tienen que estar con un nivel de diferencia
+     * @param profundidad 
+     */
+    public void asignarReturn(int profundidad) {
+        tieneReturnObligatorio = nivel == profundidad - 1;
     }
     
     public static class DefinicionParametro {

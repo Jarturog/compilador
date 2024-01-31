@@ -22,12 +22,28 @@ public class Generador3Direcciones {
     private int nEtiquetaConId = 1, nEtiqueta = 1;
     private int nVariableConId = 1, nVariableTemporal = 1, nVariableDimensiones = 1;
 
+    public Generador3Direcciones() {
+        this.tablaVariables = new HashMap<>();
+        this.tablaProcedimientos = new TablaProcedimientos();
+//        this.listaProcedimientos = new ArrayList<>();
+        this.instrucciones = new ArrayList<>();
+        numEtiquetasOVariablesConId = new HashMap<>();
+    }
+    
     public Generador3Direcciones(HashMap<String, VData> tv, TablaProcedimientos tp) {
         this.tablaVariables = tv;
         this.tablaProcedimientos = tp;
 //        this.listaProcedimientos = new ArrayList<>();
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
+    }
+    
+    public String nuevoN(String nombre) {
+        String nom = "n" + nombre;
+        Integer num = numEtiquetasOVariablesConId.get(nom);
+        boolean hayRepe = num != null;
+        numEtiquetasOVariablesConId.put(nom, hayRepe ? 1 + num : 1);
+        return nom + (hayRepe ? num : "");
     }
 
     //Crecion de una etiqueta: Sintaxi etX donde X es el contador de etiquetas puestas
