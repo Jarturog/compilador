@@ -42,9 +42,10 @@ public enum TipoInstruccion {
     IND_VAL("ind_val");
     public final String tipo;
     
-    public TipoInstruccion(String t){
+    private TipoInstruccion(String t){
         this.tipo = t;
     }
+    
     public String getDescripcion() {
         return this.tipo;
     }
