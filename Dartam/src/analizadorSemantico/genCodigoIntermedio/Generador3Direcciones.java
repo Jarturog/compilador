@@ -40,6 +40,14 @@ public class Generador3Direcciones {
         return numeroVariable;
     }
     
+    //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
+    public int nuevaVariable(String id, TipoReferencia tipoVariable, String tipo, boolean isArray, boolean isTupla){
+        int numeroVariable = this.tablaVariables.getContador();
+        VData data = new VData(id, tipoVariable, tipo, funcionActual(), isArray, isTupla);
+        this.tablaVariables.put(data);
+        return numeroVariable;
+    }
+    
     //Devuelve la función que esta en el topo de la pila
     public String funcionActual(){
         return this.listaProcedimientos.isEmpty() ? null : this.listaProcedimientos.get(listaProcedimientos.size() - 1);
