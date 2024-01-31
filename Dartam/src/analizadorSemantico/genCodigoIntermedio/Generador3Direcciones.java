@@ -4,6 +4,7 @@
  */
 package analizadorSemantico.genCodigoIntermedio;
 
+import analizadorSemantico.genCodigoIntermedio.Instruccion3Direcciones.TipoInstr;
 import java.util.ArrayList;
 
 /**
@@ -81,7 +82,7 @@ public class Generador3Direcciones {
     }
     
     //Crearemos la instruccion de 3 direcciones y almacenaremos en el array list
-    public void generarInstruccion(String instruccion, Operador op1, Operador op2, Operador dst){
+    public void generarInstr(TipoInstr instruccion, Operador op1, Operador op2, Operador dst){
         Instruccion3Direcciones ins = new Instruccion3Direcciones(instruccion, op1, op2, dst);
         this.instrucciones.add(ins);
     }

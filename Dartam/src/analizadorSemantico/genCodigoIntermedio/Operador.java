@@ -12,8 +12,8 @@ package analizadorSemantico.genCodigoIntermedio;
 public class Operador {
     private String nombre; //Nombre de la variable / campo
     private Object valor; //Valor
-    private Tipo tipoCasting; //Que tipo de dato es: BOOLEAN, STRING...
-    private TipoReferencia tipo;
+    private Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
+    private TipoReferencia tipoReferencia;
     private int referencia; //Referencia de la tabla de datos o procedimientos
     
     public static enum TipoReferencia{
@@ -25,14 +25,14 @@ public class Operador {
     }
     
     public Operador(int referencia){
-        this.tipo = TipoReferencia.referencia;
+        this.tipoReferencia = TipoReferencia.referencia;
         this.referencia = referencia;
     }
     
     public Operador(Tipo tipo, Object valor){
-        this.tipoCasting = tipo;
+        this.tipoValor = tipo;
         this.valor = valor;
-        this.tipo = TipoReferencia.literal;
+        this.tipoReferencia = TipoReferencia.literal;
     }
 
     public String getNombre() {
@@ -44,11 +44,11 @@ public class Operador {
     }
 
     public Tipo getTipoCasting() {
-        return tipoCasting;
+        return tipoValor;
     }
 
     public TipoReferencia getTipo() {
-        return tipo;
+        return tipoReferencia;
     }
 
     public int getReferencia() {
@@ -59,7 +59,7 @@ public class Operador {
     @Override
     public String toString(){
         if(this.nombre != null){ //O es una referencia o un valor
-            if(this.tipo == TipoReferencia.literal){ //valor
+            if(this.tipoReferencia == TipoReferencia.literal){ //valor
                 return "Valor( " + this.valor  + ")";
             }else{ //Es una referencia a otro valor
                 return "Referencia( " + this.referencia + ")";

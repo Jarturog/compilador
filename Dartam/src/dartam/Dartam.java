@@ -80,8 +80,8 @@ public class Dartam {
             // Optimzaciones
             //Optimizador op = new Optimizador();
         } catch (Exception e) {
-            //e.printStackTrace(); System.err.println("Error inesperado de compilacion: " + e.getMessage());
-            System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
+            e.printStackTrace(); System.err.println("Error inesperado de compilacion: " + e.getMessage());
+            //System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);

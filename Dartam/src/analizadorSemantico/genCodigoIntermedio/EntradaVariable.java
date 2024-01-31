@@ -39,17 +39,17 @@ public class EntradaVariable {
         dimensiones = new ArrayList<>();
     }
 
-    //Clonaremos las dimensiones y los pasaremos a un nuevo array
-    public ArrayList<String> clonarDimensiones(){
-        ArrayList<String> rtn = new ArrayList<>();
-        for (String dim : dimensiones) {
-            rtn.add(dim);
-        }
-        return rtn;
-    }
+//    //Clonaremos las dimensiones y los pasaremos a un nuevo array
+//    private ArrayList<String> clonarDimensiones(){
+//        ArrayList<String> rtn = new ArrayList<>();
+//        for (String dim : dimensiones) {
+//            rtn.add(dim);
+//        }
+//        return rtn;
+//    }
 
     //Recibiremos cuanto ocupa la variable
-    public int getOcupacion(){
+    protected int getOcupacion(){
         int o;
         if(tipo == ParserSym.KW_INT){
             o = BYTES_ENTERO;

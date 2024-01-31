@@ -28,7 +28,7 @@ public class EntradaProcedure {
     }
 
     //Total de la ocupacion de la variables, en caso de haber una desconocida se devuelve -1
-    public int getOcupacionVariables(){
+    private int getOcupacionVariables(){
         int tamaño = 0;
         
         for (Map.Entry<String, EntradaVariable> ent : tablaVariables.entrySet()) {
@@ -38,12 +38,14 @@ public class EntradaProcedure {
         }
         return tamaño;
     }
-
-    //Preparacion para codigo maquina
-    public void preaparacionCodigoMaquina(){
-        limpiarVariables();
-        calcularDesplazamientos();
-    }
+    
+//    lo comento porque no se usa
+//
+//    //Preparacion para codigo maquina
+//    public void preaparacionCodigoMaquina(){
+//        limpiarVariables();
+//        calcularDesplazamientos();
+//    }
     
     
     //Vaciado de la tabla de variables
