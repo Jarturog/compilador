@@ -7,6 +7,7 @@
  */
 package analizadorSintactico.symbols;
 
+import analizadorSemantico.genCodigoIntermedio.EntradaVariable;
 import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
@@ -55,8 +56,25 @@ public class SymbolAtomicExpression extends SymbolBase {
 
     public boolean esNumerico() {
         return tipo.equals(ParserSym.terminalNames[ParserSym.CAR])
-                || tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) 
+                || tipo.equals(ParserSym.terminalNames[ParserSym.ENT])
                 || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
+    }
+
+    public String getValorCodigoIntermedio() {
+        if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR])) {
+            return value.toString();
+        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
+            return value.toString();
+        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+            return value.toString();
+        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
+            return (value.toString().toLowerCase().equals(tipo.equals("cierto"))) ? ""+EntradaVariable.TRUE : ""+EntradaVariable.FALSE;
+        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
+            return value.toString();
+        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.STRING])) {
+            return value.toString();
+        }
+        return null;
     }
 
 }
