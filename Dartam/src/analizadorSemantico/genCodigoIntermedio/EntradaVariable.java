@@ -1,4 +1,4 @@
-package genCodigoIntermedio;
+package analizadorSemantico.genCodigoIntermedio;
 
 import java.util.ArrayList;
 import analizadorSintactico.ParserSym;

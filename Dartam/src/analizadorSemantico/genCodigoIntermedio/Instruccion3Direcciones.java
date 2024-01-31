@@ -1,4 +1,4 @@
-package genCodigoIntermedio;
+package analizadorSemantico.genCodigoIntermedio;
 
 /**
  *

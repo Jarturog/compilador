@@ -5,7 +5,7 @@
  *
  * Equipo: Arturo, Dani y Marta
  */
-package genCodigoIntermedio;
+package analizadorSemantico.genCodigoIntermedio;
 
 import analizadorSemantico.*;
 import analizadorSintactico.ParserSym;
