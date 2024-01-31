@@ -109,7 +109,7 @@ terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
 terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_STRING, KW_VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
-terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
+terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_DO, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
 terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP, CASTING;
 
@@ -252,8 +252,10 @@ METODO_ELEMENTO ::= INSTR:et    {: RESULT = new SymbolMetodoElemento(et, etxleft
 INSTR ::= FCALL:et ENDINSTR    {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
         | RETURN:et            {: RESULT = new SymbolInstr(et,etxleft, etxright); :} 
         | DECS:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
-        | ASIGS:et ENDINSTR            {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | ASIGS:et ENDINSTR    {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
         | SWAP:et              {: RESULT = new SymbolInstr(et,etxleft, etxright); :}
+        | KW_CONTINUE:et ENDINSTR {: RESULT = new SymbolInstr(true,etxleft, etxright); :}
+        | KW_BREAK:et ENDINSTR    {: RESULT = new SymbolInstr(false,etxleft, etxright); :}
         ;
 
 FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new SymbolFCall(et1, et2, et1xleft, et1xright); :}

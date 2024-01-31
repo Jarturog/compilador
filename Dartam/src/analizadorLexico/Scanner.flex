@@ -133,6 +133,8 @@ kw_case      = "caso"
 kw_default   = "_"
 kw_while     = "loop"
 kw_doLoop    = "do"
+kw_continue  = "continuar"
+kw_break     = "parar"
 kw_return    = "pop" 
 kw_true      = "cierto"
 kw_false     = "falso"
@@ -308,6 +310,8 @@ private Symbol procesarNumero() {
 {kw_read}               { tokens += "FROM: "      +yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
 {kw_write}              { tokens += "INTO: "      +yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }
 {kw_tuple}              { tokens += "KW_TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
+{kw_continue}           { tokens += "KW_CONTINUE: "+yytext()+"\n";return symbol(ParserSym.KW_CONTINUE, yytext()); }
+{kw_break}              { tokens += "KW_BREAK: "  +yytext()+"\n"; return symbol(ParserSym.KW_BREAK, yytext()); }
 
 // valores
 {val_binario}       { tokens += "VAL_BINARIO: "+yytext()+"\n"; return procesarNumero(); }
