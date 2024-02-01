@@ -82,6 +82,6 @@ public class DescripcionArray extends DescripcionSimbolo {
         }
         String s = "Array de tipo '" + tipo + "' con dimensiones " + dim.substring(0, dim.length() - 1);
 
-        return s + " declarado en el nivel " + nivel;
+        return s + " declarado en el nivel " + getNivel();
     }
 }

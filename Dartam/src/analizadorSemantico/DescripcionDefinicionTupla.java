@@ -6,21 +6,22 @@ import java.util.ArrayList;
 public class DescripcionDefinicionTupla extends DescripcionSimbolo {
 
     protected final ArrayList<DefinicionMiembro> miembros;
-    private Integer bytes = 0;
     /**
      * Tupla
      */
     public DescripcionDefinicionTupla(String nombre, ArrayList<DefinicionMiembro> m, String var) {
         super(nombre, false, false, null, var);
         miembros = m;
+        int b = 0;
         for (DefinicionMiembro miem : miembros) {
-            bytes += miem.bytes;
+            b += miem.bytes;
         }
+        setBytes(b);
     }
 
     public void anyadirMiembro(DefinicionMiembro dm) {
         miembros.add(dm);
-        bytes += dm.bytes;
+        setBytes(getBytes() + dm.bytes);
     }
     
     public DefinicionMiembro getMiembro(String nombre) {
@@ -49,21 +50,23 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         }
         return null; // error
     }
-
+    
     public static class DefinicionMiembro {
 
         private Integer bytes = null;
         protected final String nombre, tipo;
         protected final boolean isConst, valorAsignado;
         protected final DescripcionDefinicionTupla tipoTupla;
+        protected final String varInit;
 
-        public DefinicionMiembro(String nombre, String tipo, boolean isConst, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla) {
+        public DefinicionMiembro(String nombre, String tipo, boolean isConst, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, String varInit) {
             this.nombre = nombre;
             this.tipo = tipo;
             this.isConst = isConst;
             this.valorAsignado = valorAsignado;
             this.tipoTupla = tipoTupla;
             bytes = Tipo.getTipo(tipo).bytes;
+            this.varInit = varInit;
         }
 
         @Override
@@ -73,10 +76,6 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         
         public Integer getBytes() {
             return bytes;
-        }
-        
-        public void setBytes(Integer b) {
-            bytes = b;
         }
 
     }
@@ -93,6 +92,6 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
             m += miembro + " ";
         }
         m = m.length() > 0 ? "con miembros " + m.substring(0, m.length() - 1) : "sin miembros";
-        return "Tupla " + m + " declarado en el nivel " + nivel;
+        return "Tupla " + m + " declarado en el nivel " + getNivel();
     }
 }

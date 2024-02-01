@@ -304,7 +304,7 @@ public class TablaSimbolos {
         if (ds.isDefinicionTupla() || ds.isFunction()) {
             return "El identificador '" + id + "' ha intentado hacer override de una función o de una tupla";
         }
-        if (ds.nivel != n) {
+        if (ds.getNivel() != n) {
             return "";
         }
         return "El identificador '" + id + "' ya ha sido declarado con anterioridad";

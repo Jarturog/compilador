@@ -19,22 +19,13 @@ import jflex.base.Pair;
 
 public class DescripcionSimbolo {
 
-    public static enum dtipus {
-        dnula, dvar, dconst, dtipus //, dproc, dcamp, darg_in, darg, dindex
-    }
-
     protected final String tipo, variableAsociada;
     private Integer nBytes = null; // null si es un método
-
-    protected int nivel;
+    private int nivel;
     private boolean isConstante = false, valorAsignado = false;
-
-    private final HashMap<String, DescripcionSimbolo> miembros; // por si su tipo es de tupla
+    private final ArrayList<DefinicionMiembro> miembros; // por si su tipo es de tupla
     private final DescripcionDefinicionTupla tipoTupla;
 
-//    public int first;
-//    public int next;    //Apuntador al siguiente campo de una tupla
-//    public String idcamp;   //Identificador del campo de la tupla
     /**
      * Variable
      */
@@ -43,21 +34,18 @@ public class DescripcionSimbolo {
         isConstante = isConst;
         valorAsignado = v;
         this.tipoTupla = tipoTupla;
-//        Integer bytesMiembros = null;
         if (tipoTupla != null) {
-//            bytesMiembros = 0;
-            miembros = new HashMap<>();
-            for (DefinicionMiembro m : tipoTupla.miembros) {
-                DescripcionSimbolo ds = new DescripcionSimbolo(m.tipo, m.isConst, m.valorAsignado, /*this,*/ m.tipoTupla, var + "_" + m.nombre);
-                miembros.put(m.nombre, ds);
-//                bytesMiembros += m.getBytes();
-            }
+            miembros = new ArrayList<>(tipoTupla.miembros);
         } else {
             miembros = null;
         }
         Tipo tipoPrimitivo = Tipo.getTipo(this.tipo);
-        if (tipoPrimitivo != null) {
+        if (tipoPrimitivo != null) { // solo asigna bytes para tipos primitivos
             nBytes = tipoPrimitivo.bytes;
+        } else if (isTipoTupla()) {
+            nBytes = tipoTupla.getBytes();
+        } else if (isArray()) {
+            // ----
         }
         this.variableAsociada = var;
     }
@@ -76,7 +64,7 @@ public class DescripcionSimbolo {
     public Integer getBytes() {
         return nBytes;
     }
-
+    
     public void setBytes(Integer b) {
         nBytes = b;
     }
@@ -102,39 +90,34 @@ public class DescripcionSimbolo {
     }
 
     public final boolean isTipoTupla() {
-        return miembros != null;
+        return tipoTupla != null;
     }
 
     public final boolean isDefinicionTupla() {
         return this instanceof DescripcionDefinicionTupla;
     }
 
-    private boolean isVariableTipoTupla() {
-        if (tipo == null) {
-            return false;
-        }
-        return tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE]);
-    }
-
-    public DescripcionSimbolo getMember(String id) throws Exception {
-        if (!isVariableTipoTupla()) {
+    public DefinicionMiembro getMember(String id) throws Exception {
+        if (!isTipoTupla()) {
             throw new Exception("Se ha intentado acceder al miembro de una variable que no es de tipo tupla, sino " + tipo);
         }
-        return miembros.get(id);
+        for (DefinicionMiembro m : miembros) {
+            if (id.equals(m.nombre)) {
+                return m;
+            }
+        }
+        return null;
     }
 
     public String getNombreTupla() throws Exception {
-        if (!isVariableTipoTupla()) {
+        if (!isTipoTupla()) {
             throw new Exception("Se ha intentado acceder al miembro de una variable que no es de tipo tupla, sino " + tipo);
         }
-        return tipo.substring(tipo.indexOf(" ") + 1);
-    }
-
-    public void anyadirMiembro(String id, DescripcionSimbolo ds) throws Exception {
-        if (!isVariableTipoTupla()) {
-            throw new Exception("Se ha intentado acceder al miembro de una variable que no es de tipo tupla, sino " + tipo);
+        int idxArr = tipo.length();
+        if (isArray()) {
+            idxArr = tipo.lastIndexOf(" ");
         }
-        miembros.put(id, ds);
+        return tipo.substring(tipo.indexOf(" ") + 1, idxArr);
     }
 
     public boolean tieneValorAsignado() {

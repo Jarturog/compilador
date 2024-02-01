@@ -94,7 +94,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         }
         params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 2) : "sin argumentos";
 
-        return "Función de tipo '" + tipo + "'  " + params + " declarado en el nivel " + nivel;
+        return "Función de tipo '" + tipo + "'  " + params + " declarado en el nivel " + getNivel();
     }
 
     public boolean necesitaReturnStatement() {
@@ -115,7 +115,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
      * @param profundidad 
      */
     public void asignarReturn(int profundidad) {
-        tieneReturnObligatorio = nivel == profundidad - 1;
+        tieneReturnObligatorio = getNivel() == profundidad - 1;
     }
     
     
