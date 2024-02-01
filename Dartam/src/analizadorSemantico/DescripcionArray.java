@@ -14,8 +14,8 @@ public class DescripcionArray extends DescripcionSimbolo {
     /**
      * Array
      */
-    public DescripcionArray(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC) {
-        super(t, false, false, tupla, tipoTupla);
+    public DescripcionArray(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
+        super(t, false, false, tupla, tipoTupla, var);
         dimensiones = dim;
         this.variablesDimension = variablesDimension;
         this.valorConegutEnTC = valorConegutEnTC;

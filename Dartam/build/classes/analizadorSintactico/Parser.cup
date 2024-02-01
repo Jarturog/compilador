@@ -362,7 +362,7 @@ BINARY_OPERATOR ::= OP_ADD:et   {: RESULT = new SymbolBinaryOperator(ParserSym.O
         ;
 
 LOOP ::= KW_LOOP:et1 LOOP_COND:et2 LKEY BODY:et3 RKEY                   {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
-        | KW_DO:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
+        | KW_LOOP:et1 LKEY BODY:et2 RKEY LOOP_COND:et3 ENDINSTR           {: RESULT = new SymbolLoop(et2, et3, et1xleft, et1xright); :}
         ;
 
 PAREN_LOOP_COND ::= LPAREN PAREN_LOOP_COND:lc RPAREN                        {: RESULT = lc; :}

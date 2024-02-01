@@ -23,7 +23,7 @@ public class DescripcionSimbolo {
         dnula, dvar, dconst, dtipus //, dproc, dcamp, darg_in, darg, dindex
     }
     
-    protected final String tipo;
+    protected final String tipo, variableAsociada;
     protected final Tipo tipoBytes;
 
     protected int nivel;
@@ -40,7 +40,7 @@ public class DescripcionSimbolo {
     /**
      * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla) {
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla, String var) {
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
@@ -49,13 +49,14 @@ public class DescripcionSimbolo {
         if (tipoTupla != null) {
             miembros = new HashMap<>();
             for (DefinicionMiembro m : tipoTupla.miembros) {
-                DescripcionSimbolo ds = new DescripcionSimbolo(m.tipo, m.isConst, m.valorAsignado, this, m.tipoTupla);
+                DescripcionSimbolo ds = new DescripcionSimbolo(m.tipo, m.isConst, m.valorAsignado, this, m.tipoTupla, var+"_"+m.nombre);
                 miembros.put(m.nombre, ds);
             }
         } else {
             miembros = null;
         }
         this.tipoBytes = Tipo.getTipo(tipo);
+        this.variableAsociada = var;
     }
 
     public String getTipo() {

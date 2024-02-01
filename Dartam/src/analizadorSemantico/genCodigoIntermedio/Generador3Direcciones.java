@@ -48,7 +48,7 @@ public class Generador3Direcciones {
 
     //Crecion de una etiqueta: Sintaxi etX donde X es el contador de etiquetas puestas
     public String nuevaEtiqueta() {
-        return "et" + nEtiqueta++;
+        return "e" + nEtiqueta++;
     }
 
     public String nuevaEtiqueta(String nombre) {
@@ -56,7 +56,7 @@ public class Generador3Direcciones {
         boolean hayRepe = num != null;
         numEtiquetasOVariablesConId.put(nombre, hayRepe ? 1 + num : 1);
         nEtiquetaConId++;
-        return "et" + nombre + (hayRepe ? num : "");
+        return "e" + nombre + (hayRepe ? num : "");
     }
 
     public String nuevaVariable() {
@@ -80,12 +80,20 @@ public class Generador3Direcciones {
     public String nuevaVariable(String id, TipoReferencia tipoVariable, String procedimientoActual) {
         Integer num = numEtiquetasOVariablesConId.get(id);
         boolean hayRepe = num != null;
-        numEtiquetasOVariablesConId.put(id, hayRepe ? 1 + num : 1);
         nVariableConId++;
-        id += (hayRepe ? num : "");
-        VData data = new VData(id, tipoVariable, procedimientoActual);
-        tablaVariables.put(id, data);
-        return id;
+        String idVar = id;
+        if (hayRepe) {
+            while (tablaVariables.containsKey(idVar)) {
+                num++;
+                numEtiquetasOVariablesConId.put(id, num);
+                idVar = id +"_"+ num;
+            }
+        } else {
+            numEtiquetasOVariablesConId.put(id, 0);
+        }
+        VData data = new VData(idVar, tipoVariable, procedimientoActual);
+        tablaVariables.put(idVar, data);
+        return idVar;
     }
     
     public String nuevaDimension(String idArray, TipoReferencia tipoVariable, String procedimientoActual) {

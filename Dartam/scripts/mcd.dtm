@@ -1,9 +1,9 @@
 f vacio inicio(string[]argumentos){
 	ent a: 16, b:20;
-	ent c: mcd(a, b);
+	inmut ent c1: mcd1(a, b), c2: mcd2(a, b);
 }
 
-f ent mcd(ent a0, ent b0) {
+f ent mcd1(ent a0, ent b0) {
 	ent a, b;
 	a: a0;
 	b: b0;
@@ -15,4 +15,32 @@ f ent mcd(ent a0, ent b0) {
 		}
 	}
 	pop a;
+}
+
+f ent mcm(ent num1, ent num2) {
+	ent a, b;
+	si num1 > num2 {
+		a: num1, b: num2;
+	} no {
+		a: num2, b: num1;
+	}
+	ent resultado: (a / mcd2(num1, num2)) * b;
+	pop resultado;
+}
+
+f ent mcd2(ent num1, ent num2) {
+	ent a, b;
+	si num1 > num2 {
+		a: num1, b: num2;
+	} no {
+		a: num2, b: num1;
+	}
+	ent resultado: 0;
+	loop {
+		resultado: b;
+		b: a \ b;
+		a: resultado;
+
+	} b /= 0;
+	pop resultado;
 }

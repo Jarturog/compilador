@@ -9,8 +9,8 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
     /**
      * Tupla
      */
-    public DescripcionDefinicionTupla(String nombre, ArrayList<DefinicionMiembro> m) {
-        super(nombre, false, false, null, null);
+    public DescripcionDefinicionTupla(String nombre, ArrayList<DefinicionMiembro> m, String var) {
+        super(nombre, false, false, null, null, var);
         miembros = m;
     }
 

@@ -1,4 +1,4 @@
-etinicio: skip
+einicio: skip
 pmb ninicio
 t1 = 16
 a = t1
@@ -6,38 +6,102 @@ t2 = 20
 b = t2
 param_s a
 param_s b
-call nmcd, t3
-c = t3
+call nmcd1, t3
+c1 = t3
+param_s a
+param_s b
+call nmcd2, t4
+c2 = t4
 rtn ninicio
 
-etmcd: skip
-pmb nmcd
-a = a0
-b = b0
-et1: skip
-if a /= b goto et4
-t4 = 0
-goto et5
-et4: skip
-t4 = -1
-et5: skip
-if t4 == 0 goto et2
-if a > b goto et6
+emcd1: skip
+pmb nmcd1
+a_1 = a0
+b_1 = b0
+e1: skip
+if a_1 /= b_1 goto e4
 t5 = 0
-goto et7
-et6: skip
+goto e5
+e4: skip
 t5 = -1
-et7: skip
-if t5 == 0 goto et9
-t6 = a - b
-a = t6
-goto et8
-et9: skip
-t7 = b - a
-b = t7
-et8: skip
-et3: skip
-goto et1
-et2: skip
-rtn nmcd, a
+e5: skip
+if t5 == 0 goto e2
+if a_1 > b_1 goto e6
+t6 = 0
+goto e7
+e6: skip
+t6 = -1
+e7: skip
+if t6 == 0 goto e9
+t7 = a_1 - b_1
+a_1 = t7
+goto e8
+e9: skip
+t8 = b_1 - a_1
+b_1 = t8
+e8: skip
+e3: skip
+goto e1
+e2: skip
+rtn nmcd1, a_1
+
+emcm: skip
+pmb nmcm
+if num1 > num2 goto e10
+t9 = 0
+goto e11
+e10: skip
+t9 = -1
+e11: skip
+if t9 == 0 goto e13
+a_2 = num1
+b_2 = num2
+goto e12
+e13: skip
+a_2 = num2
+b_2 = num1
+e12: skip
+param_s num1
+param_s num2
+call nmcd2, t10
+t11 = a_2 / t10
+t12 = t11 * b_2
+resultado = t12
+rtn nmcm, resultado
+
+emcd2: skip
+pmb nmcd2
+if num1_1 > num2_1 goto e14
+t13 = 0
+goto e15
+e14: skip
+t13 = -1
+e15: skip
+if t13 == 0 goto e17
+a_3 = num1_1
+b_3 = num2_1
+goto e16
+e17: skip
+a_3 = num2_1
+b_3 = num1_1
+e16: skip
+t14 = 0
+resultado_1 = t14
+e18: skip
+resultado_1 = b_3
+t15 = a_3 mod b_3
+b_3 = t15
+a_3 = resultado_1
+t16 = 0
+if b_3 /= t16 goto e21
+t17 = 0
+goto e22
+e21: skip
+t17 = -1
+e22: skip
+if t17 == 0 goto e19
+e20: skip
+goto e18
+e19: skip
+rtn nmcd2, resultado_1
 
