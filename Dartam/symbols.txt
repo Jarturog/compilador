@@ -1,8 +1,9 @@
-show:		Función de tipo 'KW_VOID'  con argumentosSTRING output declarado en el nivel 1
-inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
-mcd1:		Función de tipo 'ENT'  con argumentosENT a0, ENT b0 declarado en el nivel 1
+dowhile:	Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
 into:		Función de tipo 'PROP'  con argumentosSTRING file, STRING content declarado en el nivel 1
-mcm:		Función de tipo 'ENT'  con argumentosENT num1, ENT num2 declarado en el nivel 1
-mcd2:		Función de tipo 'ENT'  con argumentosENT num1, ENT num2 declarado en el nivel 1
+show:		Función de tipo 'KW_VOID'  con argumentosSTRING output declarado en el nivel 1
+for:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
+inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
 from:		Función de tipo 'STRING'  con argumentosSTRING file declarado en el nivel 1
 enter:		Función de tipo 'STRING'  sin argumentos declarado en el nivel 1
+dofor:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
+while:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1

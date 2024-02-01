@@ -580,14 +580,12 @@ public class AnalizadorSemantico {
     private void procesarSwap(SymbolSwap swap) {
         boolean error = false;
         DescripcionSimbolo ds1 = tablaSimbolos.consulta(swap.op1);
-        String varOp1 = this.variableTratadaActualmente;
         if (ds1 == null) {
             errores.add("La variable " + swap.op1 + " no ha sido declarada");
             indicarLocalizacion(swap);
             error = true;
         }
         DescripcionSimbolo ds2 = tablaSimbolos.consulta(swap.op2);
-        String varOp2 = this.variableTratadaActualmente;
         if (ds2 == null) {
             errores.add("La variable " + swap.op2 + " no ha sido declarada");
             indicarLocalizacion(swap);
@@ -601,7 +599,7 @@ public class AnalizadorSemantico {
             indicarLocalizacion(swap);
             return;
         }
-        String temp = g3d.nuevaVariable();
+        String temp = g3d.nuevaVariable(), varOp1 = ds1.variableAsociada, varOp2 = ds2.variableAsociada;
         g3d.generarInstr(TipoInstr.COPY, new Operador(varOp1), null, new Operador(temp));
         g3d.generarInstr(TipoInstr.COPY, new Operador(varOp2), null, new Operador(varOp1));
         g3d.generarInstr(TipoInstr.COPY, new Operador(temp), null, new Operador(varOp2));
@@ -667,10 +665,13 @@ public class AnalizadorSemantico {
         }
         String inicioLoop = g3d.nuevaEtiqueta(), salirLoop = g3d.nuevaEtiqueta(), etContinue = g3d.nuevaEtiqueta();
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(inicioLoop));
-        
         pilaEtiquetasBucle.push(new Pair(etContinue, salirLoop));
         if (loop.isDoWhile()) { // si es do while primero se ejecuta y luego se comprueba la condición
             procesarBody(loop.cuerpo); 
+            g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etContinue)); //Etiqueta para continuar en el bucle
+            if (loopCond.asig != null) {
+                procesarAsignaciones(loopCond.asig);
+            }
         }
         String tipoCond = procesarOperando(loopCond.cond);
         String varCond = this.variableTratadaActualmente;
@@ -682,16 +683,20 @@ public class AnalizadorSemantico {
             indicarLocalizacion(loopCond.cond);
         }
         //En el caso de no cumplirse la condicion saltaremos al fin del bucle
-        g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(EntradaVariable.FALSE), new Operador(salirLoop));
-        if (!loop.isDoWhile()) { // si es while do primero se ha comprobado las condiciones y luego se ejecuta el cuerpo
+        if (!loop.isDoWhile()){ // si es while do primero se ha comprobado las condiciones y luego se ejecuta el cuerpo
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(EntradaVariable.FALSE), new Operador(salirLoop));
             procesarBody(loop.cuerpo);
+            g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etContinue)); //Etiqueta para continuar en el bucle
+            if (loopCond.asig != null) {
+                procesarAsignaciones(loopCond.asig);
+            }
+        }
+        if (loop.isDoWhile()){
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(EntradaVariable.FALSE), new Operador(salirLoop));
         }
         tablaSimbolos.salirBloque(); // antes o después de las asignaciones? --------------------------------------------------------------------------------------------------------------------------------------------
-        g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etContinue)); //Etiqueta para continuar en el bucle
-        if (loopCond.asig != null) {
-            procesarAsignaciones(loopCond.asig);
-        }
         pilaEtiquetasBucle.pop();
+        
         g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(inicioLoop)); //Saltaremos al mismo bucle
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(salirLoop)); //Etiqueta para fin de bucle
     }
@@ -890,7 +895,7 @@ public class AnalizadorSemantico {
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
         if (DEBUG) {
-            //System.out.println(op.toString());
+            System.out.println(op.toString());
         }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {

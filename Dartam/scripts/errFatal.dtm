@@ -1,12 +1,35 @@
 f vacio inicio(string[] argumentos) {
 	//ent [3][4+5] arr;
 	//arr[0][1]: 123456;
-	ent a: 123;
-	pepe(a);
-	si (a = 2) {
-		a: 987;
-		//string b: "miau";
+	//ent a: 123;
+	//ent b: 3;
+	//prop c: ¬cierto | falso & '2'<='2' | +5/=-5 | (3++)=3;
+}
+
+f vacio dowhile(){
+	loop {
+		parar;
+		continuar;
+	} cierto;
+}
+
+f vacio while(){
+	loop cierto {
+		parar;
+		continuar;
 	}
 }
 
-f vacio pepe(ent a) {} // siempre que haya un bucle añadir una etiqueta al final por si continue
+f vacio dofor(){
+	loop {
+		parar;
+		continuar;
+	} ((ent b: 2; (cierto); b++));
+}
+
+f vacio for(){
+	loop ent b: 2; cierto; b++ {
+		parar;
+		continuar;
+	}
+}

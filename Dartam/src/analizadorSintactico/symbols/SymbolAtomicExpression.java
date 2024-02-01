@@ -68,7 +68,7 @@ public class SymbolAtomicExpression extends SymbolBase {
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
             return value.toString();
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
-            return (value.toString().toLowerCase().equals(tipo.equals("cierto"))) ? ""+EntradaVariable.TRUE : ""+EntradaVariable.FALSE;
+            return (Boolean) value ? ""+EntradaVariable.TRUE : ""+EntradaVariable.FALSE;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
             return value.toString();
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.STRING])) {
