@@ -35,7 +35,7 @@ public class Instruccion {
     public String toString() {
         switch (tipoInstruccion) {
             case NEG -> {
-                return "-" + dst;
+                return dst + " = -" + op1;
             }
             case ADD -> {
                 return dst + " = " + op1 + " + " + op2;
@@ -59,7 +59,7 @@ public class Instruccion {
                 return dst + " = " + op1 + " or " + op2;
             }
             case NOT -> {
-                return "not " + dst;
+                return dst + " = not " + op1;
             }
             case SKIP -> {
                 return dst + ": skip";
@@ -122,7 +122,7 @@ public class Instruccion {
                 return "cast " + op1 + ", " + op2;
             }
             case IND_VAL -> {
-                return dst + " = [" + op2 + "]" + op1;
+                return dst + " = " + op1 + "[" + op2 + "]";
             }
             case PARAM_S -> {
                 return "param_s " + dst;

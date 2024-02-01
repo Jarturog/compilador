@@ -40,7 +40,7 @@ public class SymbolDimensiones extends SymbolBase {
     @Override
     public String toString() {
         String sig = (siguienteDimension != null) ? siguienteDimension.toString() : "";
-        return lBracket + operando.value + rBracket + sig;
+        return lBracket + (operando == null ? "" : operando.value) + rBracket + sig;
     }
     
     public String getEmptyBrackets() {
@@ -56,6 +56,10 @@ public class SymbolDimensiones extends SymbolBase {
             arr.addAll(sig);
         }
         return arr;
+    }
+    
+    public boolean isEmpty() {
+        return operando == null;
     }
 
 }

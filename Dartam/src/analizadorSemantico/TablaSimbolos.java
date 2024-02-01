@@ -84,7 +84,7 @@ public class TablaSimbolos {
     /**
      * Ponemos un elemento dentro de la tabla de simbolos
      */
-    public void poner(String id, DescripcionSimbolo d) throws Exception {
+    public DescripcionSimbolo poner(String id, DescripcionSimbolo d) throws Exception {
         //Comprobamos si existe dentro de la tabla de descriptores
 
         DescripcionSimbolo sd = td.get(id); // = consulta(id);
@@ -109,6 +109,15 @@ public class TablaSimbolos {
         //Actualizamos la tabla de descriciones
         d.setNivel(this.n);
         td.put(id, d);
+        return sd;
+    }
+    
+    public DescripcionSimbolo sustituir(String id, DescripcionSimbolo d) throws Exception{
+        DescripcionSimbolo ds = td.remove(id);
+        if (ds == null) {
+            throw new Exception("Se ha intentado sustituir una entrada de la tabla de símbolos que no existe");
+        }
+        return poner(id, d);
     }
 
     /**

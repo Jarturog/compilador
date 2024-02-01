@@ -47,6 +47,15 @@ public class SymbolBinaryOperator extends SymbolBase {
             operador == ParserSym.OP_AND ||
             operador == ParserSym.OP_OR;
     }
+    
+    public boolean isRelationalOperator(){
+        return operador == ParserSym.OP_EQ ||
+            operador == ParserSym.OP_BEQ ||
+            operador == ParserSym.OP_BT ||
+            operador == ParserSym.OP_LEQ ||
+            operador == ParserSym.OP_LT ||
+            operador == ParserSym.OP_NEQ;
+    }
 
     public boolean isForOperandsOfType(String type) {
         if (type.equals(ParserSym.terminalNames[ParserSym.PROP])) {
@@ -154,5 +163,9 @@ public class SymbolBinaryOperator extends SymbolBase {
         // O algún valor predeterminado según tu lógica
     }
 
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 
 }

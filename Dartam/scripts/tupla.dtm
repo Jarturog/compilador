@@ -1,0 +1,11 @@
+
+tupla a {
+
+}
+
+f vacio inicio(string[] argumentos) {
+	tupla a [3][4+5] arr;
+	//tupla a[0][1]: 123456;
+	tupla a[][] c: arr;
+	c: arr;
+}

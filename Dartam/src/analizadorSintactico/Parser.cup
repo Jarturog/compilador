@@ -158,7 +158,7 @@ non terminal SymbolCaso CASO;
 non terminal SymbolPred PRED;
 non terminal SymbolScript SCRIPT;
 non terminal SymbolScriptElemento SCRIPT_ELEMENTO;
-non terminal SymbolDimensiones DIMENSIONES;
+non terminal SymbolDimensiones DIMENSIONES, DIMENSIONES_VACIAS;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
 //non terminal SymbolBloque BLOQUE;
 
@@ -209,8 +209,10 @@ BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1
 
 TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, txleft, txright); :}
         | TIPO_PRIMITIVO:t DIMENSIONES:d        {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
+        | TIPO_PRIMITIVO:t DIMENSIONES_VACIAS:d {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
         | KW_TUPLE:t ID:i                       {: RESULT = new SymbolTipo(i, txleft, txright); :}
         | KW_TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
+        | KW_TUPLE:t ID:i DIMENSIONES_VACIAS:d  {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
         ;
 
 TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
@@ -232,8 +234,12 @@ DECS ::= KW_CONST:et1 TIPO:et2 DEC_ASIG_LISTA:et3 ENDINSTR     {: RESULT = new S
         | TIPO:et1 DEC_ASIG_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
         ; 
 
-DIMENSIONES ::= LBRACKET:l OPERAND:et1 RBRACKET:r DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1, et2, l, r, et1xleft, et1xright); :}
-        | LBRACKET:l OPERAND:et1 RBRACKET:r                         {: RESULT = new SymbolDimensiones(et1, l, r, et1xleft, et1xright); :}
+DIMENSIONES ::= LBRACKET:l OPERAND:et1 RBRACKET:r DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1, et2, l, r, lxleft, lxright); :}
+        | LBRACKET:l OPERAND:et1 RBRACKET:r                         {: RESULT = new SymbolDimensiones(et1, l, r, lxleft, lxright); :}
+        ;
+
+DIMENSIONES_VACIAS ::= LBRACKET:l RBRACKET:r DIMENSIONES_VACIAS:et2   {: RESULT = new SymbolDimensiones(null, et2, l, r, lxleft, lxright); :}
+        | LBRACKET:l RBRACKET:r                                       {: RESULT = new SymbolDimensiones(null, l, r, lxleft, lxright); :}
         ;
 
 DEC_ASIG_LISTA ::= ID:et1 ASIG_BASICO:et2 COMMA DEC_ASIG_LISTA:et3       {: RESULT = new SymbolDecAsigLista(et1,et2,et3, et1xleft, et1xright); :}

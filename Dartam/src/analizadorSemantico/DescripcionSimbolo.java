@@ -22,41 +22,63 @@ public class DescripcionSimbolo {
     public static enum dtipus {
         dnula, dvar, dconst, dtipus //, dproc, dcamp, darg_in, darg, dindex
     }
-    
+
     protected final String tipo, variableAsociada;
-    protected final Tipo tipoBytes;
+    private Integer nBytes = null; // null si es un método
 
     protected int nivel;
     private boolean isConstante = false, valorAsignado = false;
 
     private final HashMap<String, DescripcionSimbolo> miembros; // por si su tipo es de tupla
-    private final DescripcionSimbolo memberOf; // apunta a la tupla de la cual es miembro
     private final DescripcionDefinicionTupla tipoTupla;
 
 //    public int first;
 //    public int next;    //Apuntador al siguiente campo de una tupla
 //    public String idcamp;   //Identificador del campo de la tupla
-
     /**
      * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla, String var) {
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionDefinicionTupla tipoTupla, String var) {
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
-        memberOf = tupla; // miembro de una tupla
         this.tipoTupla = tipoTupla;
+//        Integer bytesMiembros = null;
         if (tipoTupla != null) {
+//            bytesMiembros = 0;
             miembros = new HashMap<>();
             for (DefinicionMiembro m : tipoTupla.miembros) {
-                DescripcionSimbolo ds = new DescripcionSimbolo(m.tipo, m.isConst, m.valorAsignado, this, m.tipoTupla, var+"_"+m.nombre);
+                DescripcionSimbolo ds = new DescripcionSimbolo(m.tipo, m.isConst, m.valorAsignado, /*this,*/ m.tipoTupla, var + "_" + m.nombre);
                 miembros.put(m.nombre, ds);
+//                bytesMiembros += m.getBytes();
             }
         } else {
             miembros = null;
         }
-        this.tipoBytes = Tipo.getTipo(tipo);
+        Tipo tipoPrimitivo = Tipo.getTipo(this.tipo);
+        if (tipoPrimitivo != null) {
+            nBytes = tipoPrimitivo.bytes;
+        }
         this.variableAsociada = var;
+    }
+
+    public DescripcionSimbolo(DescripcionSimbolo d) {
+        tipo = d.tipo;
+        variableAsociada = d.variableAsociada;
+        nBytes = d.nBytes;
+        nivel = d.nivel;
+        isConstante = d.isConstante;
+        valorAsignado = d.valorAsignado;
+        miembros = d.miembros;
+        tipoTupla = d.tipoTupla;
+    }
+
+    public Integer getBytes() {
+        return nBytes;
+    }
+
+    public void setBytes(Integer b) {
+        nBytes = b;
     }
 
     public String getTipo() {

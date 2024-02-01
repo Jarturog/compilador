@@ -1,62 +1,30 @@
 einicio: skip
 pmb ninicio
-rtn ninicio
-
-edowhile: skip
-pmb ndowhile
-e1: skip
-goto e2
-goto e3
-e3: skip
-t1 = -1
-if t1 == 0 goto e2
+t1 = 3
+d1arr = t1
+t2 = 4
+t3 = 5
+t4 = t2 + t3
+d2arr = t4
+t5 = 123456
+t6 = 0
+t7 = 1
+t8 = t6 * d2arr
+t9 = t7 + t8
+t10 = t9 * 4
+arr[t10] = t5
+c = arr
+t11 = -1
+if t11 == 0 goto e2
+c = arr
+t12 = 3
+d3c = t12
+t13 = 4
+d4c = t13
+t14 = 2
+d5c = t14
 goto e1
 e2: skip
-rtn ndowhile
-
-ewhile: skip
-pmb nwhile
-e4: skip
-t2 = -1
-if t2 == 0 goto e5
-goto e5
-goto e6
-e6: skip
-goto e4
-e5: skip
-rtn nwhile
-
-edofor: skip
-pmb ndofor
-t3 = 2
-b = t3
-e7: skip
-goto e8
-goto e9
-e9: skip
-t4 = 1
-t5 = b + t4
-b = t5
-t6 = -1
-if t6 == 0 goto e8
-goto e7
-e8: skip
-rtn ndofor
-
-efor: skip
-pmb nfor
-t7 = 2
-b_1 = t7
-e10: skip
-t8 = -1
-if t8 == 0 goto e11
-goto e11
-goto e12
-e12: skip
-t9 = 1
-t10 = b_1 + t9
-b_1 = t10
-goto e10
-e11: skip
-rtn nfor
+e1: skip
+rtn ninicio
 

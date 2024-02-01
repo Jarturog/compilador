@@ -13,26 +13,26 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     private boolean tieneReturnObligatorio = false; // que siempre se ejecuta independientemente de los ifs o loops que haya
     
     public DescripcionFuncion(String tipoRetorno, String var) {
-        super(tipoRetorno, false, false, null, null, var);
+        super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, ArrayList<DefinicionParametro> params, String var) {
-        super(tipoRetorno, false, false, null, null, var);
+        super(tipoRetorno, false, false, null, var);
         parametros = params;
         this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam, String var) {
-        super(tipoRetorno, false, false, null, null, var);
+        super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         parametros.add(new DefinicionParametro(idParam, tipoParam));
         this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2, String var) {
-        super(tipoRetorno, false, false, null, null, var);
+        super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         parametros.add(new DefinicionParametro(idParam1, tipoParam1));
         parametros.add(new DefinicionParametro(idParam2, tipoParam2));

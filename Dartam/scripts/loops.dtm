@@ -1,12 +1,8 @@
 ent global: 0;
 f vacio inicio(string[] argumentos) {
-	//ent [3][4+5] arr;
-	//arr[0][1]: 123456;
-	//ent a: 123;
-	//ent b: 3;
-	prop c: ¬cierto | falso & '2'<='2' | +5/=-5 | (3++)=3;
+	
 }
-#
+
 f vacio dowhile(){
 	loop {
 		global++;
@@ -46,4 +42,3 @@ f vacio for(){
 		global++;
 	}
 }
-#

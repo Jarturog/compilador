@@ -80,16 +80,16 @@ public class SymbolAsig extends SymbolBase {
     }
     
     public static enum TIPO {
-        PRIMITIVA, ARRAY, TUPLA
+        ID, ELEM_ARRAY, MIEMBRO
     }
 
     public TIPO getTipo() {
         if (dim == null && miembro == null) {
-            return TIPO.PRIMITIVA;
+            return TIPO.ID;
         } else if (dim != null) {
-            return TIPO.ARRAY;
+            return TIPO.ELEM_ARRAY;
         } else {
-            return TIPO.TUPLA;
+            return TIPO.MIEMBRO;
         }
     }
     

@@ -6,19 +6,41 @@ import jflex.base.Pair;
 
 public class DescripcionArray extends DescripcionSimbolo {
 
+    // o tiene dimensiones llenas o vacías, no las dos 
     private ArrayList<SymbolOperand> dimensiones;
+    private Integer numDimensionesVacias;
+    //
     private ArrayList<String> variablesDimension;
     private Integer valorConegutEnTC;
+    public final String tipoElementoDelArray;
 //    public int dcamp; //Desplazamiento dentro del array
 
     /**
      * Array
      */
-    public DescripcionArray(String t, ArrayList<SymbolOperand> dim, DescripcionSimbolo tupla, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
-        super(t, false, false, tupla, tipoTupla, var);
+    public DescripcionArray(String t, boolean isConst, ArrayList<SymbolOperand> dim, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
+        super(t, isConst, valorAsignado, tipoTupla, var);
+        tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
         dimensiones = dim;
         this.variablesDimension = variablesDimension;
         this.valorConegutEnTC = valorConegutEnTC;
+    }
+    
+    public DescripcionArray(String t, boolean isConst, Integer num, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
+        super(t, isConst, valorAsignado, tipoTupla, var);
+        tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
+        numDimensionesVacias = num;
+        this.variablesDimension = variablesDimension;
+        this.valorConegutEnTC = valorConegutEnTC;
+    }
+    
+    public DescripcionArray(DescripcionArray d){
+        super(d);
+        dimensiones = d.dimensiones;
+        variablesDimension = d.variablesDimension;
+        valorConegutEnTC = d.valorConegutEnTC;
+        tipoElementoDelArray = d.tipoElementoDelArray;
+        numDimensionesVacias = d.numDimensionesVacias;
     }
     
     public ArrayList<String> getVariablesDimension() {
@@ -49,8 +71,14 @@ public class DescripcionArray extends DescripcionSimbolo {
     public String toString() {
 
         String dim = "";
-        for (SymbolOperand op : dimensiones) {
-            dim += op + " ";
+        if (dimensiones != null) {
+            for (SymbolOperand op : dimensiones) {
+                dim += op + " ";
+            }
+        } else {
+            for (int i = 0; i < numDimensionesVacias; i++) {
+                dim += "[] ";
+            }
         }
         String s = "Array de tipo '" + tipo + "' con dimensiones " + dim.substring(0, dim.length() - 1);
 

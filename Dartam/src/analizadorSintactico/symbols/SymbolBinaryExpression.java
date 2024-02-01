@@ -28,7 +28,8 @@ public class SymbolBinaryExpression extends SymbolBase {
         value = toString();
     }
     
-    public String toString(){
+    @Override
+    public final String toString(){
         return op1.value + " " + bop.value + " " + op2.value;
     }
 

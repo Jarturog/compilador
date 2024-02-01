@@ -1,0 +1,10 @@
+f vacio inicio(string[] argumentos) {
+	ent [3][4+5] arr;
+	arr[0][1]: 123456;
+	ent[][] c;
+	c: arr;
+	si cierto {
+		c: arr;
+		car [3][4][2] c;
+	}
+}
