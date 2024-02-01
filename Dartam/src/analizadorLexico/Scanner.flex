@@ -132,7 +132,7 @@ kw_switch    = "select"
 kw_case      = "caso"
 kw_default   = "_"
 kw_while     = "loop"
-kw_doLoop    = "do"
+//kw_doLoop    = "do"
 kw_continue  = "continuar"
 kw_break     = "parar"
 kw_return    = "pop" 
@@ -305,7 +305,7 @@ private Symbol procesarNumero() {
 {kw_elif}               { tokens += "KW_ELIF: "   +yytext()+"\n"; return symbol(ParserSym.KW_ELIF, yytext()); }
 {kw_else}               { tokens += "KW_ELSE: "   +yytext()+"\n"; return symbol(ParserSym.KW_ELSE, yytext()); }
 {kw_while}              { tokens += "KW_WHILE: "  +yytext()+"\n"; return symbol(ParserSym.KW_LOOP, yytext()); }
-{kw_doLoop}             { tokens += "KW_DO: "     +yytext()+"\n"; return symbol(ParserSym.KW_DO, yytext()); }
+//{kw_doLoop}             { tokens += "KW_DO: "     +yytext()+"\n"; return symbol(ParserSym.KW_DO, yytext()); }
 {kw_switch}             { tokens += "KW_SWITCH: " +yytext()+"\n"; return symbol(ParserSym.KW_SWITCH, yytext()); }
 {kw_case}               { tokens += "KW_CASE: "   +yytext()+"\n"; return symbol(ParserSym.KW_CASE, yytext()); }
 {kw_default}            { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT, yytext()); }
