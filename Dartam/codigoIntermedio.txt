@@ -1,17 +1,43 @@
 etinicio: skip
 pmb ninicio
-t1 = 123
+t1 = 16
 a = t1
-t3 = 2
-if a == t3 goto et1
-t4 = 0
-goto et2
+t2 = 20
+b = t2
+param_s a
+param_s b
+call nmcd, t3
+c = t3
+rtn ninicio
+
+etmcd: skip
+pmb nmcd
+a = a0
+b = b0
 et1: skip
-t4 = -1
-et2: skip
-if t4 == 0 goto et4
-t5 = 987
-a = t5
-goto et3
+if a /= b goto et4
+t4 = 0
+goto et5
 et4: skip
+t4 = -1
+et5: skip
+if t4 == 0 goto et2
+if a > b goto et6
+t5 = 0
+goto et7
+et6: skip
+t5 = -1
+et7: skip
+if t5 == 0 goto et9
+t6 = a - b
+a = t6
+goto et8
+et9: skip
+t7 = b - a
+b = t7
+et8: skip
 et3: skip
+goto et1
+et2: skip
+rtn nmcd, a
+

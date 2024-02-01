@@ -23,6 +23,10 @@ public class Instruccion {
         return tipoInstruccion;
     }
 
+    public boolean isTipo(TipoInstr t) {
+        return tipoInstruccion.tipo.equals(t.tipo);
+    }
+
 //    @Override
 //    public String toString() {
 //        return tipoInstruccion+": " + this.op1 + " | " + this.op2 + " | " + this.dst;
@@ -59,7 +63,7 @@ public class Instruccion {
             }
             case SKIP -> {
                 return dst + ": skip";
-            } 
+            }
             case GOTO -> {
                 return "goto " + dst;
             }
@@ -112,19 +116,19 @@ public class Instruccion {
 //                return "pct " + op1 + ", " + op2;
 //            }
             case IND_ASS -> {
-                return dst + "["+op2+"] = "+op1;
+                return dst + "[" + op2 + "] = " + op1;
             }
             case CAST -> {
                 return "cast " + op1 + ", " + op2;
             }
             case IND_VAL -> {
-                return dst + " = ["+op2+"]"+op1;
+                return dst + " = [" + op2 + "]" + op1;
             }
             case PARAM_S -> {
                 return "param_s " + dst;
             }
             case PARAM_C -> {
-                return "param_c " + dst + "["+op1+"]";
+                return "param_c " + dst + "[" + op1 + "]";
             }
             default -> {
                 return null;
@@ -175,6 +179,10 @@ public class Instruccion {
         @Override
         public String toString() {
             return this.tipo;
+        }
+
+        public boolean isTipo(TipoInstr t) {
+            return tipo.equals(t.tipo);
         }
 
     }

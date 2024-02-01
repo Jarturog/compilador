@@ -3,3 +3,4 @@ show:		Función de tipo 'KW_VOID'  con argumentosSTRING output declarado en el n
 inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
 from:		Función de tipo 'STRING'  con argumentosSTRING file declarado en el nivel 1
 enter:		Función de tipo 'STRING'  sin argumentos declarado en el nivel 1
+mcd:		Función de tipo 'ENT'  con argumentosENT a0, ENT b0 declarado en el nivel 1

@@ -3,7 +3,7 @@ package analizadorSemantico.genCodigoIntermedio;
 import analizadorSintactico.ParserSym;
 
 public enum Tipo {
-    INT(4), CHAR(1), BOOL(1), STRING(128), DOUBLE(4); // no es 4 creo
+    INT(4), CHAR(1), BOOL(1), STRING(128), DOUBLE(8);
 
     public static Tipo getTipo(String tipo) {
         if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {

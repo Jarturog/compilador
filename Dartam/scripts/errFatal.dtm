@@ -1,4 +1,12 @@
 f vacio inicio(string[] argumentos) {
-	ent a: 0x0;
-
+	//ent [3][4+5] arr;
+	//arr[0][1]: 123456;
+	ent a: 123;
+	pepe(a);
+	si (a = 2) {
+		a: 987;
+		//string b: "miau";
+	}
 }
+
+f vacio pepe(ent a) {} // siempre que haya un bucle añadir una etiqueta al final por si continue

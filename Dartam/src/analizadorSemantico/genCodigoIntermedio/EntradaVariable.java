@@ -13,9 +13,9 @@ public class EntradaVariable {
     public static final byte FALSE = 0;
     public static final byte TRUE = -1;
 
-    public static final int BYTES_ENTERO = 4; //4 BYTES para un entero
-    public static final int BYTES_CHAR = 1; //1 BYTE para un char
-    public static final int BYTES_BOOLEAN = 1; //1 BYTE para un booleano
+//    public static final int BYTES_ENTERO = 4; //4 BYTES para un entero
+//    public static final int BYTES_CHAR = 1; //1 BYTE para un char
+//    public static final int BYTES_BOOLEAN = 1; //1 BYTE para un booleano
     
     public String tName;
     public int desplazamiento;
@@ -52,9 +52,9 @@ public class EntradaVariable {
     protected int getOcupacion(){
         int o;
         if(tipo == ParserSym.KW_INT){
-            o = BYTES_ENTERO;
+            o = Tipo.INT.bytes;
         }
-        else o = BYTES_CHAR;
+        else o = Tipo.CHAR.bytes;
         for (String s : dimensiones) {
             try {
                 o *= Integer.parseInt(s);

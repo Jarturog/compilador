@@ -100,6 +100,10 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public boolean necesitaReturnStatement() {
         return !tipo.equals(ParserSym.terminalNames[ParserSym.KW_VOID]);
     }
+    
+    public boolean devuelveValor() {
+        return necesitaReturnStatement();
+    }
 
     public boolean tieneReturnStatement() {
         return tieneReturnObligatorio;
@@ -113,6 +117,8 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public void asignarReturn(int profundidad) {
         tieneReturnObligatorio = nivel == profundidad - 1;
     }
+    
+    
     
     public static class DefinicionParametro {
         protected final String id;

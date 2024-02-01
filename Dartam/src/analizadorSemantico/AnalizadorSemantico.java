@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import analizadorSintactico.symbols.*;
 import java.util.List;
 import java.util.Stack;
+import java_cup.runtime.ComplexSymbolFactory.Location;
 import jflex.base.Pair;
 
 public class AnalizadorSemantico {
@@ -63,6 +64,9 @@ public class AnalizadorSemantico {
         String s = "";
         for (Instruccion i : g3d.getInstrucciones()) {
             s += i.toString() + "\n";
+            if (i.isTipo(TipoInstr.RETURN)) { // para legibilidad separamos los métodos
+                s += "\n";
+            }
         }
         return s;
     }
@@ -235,7 +239,7 @@ public class AnalizadorSemantico {
                 continue;
             }
             //Contendra el numero de la variable creada
-            String variable = g3d.nuevaVariable(TipoReferencia.var, metodoActualmenteSiendoTratado.fst);
+            //String variable = g3d.nuevaVariable(TipoReferencia.var, metodoActualmenteSiendoTratado.fst);
             if (seHaAsignado) {
                 g3d.generarInstr(TipoInstr.COPY, new Operador(variableAsignada), null, new Operador(id));
             }
@@ -310,7 +314,6 @@ public class AnalizadorSemantico {
         }
     }
 
-    //TODO: Codigo de 3 dir
     private void procesarAsignaciones(SymbolAsigs asigs) throws Exception {
         for (; asigs != null; asigs = asigs.siguienteAsig) {
             boolean error = false, errorOperandoInvalido = false;
@@ -325,7 +328,15 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(asig);
                 error = true;
             }
-            String tipoValor = procesarOperando(asig.valor);
+            String tipoValor;
+            if (!asig.operacion.isBasicAsig()) {
+                int sym = asig.operacion.getBinaryOpEquivalent();
+                Location l = asig.xleft, r = asig.xright;
+                SymbolBinaryExpression bexp = new SymbolBinaryExpression(new SymbolOperand(new SymbolAtomicExpression(true, asig.id, l, r), l, r), new SymbolBinaryOperator(sym, ParserSym.terminalNames[sym], l, r), asig.valor, l, r);
+                tipoValor = procesarOperando(new SymbolOperand(bexp, l, r));
+            } else {
+                tipoValor = procesarOperando(asig.valor);
+            }
             if (tipoValor == null) {
                 errores.add("Se realizan operaciones no validas en el valor a asignar a '" + asig.id + "'");
                 indicarLocalizacion(asig.valor);
@@ -334,7 +345,7 @@ public class AnalizadorSemantico {
             if (error) {
                 continue;
             }
-            String variableParaAsignar = variableTratadaActualmente;//g3d.nuevaVariable(TipoReferencia.var, tipoValor, d.isArray(), d.isTipoTupla(), metodoActualmenteSiendoTratado.fst);
+            String variableParaAsignar = variableTratadaActualmente;
             error = errorOperandoInvalido;
             String tipoVariable = null;
             // array
@@ -480,12 +491,9 @@ public class AnalizadorSemantico {
                     g3d.generarInstr(TipoInstr.IND_ASS, new Operador(variableParaAsignar), new Operador(indexReal), new Operador(asig.id));
                 }
             }
-
         }
-
     }
 
-    //TODO: Codigo de 3 dir
     private void procesarLlamadaFuncion(SymbolFCall fcall) throws Exception {
         String nombre = (String) fcall.methodName.value;
         DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
@@ -500,7 +508,7 @@ public class AnalizadorSemantico {
             return;
         }
         DescripcionFuncion df = (DescripcionFuncion) ds;
-        df.getNFuncion(); // pendiente ------------------------------------------------------------------------------------------------------------
+
         ArrayList<String> params = df.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
         int n = 0;
@@ -513,6 +521,7 @@ public class AnalizadorSemantico {
             }
             SymbolOperand op = opLista.operand;
             String tipoOp = procesarOperando(op);
+            String varOp = this.variableTratadaActualmente;
             if (tipoOp == null) {
                 errores.add("Se ha intentado pasar por parametros operaciones no validas en el parametro " + n + " de la funcion " + nombre);
                 indicarLocalizacion(op);
@@ -521,11 +530,19 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(op);
                 return;
             }
+            g3d.generarInstr(TipoInstr.PARAM_S, null, null, new Operador(varOp));
             opLista = opLista.siguienteOperando;
         }
         if (opLista != null) {
             errores.add("La funcion " + nombre + " tiene " + params.size() + " parametros, pero se han pasado " + n);
             indicarLocalizacion(fcall);
+        }
+        if (df.devuelveValor()) {
+            String variableValorRetorno = g3d.nuevaVariable(TipoReferencia.var, this.metodoActualmenteSiendoTratado.fst);
+            g3d.generarInstr(TipoInstr.CALL, new Operador(variableValorRetorno), null, new Operador(df.getNFuncion()));
+            variableTratadaActualmente = variableValorRetorno;
+        } else {
+            g3d.generarInstr(TipoInstr.CALL, null, null, new Operador(df.getNFuncion()));
         }
     }
 
@@ -746,16 +763,18 @@ public class AnalizadorSemantico {
 
         procesarBody(metodo.cuerpo);
 //        g3d.eliminarFuncion();
-        g3d.generarInstr(TipoInstr.RETURN, new Operador(metodo.id), null, new Operador(nfuncion));
+
         if (df.necesitaReturnStatement() && !df.tieneReturnStatement()) {
             errores.add("No se ha puesto una instrucción para salir del método " + metodo.id + " en el mismo ámbito de su cuerpo (si x es el nivel donde está declarado el método, x + 1 es el nivel donde debe de estar la instrucción para salir de él)");
             indicarLocalizacion(metodo);
+        } else if (!df.tieneReturnStatement()) { // es de tipo void y no le han puesto return al final
+            g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(nfuncion));
         }
         tablaSimbolos.salirBloque();
     }
 
     private ArrayList<DescripcionFuncion.DefinicionParametro> procesarParametros(SymbolParams params, String idMetodo) throws Exception {
-        PData data = g3d.getProcedimeinto(idMetodo);
+//        PData data = g3d.getProcedimeinto(idMetodo);
 
         ArrayList<DescripcionFuncion.DefinicionParametro> parametros = new ArrayList<>();
         if (params == null) {
@@ -779,16 +798,9 @@ public class AnalizadorSemantico {
             }
             if (!error) {
                 parametros.add(new DescripcionFuncion.DefinicionParametro(nombreParam, param.tipoParam.getTipo()));
-                String tipo = param.tipoParam.getTipo();
-                String variable;
-                if (param.tipoParam.isTupla()) {
-                    variable = g3d.nuevaVariable(TipoReferencia.param, idMetodo);
-                } else if (param.tipoParam.isArray()) {
-                    variable = g3d.nuevaVariable(TipoReferencia.param, idMetodo);
-                } else {
-                    variable = g3d.nuevaVariable(TipoReferencia.param, idMetodo);
-                }
-                data.añadirParametro(variable, tipo); //Le añadimos el parametro 
+//                String tipo = param.tipoParam.getTipo();
+//                String variable = g3d.nuevaVariable(TipoReferencia.param, idMetodo);
+//                data.añadirParametro(variable, tipo); //Le añadimos el parametro 
             }
             param = param.siguienteParam;
         }
@@ -863,6 +875,7 @@ public class AnalizadorSemantico {
         tablaSimbolos.poner(main.nombreArgumentos, d);
         procesarBody(body);
         tablaSimbolos.salirBloque();
+        g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(df.getNFuncion()));
     }
 
     /**
@@ -874,7 +887,7 @@ public class AnalizadorSemantico {
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
         if (DEBUG) {
-            System.out.println(op.toString());
+            //System.out.println(op.toString());
         }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {
@@ -912,15 +925,21 @@ public class AnalizadorSemantico {
                 SymbolFCall fcall = op.fcall;
                 int nErrores = errores.size();
                 procesarLlamadaFuncion(fcall);
+                // variableTratadaActualmente modificada en procesarLlamadaFuncion
                 if (nErrores != errores.size()) { // si han habido errores
                     return null;
                 }
                 String nombre = (String) fcall.methodName.value;
-                DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
-                String variable = g3d.nuevaVariable();
-                g3d.generarInstr(TipoInstr.CALL, new Operador(variable), null, new Operador(nombre));
-                variableTratadaActualmente = variable;
-                return ds.getTipo();
+                DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(nombre);
+                if (!df.devuelveValor()) {
+                    errores.add("No se puede operar llamando a una función que no devuelve valor: " + nombre);
+                    indicarLocalizacion(fcall);
+                    return null;
+                }
+//                String variable = g3d.nuevaVariable();
+//                g3d.generarInstr(TipoInstr.CALL, new Operador(variable), null, new Operador(nombre));
+//                variableTratadaActualmente = variable;
+                return df.getTipo();
             }
             case OP_BETWEEN_PAREN -> {
                 return procesarOperando(op.op);

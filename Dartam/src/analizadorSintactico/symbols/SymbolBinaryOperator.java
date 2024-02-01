@@ -124,7 +124,35 @@ public class SymbolBinaryOperator extends SymbolBase {
             default -> throw new Exception("Error adquiriendo el tipo de instrucción");
         }; // En caso de que el operador no coincida con ninguno de los casos anteriores
         // O algún valor predeterminado según tu lógica
-}
+    }
+    
+    /**
+     * 
+     * @param operador
+     * @return null si es potencia
+     * @throws Exception 
+     */
+    public static TipoInstr getTipoInstruccion(int operador) throws Exception {
+        return switch (operador) {
+            case ParserSym.OP_ADD -> TipoInstr.ADD;
+            case ParserSym.OP_SUB -> TipoInstr.SUB;
+            case ParserSym.OP_MUL -> TipoInstr.MUL;
+            case ParserSym.OP_DIV -> TipoInstr.DIV;
+            case ParserSym.OP_MOD -> TipoInstr.MOD;
+            case ParserSym.OP_AND -> TipoInstr.AND;
+            case ParserSym.OP_OR -> TipoInstr.OR;
+            case ParserSym.OP_NOT -> TipoInstr.NOT;
+            case ParserSym.OP_POT -> null;
+            case ParserSym.OP_LT -> TipoInstr.IFLT;
+            case ParserSym.OP_LEQ -> TipoInstr.IFLE;
+            case ParserSym.OP_BT -> TipoInstr.IFGT;
+            case ParserSym.OP_BEQ -> TipoInstr.IFGE;
+            case ParserSym.OP_EQ -> TipoInstr.IFEQ;
+            case ParserSym.OP_NEQ -> TipoInstr.IFNE;
+            default -> throw new Exception("Error adquiriendo el tipo de instrucción");
+        }; // En caso de que el operador no coincida con ninguno de los casos anteriores
+        // O algún valor predeterminado según tu lógica
+    }
 
 
 }

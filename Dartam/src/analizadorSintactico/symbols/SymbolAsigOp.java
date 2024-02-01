@@ -61,5 +61,19 @@ public class SymbolAsigOp extends SymbolBase {
         }
         return false;
     }
+    
+    public int getBinaryOpEquivalent() {
+        return switch (operacion) {
+            case ParserSym.AS_ADDA -> ParserSym.OP_ADD;
+            case ParserSym.AS_SUBA -> ParserSym.OP_SUB;
+            case ParserSym.AS_MULA -> ParserSym.OP_MUL;
+            case ParserSym.AS_DIVA -> ParserSym.OP_DIV;
+            case ParserSym.AS_POTA -> ParserSym.OP_POT;
+            case ParserSym.AS_MODA -> ParserSym.OP_MOD;
+            case ParserSym.AS_ANDA -> ParserSym.OP_AND;
+            case ParserSym.AS_ORA -> ParserSym.OP_OR;
+            default -> -1;
+        };
+    }
 
 }
