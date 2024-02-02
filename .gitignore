@@ -16,3 +16,5 @@ Dartam/nbproject/private/private.properties
 Dartam/tokens.txt
 *.properties
 *.args
+*.xml
+*.properties
