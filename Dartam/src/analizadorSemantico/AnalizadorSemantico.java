@@ -21,6 +21,7 @@ import analizadorSemantico.genCodigoIntermedio.VData;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import analizadorSintactico.symbols.*;
+import static dartam.Dartam.DEBUG;
 import java.util.List;
 import java.util.Stack;
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -44,7 +45,6 @@ public class AnalizadorSemantico {
     // When checking if a function's parameters are correct, we use this stack to store the declared function's types.
     // We use a stack because we will be taking elements out every time we process them.
     private List<String> errores;//, symbols;
-    private static final boolean DEBUG = true;
 
     public String getErrores() {
         if (errores.isEmpty()) {
@@ -942,9 +942,9 @@ public class AnalizadorSemantico {
      * @return
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
-        if (DEBUG) {
-            System.out.println(op.toString());
-        }
+//        if (DEBUG) {
+//            System.out.println(op.toString());
+//        }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {
                 SymbolAtomicExpression literal = op.atomicExp;

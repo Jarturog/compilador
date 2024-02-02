@@ -18,7 +18,7 @@ import analizadorSemantico.AnalizadorSemantico;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import optimizaciones.Optimizador;
+//import optimizaciones.Optimizador;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -37,6 +37,7 @@ import javax.xml.transform.stream.StreamSource;
 
 public class Dartam {
 
+    public static final boolean DEBUG = true;
     private static final String RUTA = "scripts/", LOG = "log.txt", EXTENSION = ".dtm";
 
     public static void main(String[] args) {
@@ -79,7 +80,7 @@ public class Dartam {
             System.out.println(sem.instruccionesToString());
             escribir("codigoIntermedio.txt", sem.instruccionesToString());
             // Optimzaciones
-            Optimizador op = new Optimizador(sem.getInstrucciones());
+//            Optimizador op = new Optimizador(sem.getInstrucciones());
             // Generación de código máquina
             //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
         } catch (Exception e) {
