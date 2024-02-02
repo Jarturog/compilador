@@ -30,7 +30,7 @@ public class SymbolAtomicExpression extends SymbolBase {
         if (isID) {
             tipo = ParserSym.terminalNames[ParserSym.ID];
         } else {
-            tipo = ParserSym.terminalNames[ParserSym.STRING];
+            tipo = ParserSym.terminalNames[ParserSym.CAR] + " []";
         }
     }
 
@@ -62,7 +62,7 @@ public class SymbolAtomicExpression extends SymbolBase {
 
     public String getValorCodigoIntermedio() {
         if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR])) {
-            return value.toString();
+            return ((int)(char)value)+"";
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
             return value.toString();
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
@@ -71,7 +71,7 @@ public class SymbolAtomicExpression extends SymbolBase {
             return (Boolean) value ? ""+EntradaVariable.TRUE : ""+EntradaVariable.FALSE;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
             return value.toString();
-        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.STRING])) {
+        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR] + " []")) {
             return value.toString();
         }
         return null;

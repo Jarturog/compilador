@@ -15,7 +15,6 @@ TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(e
         | KW_INT:et                        {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         | KW_DOUBLE:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         | KW_CHAR:et                       {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
-        | KW_STRING:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         ;
  */
 public class SymbolTipoPrimitivo extends SymbolBase {
@@ -36,7 +35,7 @@ public class SymbolTipoPrimitivo extends SymbolBase {
                 || t.equals(ParserSym.terminalNames[ParserSym.ENT])
                 || t.equals(ParserSym.terminalNames[ParserSym.REAL])
                 || t.equals(ParserSym.terminalNames[ParserSym.CAR])
-                || t.equals(ParserSym.terminalNames[ParserSym.STRING]);
+                ;//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
 
     public static final String STRING = "STRING", CAR = "CAR", ENT = "ENT", PROP = "PROP", REAL = "REAL";

@@ -100,7 +100,7 @@ public class SymbolBinaryOperator extends SymbolBase {
                     || operador == ParserSym.OP_LEQ
                     || operador == ParserSym.OP_LT
                     || operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.STRING])) {
+        } else if (type.contains("[")) { //else if (type.equals(ParserSym.terminalNames[ParserSym.STRING])) {
             return operador == ParserSym.OP_ADD
                     || operador == ParserSym.OP_EQ
                     || operador == ParserSym.OP_NEQ;

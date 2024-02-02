@@ -60,6 +60,7 @@ public class SymbolTipo extends SymbolBase {
     }
     
     public String getTipo() {
+        String tuplaKW = ParserSym.terminalNames[ParserSym.KW_TUPLE];
         if (!isTupla()) {
             String t = tipo.getTipo();
 //            return t;
@@ -68,11 +69,11 @@ public class SymbolTipo extends SymbolBase {
             }
             return t + " " + dimArray.getEmptyBrackets();
         }
-//        return ParserSym.terminalNames[ParserSym.KW_TUPLE] + " " + idTupla;
+//        return tuplaKW + " " + idTupla;
         if (!isArray()) {
-            return ParserSym.terminalNames[ParserSym.KW_TUPLE] + " " + idTupla;
+            return tuplaKW + " " + idTupla;
         }
-        return ParserSym.terminalNames[ParserSym.KW_TUPLE] + " " + idTupla + " " + dimArray.getEmptyBrackets();
+        return tuplaKW + " " + idTupla + " " + dimArray.getEmptyBrackets();
     }
     
     public String getTipoSinDimensiones() {

@@ -6,25 +6,13 @@ t2 = 4
 t3 = 5
 t4 = t2 + t3
 d2arr = t4
-t5 = 123456
-t6 = 0
-t7 = 1
-t8 = t6 * d2arr
-t9 = t7 + t8
-t10 = t9 * 4
-arr[t10] = t5
 c = arr
-t11 = -1
-if t11 == 0 goto e2
 c = arr
-t12 = 3
-d3c = t12
-t13 = 4
-d4c = t13
-t14 = 2
-d5c = t14
-goto e1
-e2: skip
-e1: skip
+t5 = 0
+t6 = 1
+t7 = t5 * d2arr
+t8 = t6 + t7
+t9 = t8 * 4
+arr[t9] = b
 rtn ninicio
 

@@ -36,6 +36,7 @@ public class DescripcionSimbolo {
         this.tipoTupla = tipoTupla;
         if (tipoTupla != null) {
             miembros = new ArrayList<>(tipoTupla.miembros);
+            this.asignarValor();
         } else {
             miembros = null;
         }
@@ -124,7 +125,7 @@ public class DescripcionSimbolo {
         return valorAsignado;
     }
 
-    public void asignarValor() {
+    public final void asignarValor() {
         valorAsignado = true;
     }
 

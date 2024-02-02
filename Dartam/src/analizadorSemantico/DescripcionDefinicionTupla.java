@@ -55,7 +55,8 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
 
         private Integer bytes = null;
         protected final String nombre, tipo;
-        protected final boolean isConst, valorAsignado;
+        protected final boolean isConst;
+        private boolean valorAsignado;
         protected final DescripcionDefinicionTupla tipoTupla;
         protected final String varInit;
 
@@ -76,6 +77,14 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         
         public Integer getBytes() {
             return bytes;
+        }
+        
+        public boolean tieneValorAsignado() {
+            return valorAsignado;
+        }
+        
+        public void asignarValor() {
+            valorAsignado = true;
         }
 
     }

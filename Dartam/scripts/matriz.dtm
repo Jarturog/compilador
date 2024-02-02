@@ -5,7 +5,7 @@ tupla matriz3 {
 	ent [3][3] datos;
 }
 
-f vacio inicio(string[] argumentos) {
+f vacio inicio(car[][] argumentos) {
  
 	tupla matriz3 A;
     // Inicializar matrices A y B
@@ -60,8 +60,8 @@ f vacio mostrarMatriz(tupla matriz3 m) {
     loop ent i: 0; i < m.filas; i++ {
         loop ent j: 0; j < m.columnas; j++ {
 			ent[m.filas][m.columnas] aux: m.datos;
-            show((string)(car)aux[i][j] + " ");
-			# string s: (string)(car)aux[i][j]; show(s + " "); #
+            show((car[])(car)aux[i][j] + " ");
+			# car[] s: (car[])(car)aux[i][j]; show(s + " "); #
         }
 		show("\n");
     }

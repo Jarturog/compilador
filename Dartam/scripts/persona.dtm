@@ -1,15 +1,15 @@
-f vacio inicio(string[]argumentos){
+f vacio inicio(car[][]argumentos){
 	tupla persona p1, p2;
 	nuevaPersona(p1, 1, "paco");
 	nuevaPersona(p2, 2, "pepa");
 }
 
-f vacio nuevaPersona(tupla persona p, ent idPersona, string nombrePersona) {
+f vacio nuevaPersona(tupla persona p, ent idPersona, car[] nombrePersona) {
 	p.id: idPersona;
 	p.nombre: nombrePersona;
 }
 
 tupla persona {
 	inmut ent id;
-	string nombre;
+	car[] nombre;
 }

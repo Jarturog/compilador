@@ -129,19 +129,19 @@ public class AnalizadorSemantico {
             scriptMainYElementos = scriptMainYElementos.siguienteElemento;
             elem = scriptMainYElementos.elemento;
         }
-        String nombre;
+        String nombre, tipoString = ParserSym.terminalNames[ParserSym.CAR] + " []";
         // metodos especiales
         nombre = ParserSym.terminalNames[ParserSym.ENTER].toLowerCase();
-        DescripcionFuncion dEnter = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.STRING], g3d.nuevaEtiqueta(nombre));
+        DescripcionFuncion dEnter = new DescripcionFuncion(tipoString, g3d.nuevaEtiqueta(nombre));
         tablaSimbolos.poner(nombre, dEnter);
         nombre = ParserSym.terminalNames[ParserSym.SHOW].toLowerCase();
-        DescripcionFuncion dShow = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "output", ParserSym.terminalNames[ParserSym.STRING], g3d.nuevaEtiqueta(nombre));
+        DescripcionFuncion dShow = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "output", tipoString, g3d.nuevaEtiqueta(nombre));
         tablaSimbolos.poner(nombre, dShow);
         nombre = ParserSym.terminalNames[ParserSym.FROM].toLowerCase();
-        DescripcionFuncion dFrom = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.STRING], "file", ParserSym.terminalNames[ParserSym.STRING], g3d.nuevaEtiqueta(nombre));
+        DescripcionFuncion dFrom = new DescripcionFuncion(tipoString, "file", tipoString, g3d.nuevaEtiqueta(nombre));
         tablaSimbolos.poner(nombre, dFrom);
         nombre = ParserSym.terminalNames[ParserSym.INTO].toLowerCase();
-        DescripcionFuncion dInto = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.PROP], "file", ParserSym.terminalNames[ParserSym.STRING], "content", ParserSym.terminalNames[ParserSym.STRING], g3d.nuevaEtiqueta(nombre));
+        DescripcionFuncion dInto = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.PROP], "file", tipoString, "content", tipoString, g3d.nuevaEtiqueta(nombre));
         tablaSimbolos.poner(nombre, dInto);
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
@@ -194,7 +194,9 @@ public class AnalizadorSemantico {
             // si es array
             ArrayList<String> variablesDimension = null;
             Integer offsetArray = 0;
+            boolean arrayInicializado = false;
             if (tipo.isArray()) {
+                arrayInicializado = !tipo.dimArray.isEmpty();
                 variablesDimension = new ArrayList<>();
                 int n = 0;
                 // procesamiento de izquierda a derecha
@@ -228,7 +230,7 @@ public class AnalizadorSemantico {
             String variableQueSeAsigna = null;
             boolean seHaAsignado = valorAsignado != null;
             if (seHaAsignado) {
-                if (tipo.isArray() && !tipo.dimArray.isEmpty()) {
+                if (arrayInicializado) {
                     errores.add("No está permitido definir las dimensiones " + tipo.dimArray + " del array '" + id + "' cuando está siendo asignado un valor " + valorAsignado);
                     indicarLocalizacion(valorAsignado);
                     error = true;
@@ -283,7 +285,7 @@ public class AnalizadorSemantico {
                 // si no hay error
                 tuplaActualmenteSiendoTratada.snd.anyadirMiembro(
                         new DefinicionMiembro(id, tipo.getTipo(), decs.isConst,
-                                seHaAsignado, descTipoTupla, variableQueSeAsigna));
+                                seHaAsignado || arrayInicializado, descTipoTupla, variableQueSeAsigna));
                 continue;
             }
             // no es un miembro de una tupla
@@ -296,17 +298,17 @@ public class AnalizadorSemantico {
                 if (tipo.dimArray.isEmpty()) { // array sin inicializar
                     descVar = new DescripcionArray(tipo.getTipo(), decs.isConst,
                             variablesDimension.size(),
-                            seHaAsignado, descTipoTupla, variablesDimension,
+                            seHaAsignado || arrayInicializado, descTipoTupla, variablesDimension,
                             offsetArray, variableCodigoIntermedio);
                 } else { // array inicializado
                     descVar = new DescripcionArray(tipo.getTipo(), decs.isConst,
                             tipo.dimArray.getDimensiones(),
-                            seHaAsignado, descTipoTupla, variablesDimension,
+                            seHaAsignado || arrayInicializado, descTipoTupla, variablesDimension,
                             offsetArray, variableCodigoIntermedio);
                 }
             } else { // variable no array (puede o no ser de tipo tupla)
                 descVar = new DescripcionSimbolo(tipo.getTipo(), decs.isConst,
-                        seHaAsignado, descTipoTupla,
+                        seHaAsignado || arrayInicializado, descTipoTupla,
                         variableCodigoIntermedio);
             }
             tablaSimbolos.poner(id, descVar);
@@ -482,8 +484,8 @@ public class AnalizadorSemantico {
                         error = true;
                     } else {
                         DescripcionDefinicionTupla dt = (DescripcionDefinicionTupla) tablaSimbolos.consulta(d.getNombreTupla());
-                        DescripcionSimbolo miembro = dt.getMember(asig.miembro);
-                        if (miembro.tieneValorAsignado() && miembro.isConstante()) {
+                        DefinicionMiembro miembro = dt.getMember(asig.miembro);
+                        if (miembro.tieneValorAsignado() && miembro.isConst) {
                             errores.add("Se esta intentado asignar un valor al miembro constante '" + asig.miembro + "' de la variable '" + asig.id + "' de la tupla '" + d.getNombreTupla() + "', el cual ya tenia un valor asignado");
                             indicarLocalizacion(asig);
                             error = true;
@@ -913,7 +915,7 @@ public class AnalizadorSemantico {
         tablaSimbolos.entraBloque();
         DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(main.nombreMain);
         metodoActualmenteSiendoTratado = new Pair(main.nombreMain, df);
-        String tipo = ParserSym.terminalNames[ParserSym.STRING] + " " + main.lBracket + main.rBracket;
+        String tipo = ParserSym.terminalNames[ParserSym.CAR] + " " + main.lBracket + main.rBracket + main.lBracket + main.rBracket;
 
         //String etiquetaMain = g3d.nuevaEtiqueta(main.nombreMain); //Etiqueta main
         //Lo añadimos a la tabla de funciones TODO: Revisar tema de profundidad!!
@@ -1119,7 +1121,7 @@ public class AnalizadorSemantico {
                     errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop.value + " entre " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
                     error = true;
-                } else if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo1)) {
+                } else if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo1) && !tipo1.contains("[")) {
                     errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " entre tipos no primitivos (" + tipo1 + ") en la expresion binaria " + exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tuplas y arrays
                     error = true;
@@ -1149,6 +1151,9 @@ public class AnalizadorSemantico {
 //                    variableTratadaActualmente = var;
 //                    return ParserSym.terminalNames[ParserSym.PROP];
 //                }
+                if (tipo1.contains("[") && ti.isTipo(TipoInstr.ADD)) {
+                    // suma de arrays  -> concatenar arrays -> concatenar strings --------------------------------------------------------------------------------------------
+                }
                 if (operator.isRelationalOperator()) {
                     String etTrue = g3d.nuevaEtiqueta();
                     String etFalse = g3d.nuevaEtiqueta();
@@ -1331,14 +1336,14 @@ public class AnalizadorSemantico {
                 }
                 boolean opEsIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 boolean castingEsIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) || casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
-                boolean charAString = casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]);
-                // casting posible entre int <-> char <-> double <-> int y de char -> string
+                //boolean charAString = casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]);
+                // casting posible entre int <-> char <-> double <-> int // no: y de char -> string
                 if (opEsIntCharDouble && castingEsIntCharDouble) {
                     return casting;
-                } else if (charAString) {
-                    // esto seguro que hay que procesarlo --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                    return casting;
-                }
+                } //else if (charAString) {
+                //    // esto seguro que hay que procesarlo --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                //    return casting;
+                //}
                 errores.add("Se ha intentado realizar un casting no permitido (" + op.toString() + ") de " + tipo + " a " + casting);
                 indicarLocalizacion(operando);
                 return null;

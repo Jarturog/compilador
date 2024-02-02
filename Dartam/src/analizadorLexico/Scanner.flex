@@ -76,8 +76,8 @@ sym_bracketIzq	= \[
 sym_bracketDer	= \]
 sym_endInstr    = \;
 sym_coma	   = \,
-//sym_comillaS = \'
-//sym_comillaD = \"
+sym_comillaS = \'
+sym_comillaD = \"
 sym_punto    = \.
 
 // operadores
@@ -114,7 +114,7 @@ op_arrow    = \-\>
 
 // tipos (void es tipo de retorno pero no de variable)
 type_char      = "car"
-type_string    = "string"
+//type_string    = "string"
 type_int       = "ent"
 type_double    = "real"
 type_bool      = "prop"
@@ -152,6 +152,8 @@ val_hex     = 0x[A-Fa-f0-9]+
 val_real    = {val_decimal}?\.{val_decimal}?([Ee]{val_decimal})?
 val_prop    = {kw_true}|{kw_false}
 val_char    = "'"[^"'"]"'"
+char_vacio  = "''"
+char_string = "'"[^"'"][^"'"]+"'" // se inicializa un char con varios chars como si fuera un string
 val_cadena  = "\""[^"\""]*"\""
 id          = ({sub_letra}|_)({sub_car}|_)*
 
@@ -181,6 +183,22 @@ public String getErrores(){
 
 private String errorToString(){
   return "Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+}
+
+private String errorComillaSimple(){
+  return "Error lexico: Token " + yytext() + " utilizado para abrir un carácter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+}
+
+private String errorComillaDoble(){
+  return "Error lexico: Token " + yytext() + " utilizado para abrir un string pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+}
+
+private String errorCharVacio() {
+  return "Error lexico: Token " + yytext() + " utilizado para crear un carácter vacío (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+}
+
+private String errorCharComoString(){
+  return "Error lexico: Token " + yytext() + " utilizado para crear varios carácteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
 }
 
 /**
@@ -281,7 +299,7 @@ private Symbol procesarNumero() {
 {type_char}             { tokens += "TYPE_CHAR: "  +yytext()+"\n"; return symbol(ParserSym.KW_CHAR, yytext()); }
 {type_bool}             { tokens += "TYPE_BOOL: "  +yytext()+"\n"; return symbol(ParserSym.KW_BOOL, yytext()); }
 {type_void}             { tokens += "TYPE_VOID: "  +yytext()+"\n"; return symbol(ParserSym.KW_VOID, yytext()); }
-{type_string}           { tokens += "TYPE_STRING: "+yytext()+"\n"; return symbol(ParserSym.KW_STRING, yytext()); }
+//{type_string}           { tokens += "TYPE_STRING: "+yytext()+"\n"; return symbol(ParserSym.KW_STRING, yytext()); }
 
 // simbolos
 {sym_parenIzq}          { tokens += "SYM_LPAREN: "  +yytext()+"\n"; return symbol(ParserSym.LPAREN, yytext()); }
@@ -292,8 +310,6 @@ private Symbol procesarNumero() {
 {sym_bracketDer}        { tokens += "SYM_RBRACKET: "+yytext()+"\n"; return symbol(ParserSym.RBRACKET, yytext()); }
 {sym_endInstr}          { tokens += "SYM_ENDINSTR: "+yytext()+"\n"; return symbol(ParserSym.ENDINSTR, yytext()); }
 {sym_coma}              { tokens += "SYM_COMMA: "   +yytext()+"\n"; return symbol(ParserSym.COMMA, yytext()); }
-//{sym_comillaS}          {}//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE, yytext()); }
-//{sym_comillaD}          {}//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE, yytext()); }
 {sym_punto}             { tokens += "SYM_PUNTO: "   +yytext()+"\n"; return symbol(ParserSym.OP_MEMBER, yytext()); }
 
 // keywords
@@ -328,6 +344,10 @@ private Symbol procesarNumero() {
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
 
 // casos especiales
+{sym_comillaS}         { errores += errorComillaSimple(); return symbol(ParserSym.error); }//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE, yytext()); }
+{sym_comillaD}         { errores += errorComillaDoble(); return symbol(ParserSym.error); }//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE, yytext()); }
+{char_vacio}           { errores += errorCharVacio(); return symbol(ParserSym.error); }
+{char_string}          { errores += errorCharComoString(); return symbol(ParserSym.error); }
 {espacioBlanco}        { /* No fer res amb els espais */  }
 {comentario}           { /* No fer res amb els comentaris */  }
 {finLinea}             {}//{ tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }

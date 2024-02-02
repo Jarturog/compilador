@@ -1,6 +1,6 @@
-into:		Función de tipo 'PROP'  con argumentosSTRING file, STRING content declarado en el nivel 1
+into:		Función de tipo 'PROP'  con argumentosCAR [] file, CAR [] content declarado en el nivel 1
 a:			Tupla sin miembros declarado en el nivel 1
-show:		Función de tipo 'KW_VOID'  con argumentosSTRING output declarado en el nivel 1
+show:		Función de tipo 'KW_VOID'  con argumentosCAR [] output declarado en el nivel 1
 inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
-from:		Función de tipo 'STRING'  con argumentosSTRING file declarado en el nivel 1
-enter:		Función de tipo 'STRING'  sin argumentos declarado en el nivel 1
+from:		Función de tipo 'CAR []'  con argumentosCAR [] file declarado en el nivel 1
+enter:		Función de tipo 'CAR []'  sin argumentos declarado en el nivel 1
