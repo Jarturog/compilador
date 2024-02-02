@@ -15,4 +15,11 @@ f vacio inicio(car[][] argumentos) {
 	car let: b.c;
 	tupla a numeraso: b.a;
 	ent numdeverdad: numeraso.b;
+	ent n: 1;
+	ent aa: --n + ab(numdeverdad);
+	ent bb: n++ + ab(numdeverdad);
+}
+
+f ent ab(ent b){
+	pop b;
 }

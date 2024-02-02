@@ -1023,26 +1023,48 @@ public class AnalizadorSemantico {
                     if (isDecremento) {
                         s = "decremento";
                     }
-                    if (exp.op.atomicExp == null) {
+                    SymbolAtomicExpression symbolId = exp.op.atomicExp;
+                    if (symbolId == null) {
                         errores.add("No se puede realizar un " + s + " sobre un operando diferente a una variable primitiva (" + exp + ")");
                         indicarLocalizacion(exp);
                         return null;
                     }
-                    if (!exp.op.atomicExp.tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
+                    if (!symbolId.tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
                         errores.add("No se puede realizar un " + s + " sobre un operando que no sea un identificador (" + exp + ")");
                         indicarLocalizacion(exp);
                         return null;
                     }
-                    int nErrors = errores.size();
-                    procesarAsignaciones(new SymbolAsigs(new SymbolAsig(!exp.isLeftUnaryOperator(), operation, exp.op.toString(), exp.value, exp.xleft, exp.xright), exp.xleft, exp.xright));
-                    if (errores.size() != nErrors) {
-                        errores.add("No se ha podido realizar la operacion de " + s + " " + exp);
+                    String nombre = symbolId.toString();
+                    DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
+                    if (ds == null) {
+                        errores.add("No se puede realizar un " + s + " sobre la variable "+nombre+" no declarada anteriormente");
                         indicarLocalizacion(exp);
                         return null;
-                    }
+                    } else if (!SymbolTipoPrimitivo.isTipoNumericoDiscreto(ds.tipo)) {
+                        errores.add("No se puede realizar un " + s + " sobre una variable de tipo "+ds.tipo);
+                        indicarLocalizacion(exp);
+                        return null;
+                    } else if(!ds.tieneValorAsignado()) {
+                        errores.add("No se puede realizar un " + s + " si la variable "+nombre+" no ha sido asignada anteriormente");
+                        indicarLocalizacion(exp);
+                        return null;
+                    } else if(ds.isConstante()) {
+                        errores.add("No se puede realizar un " + s + " en una constante ("+nombre+")");
+                        indicarLocalizacion(exp);
+                        return null;
+                    } 
                     String nuevaVariable = g3d.nuevaVariable(TipoReferencia.var, this.metodoActualmenteSiendoTratado.fst);
-                    g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(variableOperando), new Operador(1), new Operador(nuevaVariable));
-                    this.variableTratadaActualmente = nuevaVariable;
+                    if (exp.isLeftUnaryOperator()) { // pre
+                        g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(variableOperando), new Operador(1), new Operador(nuevaVariable));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(nuevaVariable), null, new Operador(variableOperando));
+                        variableTratadaActualmente = variableOperando;
+                    } else { // post
+                        String varAntiguoValor = g3d.nuevaVariable(TipoReferencia.var, this.metodoActualmenteSiendoTratado.fst);
+                        g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(variableOperando), new Operador(1), new Operador(nuevaVariable));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(variableOperando), null, new Operador(varAntiguoValor));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(nuevaVariable), null, new Operador(variableOperando));
+                        variableTratadaActualmente = varAntiguoValor;
+                    }
                     return tipo;
                 }
                 // operador zurdo

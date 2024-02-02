@@ -185,5 +185,10 @@ public class Instruccion {
             return tipo.equals(t.tipo);
         }
 
+        public boolean isCondGOTO() {
+            return isTipo(IFLT) || isTipo(IFLE) || isTipo(IFGT)
+                    || isTipo(IFGE) || isTipo(IFEQ) || isTipo(IFNE);
+        }
+
     }
 }

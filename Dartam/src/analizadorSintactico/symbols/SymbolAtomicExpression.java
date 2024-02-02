@@ -76,5 +76,10 @@ public class SymbolAtomicExpression extends SymbolBase {
         }
         return null;
     }
+    
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 
 }

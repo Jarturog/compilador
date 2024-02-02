@@ -37,7 +37,11 @@ public class SymbolTipoPrimitivo extends SymbolBase {
                 || t.equals(ParserSym.terminalNames[ParserSym.CAR])
                 ;//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
-
-    public static final String STRING = "STRING", CAR = "CAR", ENT = "ENT", PROP = "PROP", REAL = "REAL";
+    
+    public static boolean isTipoNumericoDiscreto(String t) {
+        return t.equals(ParserSym.terminalNames[ParserSym.ENT])
+                || t.equals(ParserSym.terminalNames[ParserSym.CAR])
+                ;//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
+    }
     
 }
