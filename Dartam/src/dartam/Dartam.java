@@ -76,12 +76,12 @@ public class Dartam {
                 return;
             }
             // Generación de código intermedio
-            System.out.println(sem.getInstrucciones());
-            escribir("codigoIntermedio.txt", sem.getInstrucciones());
+            System.out.println(sem.instruccionesToString());
+            escribir("codigoIntermedio.txt", sem.instruccionesToString());
+            // Optimzaciones
+            Optimizador op = new Optimizador(sem.getInstrucciones());
             // Generación de código máquina
             //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
-            // Optimzaciones
-            //Optimizador op = new Optimizador();
         } catch (Exception e) {
             e.printStackTrace(); System.err.println("Error inesperado de compilacion: " + e.getMessage());
             //System.err.println("Error inesperado de compilacion, error detallado en "+LOG);

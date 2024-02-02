@@ -1,13 +1,18 @@
 
 tupla a {
-
+	ent b;
+	car c;
+	tupla a a;
 }
 
 f vacio inicio(car[][] argumentos) {
 	tupla a [3][4+5] arr;
-	//tupla a[0][1]: 123456;
 	tupla a[][] c: arr;
 	c: arr;
 	tupla a b;
 	arr[0][1]:b;
+	ent num: b.b;
+	car let: b.c;
+	tupla a numeraso: b.a;
+	ent numdeverdad: numeraso.b;
 }

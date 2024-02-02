@@ -61,7 +61,11 @@ public class AnalizadorSemantico {
         return tablaSimbolos.toString();
     }
 
-    public String getInstrucciones() {
+    public ArrayList<Instruccion> getInstrucciones() {
+        return g3d.getInstrucciones();
+    }
+            
+    public String instruccionesToString() {
         String s = "";
         for (Instruccion i : g3d.getInstrucciones()) {
             s += i.toString() + "\n";
@@ -1297,6 +1301,11 @@ public class AnalizadorSemantico {
                 String nombre = tupla.value.toString();//tipoTupla.substring(tipoTupla.indexOf(" ") + 1);
                 DescripcionSimbolo ds = tablaSimbolos.consulta(nombre);
                 if (ds == null) {
+                    if (nombre.contains(".")){
+                        errores.add("No se puede acceder al miembro de un miembro sin variables auxiliares por en medio ("+op+")");
+                        indicarLocalizacion(tupla);
+                        return null;
+                    }
                     errores.add("La tupla " + nombre + " no esta declarada");
                     indicarLocalizacion(tupla);
                     return null;
@@ -1318,9 +1327,11 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(tupla);
                     return null;
                 }
+                String varDesp = g3d.nuevaVariable(TipoReferencia.var, metodoActualmenteSiendoTratado.fst);
+                Integer valDesp = dt.getDesplazamiento(op.member);
+                g3d.generarInstr(TipoInstr.COPY, new Operador(valDesp), null, new Operador(varDesp));
                 String nuevaVariable = g3d.nuevaVariable(TipoReferencia.var, metodoActualmenteSiendoTratado.fst);
-                String varIndex = nombre; // PENDIENTE --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                g3d.generarInstr(TipoInstr.IND_VAL, new Operador(varTupla), new Operador(varIndex), new Operador(nuevaVariable));
+                g3d.generarInstr(TipoInstr.IND_VAL, new Operador(varTupla), new Operador(varDesp), new Operador(nuevaVariable));
                 variableTratadaActualmente = nuevaVariable;
                 return miembro.tipo;
             }
@@ -1328,7 +1339,7 @@ public class AnalizadorSemantico {
                 SymbolOperand operando = op.op;
                 String casting = op.casting.getTipo();
                 String tipo = procesarOperando(operando);
-                String variable = variableTratadaActualmente;
+//                String variable = variableTratadaActualmente;
                 if (tipo == null) {
                     errores.add("Se realizan operaciones no validas (" + operando + ") en antes de aplicar el casting");
                     indicarLocalizacion(operando);
@@ -1349,7 +1360,7 @@ public class AnalizadorSemantico {
                 return null;
             }
         }
-        return null; // error, no es ninguno de los casos
+        throw new Exception("Error al procesar operando desconocido"); // error, no es ninguno de los casos
     }
 
 }

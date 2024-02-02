@@ -37,7 +37,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         return getMiembro(nombre) != null;
     }
     
-    public Integer getDesplazamiento(String miembro) {
+    public Integer getDesplazamiento(String miembro) throws Exception {
         if (!tieneMiembro(miembro)) {
             return null;
         }
@@ -48,7 +48,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
             }
             desp += m.bytes;
         }
-        return null; // error
+        throw new Exception("Miembro " + miembro + " no encontrado"); // error
     }
     
     public static class DefinicionMiembro {

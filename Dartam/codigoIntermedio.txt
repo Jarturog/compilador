@@ -14,5 +14,17 @@ t7 = t5 * d2arr
 t8 = t6 + t7
 t9 = t8 * 4
 arr[t9] = b
+t10 = 0
+t11 = b[t10]
+num = t11
+t12 = 4
+t13 = b[t12]
+let = t13
+t14 = 6
+t15 = b[t14]
+numeraso = t15
+t16 = 0
+t17 = numeraso[t16]
+numdeverdad = t17
 rtn ninicio
 

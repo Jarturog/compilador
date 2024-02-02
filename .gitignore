@@ -15,3 +15,4 @@ Dartam/log.txt
 Dartam/nbproject/private/private.properties
 Dartam/tokens.txt
 *.properties
+*.args
