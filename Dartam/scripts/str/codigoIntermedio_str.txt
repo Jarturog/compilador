@@ -1,0 +1,9 @@
+e_inicio: skip
+pmb e_inicio
+t = Hola mundo
+string = t
+param_s string
+call e_show
+rtn e_inicio
+
+

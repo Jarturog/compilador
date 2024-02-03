@@ -41,53 +41,19 @@ public class Dartam {
 
     public static final boolean DEBUG = true;
     private static final String RUTA = "scripts/", LOG = "log.txt", EXTENSION = ".dtm";
+    private final String nombreFichero;
 
     public static void main(String[] args) {
+        String nombreArchivo;
+        if (args.length > 0) {
+            nombreArchivo = args[0];
+        } else {
+            // Mostrar los nombres de los archivos en la ruta
+            mostrarArchivos();
+            nombreArchivo = elegirArchivo();
+        }
         try {
-            Reader ficheroIn;
-            String nombreArchivo;
-            if (args.length > 0) {
-                nombreArchivo = args[0];
-            } else {
-                // Mostrar los nombres de los archivos en la ruta
-                mostrarArchivos();
-                nombreArchivo = elegirArchivo();
-            }
-            ficheroIn = new FileReader(RUTA + nombreArchivo);
-            String nombreFicheroSinExtension = nombreArchivo.replace(EXTENSION, "");
-            // Análisis léxico
-            //String [] a = {(String)(RUTA + nombreArchivo)};
-            //visualizarArbol(a);
-            Scanner scanner = new Scanner(ficheroIn);
-            // Análisis sintáctico
-            Parser parser = new Parser(scanner, new ComplexSymbolFactory());
-            Symbol resultado = parser.parse();
-            escribir("tokens_" + nombreFicheroSinExtension + ".txt", scanner.getTokens());
-            if (!scanner.getErrores().isEmpty()) {
-                System.err.println(scanner.getErrores());
-                return;
-            } else if (!parser.getErrores().isEmpty()) {
-                System.err.println(parser.getErrores());
-                return;
-            }
-            //System.out.println(scanner.getTokens());
-            SymbolScript script = (SymbolScript) resultado.value;
-            // Análisis semántico
-            AnalizadorSemantico sem = new AnalizadorSemantico(script);
-            escribir("symbols_" + nombreFicheroSinExtension + ".txt", sem.getSymbols());
-            if (!sem.getErrores().isEmpty()) {
-                System.err.println(sem.getErrores());
-                return;
-            }
-            // Generación de código intermedio realizada durante el análisis semántico
-            Generador3Direcciones generadorCodigoIntermedio = sem.getGenerador();
-            //System.out.println(sem.instruccionesToString());
-            escribir("codigoIntermedio_" + nombreFicheroSinExtension + ".txt", generadorCodigoIntermedio.toString());
-            // Optimzaciones
-//            Optimizador op = new Optimizador(sem.getInstrucciones());
-            // Generación de código ensamblador
-            GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFicheroSinExtension, generadorCodigoIntermedio);
-            escribir(nombreFicheroSinExtension + ".X68", codigoEnsamblador.toString());
+            new Dartam(nombreArchivo);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error inesperado de compilacion: " + e.getMessage());
@@ -97,7 +63,9 @@ public class Dartam {
             e.printStackTrace(pw);
             String stackTrace = sw.toString();
             try {
-                escribir(LOG, stackTrace);
+                FileWriter fileOut = new FileWriter(LOG);
+                fileOut.write(stackTrace);
+                fileOut.close();
             } catch (IOException ex) {
                 System.err.println("No se ha podido guardar el error en el " + LOG + "\nContacta con los desarrolladores: ");
                 e.printStackTrace();
@@ -107,8 +75,51 @@ public class Dartam {
         System.out.println("Compilacion finalizada");
     }
 
-    static public void escribir(String fileName, String str) throws IOException {
-        try (FileWriter fileOut = new FileWriter(fileName)) {
+    public Dartam(String nombreArchivo) throws Exception {
+        Reader ficheroIn = new FileReader(RUTA + nombreArchivo);
+        nombreFichero = nombreArchivo.replace(EXTENSION, "");
+        // Create the directory if it doesn't exist
+        File directory = new File(RUTA + nombreFichero);
+        if (!directory.exists()) {
+            directory.mkdirs(); // creates parent directories as needed
+        }
+        // Análisis léxico
+        //String [] a = {(String)(RUTA + nombreArchivo)};
+        //visualizarArbol(a);
+        Scanner scanner = new Scanner(ficheroIn);
+        // Análisis sintáctico
+        Parser parser = new Parser(scanner, new ComplexSymbolFactory());
+        Symbol resultado = parser.parse();
+        escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens());
+        if (!scanner.getErrores().isEmpty()) {
+            System.err.println(scanner.getErrores());
+            return;
+        } else if (!parser.getErrores().isEmpty()) {
+            System.err.println(parser.getErrores());
+            return;
+        }
+        //System.out.println(scanner.getTokens());
+        SymbolScript script = (SymbolScript) resultado.value;
+        // Análisis semántico
+        AnalizadorSemantico sem = new AnalizadorSemantico(script);
+        escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols());
+        if (!sem.getErrores().isEmpty()) {
+            System.err.println(sem.getErrores());
+            return;
+        }
+        // Generación de código intermedio realizada durante el análisis semántico
+        Generador3Direcciones generadorCodigoIntermedio = sem.getGenerador();
+        //System.out.println(sem.instruccionesToString());
+        escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
+        // Optimzaciones
+//            Optimizador op = new Optimizador(sem.getInstrucciones());
+        // Generación de código ensamblador
+        GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
+        escribir(nombreFichero + ".X68", codigoEnsamblador.toString());
+    }
+
+    public void escribir(String fileName, String str) throws IOException {
+        try (FileWriter fileOut = new FileWriter(RUTA + nombreFichero + "/" + fileName)) {
             fileOut.write(str);
         }
     }

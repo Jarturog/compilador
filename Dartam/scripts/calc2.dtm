@@ -1,0 +1,3 @@
+f vacio inicio(car[][] argumentos) {
+	ent c: 2**3;
+}
