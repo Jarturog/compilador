@@ -15,6 +15,7 @@ import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSemantico.AnalizadorSemantico;
+import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,6 +53,7 @@ public class Dartam {
                 nombreArchivo = elegirArchivo();
             }
             ficheroIn = new FileReader(RUTA + nombreArchivo);
+            String nombreFicheroSinExtension = nombreArchivo.replace(EXTENSION, "");
             // Análisis léxico
             //String [] a = {(String)(RUTA + nombreArchivo)};
             //visualizarArbol(a);
@@ -59,7 +61,7 @@ public class Dartam {
             // Análisis sintáctico
             Parser parser = new Parser(scanner, new ComplexSymbolFactory());
             Symbol resultado = parser.parse();
-            escribir("tokens.txt", scanner.getTokens());
+            escribir("tokens_" + nombreFicheroSinExtension + ".txt", scanner.getTokens());
             if (!scanner.getErrores().isEmpty()) {
                 System.err.println(scanner.getErrores());
                 return;
@@ -71,20 +73,22 @@ public class Dartam {
             SymbolScript script = (SymbolScript) resultado.value;
             // Análisis semántico
             AnalizadorSemantico sem = new AnalizadorSemantico(script);
-            escribir("symbols.txt", sem.getSymbols());
+            escribir("symbols_" + nombreFicheroSinExtension + ".txt", sem.getSymbols());
             if (!sem.getErrores().isEmpty()) {
                 System.err.println(sem.getErrores());
                 return;
             }
             // Generación de código intermedio
-            System.out.println(sem.instruccionesToString());
-            escribir("codigoIntermedio.txt", sem.instruccionesToString());
+            //System.out.println(sem.instruccionesToString());
+            escribir("codigoIntermedio_" + nombreFicheroSinExtension + ".txt", sem.instruccionesToString());
             // Optimzaciones
 //            Optimizador op = new Optimizador(sem.getInstrucciones());
-            // Generación de código máquina
-            //GeneradorCMaquina codigoMaquina = new GeneradorCMaquina(codigoIntermedio);
+            // Generación de código ensamblador
+            GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFicheroSinExtension, sem.getInstrucciones());
+            escribir(nombreFicheroSinExtension + ".X68", codigoEnsamblador.toString());
         } catch (Exception e) {
-            e.printStackTrace(); System.err.println("Error inesperado de compilacion: " + e.getMessage());
+            e.printStackTrace();
+            System.err.println("Error inesperado de compilacion: " + e.getMessage());
             //System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -124,11 +128,11 @@ public class Dartam {
     }
 
     private static void mostrarArchivos() {
-        File directorio = new File(RUTA);
-        File[] archivos = directorio.listFiles();
+        File dir = new File(RUTA);
+        File[] archivos = dir.listFiles();
 
         if (archivos == null) {
-            System.err.println("Error al listar archivos en la ruta " + directorio.getAbsolutePath());
+            System.err.println("Error al listar archivos en la ruta " + dir.getAbsolutePath());
             return;
         }
 
@@ -138,38 +142,39 @@ public class Dartam {
                 strArchvios += archivo.getName() + ", ";
             }
         }
-        System.out.println("Archivos en la ruta " + directorio.getAbsolutePath() + ": \n" + strArchvios.substring(0, strArchvios.length() - 2) + "\n");
+        System.out.println("Archivos en la ruta " + dir.getAbsolutePath()
+                + ": \n" + strArchvios.substring(0, strArchvios.length() - 2) + "\n");
     }
-    
+
     /**
      * Código sacado de https://www2.cs.tum.edu/projects/cup/examples.php#gast
-     * Ahora mismo no funciona.
-     * Otra fuente para visualizar el árbol: https://www.skenz.it/compilers
-     * y https://www.skenz.it/compilers/install_windows
+     * Ahora mismo no funciona. Otra fuente para visualizar el árbol:
+     * https://www.skenz.it/compilers y
+     * https://www.skenz.it/compilers/install_windows
      */
     private static void visualizarArbol(String[] args) throws Exception {
         // initialize the symbol factory
-      ComplexSymbolFactory csf = new ComplexSymbolFactory();
-      // create a buffering scanner wrapper
-      //ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0]))));
-      ScannerBuffer lexer = new ScannerBuffer(new Lexer(csf));
-      // start parsing
-      Parser p = new Parser(lexer,csf);
-      XMLElement e = (XMLElement)p.parse().value;
-      // create XML output file 
-      XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
-      XMLStreamWriter sw = outFactory.createXMLStreamWriter(new FileOutputStream(args[1]));
-      // dump XML output to the file
-      XMLElement.dump(lexer,sw,e,"expr","stmt");
+        ComplexSymbolFactory csf = new ComplexSymbolFactory();
+        // create a buffering scanner wrapper
+        //ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0]))));
+        ScannerBuffer lexer = new ScannerBuffer(new Lexer(csf));
+        // start parsing
+        Parser p = new Parser(lexer, csf);
+        XMLElement e = (XMLElement) p.parse().value;
+        // create XML output file 
+        XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
+        XMLStreamWriter sw = outFactory.createXMLStreamWriter(new FileOutputStream(args[1]));
+        // dump XML output to the file
+        XMLElement.dump(lexer, sw, e, "expr", "stmt");
 
-       // transform the parse tree into an AST and a rendered HTML version
-      Transformer transformer = TransformerFactory.newInstance()
-	    .newTransformer(new StreamSource(new File("tree.xsl")));
-      Source text = new StreamSource(new File(args[1]));
-      transformer.transform(text, new StreamResult(new File("output.xml")));
-      transformer = TransformerFactory.newInstance()
-	    .newTransformer(new StreamSource(new File("tree-view.xsl")));
-      text = new StreamSource(new File("output.xml"));
-      transformer.transform(text, new StreamResult(new File("ast.html")));
+        // transform the parse tree into an AST and a rendered HTML version
+        Transformer transformer = TransformerFactory.newInstance()
+                .newTransformer(new StreamSource(new File("tree.xsl")));
+        Source text = new StreamSource(new File(args[1]));
+        transformer.transform(text, new StreamResult(new File("output.xml")));
+        transformer = TransformerFactory.newInstance()
+                .newTransformer(new StreamSource(new File("tree-view.xsl")));
+        text = new StreamSource(new File("output.xml"));
+        transformer.transform(text, new StreamResult(new File("ast.html")));
     }
 }

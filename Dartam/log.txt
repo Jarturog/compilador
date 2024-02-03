@@ -1,7 +1,4 @@
-java.lang.NullPointerException: Cannot read field "bytes" because the return value of "analizadorSemantico.genCodigoIntermedio.Tipo.getTipo(String)" is null
-	at analizadorSemantico.AnalizadorSemantico.procesarAsignaciones(AnalizadorSemantico.java:477)
-	at analizadorSemantico.AnalizadorSemantico.procesarInstruccion(AnalizadorSemantico.java:345)
-	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:323)
-	at analizadorSemantico.AnalizadorSemantico.procesarMain(AnalizadorSemantico.java:928)
-	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:172)
-	at dartam.Dartam.main(Dartam.java:72)
+java.lang.NullPointerException: Cannot invoke "analizadorSemantico.genCodigoIntermedio.Operador.toString()" because "instr.dst" is null
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:61)
+	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:43)
+	at dartam.Dartam.main(Dartam.java:87)

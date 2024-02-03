@@ -69,9 +69,6 @@ public class AnalizadorSemantico {
         String s = "";
         for (Instruccion i : g3d.getInstrucciones()) {
             s += i.toString() + "\n";
-            if (i.isTipo(TipoInstr.RETURN)) { // para legibilidad separamos los métodos
-                s += "\n";
-            }
         }
         return s;
     }
@@ -798,7 +795,7 @@ public class AnalizadorSemantico {
         String nfuncion = df.getNFuncion();
         //Añadimos la funcion a la tabla
 //        int numeroProcedure = g3d.nuevoProcedimiento(metodo.id, tablaSimbolos.getProfundidad(), fEtiqueta);
-        g3d.generarInstr(TipoInstr.SKIP, null, null, df.variableAsociada);
+        g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(df.variableAsociada));
         g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(nfuncion));
         metodoActualmenteSiendoTratado = new Pair(metodo.id, df);
         for (DescripcionFuncion.DefinicionParametro p : df.getParametros()) {
@@ -829,6 +826,7 @@ public class AnalizadorSemantico {
             g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(nfuncion));
         }
         tablaSimbolos.salirBloque();
+        g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
     }
 
     private ArrayList<DescripcionFuncion.DefinicionParametro> procesarParametros(SymbolParams params, String idMetodo) throws Exception {
@@ -915,6 +913,7 @@ public class AnalizadorSemantico {
     }
 
     private void procesarMain(SymbolMain main) throws Exception {
+        g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
         SymbolBody body = main.main;
         tablaSimbolos.entraBloque();
         DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(main.nombreMain);
@@ -932,6 +931,7 @@ public class AnalizadorSemantico {
         procesarBody(body);
         tablaSimbolos.salirBloque();
         g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(df.getNFuncion()));
+        g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
     }
 
     /**

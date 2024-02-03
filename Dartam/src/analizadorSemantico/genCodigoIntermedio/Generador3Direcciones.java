@@ -137,10 +137,10 @@ public class Generador3Direcciones {
         this.instrucciones.add(ins);
     }
     
-    public void generarInstr(TipoInstr instruccion, String op1, String op2, String dst) {
-        Instruccion ins = new Instruccion(instruccion, op1 == null ? null : new Operador(op1), op2 == null ? null : new Operador(op2), dst == null ? null : new Operador(dst));
-        this.instrucciones.add(ins);
-    }
+//    public void generarInstr(TipoInstr instruccion, String op1, String op2, String dst) {
+//        Instruccion ins = new Instruccion(instruccion, op1 == null ? null : new Operador(op1), op2 == null ? null : new Operador(op2), dst == null ? null : new Operador(dst));
+//        this.instrucciones.add(ins);
+//    }
 
 //    //Metodo que nos devolvera el arraylist con los objetos de 3 direcciones 
 //    public ArrayList<Instruccion3Direcciones> instrucciones(){

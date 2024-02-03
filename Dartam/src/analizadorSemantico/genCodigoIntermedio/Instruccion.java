@@ -130,6 +130,9 @@ public class Instruccion {
             case PARAM_C -> {
                 return "param_c " + dst + "[" + op1 + "]";
             }
+            case SEPARADOR -> {
+                return ""; // para legibilidad separamos los métodos con una instrucción que no hace nada
+            }
             default -> {
                 return null;
             }
@@ -168,7 +171,8 @@ public class Instruccion {
         CAST("cast"),
         IND_VAL("ind_val"),
         PARAM_S("param_s"),
-        PARAM_C("param_c");
+        PARAM_C("param_c"),
+        SEPARADOR(""); // para legibilidad separamos los métodos con una instrucción que no hace nada
 
         public final String tipo;
 

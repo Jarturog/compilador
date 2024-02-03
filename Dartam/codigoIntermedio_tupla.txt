@@ -1,3 +1,4 @@
+
 einicio: skip
 pmb ninicio
 t1 = 3
@@ -26,5 +27,24 @@ numeraso = t15
 t16 = 0
 t17 = numeraso[t16]
 numdeverdad = t17
+t18 = 1
+n = t18
+t19 = n - 1
+n = t19
+param_s numdeverdad
+call nab, t20
+t21 = n + t20
+aa = t21
+t22 = n + 1
+t23 = n
+n = t22
+param_s numdeverdad
+call nab, t24
+t25 = t23 + t24
+bb = t25
 rtn ninicio
+
+eab: skip
+pmb nab
+rtn nab, b_1
 
