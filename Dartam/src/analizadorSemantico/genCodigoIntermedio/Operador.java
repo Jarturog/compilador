@@ -12,74 +12,37 @@ package analizadorSemantico.genCodigoIntermedio;
 public class Operador {
     private String nombre; //Nombre de la variable / campo
     private Object valor; //Valor
-    private Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
-    private TipoReferencia tipoReferencia;
-    private int referencia; //Referencia de la tabla de datos o procedimientos
-    
-    public static enum TipoReferencia{
-        literal, referencia
-    }
-    
+    public final Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
+
     public Operador(String nombre){
         this.nombre = nombre;
-    }
-    
-    public Operador(int referencia){
-        this.tipoReferencia = TipoReferencia.referencia;
-        this.referencia = referencia;
+        this.tipoValor = null;
     }
     
     public Operador(Tipo tipo, Object valor){
         this.tipoValor = tipo;
         this.valor = valor;
-        this.tipoReferencia = TipoReferencia.literal;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public Object getValor() {
-        return valor;
-    }
-
-    public Tipo getTipoCasting() {
-        return tipoValor;
-    }
-
-    public TipoReferencia getTipo() {
-        return tipoReferencia;
-    }
-
-    public int getReferencia() {
-        return referencia;
-    }
-    
-    
-//    @Override
-//    public String toString(){
-//        if(this.nombre != null){ //O es una referencia o un valor
-//            if(this.tipoReferencia == TipoReferencia.literal){ //valor
-//                return "Valor( " + this.valor  + ")";
-//            }else{ //Es una referencia a otro valor
-//                return "Referencia( " + this.referencia + ")";
-//            }
-//        }else{ //Variable
-//            return "Variable( " + this.nombre + ")"; 
-//        }
-//    }
-    
     @Override
     public String toString(){
-        if(this.nombre == null){ //O es una referencia o un valor
-            if(this.tipoReferencia == TipoReferencia.literal){ //valor
-                return ""+valor;
-            }else{ //Es una referencia a otro valor
-                return ""+referencia;
-            }
+        if(this.nombre == null){ //O es una variable o un valor
+            return ""+valor;
         }else{ //Variable
             return nombre; 
         }
+    }
+    
+    public String getOperadorEnsamblador() {
+        if(this.nombre == null){ //O es una referencia o un valor
+            return "#"+valor;
+        }else{ //Variable
+            return nombre; 
+        }
+    }
+    
+    public boolean isLiteral() {
+        return valor != null;
     }
     
 }

@@ -7,7 +7,7 @@
  */
 package analizadorSintactico.symbols;
 
-import analizadorSemantico.genCodigoIntermedio.EntradaVariable;
+import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
@@ -60,15 +60,15 @@ public class SymbolAtomicExpression extends SymbolBase {
                 || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
     }
 
-    public String getValorCodigoIntermedio() {
+    public Object getValorCodigoIntermedio() {
         if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR])) {
-            return ((int)(char)value)+"";
+            return (int)(char)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-            return value.toString();
+            return (int)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-            return value.toString();
+            return (double)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
-            return (Boolean) value ? ""+EntradaVariable.TRUE : ""+EntradaVariable.FALSE;
+            return (int)((Boolean) value ? Tipo.TRUE : Tipo.FALSE);
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
             return value.toString();
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR] + " []")) {

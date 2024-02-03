@@ -1,4 +1,4 @@
-package analizadorSemantico.genCodigoIntermedio;
+package genCodigoEnsamblador;
 
 import java.util.HashMap;
 import java.util.Set;

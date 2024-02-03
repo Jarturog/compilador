@@ -2,31 +2,28 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package analizadorSemantico.genCodigoIntermedio;
+package genCodigoEnsamblador;
 
 import java.util.ArrayList;
 import jflex.base.Pair;
 
 
-/**
- *
- * 
- */
 public class PData {
-        private final int profundidad; //Nivel de profundidad
+//        private final int profundidad; //Nivel de profundidad
         private final String etiqueta;
         private final ArrayList<Pair<String, String>> parametros;
+        private final int bytesRetorno;
         
-        public PData(int profundidad, String etiqueta, int totalBytes, int cantidadParametros){
-            this.profundidad = profundidad;
+        public PData(String etiqueta, ArrayList<Pair<String, String>> params, int bytesValorRetorno){
             this.etiqueta = etiqueta;
-            this.parametros = new ArrayList<>();
+            this.parametros = params;
+            this.bytesRetorno = bytesValorRetorno;
         }
         
         //Recibimos la profundidad del procedimiento
-        public int getProfundidad(){
-            return this.profundidad;
-        }
+//        public int getProfundidad(){
+//            return this.profundidad;
+//        }
         
         //Recibimos la etiqueta del procedimientos
         public String getEtiqueta(){
@@ -49,8 +46,7 @@ public class PData {
             this.parametros.add(param);
         }
         
-        //Metodo con el que podemos modificar la cantidad de parametros
-        //public void setCantidadParametros(int i){
-        //    this.cantidadParametros = i;
-        //}
+        public int getBytesRetorno() {
+            return bytesRetorno;
+        }
 }

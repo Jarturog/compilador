@@ -1,15 +1,12 @@
-package analizadorSemantico.genCodigoIntermedio;
+package genCodigoEnsamblador;
 
+import analizadorSemantico.genCodigoIntermedio.Tipo;
+import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
 import java.util.ArrayList;
 import jflex.base.Pair;
 
-/**
- *
- * 
- */
 public class VData {
     private int indiceTablaVariables;
-    private String nombre;
     private TipoReferencia tipoVariable;
     
     private String idProcedimiento;
@@ -19,19 +16,14 @@ public class VData {
     private ArrayList<Pair<Integer, Tipo>> parametrosTupla; //Elementos de la tupla
     
    
-    public VData(String nombre, TipoReferencia tv, String idp){
-        this.nombre = nombre;
+    public VData(TipoReferencia tv){
         this.tipoVariable = tv;
-        this.idProcedimiento = idp;
+//        this.idProcedimiento = idp;
         this.parametrosTupla = new ArrayList<>();
     }
     
     public int getIndice(){
         return this.indiceTablaVariables;
-    }
-
-    public String getNombre() {
-        return nombre;
     }
 
     public TipoReferencia getTipoVariable() {
@@ -70,5 +62,13 @@ public class VData {
     public void añadirElementoTupla(Pair<Integer, Tipo> e){
         this.parametrosTupla.add(e);
     }
+
+    public String getDeclaracionEnsamblador(String inicializacion) {
+        if (inicializacion != null) {
+            return "DC.B '" + inicializacion + "',0";
+        }
+        return "DS.L 1";
+    }
+    
     
 }

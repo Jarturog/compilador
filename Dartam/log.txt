@@ -1,4 +1,9 @@
-java.lang.NullPointerException: Cannot invoke "analizadorSemantico.genCodigoIntermedio.Operador.toString()" because "instr.dst" is null
-	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:61)
-	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:43)
-	at dartam.Dartam.main(Dartam.java:87)
+java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+	at java.base/java.util.Objects.checkIndex(Objects.java:385)
+	at java.base/java.util.ArrayList.get(ArrayList.java:427)
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:86)
+	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:49)
+	at dartam.Dartam.main(Dartam.java:89)

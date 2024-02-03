@@ -8,9 +8,17 @@ import jflex.base.Pair;
 
 public class DescripcionFuncion extends DescripcionSimbolo {
 
-    private ArrayList<DefinicionParametro> parametros;
+    private ArrayList<Pair<String, String>> parametros;
     private final String nfuncion;
     private boolean tieneReturnObligatorio = false; // que siempre se ejecuta independientemente de los ifs o loops que haya
+    private boolean isMain = false;
+    
+    public DescripcionFuncion(String tipoRetorno, String var, boolean isMain) {
+        super(tipoRetorno, false, false, null, var);
+        parametros = new ArrayList<>();
+        this.nfuncion = setNFuncion();
+        this.isMain = isMain;
+    }
     
     public DescripcionFuncion(String tipoRetorno, String var) {
         super(tipoRetorno, false, false, null, var);
@@ -18,7 +26,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         this.nfuncion = setNFuncion();
     }
     
-    public DescripcionFuncion(String tipoRetorno, ArrayList<DefinicionParametro> params, String var) {
+    public DescripcionFuncion(String tipoRetorno, ArrayList<Pair<String, String>> params, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = params;
         this.nfuncion = setNFuncion();
@@ -27,15 +35,15 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
-        parametros.add(new DefinicionParametro(idParam, tipoParam));
+        parametros.add(new Pair(idParam, tipoParam));
         this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
-        parametros.add(new DefinicionParametro(idParam1, tipoParam1));
-        parametros.add(new DefinicionParametro(idParam2, tipoParam2));
+        parametros.add(new Pair(idParam1, tipoParam1));
+        parametros.add(new Pair(idParam2, tipoParam2));
         this.nfuncion = setNFuncion();
     }
     
@@ -44,7 +52,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     }
 
     public String getNFuncion() {
-        return nfuncion;
+        return variableAsociada;//return nfuncion;
     }
 
     public void cambiarTipo(int t) {
@@ -55,8 +63,8 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     }
 
     //Funciones
-    public void anyadirParametro(DefinicionParametro d) {
-        parametros.add(d);
+    public void anyadirParametro(String id, String tipo) {
+        parametros.add(new Pair<>(id, tipo));
     }
 
 //    public int getNumeroParametros() {
@@ -64,13 +72,13 @@ public class DescripcionFuncion extends DescripcionSimbolo {
 //    }
     public ArrayList<String> getTiposParametros() {
         ArrayList<String> tipos = new ArrayList<>();
-        for (DefinicionParametro p : parametros) {
-            tipos.add(p.tipo);
+        for (Pair<String, String> p : parametros) {
+            tipos.add(p.snd);
         }
         return tipos;
     }
     
-    public ArrayList<DefinicionParametro> getParametros() {
+    public ArrayList<Pair<String, String>> getParametros() {
         return parametros;
     }
 
@@ -89,8 +97,8 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public String toString() {
 
         String params = "";
-        for (DefinicionParametro param : parametros) {
-            params += param + ", ";
+        for (Pair<String, String> param : parametros) {
+            params += param.snd + " " + param.fst + ", ";
         }
         params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 2) : "sin argumentos";
 
@@ -117,19 +125,9 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public void asignarReturn(int profundidad) {
         tieneReturnObligatorio = getNivel() == profundidad - 1;
     }
-    
-    
-    
-    public static class DefinicionParametro {
-        protected final String id;
-        protected final String tipo;
-        public DefinicionParametro(String i, String t) {
-            id = i;
-            tipo = t;
-        }
-        @Override
-        public String toString() {
-            return tipo + " " + id;
-        }
+
+    boolean isMain() {
+        return isMain;
     }
+    
 }

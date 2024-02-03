@@ -1,36 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package analizadorSemantico.genCodigoIntermedio;
 
+import genCodigoEnsamblador.PData;
+import genCodigoEnsamblador.TablaProcedimientos;
+import genCodigoEnsamblador.VData;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
+import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import jflex.base.Pair;
 
-/**
- *
- * 
- */
 public class Generador3Direcciones {
-
+    
     private final HashMap<String, VData> tablaVariables;
     private final HashMap<String, Integer> numEtiquetasOVariablesConId;
-    private final TablaProcedimientos tablaProcedimientos;
+    private final HashMap<String, PData> tablaProcedimientos;
+    private final HashSet<String> variablesInicializadas = new HashSet<>();
 //    private final ArrayList<String> listaProcedimientos; //Funcionara como una pila
     private final ArrayList<Instruccion> instrucciones;
-    private int nEtiquetaConId = 1, nEtiqueta = 1;
-    private int nVariableConId = 1, nVariableTemporal = 1, nVariableDimensiones = 1;
+//    private final ArrayList<Integer> inicializaciones = new ArrayList<>();
 
     public Generador3Direcciones() {
         this.tablaVariables = new HashMap<>();
-        this.tablaProcedimientos = new TablaProcedimientos();
+        this.tablaProcedimientos = new HashMap();
 //        this.listaProcedimientos = new ArrayList<>();
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
     }
     
-    public Generador3Direcciones(HashMap<String, VData> tv, TablaProcedimientos tp) {
+    public Generador3Direcciones(HashMap<String, VData> tv, HashMap<String, PData> tp) {
         this.tablaVariables = tv;
         this.tablaProcedimientos = tp;
 //        this.listaProcedimientos = new ArrayList<>();
@@ -38,52 +36,49 @@ public class Generador3Direcciones {
         numEtiquetasOVariablesConId = new HashMap<>();
     }
     
-    public String nuevoN(String nombre) {
-        String nom = "n" + nombre;
-        Integer num = numEtiquetasOVariablesConId.get(nom);
-        boolean hayRepe = num != null;
-        numEtiquetasOVariablesConId.put(nom, hayRepe ? 1 + num : 1);
-        return nom + (hayRepe ? num : "");
-    }
+//    public String nuevoN(String nombre) {
+//        return conseguirIdentificadorUnico("n_"+nombre);
+//    }
 
     //Crecion de una etiqueta: Sintaxi etX donde X es el contador de etiquetas puestas
     public String nuevaEtiqueta() {
-        return "e" + nEtiqueta++;
+        return conseguirIdentificadorUnico("e");
     }
 
     public String nuevaEtiqueta(String nombre) {
-        Integer num = numEtiquetasOVariablesConId.get(nombre);
-        boolean hayRepe = num != null;
-        numEtiquetasOVariablesConId.put(nombre, hayRepe ? 1 + num : 1);
-        nEtiquetaConId++;
-        return "e" + nombre + (hayRepe ? num : "");
+        return conseguirIdentificadorUnico("e_"+nombre);
     }
 
     public String nuevaVariable() {
-        return nuevaVariable(TipoReferencia.var, null);
+        return nuevaVariable(TipoReferencia.var);
     }
     
     public String nuevaVariable(String id) {
-        return nuevaVariable(id, TipoReferencia.var, null);
+        return nuevaVariable(id, TipoReferencia.var);
     }
     
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public String nuevaVariable(TipoReferencia tipoVariable, String procedimientoActual) {
-        int numeroVariable = nVariableTemporal++;
-        String nombre = "t" + numeroVariable;
-        VData data = new VData(nombre, tipoVariable, procedimientoActual);
-        tablaVariables.put(nombre, data);
-        return nombre;
+    public String nuevaVariable(TipoReferencia tipoVariable) {
+        String idVar = conseguirIdentificadorUnico("t");
+        VData data = new VData(tipoVariable);
+        tablaVariables.put(idVar, data);
+        return idVar;
     }
 
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public String nuevaVariable(String id, TipoReferencia tipoVariable, String procedimientoActual) {
+    public String nuevaVariable(String id, TipoReferencia tipoVariable) {
+        String idVar = conseguirIdentificadorUnico(id);
+        VData data = new VData(tipoVariable);
+        tablaVariables.put(idVar, data);
+        return idVar;
+    }
+    
+    private String conseguirIdentificadorUnico(String id) {
         Integer num = numEtiquetasOVariablesConId.get(id);
         boolean hayRepe = num != null;
-        nVariableConId++;
         String idVar = id;
         if (hayRepe) {
-            while (tablaVariables.containsKey(idVar)) {
+            while (tablaVariables.containsKey(idVar) || tablaProcedimientos.containsKey(idVar)) {
                 num++;
                 numEtiquetasOVariablesConId.put(id, num);
                 idVar = id +"_"+ num;
@@ -91,17 +86,14 @@ public class Generador3Direcciones {
         } else {
             numEtiquetasOVariablesConId.put(id, 0);
         }
-        VData data = new VData(idVar, tipoVariable, procedimientoActual);
-        tablaVariables.put(idVar, data);
         return idVar;
     }
     
-    public String nuevaDimension(String idArray, TipoReferencia tipoVariable, String procedimientoActual) {
-        int numeroVariable = nVariableDimensiones++;
-        String nombre = "d" + numeroVariable + idArray;
-        VData data = new VData(nombre, tipoVariable, procedimientoActual);
-        tablaVariables.put(nombre, data);
-        return nombre;
+    public String nuevaDimension(String idArray, TipoReferencia tipoVariable) {
+        String idVar = conseguirIdentificadorUnico("d_" + idArray);
+        VData data = new VData(tipoVariable);
+        tablaVariables.put(idVar, data);
+        return idVar;
     }
 
 //    //Devuelve la función que esta en el top de la pila
@@ -119,10 +111,12 @@ public class Generador3Direcciones {
 //        listaProcedimientos.add(id);
 //    }
     //Permite crear un nuevo procedimiento y añadirlo a la tabla
-    public int nuevoProcedimiento(String id, int profundidad, String etiqueta) {
-        int contador = this.tablaProcedimientos.getContador();
-        PData data = new PData(profundidad, etiqueta, -1, -1);
-        this.tablaProcedimientos.put(id, data);
+    public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Pair<String, String>> params, int bytesRetorno) {
+        int contador = tablaProcedimientos.size();
+        PData data = new PData(etiqueta, params, bytesRetorno);
+        //tablaProcedimientos.put(id, data);
+        tablaProcedimientos.put(etiqueta, data);
+        
         return contador;
     }
 
@@ -133,6 +127,9 @@ public class Generador3Direcciones {
 
     //Crearemos la instruccion de 3 direcciones y almacenaremos en el array list
     public void generarInstr(TipoInstr instruccion, Operador op1, Operador op2, Operador dst) {
+        if(instruccion.isTipo(TipoInstr.COPY) && !variablesInicializadas.contains(dst.toString()) && op1.isLiteral()) {
+            variablesInicializadas.add(dst.toString());
+        }
         Instruccion ins = new Instruccion(instruccion, op1, op2, dst);
         this.instrucciones.add(ins);
     }
@@ -149,6 +146,27 @@ public class Generador3Direcciones {
 
     public ArrayList<Instruccion> getInstrucciones() {
         return instrucciones;
+    }
+    
+    @Override
+    public String toString() {
+        String s = "";
+        for (Instruccion i : instrucciones) {
+            s += i + "\n";
+        }
+        return s;
+    }
+    
+    public HashMap<String, VData> getTablaVariables() {
+        return tablaVariables;
+    }
+
+    public HashMap<String, PData> getTablaProcedimientos() {
+        return tablaProcedimientos;
+    }
+    
+    public HashSet<String> getVariablesInicializadas() {
+        return variablesInicializadas;
     }
     
 }

@@ -15,6 +15,7 @@ import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSemantico.AnalizadorSemantico;
+import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
 import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
@@ -78,13 +79,14 @@ public class Dartam {
                 System.err.println(sem.getErrores());
                 return;
             }
-            // Generación de código intermedio
+            // Generación de código intermedio realizada durante el análisis semántico
+            Generador3Direcciones generadorCodigoIntermedio = sem.getGenerador();
             //System.out.println(sem.instruccionesToString());
-            escribir("codigoIntermedio_" + nombreFicheroSinExtension + ".txt", sem.instruccionesToString());
+            escribir("codigoIntermedio_" + nombreFicheroSinExtension + ".txt", generadorCodigoIntermedio.toString());
             // Optimzaciones
 //            Optimizador op = new Optimizador(sem.getInstrucciones());
             // Generación de código ensamblador
-            GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFicheroSinExtension, sem.getInstrucciones());
+            GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFicheroSinExtension, generadorCodigoIntermedio);
             escribir(nombreFicheroSinExtension + ".X68", codigoEnsamblador.toString());
         } catch (Exception e) {
             e.printStackTrace();

@@ -19,18 +19,28 @@ public class Instruccion {
     }
 
     //Tipo de instruccion
-    public TipoInstr tipo() {
+    public TipoInstr getTipo() {
         return tipoInstruccion;
     }
 
     public boolean isTipo(TipoInstr t) {
         return tipoInstruccion.tipo.equals(t.tipo);
     }
-
-//    @Override
-//    public String toString() {
-//        return tipoInstruccion+": " + this.op1 + " | " + this.op2 + " | " + this.dst;
-//    }
+    
+    public String getExtensiones68K() {
+        String s1 = " ", s2 = " ", s3 = " ";
+        if (op1.tipoValor != null) {
+            s1 = op1.tipoValor.getExtension68K().substring(1);
+        }
+        if (op2.tipoValor != null) {
+            s2 = op1.tipoValor.getExtension68K().substring(1);
+        }
+        if (dst.tipoValor != null) {
+            s3 = op1.tipoValor.getExtension68K().substring(1);
+        }
+        return s1 + s2 + s3;
+    }
+    
     @Override
     public String toString() {
         switch (tipoInstruccion) {
@@ -109,12 +119,6 @@ public class Instruccion {
             case PMB -> {
                 return "pmb " + dst;
             }
-//            case POT -> {
-//                return "pot " + op1 + ", " + op2;
-//            }
-//            case PCT -> {
-//                return "pct " + op1 + ", " + op2;
-//            }
             case IND_ASS -> {
                 return dst + "[" + op2 + "] = " + op1;
             }
@@ -165,8 +169,6 @@ public class Instruccion {
         PRINT("print"),
         COPY("copy"),
         PMB("init"),
-        POT("pot"),
-        PCT("pct"),
         IND_ASS("ind_ass"),
         CAST("cast"),
         IND_VAL("ind_val"),
