@@ -1,0 +1,38 @@
+e_inicio: skip
+pmb e_inicio
+t = 0
+t_1 = not t
+t_2 = -1
+t_3 = t_1 or t_2
+t_4 = 50
+t_5 = 50
+if t_4 <= t_5 goto e
+t_6 = 0
+goto e_1
+e: skip
+t_6 = -1
+e_1: skip
+t_7 = 5
+t_8 = 5
+t_9 = -t_8
+if t_7 /= t_9 goto e_2
+t_10 = 0
+goto e_3
+e_2: skip
+t_10 = -1
+e_3: skip
+t_11 = 3
+t_12 = 3
+if t_11 == t_12 goto e_4
+t_13 = 0
+goto e_5
+e_4: skip
+t_13 = -1
+e_5: skip
+t_14 = t_10 or t_13
+t_15 = t_6 or t_14
+t_16 = t_3 and t_15
+c = t_16
+rtn e_inicio
+
+

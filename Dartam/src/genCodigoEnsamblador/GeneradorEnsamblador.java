@@ -18,16 +18,18 @@ public class GeneradorEnsamblador {
     private String etiquetaActual = "";
     private final String nombreFichero;
     //public ArrayList<String> data, text;
-    private final ArrayList<String> codigo, datos, subprogramasIO;
+    private final ArrayList<String> codigo, datos, subprogramas;
     private final ArrayList<Instruccion> instrucciones;
-    private Instruccion instruccionActual = null;
-    private boolean IO = false, printUsado = false, scanUsado = false, readUsado = false, writeUsado = false;
+    private Instruccion instruccion = null;
+    private boolean printUsado = false, scanUsado = false, readUsado = false, writeUsado = false, seConcatena = false;
 
-    private final HashMap<String, VData> variablesSinInicializar;
+    private final HashMap<String, VData> variables;
 //    private HashMap<String, String> variableDictionary;
     private final HashMap<String, PData> procedureTable;
-    private final HashSet<String> inicializaciones;
+    private final HashSet<String> etiquetas;
     private final PData main;
+    private final String etConc;
+    private int DnActual = 0, AnActual = 0;
 //
 //    // Info from the current process
 //    private Stack<ProcTableEntry> pteStack;
@@ -41,25 +43,28 @@ public class GeneradorEnsamblador {
         nombreFichero = fichero;
         instrucciones = generador.getInstrucciones();
         main = generador.getMain();
-        variablesSinInicializar = generador.getTablaVariables();
+        variables = generador.getTablaVariables();
         procedureTable = generador.getTablaProcedimientos();
-        inicializaciones = generador.getVariablesInicializadas();
+        etiquetas = generador.getEtiquetas();
         codigo = new ArrayList<>();
         datos = new ArrayList<>();
-        subprogramasIO = new ArrayList<>();
+        subprogramas = new ArrayList<>();
+        etConc = crearEtiqueta("CONCATENAR");
 //        text = new ArrayList<>();
 //        pteStack = new Stack<>();
         procesarCodigo();
     }
 
     private void procesarCodigo() throws Exception {
-
-        add(nombreFichero.toUpperCase(), "", "", "Etiqueta inicial (main)");
-        IO = true;
-        if (IO) { // activar excepciones y teclado al inicializar el programa
+        String etiqueta_main = crearEtiqueta(nombreFichero.toUpperCase());
+        add(etiqueta_main, "", "", "Etiqueta inicial (main)");
+        if (printUsado || scanUsado || readUsado || writeUsado) { // activar excepciones y teclado al inicializar el programa
+            add("");
             add("MOVE.L", "#32, D0", "Task 32 of TRAP 15: Hardware/Simulator");
             add("MOVE.B", "#5, D1", "Enable exception processing (for input/output)");
             add("TRAP", "#15", "Interruption generated");
+        }
+        if (scanUsado) {
             add("");
             add("MOVE.L", "#62, D0", "Task 62 of TRAP 15: Enable/Disable keyboard IRQ");
             add("MOVE.W", "#$0103, D1", "Enable keyboard IRQ level 1 for key up and key down");
@@ -70,33 +75,27 @@ public class GeneradorEnsamblador {
         add("SIMHALT", "", "Fin de la ejecución");
         add("");
         for (int i = 0; i < instrucciones.size(); i++) {
-            Instruccion instr = instrucciones.get(i);
-
-            instruccionActual = instr;
-            String instrCodigoIntermedio = instr.toString();
-            if (instrCodigoIntermedio.isEmpty()) {
-                add("");
-            } else {
-                add("; " + "-".repeat(MARGEN - 3), instr.toString(), "", "");
-            }
+            instruccion = instrucciones.get(i);
             String dst = null;
-            if (instr.dst != null) {
-                dst = instr.dst.getOperadorEnsamblador();
+            if (instruccion.dst != null) {
+                dst = instruccion.dst.toStringEnsamblador();
             }
-            String op1 = instr.op1 == null ? null : instr.op1.getOperadorEnsamblador();
-            String op2 = instr.op2 == null ? null : instr.op2.getOperadorEnsamblador();
-            if (instr.dst != null && !inicializaciones.isEmpty() && inicializaciones.contains(instr.dst.toString())) {
-                String id = instr.dst.toString();
-                inicializaciones.remove(id);
-                VData data = variablesSinInicializar.remove(id);
-                if (data == null) {
-                    throw new Exception("Se ha intentado inicializar una varible inexistente: " + id);
-                }
-                declararVariable(id, data, instr.op1.getValor());
+            String op1 = instruccion.op1 == null ? null : instruccion.op1.toStringEnsamblador();
+            String op2 = instruccion.op2 == null ? null : instruccion.op2.toStringEnsamblador();
+            VData data = instruccion.dst == null ? null : variables.get(instruccion.dst.toString());
+            if (instruccion.dst != null && data != null && data.estaInicializadaEnCodigoIntermedio() && !data.estaInicializadaEnCodigoEnsamblador()) {
+                data.inicializar();
+                declararVariable(instruccion.dst.toString(), data, instruccion.op1.getValor());
             } else {
+                String instrCodigoIntermedio = instruccion.toString();
+                if (instrCodigoIntermedio.isEmpty()) {
+                    add("");
+                } else {
+                    add("; " + "-".repeat(MARGEN - 3), instruccion.toString(), "", "");
+                }
                 String et = dst;
                 // si es goto, ifxx, skip, pmb, call, etc... y no es una función añade . para indicar que es local
-                if (instruccionActual.getTipo().tieneEtiqueta() && !procedureTable.containsKey(dst)) {
+                if (instruccion.getTipo().tieneEtiqueta() && !procedureTable.containsKey(dst)) {
                     et = "." + dst;
                 }
                 procesarInstruccion(op1, op2, dst, et);
@@ -104,15 +103,77 @@ public class GeneradorEnsamblador {
         }
         String et = getEtiqueta();
         if (!et.isEmpty()) {
-            add(et, "NOP", "", "NO OPERATION");
+            throw new Exception("Etiqueta inesperada: " + et);//add(et, "NOP", "", "NO OPERATION");
         }
-        for (String s : subprogramasIO) {
+        if (seConcatena) {
+            crearSubprogramaConcatenacion();
+        }
+        for (String s : subprogramas) {
             add(s);
         }
-        add("END " + nombreFichero.toUpperCase(), "", "Fin del programa");
-        for (HashMap.Entry<String, VData> variable : variablesSinInicializar.entrySet()) {
+        add("END " + etiqueta_main, "", "Fin del programa");
+        for (HashMap.Entry<String, VData> variable : variables.entrySet()) {
             declararVariable(variable.getKey(), variable.getValue(), null);
         }
+    }
+
+    private void crearSubprogramaConcatenacion() {
+        String etConc2 = crearEtiqueta(".CONC");
+        String etEndConc = crearEtiqueta(".ENDCONC");
+        add(etConc + ":", "MOVE.B", "(A0)+, D0", "");
+        add("", "BEQ", etConc2, "");
+        add("", "MOVE.B", "D0, (A2)+", "");
+        add("", "BRA", etConc, "");
+        add(etConc2 + ":", "MOVE.B", "(A1)+, D0", "");
+        add("", "BEQ", etEndConc, "");
+        add("", "MOVE.B", "D0, (A2)+", "");
+        add("", "BRA", etConc2, "");
+        add(etEndConc + ":", "RTS", "", "RETURN TO SUBROUTINE ...");
+    }
+
+    private String crearEtiqueta(String s) {
+        String etOriginal = s;
+        int acumulador = 0;
+        while (etiquetas.contains(s)) {
+            s = etOriginal + acumulador++;
+        }
+        etiquetas.add(s);
+        return s;
+    }
+
+    private String load(Operador op, String sOp) throws Exception {
+        if (AnActual > 6 || DnActual > 7) {
+            throw new Exception("Error fatal, no existen suficientes registros para conseguir A" + AnActual + " y D" + DnActual + " sin generar conflictos");
+        }
+        String register;
+        if (!op.isLiteral()) {
+            register = "A" + AnActual++;
+            add(getEtiqueta(), "LEA" + op.getExtension68K(), sOp + ", " + register, register + " = @" + sOp);
+        } else {
+            register = "D" + DnActual++;
+            add(getEtiqueta(), "MOVE" + op.getExtension68K(), sOp + ", " + register, register + " = " + sOp);
+        }
+        return register;
+    }
+
+    private void store(String from, String to) {
+        add(getEtiqueta(), "MOVE.L ", from + ", " + to, to + " = " + from);
+    }
+
+    private void push(String s) {
+        add(getEtiqueta(), "MOVE.L", s + ", -(SP)", "PUSH INTO STACK " + s);
+    }
+
+    private void push(int bytes) {
+        add(getEtiqueta(), "SUBA.L", "#" + bytes + ", SP", "SP = SP - " + bytes);
+    }
+
+    private void pop(String s) {
+        add(getEtiqueta(), "MOVE.L", "(SP)+, " + s, s + " = POP FROM STACK");
+    }
+
+    private void pop(int bytes) {
+        add(getEtiqueta(), "ADDA.L", "#" + bytes + ", SP", "SP = SP + " + bytes);
     }
 
     private void procesarInstruccion(String op1, String op2, String dst, String dstConPunto) throws Exception {
@@ -120,18 +181,13 @@ public class GeneradorEnsamblador {
 //        String biggestExtension = (extensiones.contains("L") ? ".L" : (extensiones.contains("W") ? "W" : "B"));
 //        
         Operador opop1, opop2, opdst;
-        opop1 = instruccionActual.op1;
-        opop2 = instruccionActual.op2;
-        opdst = instruccionActual.dst;
-        switch (instruccionActual.getTipo()) {
+        opop1 = instruccion.op1;
+        opop2 = instruccion.op2;
+        opdst = instruccion.dst;
+        switch (instruccion.getTipo()) {
             case COPY -> { // op1 -> dst
-                if (!opop1.isLiteral()) {
-                    add(getEtiqueta(), "LEA.L", op1 + ", A0", "A0 = (" + op1 + ")");
-                    add("MOVE.L ", "A0, " + dst, dst + " = A0");
-                    break;
-                }
-                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
-                add("MOVE.L ", "D0, " + dst, dst + " = D0");
+                String register = load(opop1, op1);
+                store(register, dst);
             }
             case NEG -> { // -op1 -> dst
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
@@ -139,14 +195,16 @@ public class GeneradorEnsamblador {
                 add("MOVE.L", "D0, " + dst, dst + " = D0");
             }
             case ADD -> { // op1+op2 -> dst
-                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
-                add("ADD.L", op2 + ", D0", "D0 = D0 + " + op2);
-                add("MOVE.L", "D0, " + dst, dst + " = D0");
+                String r1 = load(opop1, op1);
+                String r2 = load(opop2, op2);
+                add("ADD.L", r1 + ", " + r2, r2 + " = " + r2 + "" + " + " + r1);
+                store(r2, dst);
             }
             case SUB -> { // op1-op2 -> dst
-                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
-                add("SUB.L", op2 + ", D0", "D0 = D0 - " + op2);
-                add("MOVE.L", "D0, " + dst, dst + " = D0");
+                String r1 = load(opop1, op1);
+                String r2 = load(opop2, op2);
+                add("SUB.L", r1 + ", " + r2, r2 + " = " + r2 + "" + " - " + r1);
+                store(r2, dst);
             }
             case MUL -> { // op1*op2 -> dst
                 // EASy68K no permite MULS.L, por lo que se ha de operar así:
@@ -176,6 +234,7 @@ public class GeneradorEnsamblador {
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("DIVS.L", op2 + ", D0", "D0.h = D0 % " + op2 + ". D0.l = D0 / " + op2);
                 add("LSR.L", "#8, D0", "D0.l = D0.h");
+                add("LSR.L", "#8, D0", "D0.l = D0.h");
                 add("MOVE.B", "D0, " + dst, dst + " = D0.l");
             }
             case NOT -> { // not op1 -> dst
@@ -192,6 +251,13 @@ public class GeneradorEnsamblador {
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("OR.L", op2 + ", D0", "D0 = D0 or " + op2);
                 add("MOVE.L", "D0, " + dst, dst + " = D0");
+            }
+            case CONCAT -> { // op1 concat op2 -> dst
+                seConcatena = true;
+                String r1 = load(opop1, op1); // A0
+                String r2 = load(opop2, op2); // A1
+                add("LEA.L", dst + ", A2", "FETCH " + dst);
+                add("JSR", etConc, "");
             }
             case GOTO -> { // goto dst
                 add(getEtiqueta(), "JMP", dstConPunto, "goto " + dstConPunto);
@@ -237,7 +303,7 @@ public class GeneradorEnsamblador {
                 add("MOVE.L ", "(A0), " + dst, dst + " = (A0)");
             }
             case PARAM_S -> { // param_s dst
-                add(getEtiqueta(), "MOVE.L", dst + ", -(SP)", "PUSH INTO STACK " + dst);
+                push(dst);
             }
             case PMB -> { // pmb dst
                 PData func = procedureTable.get(dst);
@@ -251,7 +317,7 @@ public class GeneradorEnsamblador {
             case RETURN -> { // rtn dst, ?
                 PData func = procedureTable.get(dst);
                 if (func.getBytesRetorno() > 0) {
-                    add(getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
+                    push(dstConPunto);
                 }
                 add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
             }
@@ -274,7 +340,7 @@ public class GeneradorEnsamblador {
                     add("ADDA.L", "#" + numBytes + ", SP", "SP = SP + " + numBytes);
                 }
                 if (func.getBytesRetorno() > 0) {
-                    add("MOVE.L", "(SP)+, " + op1, op1 + " = POP FROM STACK");
+                    pop(op1);
                 }
             }
             case SKIP -> { // dst: skip
@@ -284,8 +350,10 @@ public class GeneradorEnsamblador {
                 codigo.add("");
             }
             default ->
-                throw new Exception("Instrucción " + instruccionActual + " no se puede pasar a código ensamblador");
+                throw new Exception("Instrucción " + instruccion + " no se puede pasar a código ensamblador");
         }
+        AnActual = 0;
+        DnActual = 0;
     }
 
     private void procesarMetodoEspecial(PData f, PData.TipoMetodoEspecial tipo, String dst) throws Exception {
@@ -299,11 +367,11 @@ public class GeneradorEnsamblador {
                 }
                 printUsado = true;
                 int bytes = f.getBytesRetorno() + Tipo.getBytes(f.getParametros().get(0).snd);
-                subprogramasIO.add(margen(dst, "MOVEA.L", bytes + "(SP), A1", "A1 = POP FROM STACK"));
-                subprogramasIO.add(margen("", "MOVE.L", "#14, D0", "Task 14 of TRAP 15: Display the NULL terminated string pointed to by (A1)"));
-                subprogramasIO.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen(dst, "MOVEA.L", bytes + "(SP), A1", "A1 = POP FROM STACK"));
+                subprogramas.add(margen("", "MOVE.L", "#14, D0", "Task 14 of TRAP 15: Display the NULL terminated string pointed to by (A1)"));
+                subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 //subprogramasIO.add(margen("", getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
-                subprogramasIO.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
+                subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
             case SCAN -> { // scan(dst)
                 add(getEtiqueta(), "CLR.L", "D1", "Empty D1 for later use");
@@ -346,7 +414,11 @@ public class GeneradorEnsamblador {
     }
 
     private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
-        datos.add(margen(id, data.getDeclaracionEnsamblador(inicializacion), "", ""));
+        String s = data.getDeclaracionEnsamblador(inicializacion);
+        datos.add(margen(id, s, "", ""));
+        if (s.startsWith("DC.B")) {
+            datos.add(margen("", "DS.W 0", "", "No pueden haber variables en zonas de memoria impar"));
+        }
     }
 
     private String cabecera() {

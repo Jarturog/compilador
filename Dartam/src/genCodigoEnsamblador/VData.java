@@ -8,18 +8,37 @@ import jflex.base.Pair;
 public class VData {
 
     private int indiceTablaVariables;
-    private final TipoReferencia tipoVariable;
-
+//    private final TipoReferencia tipoVariable;
+    private final Tipo tipo;
+    private Object initCodigoIntermedio = null;
+    private boolean initCodigoEnsamblador = false;
     private String idProcedimiento;
     private int bytes;
     private boolean isArray, isTupla;
     private int offset;
     private ArrayList<Pair<Integer, Tipo>> parametrosTupla; //Elementos de la tupla
 
-    public VData(TipoReferencia tv) {
-        this.tipoVariable = tv;
+    public VData(Tipo t) {
+        tipo = t;
+       // this.inicializacion = init;
 //        this.idProcedimiento = idp;
         this.parametrosTupla = new ArrayList<>();
+    }
+    
+    public boolean estaInicializadaEnCodigoIntermedio() {
+        return initCodigoIntermedio != null;
+    }
+    
+    public boolean estaInicializadaEnCodigoEnsamblador() {
+        return initCodigoEnsamblador;
+    }
+    
+    public void inicializar(Object o) {
+        initCodigoIntermedio = o;
+    }
+    
+    public void inicializar(){
+        initCodigoEnsamblador = true;
     }
 
 //    public int getIndice(){

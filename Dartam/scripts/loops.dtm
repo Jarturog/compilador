@@ -1,5 +1,5 @@
 ent global: 0;
-f vacio inicio(string[] argumentos) {
+f vacio inicio(car[][] argumentos) {
 	
 }
 

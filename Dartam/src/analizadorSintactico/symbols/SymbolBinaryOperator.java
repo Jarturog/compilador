@@ -112,6 +112,10 @@ public class SymbolBinaryOperator extends SymbolBase {
         return operador == ParserSym.OP_POT;
     }
     
+    public boolean isAdd() {
+        return operador == ParserSym.OP_ADD;
+    }
+    
     /**
      * 
      * @return null si es potencia

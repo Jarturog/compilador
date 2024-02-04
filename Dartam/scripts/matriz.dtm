@@ -23,7 +23,7 @@ f vacio inicializarMatriz(tupla matriz3 m, ent modo) {
 	inmut ent c: modo;
 	loop ent i: 0; i < m.filas; i++ {
 		loop ent j: 0; j < m.columnas; j++ {
-			ent[m.filas][m.columnas] aux: m.datos;
+			ent[][] aux: m.datos;
 			aux[i][j]: (i+j)\c;
 		}
 	}
@@ -46,9 +46,9 @@ f tupla matriz3 multiplicarMatrices(tupla matriz3 A, tupla matriz3 B) {
     loop (ent i: 0; i < A.filas; i++) {
         loop ((ent j: 0; j < B.columnas; j++)) {
             loop (ent k: 0; (k < A.columnas); k++) {
-				ent[A.filas][A.columnas] auxA: A.datos;
-				ent[B.filas][B.columnas] auxB: B.datos;
-				ent[A.filas][B.columnas] auxC: C.datos;
+				ent[][] auxA: A.datos;
+				ent[][] auxB: B.datos;
+				ent[][] auxC: C.datos;
                 auxC[i][j]: auxC[i][j] + auxA[i][k] * auxB[k][j];
             }
         }
@@ -59,8 +59,8 @@ f tupla matriz3 multiplicarMatrices(tupla matriz3 A, tupla matriz3 B) {
 f vacio mostrarMatriz(tupla matriz3 m) {
     loop ent i: 0; i < m.filas; i++ {
         loop ent j: 0; j < m.columnas; j++ {
-			ent[m.filas][m.columnas] aux: m.datos;
-            show((car[])(car)aux[i][j] + " ");
+			ent[][] aux: m.datos;
+            show((car)aux[i][j] + " ");
 			# car[] s: (car[])(car)aux[i][j]; show(s + " "); #
         }
 		show("\n");

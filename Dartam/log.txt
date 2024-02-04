@@ -1,9 +1,9 @@
-java.lang.Exception: Se ha intentado sustituir una entrada de la tabla de símbolos que no existe
-	at analizadorSemantico.TablaSimbolos.sustituir(TablaSimbolos.java:118)
-	at analizadorSemantico.AnalizadorSemantico.procesarAsignaciones(AnalizadorSemantico.java:549)
-	at analizadorSemantico.AnalizadorSemantico.procesarInstruccion(AnalizadorSemantico.java:344)
-	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:322)
-	at analizadorSemantico.AnalizadorSemantico.procesarMain(AnalizadorSemantico.java:944)
-	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:149)
+java.lang.Exception: Se ha intentado acceder al miembro de una variable que no es de tipo tupla, sino persona
+	at analizadorSemantico.DescripcionSimbolo.getMember(DescripcionSimbolo.java:103)
+	at analizadorSemantico.AnalizadorSemantico.procesarAsignaciones(AnalizadorSemantico.java:494)
+	at analizadorSemantico.AnalizadorSemantico.procesarInstruccion(AnalizadorSemantico.java:345)
+	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:323)
+	at analizadorSemantico.AnalizadorSemantico.procesarMetodo(AnalizadorSemantico.java:842)
+	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:152)
 	at dartam.Dartam.<init>(Dartam.java:104)
 	at dartam.Dartam.main(Dartam.java:56)

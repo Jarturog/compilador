@@ -3,7 +3,7 @@ package analizadorSemantico.genCodigoIntermedio;
 import analizadorSintactico.ParserSym;
 
 public enum Tipo {
-    INT(Integer.BYTES), CHAR(Character.BYTES), BOOL(1), DOUBLE(Double.BYTES), PUNTERO(4); // puntero a un array (o string) o una tupla
+    INT(Integer.BYTES), CHAR(Character.BYTES), BOOL(1), DOUBLE(Double.BYTES), PUNTERO(4), STRING(256);
 
     public static final int FALSE = 0, TRUE = -1;
     public final Integer bytes;
@@ -17,8 +17,8 @@ public enum Tipo {
             return BOOL;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
             return DOUBLE;
-            //} else if(tipo.equals(ParserSym.terminalNames[ParserSym.STRING])) {
-            //    return STRING;
+        } else if(tipo.equals(ParserSym.terminalNames[ParserSym.CAR] + " []")) {
+            return STRING;
         } else if (tipo.contains("[") || tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
             return PUNTERO;
         }

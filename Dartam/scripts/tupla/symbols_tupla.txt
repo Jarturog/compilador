@@ -1,0 +1,7 @@
+a:			Tupla con miembros ENT b CAR c KW_TUPLE a a declarado en el nivel 1
+ab:			Función de tipo 'ENT'  con argumentosENT b declarado en el nivel 1
+show:		Función de tipo 'KW_VOID'  con argumentosCAR [] output declarado en el nivel 1
+inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
+into:		Función de tipo 'PROP'  con argumentosCAR [] file, CAR [] content declarado en el nivel 1
+from:		Función de tipo 'CAR []'  con argumentosCAR [] file declarado en el nivel 1
+enter:		Función de tipo 'CAR []'  sin argumentos declarado en el nivel 1

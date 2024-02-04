@@ -1,0 +1,20 @@
+e_inicio: skip
+pmb e_inicio
+t = a
+t_1 = hola
+t_2 = t concat t_1
+param_s t_2
+call e_show
+t_3 = 97
+t_4 = hola
+t_5 = t_3 concat t_4
+param_s t_5
+call e_show
+t_6 = 97
+t_7 = hola
+t_8 = t_6 concat t_7
+param_s t_8
+call e_show
+rtn e_inicio
+
+

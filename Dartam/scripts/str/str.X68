@@ -26,18 +26,16 @@ STR                                 ; Etiqueta inicial (main)
 
 ; --------- e_inicio: skip          
 ; --------- pmb e_inicio            
-; --------- t = Hola mundo          
 ; --------- string = t              
-e_inicio:   LEA.L       t, A0       ; A0 = (t)
+e_inicio:   LEA.L       t, A0       ; A0 = @t
             MOVE.L      A0, string  ; string = A0
 ; --------- param_s string          
             MOVE.L      string, -(SP) ; PUSH INTO STACK string
 ; --------- call e_show             
             JSR         e_show      ; JUMP TO SUBROUTINE e_show
             ADDA.L      #4, SP      ; SP = SP + 4
-; --------- t_1 = miau              
 ; --------- string = t_1            
-            LEA.L       t_1, A0     ; A0 = (t_1)
+            LEA.L       t_1, A0     ; A0 = @t_1
             MOVE.L      A0, string  ; string = A0
 ; --------- param_s string          
             MOVE.L      string, -(SP) ; PUSH INTO STACK string
@@ -50,6 +48,15 @@ e_inicio:   LEA.L       t, A0       ; A0 = (t)
 
 
 
+COPY:       MOVE.B      (A0)+, D0   
+            BEQ         COPY2       
+            MOVE.B      D0, (A2)+   
+            BRA         COPY        
+COPY2:      MOVE.B      (A1)+, D0   
+            BEQ         FIN         
+            MOVE.B      D0, (A2)+   
+            BRA         COPY2       
+FIN:        RTS                     ; RETURN TO SUBROUTINE ...
 e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
             MOVE.L      #14, D0     ; Task 14 of TRAP 15: Display the NULL terminated string pointed to by (A1)
             TRAP        #15         ; Interruption generated

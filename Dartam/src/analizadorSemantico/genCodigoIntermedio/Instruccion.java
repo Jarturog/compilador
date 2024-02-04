@@ -29,14 +29,14 @@ public class Instruccion {
 
     public String getExtensiones68K() {
         String s1 = " ", s2 = " ", s3 = " ";
-        if (op1.tipoValor != null) {
-            s1 = op1.tipoValor.getExtension68K().substring(1);
+        if (op1.getTipo() != null) {
+            s1 = op1.getTipo().getExtension68K().substring(1);
         }
-        if (op2.tipoValor != null) {
-            s2 = op1.tipoValor.getExtension68K().substring(1);
+        if (op2.getTipo() != null) {
+            s2 = op1.getTipo().getExtension68K().substring(1);
         }
-        if (dst.tipoValor != null) {
-            s3 = op1.tipoValor.getExtension68K().substring(1);
+        if (dst.getTipo() != null) {
+            s3 = op1.getTipo().getExtension68K().substring(1);
         }
         return s1 + s2 + s3;
     }
@@ -116,9 +116,9 @@ public class Instruccion {
             case PARAM_S -> {
                 return "param_s " + dst;
             }
-//            case PARAM_C -> {
-//                return "param_c " + dst + "[" + op1 + "]";
-//            }
+            case CONCAT -> {
+                return dst + " = " + (op1.isLiteral() ? "\"" + op1 + "\"" : op1) + " concat " + (op2.isLiteral() ? "\"" + op2 + "\"" : op2);
+            }
             case SEPARADOR -> {
                 return ""; // para legibilidad separamos los métodos con una instrucción que no hace nada
             }
@@ -148,6 +148,7 @@ public class Instruccion {
         IFNE("ifne"),
         CALL("call"),
         RETURN("return"),
+        CONCAT("concat"),
         COPY("copy"),
         PMB("init"),
         IND_ASS("ind_ass"),

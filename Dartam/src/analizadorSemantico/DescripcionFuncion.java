@@ -9,34 +9,29 @@ import jflex.base.Pair;
 public class DescripcionFuncion extends DescripcionSimbolo {
 
     private ArrayList<Pair<String, String>> parametros;
-    private final String nfuncion;
     private boolean tieneReturnObligatorio = false; // que siempre se ejecuta independientemente de los ifs o loops que haya
     private boolean isMain = false;
     
     public DescripcionFuncion(String tipoRetorno, String var, boolean isMain) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
-        this.nfuncion = setNFuncion();
         this.isMain = isMain;
     }
     
     public DescripcionFuncion(String tipoRetorno, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
-        this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, ArrayList<Pair<String, String>> params, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = params;
-        this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         parametros.add(new Pair(idParam, tipoParam));
-        this.nfuncion = setNFuncion();
     }
     
     public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2, String var) {
@@ -44,15 +39,6 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         parametros = new ArrayList<>();
         parametros.add(new Pair(idParam1, tipoParam1));
         parametros.add(new Pair(idParam2, tipoParam2));
-        this.nfuncion = setNFuncion();
-    }
-    
-    private final String setNFuncion() {
-        return "n"+variableAsociada.substring(1); // le quito la 'e' y le pongo la n
-    }
-
-    public String getNFuncion() {
-        return variableAsociada;//return nfuncion;
     }
 
     public void cambiarTipo(int t) {

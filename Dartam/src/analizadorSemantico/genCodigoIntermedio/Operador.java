@@ -10,35 +10,38 @@ package analizadorSemantico.genCodigoIntermedio;
  * 
  */
 public class Operador {
-    private String nombre; //Nombre de la variable / campo
-    private Object valor; //Valor
-    public final Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
+    private final String nombre; //Nombre de la variable / campo
+    private final Object valor; //Valor
+    private final Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
 
-    public Operador(String nombre){
-        this.nombre = nombre;
-        this.tipoValor = null;
+    public Operador(String etiqueta){
+        nombre = etiqueta;
+        tipoValor = null;
+        valor = null;
     }
     
-    public Operador(Tipo tipo, Object valor){
-        this.tipoValor = tipo;
-        this.valor = valor;
+    public Operador(Tipo tipo, String id){
+        tipoValor = tipo;
+        nombre = id;
+        valor = null;
+    }
+    
+    public Operador(Tipo tipo, Object v){
+        tipoValor = tipo;
+        valor = v;
+        nombre = null;
     }
 
     @Override
-    public String toString(){
-        if(this.nombre == null){ //O es una variable o un valor
-            return ""+valor;
-        }else{ //Variable
-            return nombre; 
+    public String toString() {
+        if(isLiteral()) {
+            return valor.toString();
         }
+        return nombre;
     }
     
-    public String getOperadorEnsamblador() {
-        if(this.nombre == null){ //O es una referencia o un valor
-            return "#"+valor;
-        }else{ //Variable
-            return nombre; 
-        }
+    public String getNombreEnsamblador() {
+        return nombre;
     }
     
     public boolean isLiteral() {
@@ -50,6 +53,24 @@ public class Operador {
             throw new Exception("Se ha intentado acceder a un valor inexistente");
         }
         return valor;
+    }
+    
+    public String toStringEnsamblador() throws Exception {
+        if(isLiteral()) {
+            return "#"+valor;
+        }
+//        if(valor instanceof String) {
+//            return -1;
+//        } 
+        return nombre;
+    }
+
+    public String getExtension68K() {
+        return ".L";
+    }
+    
+    public Tipo getTipo() {
+        return tipoValor;
     }
     
 }

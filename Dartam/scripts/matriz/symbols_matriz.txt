@@ -1,0 +1,12 @@
+A:			Variable de tipo 'KW_TUPLE matriz3' con valor asignado declarado en el nivel 1
+B:			Variable de tipo 'KW_TUPLE matriz3' con valor asignado declarado en el nivel 1
+resultado:	Variable de tipo 'KW_TUPLE matriz3' con valor asignado declarado en el nivel 1
+show:		Función de tipo 'KW_VOID'  con argumentosCAR [] output declarado en el nivel 1
+inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
+into:		Función de tipo 'PROP'  con argumentosCAR [] file, CAR [] content declarado en el nivel 1
+matriz3:	Tupla con miembros constante  constante  ENT [][] datos declarado en el nivel 1
+inicializarMatriz:Función de tipo 'KW_VOID'  con argumentosKW_TUPLE matriz3 m, ENT modo declarado en el nivel 1
+multiplicarMatrices:Función de tipo 'KW_TUPLE matriz3'  con argumentosKW_TUPLE matriz3 A, KW_TUPLE matriz3 B declarado en el nivel 1
+from:		Función de tipo 'CAR []'  con argumentosCAR [] file declarado en el nivel 1
+enter:		Función de tipo 'CAR []'  sin argumentos declarado en el nivel 1
+mostrarMatriz:Función de tipo 'KW_VOID'  con argumentosKW_TUPLE matriz3 m declarado en el nivel 1

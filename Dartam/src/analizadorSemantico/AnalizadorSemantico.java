@@ -31,7 +31,7 @@ public class AnalizadorSemantico {
 
     private Generador3Direcciones g3d;
 
-    private String variableTratadaActualmente;
+    private String varActual, tipoVarActual;
 
     public TablaSimbolos tablaSimbolos;
 
@@ -122,7 +122,7 @@ public class AnalizadorSemantico {
         inicializarMetodosEspeciales();
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            DescripcionDefinicionTupla d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>(), g3d.nuevaVariable(tupla.id));
+            DescripcionDefinicionTupla d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>(), g3d.nuevaVariable(tupla.id, Tipo.PUNTERO));
             tablaSimbolos.poner(tupla.id, d);
         }
         // interor de las tuplas
@@ -219,14 +219,15 @@ public class AnalizadorSemantico {
                     if (error) {
                         continue;
                     }
-                    String varValor = variableTratadaActualmente;
-                    String varDimension = g3d.nuevaDimension(id, TipoReferencia.var);
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(varValor), null, new Operador(varDimension));
+                    String varValor = varActual;
+                    String varDimension = g3d.nuevaDimension(id, Tipo.getTipo(tipoIdx));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoIdx), varValor), null, new Operador(Tipo.getTipo(tipoIdx), varDimension));
                     variablesDimension.add(varDimension);
                 }
             }
             // si se ha asignado un valor
             String variableQueSeAsigna = null;
+            String tipoValor = null;
             boolean seHaAsignado = valorAsignado != null;
             if (seHaAsignado) {
                 if (arrayInicializado) {
@@ -234,8 +235,8 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 }
-                String tipoValor = procesarOperando(valorAsignado); // se actualiza variableTratadaActualmente
-                variableQueSeAsigna = variableTratadaActualmente;
+                tipoValor = procesarOperando(valorAsignado); // se actualiza variableTratadaActualmente
+                variableQueSeAsigna = varActual;
                 if (tipoValor == null) {
                     errores.add("Los valores del operando " + valorAsignado + " no son compatibles");
                     indicarLocalizacion(valorAsignado);
@@ -288,9 +289,9 @@ public class AnalizadorSemantico {
                 continue;
             }
             // no es un miembro de una tupla
-            String variableCodigoIntermedio = g3d.nuevaVariable(id);
+            String variableCodigoIntermedio = g3d.nuevaVariable(id, Tipo.getTipo(tipoValor == null ? tipo.getTipo() : tipoValor));
             if (seHaAsignado) {
-                g3d.generarInstr(TipoInstr.COPY, new Operador(variableQueSeAsigna), null, new Operador(variableCodigoIntermedio));
+                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoValor), variableQueSeAsigna), null, new Operador(Tipo.getTipo(tipoValor), variableCodigoIntermedio));
             }
             DescripcionSimbolo descVar;
             if (tipo.isArray()) {
@@ -395,7 +396,7 @@ public class AnalizadorSemantico {
             if (error) {
                 continue;
             }
-            String variableParaAsignar = variableTratadaActualmente;
+            String variableParaAsignar = varActual;
             error = errorOperandoInvalido;
             // Tipo por la izquierda
             String tipoVariable = null;
@@ -452,7 +453,7 @@ public class AnalizadorSemantico {
                             error = true;
                         }
                         if (!error) {
-                            String varIndice = variableTratadaActualmente;
+                            String varIndice = varActual;
                             variablesIndice.add(varIndice);
                         }
                         dim = dim.siguienteDimension;
@@ -470,17 +471,17 @@ public class AnalizadorSemantico {
                         for (int i = 0; i < variablesIndice.size() - 1; i++) {
                             //String varIndice = variablesIndice.get(i);
                             String varDesplazamiento = variablesDimension.get(i + 1);
-                            String varTemp = g3d.nuevaVariable(TipoReferencia.var);
-                            g3d.generarInstr(TipoInstr.MUL, new Operador(varInd), new Operador(varDesplazamiento), new Operador(varTemp));
+                            String varTemp = g3d.nuevaVariable(Tipo.INT);
+                            g3d.generarInstr(TipoInstr.MUL, new Operador(Tipo.INT, varInd), new Operador(Tipo.INT, varDesplazamiento), new Operador(Tipo.INT, varTemp));
                             String varInd2 = variablesIndice.get(i + 1);
-                            varInd = g3d.nuevaVariable(TipoReferencia.var);
-                            g3d.generarInstr(TipoInstr.ADD, new Operador(varInd2), new Operador(varTemp), new Operador(varInd));
+                            varInd = g3d.nuevaVariable(Tipo.INT);
+                            g3d.generarInstr(TipoInstr.ADD, new Operador(Tipo.INT, varInd2), new Operador(Tipo.INT, varTemp), new Operador(Tipo.INT, varInd));
                         }
                         // no hace falta calcular b porque nuestros arrays empiezan en 0
 //                        String indexByte = g3d.nuevaVariable(TipoReferencia.var);
 //                        g3d.generarInstr(TipoInstr.SUB, new Operador(varInd), new Operador(da.getOffsetTempsCompilacio()), new Operador(indexByte));
-                        indexReal = g3d.nuevaVariable(TipoReferencia.var);
-                        g3d.generarInstr(TipoInstr.MUL, new Operador(varInd), new Operador(Tipo.INT, Tipo.getTipo(da.tipoElementoDelArray).bytes), new Operador(indexReal));
+                        indexReal = g3d.nuevaVariable(Tipo.INT);
+                        g3d.generarInstr(TipoInstr.MUL, new Operador(Tipo.INT, varInd), new Operador(Tipo.INT, Tipo.getTipo(da.tipoElementoDelArray).bytes), new Operador(Tipo.INT, indexReal));
                     }
                 }
                 case MIEMBRO -> {
@@ -490,7 +491,7 @@ public class AnalizadorSemantico {
                         error = true;
                     } else {
                         DescripcionDefinicionTupla dt = (DescripcionDefinicionTupla) tablaSimbolos.consulta(d.getNombreTupla());
-                        DefinicionMiembro miembro = dt.getMember(asig.miembro);
+                        DefinicionMiembro miembro = d.getMember(asig.miembro);
                         if (miembro.tieneValorAsignado() && miembro.isConst) {
                             errores.add("Se esta intentado asignar un valor al miembro constante '" + asig.miembro + "' de la variable '" + asig.id + "' de la tupla '" + d.getNombreTupla() + "', el cual ya tenia un valor asignado");
                             indicarLocalizacion(asig);
@@ -504,8 +505,8 @@ public class AnalizadorSemantico {
                         } else {
                             miembro.asignarValor();
                             tipoVariable = miembro.tipo;
-                            indexReal = g3d.nuevaVariable(TipoReferencia.var);
-                            g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, bytesDesplazamiento), null, new Operador(indexReal));
+                            indexReal = g3d.nuevaVariable(Tipo.INT);
+                            g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, bytesDesplazamiento), null, new Operador(Tipo.INT, indexReal));
                         }
                     }
                 }
@@ -533,7 +534,7 @@ public class AnalizadorSemantico {
                 continue;
             }
             if (asig.getTipo() != SymbolAsig.TIPO.ID) {
-                g3d.generarInstr(TipoInstr.IND_ASS, new Operador(variableParaAsignar), new Operador(indexReal), new Operador(d.variableAsociada));
+                g3d.generarInstr(TipoInstr.IND_ASS, new Operador(Tipo.getTipo(d.tipo), variableParaAsignar), new Operador(Tipo.INT, indexReal), new Operador(Tipo.getTipo(d.tipo), d.variableAsociada));
             } else {
                 boolean isString = tipoValor.equals(ParserSym.terminalNames[ParserSym.CAR] + " []");
                 DescripcionSimbolo ds = tablaSimbolos.consulta(asig.valor.toString());
@@ -545,7 +546,7 @@ public class AnalizadorSemantico {
                 if ((!isString && d.isArray()) || d.isTipoTupla()) {
                     tablaSimbolos.sustituir(asig.valor.toString(), ds);
                 }
-                g3d.generarInstr(TipoInstr.COPY, new Operador(variableParaAsignar), null, new Operador(d.variableAsociada));
+                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(d.tipo), variableParaAsignar), null, new Operador(Tipo.getTipo(d.tipo), d.variableAsociada));
             }
             d.asignarValor();
         }
@@ -572,37 +573,48 @@ public class AnalizadorSemantico {
         ArrayList<String> params = df.getTiposParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
         int n = 0;
+        boolean error = false;
         for (String tipoParam : params) {
             n++;
             if (opLista == null) {
                 errores.add("La funcion " + nombre + " tiene " + params.size() + " parametros, pero se han pasado mas al momento de llamarla");
                 indicarLocalizacion(fcall);
-                return;
+                error = true;
+                break;
             }
             SymbolOperand op = opLista.operand;
             String tipoOp = procesarOperando(op);
-            String varOp = this.variableTratadaActualmente;
+            String varOp = this.varActual;
             if (tipoOp == null) {
                 errores.add("Se ha intentado pasar por parametros operaciones no validas en el parametro " + n + " de la funcion " + nombre);
                 indicarLocalizacion(op);
+                opLista = opLista.siguienteOperando;
+                error = true;
+                continue;
             } else if (!tipoOp.equals(tipoParam)) {
                 errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + tipoParam);
                 indicarLocalizacion(op);
-                return;
+                opLista = opLista.siguienteOperando;
+                error = true;
+                continue;
             }
-            g3d.generarInstr(TipoInstr.PARAM_S, null, null, new Operador(varOp));
+            g3d.generarInstr(TipoInstr.PARAM_S, null, null, new Operador(Tipo.getTipo(tipoOp), varOp));
             opLista = opLista.siguienteOperando;
         }
         if (opLista != null) {
             errores.add("La funcion " + nombre + " tiene " + params.size() + " parametros, pero se han pasado " + n);
             indicarLocalizacion(fcall);
+            error = true;
+        }
+        if (error) {
+            return;
         }
         if (df.devuelveValor()) {
-            String variableValorRetorno = g3d.nuevaVariable(TipoReferencia.var);
-            g3d.generarInstr(TipoInstr.CALL, new Operador(variableValorRetorno), null, new Operador(df.getNFuncion()));
-            variableTratadaActualmente = variableValorRetorno;
+            String variableValorRetorno = g3d.nuevaVariable(Tipo.getTipo(df.tipo));
+            g3d.generarInstr(TipoInstr.CALL, new Operador(Tipo.getTipo(df.tipo), variableValorRetorno), null, new Operador(df.variableAsociada));
+            varActual = variableValorRetorno;
         } else {
-            g3d.generarInstr(TipoInstr.CALL, null, null, new Operador(df.getNFuncion()));
+            g3d.generarInstr(TipoInstr.CALL, null, null, new Operador(df.variableAsociada));
         }
     }
 
@@ -613,7 +625,7 @@ public class AnalizadorSemantico {
         if (op == null) {
             if (tipo == null) {
                 df.asignarReturn(tablaSimbolos.getProfundidad());
-                g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(df.getNFuncion()));
+                g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(df.variableAsociada));
                 return;
             }
             errores.add("Se ha realizado pop sin nada de la funcion " + metodoActualmenteSiendoTratado.fst + " que devuelve valores de tipo " + tipo);
@@ -621,7 +633,7 @@ public class AnalizadorSemantico {
             return;
         }
         String tipoOp = procesarOperando(op);
-        String varOp = this.variableTratadaActualmente;
+        String varOp = this.varActual;
         if (tipoOp == null) {
             errores.add("Se ha intentado hacer pop de una operacion no valida en la funcion " + metodoActualmenteSiendoTratado.fst);
             indicarLocalizacion(ret);
@@ -630,10 +642,10 @@ public class AnalizadorSemantico {
             indicarLocalizacion(ret);
         }
         df.asignarReturn(tablaSimbolos.getProfundidad());
-        g3d.generarInstr(TipoInstr.RETURN, new Operador(varOp), null, new Operador(df.getNFuncion()));
+        g3d.generarInstr(TipoInstr.RETURN, new Operador(Tipo.getTipo(tipoOp), varOp), null, new Operador(df.variableAsociada));
     }
 
-    private void procesarSwap(SymbolSwap swap) {
+    private void procesarSwap(SymbolSwap swap) throws Exception {
         boolean error = false;
         DescripcionSimbolo ds1 = tablaSimbolos.consulta(swap.op1);
         if (ds1 == null) {
@@ -655,15 +667,16 @@ public class AnalizadorSemantico {
             indicarLocalizacion(swap);
             return;
         }
-        String temp = g3d.nuevaVariable(), varOp1 = ds1.variableAsociada, varOp2 = ds2.variableAsociada;
-        g3d.generarInstr(TipoInstr.COPY, new Operador(varOp1), null, new Operador(temp));
-        g3d.generarInstr(TipoInstr.COPY, new Operador(varOp2), null, new Operador(varOp1));
-        g3d.generarInstr(TipoInstr.COPY, new Operador(temp), null, new Operador(varOp2));
+        Tipo t1 = Tipo.getTipo(ds1.getTipo()), t2 = Tipo.getTipo(ds2.getTipo());
+        String temp = g3d.nuevaVariable(t1), varOp1 = ds1.variableAsociada, varOp2 = ds2.variableAsociada;
+        g3d.generarInstr(TipoInstr.COPY, new Operador(t1, varOp1), null, new Operador(t1, temp));
+        g3d.generarInstr(TipoInstr.COPY, new Operador(t2, varOp2), null, new Operador(t1, varOp1));
+        g3d.generarInstr(TipoInstr.COPY, new Operador(t1, temp), null, new Operador(t2, varOp2));
     }
 
     private void procesarIf(SymbolIf cond) throws Exception {
         String tipoCond = procesarOperando(cond.cond);
-        String varCond = this.variableTratadaActualmente;
+        String varCond = this.varActual;
         if (tipoCond == null) {
             errores.add("La condicion del 'si' realiza una operacion no valida");
             indicarLocalizacion(cond.cond);
@@ -676,7 +689,7 @@ public class AnalizadorSemantico {
         String etSigCond = g3d.nuevaEtiqueta();
         //String eElse = g3d.nuevaEtiqueta();
         //Llegados aquí si la condicion es falsa salta, sino ejecuta
-        g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(etSigCond)); //Si es falso saltaremos
+        g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.getTipo(tipoCond), varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(etSigCond)); //Si es falso saltaremos
 
         tablaSimbolos.entraBloque();
         procesarBody(cond.cuerpo);
@@ -688,7 +701,7 @@ public class AnalizadorSemantico {
         for (SymbolElifs elifs = cond.elifs; elifs != null; elifs = elifs.siguienteElif) {
             SymbolElif elif = elifs.elif;
             tipoCond = procesarOperando(elif.cond);
-            varCond = variableTratadaActualmente;
+            varCond = varActual;
             if (tipoCond == null) {
                 errores.add("La condicion del 'sino' realiza una operacion no valida");
                 indicarLocalizacion(elif.cond);
@@ -697,7 +710,7 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(elif.cond);
             }
             etSigCond = g3d.nuevaEtiqueta();
-            g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(etSigCond)); //Si es falso saltaremos
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.getTipo(tipoCond), varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(etSigCond)); //Si es falso saltaremos
 
             tablaSimbolos.entraBloque();
             procesarBody(elif.cuerpo);
@@ -730,7 +743,7 @@ public class AnalizadorSemantico {
             }
         }
         String tipoCond = procesarOperando(loopCond.cond);
-        String varCond = this.variableTratadaActualmente;
+        String varCond = this.varActual;
         if (tipoCond == null) {
             errores.add("La condicion del 'loop' realiza una operacion no valida");
             indicarLocalizacion(loopCond.cond);
@@ -740,7 +753,7 @@ public class AnalizadorSemantico {
         }
         //En el caso de no cumplirse la condicion saltaremos al fin del bucle
         if (!loop.isDoWhile()) { // si es while do primero se ha comprobado las condiciones y luego se ejecuta el cuerpo
-            g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(salirLoop));
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.getTipo(tipoCond), varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(salirLoop));
             procesarBody(loop.cuerpo);
             g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etContinue)); //Etiqueta para continuar en el bucle
             if (loopCond.asig != null) {
@@ -748,7 +761,7 @@ public class AnalizadorSemantico {
             }
         }
         if (loop.isDoWhile()) {
-            g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(salirLoop));
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.getTipo(tipoCond), varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(salirLoop));
         }
         tablaSimbolos.salirBloque(); // antes o después de las asignaciones? --------------------------------------------------------------------------------------------------------------------------------------------
         pilaEtiquetasBucle.pop();
@@ -761,7 +774,7 @@ public class AnalizadorSemantico {
         String efi = g3d.nuevaEtiqueta();
         etSwitch = efi;
         String tipo1 = procesarOperando(sw.cond);
-        String varCondSwitch = this.variableTratadaActualmente;
+        String varCondSwitch = this.varActual;
         if (tipo1 == null) {
             errores.add("La operacion del 'select' realiza una operacion no valida");
             indicarLocalizacion(sw.cond);
@@ -770,7 +783,7 @@ public class AnalizadorSemantico {
         for (SymbolCaso caso = sw.caso; caso != null; caso = caso.siguienteCaso) {
             n++;
             String tipo2 = procesarOperando(caso.cond);
-            String varCondCaso = this.variableTratadaActualmente;
+            String varCondCaso = this.varActual;
             if (tipo2 == null) {
                 errores.add("La operacion del 'caso' realiza una operacion no valida");
                 indicarLocalizacion(caso.cond);
@@ -779,7 +792,7 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(caso.cond);
             }
             String etSigCond = g3d.nuevaEtiqueta(); //Etiqueta para el siguiente caso
-            g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCondSwitch), new Operador(varCondCaso), new Operador(etSigCond));
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.getTipo(tipo1), varCondSwitch), new Operador(Tipo.getTipo(tipo2),varCondCaso), new Operador(etSigCond));
             tablaSimbolos.entraBloque();
             procesarBody(caso.cuerpo);
             tablaSimbolos.salirBloque();
@@ -801,11 +814,10 @@ public class AnalizadorSemantico {
         DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(metodo.id);
         //        g3d.añadirFuncion(metodo.id);
         //String efi = g3d.nuevaEtiqueta(metodo.id); //Creamos la etiqueta de la funcion
-        String nfuncion = df.getNFuncion();
         //Añadimos la funcion a la tabla
         int numeroProcedure = g3d.nuevoProcedimiento(metodo.id, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(df.variableAsociada));
-        g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(nfuncion));
+        g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(df.variableAsociada));
         metodoActualmenteSiendoTratado = new Pair(metodo.id, df);
         for (Pair<String, String> p : df.getParametros()) {
             DescripcionDefinicionTupla tupla = null;
@@ -821,7 +833,7 @@ public class AnalizadorSemantico {
                 tupla = (DescripcionDefinicionTupla) tablaSimbolos.consulta(idTupla);
             }
             try {
-                tablaSimbolos.poner(id, new DescripcionSimbolo(tipo, false, true, tupla, g3d.nuevaVariable(id)));
+                tablaSimbolos.poner(id, new DescripcionSimbolo(tipo, false, true, tupla, g3d.nuevaVariable(id, Tipo.getTipo(tipo))));
             } catch (Exception ex) {
                 errores.add(ex.getMessage());
             }
@@ -834,7 +846,7 @@ public class AnalizadorSemantico {
             errores.add("No se ha puesto una instrucción para salir del método " + metodo.id + " en el mismo ámbito de su cuerpo (si x es el nivel donde está declarado el método, x + 1 es el nivel donde debe de estar la instrucción para salir de él)");
             indicarLocalizacion(metodo);
         } else if (!df.tieneReturnStatement()) { // es de tipo void y no le han puesto return al final
-            g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(nfuncion));
+            g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(df.variableAsociada));
         }
         tablaSimbolos.salirBloque();
         g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
@@ -895,7 +907,7 @@ public class AnalizadorSemantico {
 //        tablaSimbolos.salirBloque();
     }
 
-    private void procesarContinue(SymbolInstr instr) { // ------------------------------------------------------------------------------------------------------------
+    private void procesarContinue(SymbolInstr instr) throws Exception { // ------------------------------------------------------------------------------------------------------------
         if (pilaEtiquetasBucle.isEmpty()) {
             errores.add("Se ha intentado continuar en un bucle en un ámbito sin bucles");
             indicarLocalizacion(instr);
@@ -907,7 +919,7 @@ public class AnalizadorSemantico {
 
     }
 
-    private void procesarBreak(SymbolInstr instr) {
+    private void procesarBreak(SymbolInstr instr) throws Exception {
         // si está en un switch sale de él
         if (etSwitch != null) {
             g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etSwitch));
@@ -934,13 +946,13 @@ public class AnalizadorSemantico {
         //Lo añadimos a la tabla de funciones TODO: Revisar tema de profundidad!!
 //        int numeroProcedure = g3d.nuevoProcedimiento(main.nombreMain, metodoActualmenteSiendoTratado.snd.nivel, etiquetaMain);
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(df.variableAsociada));
-        g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(df.getNFuncion()));
+        g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(df.variableAsociada));
 
-        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null, g3d.nuevaVariable(main.nombreArgumentos));
+        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null, g3d.nuevaVariable(main.nombreArgumentos, Tipo.getTipo(tipo)));
         tablaSimbolos.poner(main.nombreArgumentos, d);
         procesarBody(body);
         tablaSimbolos.salirBloque();
-        g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(df.getNFuncion()));
+        g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(Tipo.getTipo(df.tipo), df.variableAsociada));
         g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
         g3d.nuevoProcedimientoMain(main.nombreMain, df.variableAsociada, new ArrayList<>(), 0);
         g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
@@ -970,10 +982,11 @@ public class AnalizadorSemantico {
                         return null;
                     }
                     //Copiamos el valor x -> A
-                    String variable = g3d.nuevaVariable();
+                    String variable = g3d.nuevaVariable(Tipo.getTipo(tipo));
                     Object valor = literal.getValorCodigoIntermedio();
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), valor), null, new Operador(variable));
-                    variableTratadaActualmente = variable;
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), valor), null, new Operador(Tipo.getTipo(tipo), variable));
+                    varActual = variable;
+                    tipoVarActual = tipo;
                     return tipo; // si no es ID
                 }
                 String nombreID = (String) literal.value;
@@ -983,7 +996,7 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(literal);
                     return null;
                 }
-                variableTratadaActualmente = ds.variableAsociada;
+                varActual = ds.variableAsociada;
                 return ds.getTipo();
             }
             case FCALL -> {
@@ -1012,12 +1025,13 @@ public class AnalizadorSemantico {
             case UNARY_EXPRESSION -> {
                 SymbolUnaryExpression exp = op.unaryExp;
                 String tipo = procesarOperando(exp.op);
-                String variableOperando = variableTratadaActualmente;
+                String variableOperando = varActual;
                 if (tipo == null) {
                     errores.add("Se realizan operaciones no validas en " + exp.op);
                     indicarLocalizacion(exp.op);
                     return null;
                 }
+                Tipo t = Tipo.getTipo(tipo);
                 int operation;
                 if (exp.isLeftUnaryOperator()) {
                     SymbolLUnaryOperator operator = exp.leftOp;
@@ -1062,17 +1076,17 @@ public class AnalizadorSemantico {
                         indicarLocalizacion(exp);
                         return null;
                     }
-                    String nuevaVariable = g3d.nuevaVariable(TipoReferencia.var);
+                    String nuevaVariable = g3d.nuevaVariable(t);
                     if (exp.isLeftUnaryOperator()) { // pre
-                        g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(variableOperando), new Operador(Tipo.INT, 1), new Operador(nuevaVariable));
-                        g3d.generarInstr(TipoInstr.COPY, new Operador(nuevaVariable), null, new Operador(variableOperando));
-                        variableTratadaActualmente = variableOperando;
+                        g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(t, variableOperando), new Operador(Tipo.INT, 1), new Operador(t, nuevaVariable));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(t, nuevaVariable), null, new Operador(t, variableOperando));
+                        varActual = variableOperando;
                     } else { // post
-                        String varAntiguoValor = g3d.nuevaVariable(TipoReferencia.var);
-                        g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(variableOperando), new Operador(Tipo.INT, 1), new Operador(nuevaVariable));
-                        g3d.generarInstr(TipoInstr.COPY, new Operador(variableOperando), null, new Operador(varAntiguoValor));
-                        g3d.generarInstr(TipoInstr.COPY, new Operador(nuevaVariable), null, new Operador(variableOperando));
-                        variableTratadaActualmente = varAntiguoValor;
+                        String varAntiguoValor = g3d.nuevaVariable(t);
+                        g3d.generarInstr(isDecremento ? TipoInstr.SUB : TipoInstr.ADD, new Operador(t, variableOperando), new Operador(Tipo.INT, 1), new Operador(t, nuevaVariable));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(t, variableOperando), null, new Operador(t, varAntiguoValor));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(t, nuevaVariable), null, new Operador(t, variableOperando));
+                        varActual = varAntiguoValor;
                     }
                     return tipo;
                 }
@@ -1099,18 +1113,18 @@ public class AnalizadorSemantico {
                         return tipo;
                     }
                     // si llega aquí es porque cumple algunas de las siguientes: NOT boolean, +num o -num
-                    String variable = g3d.nuevaVariable(TipoReferencia.var);
+                    String variable = g3d.nuevaVariable(Tipo.getTipo(tipo));
                     if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT == operation) {
-                        g3d.generarInstr(TipoInstr.NOT, new Operador(variableOperando), null, new Operador(variable));
+                        g3d.generarInstr(TipoInstr.NOT, new Operador(t, variableOperando), null, new Operador(t, variable));
                     } else if (operation == ParserSym.OP_SUB) {
-                        g3d.generarInstr(TipoInstr.NEG, new Operador(variableOperando), null, new Operador(variable));
+                        g3d.generarInstr(TipoInstr.NEG, new Operador(t, variableOperando), null, new Operador(t, variable));
                     }
 //                    else if (operation != ParserSym.OP_ADD) { // por si acaso
 //                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo);
 //                        indicarLocalizacion(exp);
 //                        return null;
 //                    }
-                    this.variableTratadaActualmente = variable;
+                    this.varActual = variable;
                     return tipo;
                 }
                 // operador diestro
@@ -1123,9 +1137,9 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(exp);
                     return null;
                 } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-                    String nuevaVariable = g3d.nuevaVariable(TipoReferencia.var);
-                    g3d.generarInstr(TipoInstr.DIV, new Operador(variableOperando), new Operador(Tipo.INT, 100), new Operador(nuevaVariable));
-                    this.variableTratadaActualmente = nuevaVariable;
+                    String nuevaVariable = g3d.nuevaVariable(t);
+                    g3d.generarInstr(TipoInstr.DIV, new Operador(t, variableOperando), new Operador(Tipo.INT, 100), new Operador(t, nuevaVariable));
+                    this.varActual = nuevaVariable;
                     return ParserSym.terminalNames[ParserSym.REAL]; // !!! se puede operar entero con OP_PCT
                 }
                 return tipo; // pendiente ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1133,7 +1147,7 @@ public class AnalizadorSemantico {
             case BINARY_EXPRESSION -> {
                 SymbolBinaryExpression exp = op.binaryExp;
                 String tipo1 = procesarOperando(exp.op1);
-                String variableOp1 = variableTratadaActualmente;
+                String variableOp1 = varActual;
                 boolean error = false;
                 if (tipo1 == null) {
                     errores.add("El primer operando de la expresion binaria realiza una operacion " + exp.op1 + " no valida");
@@ -1141,7 +1155,7 @@ public class AnalizadorSemantico {
                     error = true;
                 }
                 String tipo2 = procesarOperando(exp.op2);
-                String variableOp2 = variableTratadaActualmente;
+                String variableOp2 = varActual;
                 if (tipo2 == null) {
                     errores.add("El segundo operando de la expresion binaria realiza una operacion " + exp.op2 + " no valida");
                     indicarLocalizacion(exp);
@@ -1149,6 +1163,17 @@ public class AnalizadorSemantico {
                 }
                 if (error) {
                     return null;
+                }
+                Tipo t1 = Tipo.getTipo(tipo1), t2 = Tipo.getTipo(tipo2);
+                SymbolBinaryOperator operator = exp.bop;
+                boolean concatenarStringConString = tipo1.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo2.equals(ParserSym.terminalNames[ParserSym.CAR] + " []");
+                boolean concatenarStringConCaracter = tipo1.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo2.equals(ParserSym.terminalNames[ParserSym.CAR]);
+                boolean concatenarCaracterConString = tipo2.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo1.equals(ParserSym.terminalNames[ParserSym.CAR]);
+                if (operator.isAdd() && (concatenarStringConString || concatenarStringConCaracter || concatenarCaracterConString)) {
+                    String var = g3d.nuevaVariable(Tipo.STRING);
+                    g3d.generarInstr(TipoInstr.CONCAT, new Operador(t1, variableOp1), new Operador(t2, variableOp2), new Operador(Tipo.STRING, var));
+                    varActual = var;
+                    return ParserSym.terminalNames[ParserSym.CAR] + " []";
                 }
                 boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
                         || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
@@ -1164,8 +1189,8 @@ public class AnalizadorSemantico {
                 if (error) {
                     return null;
                 }
+                TipoInstr ti = operator.getTipoInstruccion();
                 // si llega aquí es porque ambos son del mismo tipo o uno es int y otro double
-                SymbolBinaryOperator operator = exp.bop;
                 String tipoOperandos = tipo1; // si uno es int y otro double se considera que los dos son double
                 if (unoIntOtroDouble) {
                     if (!operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
@@ -1179,63 +1204,59 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(exp);
                     return null; // error, operandos no pueden operar con operador
                 }
+                Tipo t = Tipo.getTipo(tipoOperandos);
                 if (operator.isPotencia()) {
                     String etInit = g3d.nuevaEtiqueta();
                     String etLoop = g3d.nuevaEtiqueta();
                     String etFi = g3d.nuevaEtiqueta();
-                    String varRes = g3d.nuevaVariable(TipoReferencia.var);
-                    String varDecrementadora = g3d.nuevaVariable(TipoReferencia.var);
-                    g3d.generarInstr(TipoInstr.IFGE, new Operador(Tipo.INT, 0), new Operador(variableOp2), new Operador(etInit));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, 1), null, new Operador(varRes));
+                    String varRes = g3d.nuevaVariable(t);
+                    String varDecrementadora = g3d.nuevaVariable(t2);
+                    g3d.generarInstr(TipoInstr.IFGE, new Operador(Tipo.INT, 0), new Operador(t2, variableOp2), new Operador(etInit));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, 1), null, new Operador(t, varRes));
                     g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etFi));
                     g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etInit));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(variableOp1), null, new Operador(varRes));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(variableOp2), null, new Operador(varDecrementadora));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(t1, variableOp1), null, new Operador(t, varRes));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(t2, variableOp2), null, new Operador(t2, varDecrementadora));
                     g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etLoop));
-                    g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.INT, 1), new Operador(varDecrementadora), new Operador(etFi));
-                    String varAux = g3d.nuevaVariable(TipoReferencia.var);
-                    g3d.generarInstr(TipoInstr.MUL, new Operador(variableOp1), new Operador(varRes), new Operador(varAux));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(varAux), null, new Operador(varRes));
-                    g3d.generarInstr(TipoInstr.SUB, new Operador(varDecrementadora), new Operador(Tipo.INT, 1), new Operador(varAux));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(varAux), null, new Operador(varDecrementadora));
+                    g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.INT, 1), new Operador(t2, varDecrementadora), new Operador(etFi));
+                    String varAux = g3d.nuevaVariable(t);
+                    g3d.generarInstr(TipoInstr.MUL, new Operador(t1, variableOp1), new Operador(t, varRes), new Operador(t, varAux));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(t, varAux), null, new Operador(t, varRes));
+                    g3d.generarInstr(TipoInstr.SUB, new Operador(t2, varDecrementadora), new Operador(Tipo.INT, 1), new Operador(t, varAux));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(t, varAux), null, new Operador(t2, varDecrementadora));
                     g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etLoop));
                     g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etFi));
-                    variableTratadaActualmente = varRes;
+                    varActual = varRes;
                     return tipoOperandos;
                 }
-                TipoInstr ti = operator.getTipoInstruccion();
 //                if(ti.isTipo(TipoInstr.AND) || ti.isTipo(TipoInstr.OR)) {
 //                    String var = g3d.nuevaVariable(TipoReferencia.var);
 //                    g3d.generarInstr(ti, new Operador(variableOp1), new Operador(variableOp2), new Operador(var));
 //                    variableTratadaActualmente = var;
 //                    return ParserSym.terminalNames[ParserSym.PROP];
 //                }
-                if (tipo1.contains("[") && ti.isTipo(TipoInstr.ADD)) {
-                    // suma de arrays  -> concatenar arrays -> concatenar strings --------------------------------------------------------------------------------------------
-                }
-
                 if (operator.isRelationalOperator()) {
                     String etTrue = g3d.nuevaEtiqueta();
                     String etFalse = g3d.nuevaEtiqueta();
-                    String varBool = g3d.nuevaVariable(TipoReferencia.var);
-                    g3d.generarInstr(ti, new Operador(variableOp1), new Operador(variableOp2), new Operador(etTrue));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.BOOL, Tipo.FALSE), null, new Operador(varBool));
+                    String varBool = g3d.nuevaVariable(Tipo.BOOL);
+                    g3d.generarInstr(ti, new Operador(t1, variableOp1), new Operador(t2, variableOp2), new Operador(etTrue));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.BOOL, Tipo.FALSE), null, new Operador(Tipo.BOOL, varBool));
                     g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etFalse));
                     g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etTrue));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.BOOL, Tipo.TRUE), null, new Operador(varBool));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.BOOL, Tipo.TRUE), null, new Operador(Tipo.BOOL, varBool));
                     g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etFalse));
-                    variableTratadaActualmente = varBool;
+                    varActual = varBool;
                     return ParserSym.terminalNames[ParserSym.PROP];
                 }
-                String var = g3d.nuevaVariable(TipoReferencia.var);
-                g3d.generarInstr(ti, new Operador(variableOp1), new Operador(variableOp2), new Operador(var));
-                variableTratadaActualmente = var;
+                String var = g3d.nuevaVariable(t);
+                g3d.generarInstr(ti, new Operador(t1, variableOp1), new Operador(t2, variableOp2), new Operador(t, var));
+                varActual = var;
                 return tipoOperandos; // si no resulta en booleano, resulta en el mismo tipo
             }
             case CONDITIONAL_EXPRESSION -> {
                 SymbolConditionalExpression exp = op.conditionalExp;
                 String tipoCond = procesarOperando(exp.cond);
-                String varCond = variableTratadaActualmente;
+                String varCond = varActual;
                 if (tipoCond == null) {
                     errores.add("La condicion " + exp.cond + " de la expresion ternaria " + exp + " realiza una operacion no valida");
                     indicarLocalizacion(exp.cond);
@@ -1245,14 +1266,14 @@ public class AnalizadorSemantico {
                 }
                 boolean error = false;
                 String tipo1 = procesarOperando(exp.caseTrue);
-                String varTrue = variableTratadaActualmente;
+                String varTrue = varActual;
                 if (tipo1 == null) {
                     errores.add("El operando a asignar en caso positivo " + exp.caseTrue + " de la expresion ternaria " + exp + " realiza operaciones no validas");
                     indicarLocalizacion(exp.caseTrue);
                     error = true;
                 }
                 String tipo2 = procesarOperando(exp.caseFalse);
-                String varFalse = variableTratadaActualmente;
+                String varFalse = varActual;
                 if (tipo2 == null) {
                     errores.add("El operando a asignar en caso negativo " + exp.caseFalse + " de la expresion ternaria " + exp + " realiza operaciones no validas");
                     indicarLocalizacion(exp.caseFalse);
@@ -1261,6 +1282,7 @@ public class AnalizadorSemantico {
                 if (error) {
                     return null;
                 }
+                Tipo t2 = Tipo.getTipo(tipo2), t1 = Tipo.getTipo(tipo1);
                 if (!tipo1.equals(tipo2)) {
                     errores.add("No se puede operar con tipos diferentes (" + tipo1 + ", " + tipo2 + ") en la operacion ternaria " + exp);
                     indicarLocalizacion(exp);
@@ -1268,20 +1290,20 @@ public class AnalizadorSemantico {
                 }
                 String etTrue = g3d.nuevaEtiqueta();
                 String etFalse = g3d.nuevaEtiqueta();
-                String varBool = g3d.nuevaVariable(TipoReferencia.var);
-                g3d.generarInstr(TipoInstr.IFEQ, new Operador(varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(etFalse));
-                g3d.generarInstr(TipoInstr.COPY, new Operador(varTrue), null, new Operador(varBool));
+                String varBool = g3d.nuevaVariable(Tipo.BOOL);
+                g3d.generarInstr(TipoInstr.IFEQ, new Operador(Tipo.BOOL, varCond), new Operador(Tipo.BOOL, Tipo.FALSE), new Operador(etFalse));
+                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.BOOL, varTrue), null, new Operador(Tipo.BOOL, varBool));
                 g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etTrue));
                 g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etFalse));
-                g3d.generarInstr(TipoInstr.COPY, new Operador(varFalse), null, new Operador(varBool));
+                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.BOOL, varFalse), null, new Operador(Tipo.BOOL, varBool));
                 g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etTrue));
-                variableTratadaActualmente = varBool;
+                varActual = varBool;
                 return tipo1;
             }
             case IDX_ARRAY -> {
                 SymbolOperand arr = op.op;
                 String tipoArr = procesarOperando(arr);
-                String varArray = variableTratadaActualmente;
+                String varArray = varActual;
                 boolean error = false;
                 if (tipoArr == null) {
                     errores.add("Se realizan operaciones no validas en el array " + arr + " del cual se quiere coger un indice");
@@ -1303,28 +1325,32 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array 
                     error = true;
                 }
-                if (!error) {
-                    tipoArr = tipoArr.substring(0, tipoArr.lastIndexOf("[")).trim();
-                    if (tipoArr.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
-                        String tipo = tipoArr.substring(tipoArr.indexOf(" ") + 1); // -------------------------------------------------------------------------------------------------
-                        if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo)) {
-                            DescripcionSimbolo ds = tablaSimbolos.consulta(tipo);
-                            if (ds == null) {
-                                // error, tupla no encontrada
-                                errores.add("El tipo del array " + arr + " es de una tupla no declarada (" + tipo + ")");
-                                indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
-                                error = true;
-                            } else if (!ds.tieneValorAsignado()) {
-                                errores.add("Se ha intentado acceder a un elemento del array " + arr + " pero este no ha reservado memoria");
-                                indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
-                                error = true;
-                            }
+                if (error) {
+                    return null;
+                }
+                String nuevoTipo = tipoArr.substring(0, tipoArr.lastIndexOf("[")).trim();
+                if (nuevoTipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
+                    String tipo = nuevoTipo.substring(nuevoTipo.indexOf(" ") + 1); // -------------------------------------------------------------------------------------------------
+                    if (!SymbolTipoPrimitivo.isTipoPrimitivo(tipo)) {
+                        DescripcionSimbolo ds = tablaSimbolos.consulta(tipo);
+                        if (ds == null) {
+                            // error, tupla no encontrada
+                            errores.add("El tipo del array " + arr + " es de una tupla no declarada (" + tipo + ")");
+                            indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
+                            error = true;
+                        } else if (!ds.tieneValorAsignado()) {
+                            errores.add("Se ha intentado acceder a un elemento del array " + arr + " pero este no ha reservado memoria");
+                            indicarLocalizacion(arr); // operador a la izquierda no termina siendo un array
+                            error = true;
                         }
                     }
                 }
+                if (error) {
+                    return null;
+                }
                 SymbolOperand idx = op.idxArr;
                 String tipoIdx = procesarOperando(idx);
-                String varIndex = variableTratadaActualmente;
+                String varIndex = varActual;
                 if (tipoIdx == null) {
                     errores.add("Se realizan operaciones no validas (" + idx + ") en el calculo del indice");
                     indicarLocalizacion(idx);
@@ -1334,21 +1360,19 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(idx); // indice es otra cosa que un entero
                     return null;
                 }
-                if (error) {
-                    return null;
-                }
+                Tipo t = Tipo.getTipo(tipoIdx), tArr = Tipo.getTipo(tipoArr), tNuevo = Tipo.getTipo(nuevoTipo);
                 // comprobacion de que el entero sea positivo???
                 //Esto funcionaria unicamente para a = b[i], no para b[i] = a
-                String nuevaVariable = g3d.nuevaVariable(TipoReferencia.var);
-                g3d.generarInstr(TipoInstr.IND_VAL, new Operador(varArray), new Operador(varIndex), new Operador(nuevaVariable));
-                variableTratadaActualmente = nuevaVariable;
+                String nuevaVariable = g3d.nuevaVariable(tNuevo);
+                g3d.generarInstr(TipoInstr.IND_VAL, new Operador(tArr, varArray), new Operador(t, varIndex), new Operador(tNuevo, nuevaVariable));
+                varActual = nuevaVariable;
                 // calcular desplazamiento? ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                return tipoArr;
+                return nuevoTipo;
             }
             case MEMBER_ACCESS -> {
                 SymbolOperand tupla = op.op;
                 String tipoTupla = procesarOperando(tupla);
-                String varTupla = variableTratadaActualmente;
+                String varTupla = varActual;
                 if (tipoTupla == null) {
                     errores.add("Se realizan operaciones no validas (" + tupla + ") en la tupla de la cual se quiere coger un miembro");
                     indicarLocalizacion(tupla);
@@ -1383,12 +1407,12 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(tupla);
                     return null;
                 }
-                String varDesp = g3d.nuevaVariable(TipoReferencia.var);
+                String varDesp = g3d.nuevaVariable(Tipo.INT);
                 Integer valDesp = dt.getDesplazamiento(op.member);
-                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, valDesp), null, new Operador(varDesp));
-                String nuevaVariable = g3d.nuevaVariable(TipoReferencia.var);
-                g3d.generarInstr(TipoInstr.IND_VAL, new Operador(varTupla), new Operador(varDesp), new Operador(nuevaVariable));
-                variableTratadaActualmente = nuevaVariable;
+                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, valDesp), null, new Operador(Tipo.INT, varDesp));
+                String nuevaVariable = g3d.nuevaVariable(Tipo.getTipo(miembro.tipo));
+                g3d.generarInstr(TipoInstr.IND_VAL, new Operador(Tipo.getTipo(tipoTupla), varTupla), new Operador(Tipo.INT, varDesp), new Operador(Tipo.getTipo(miembro.tipo), nuevaVariable));
+                varActual = nuevaVariable;
                 return miembro.tipo;
             }
             case CASTING -> {

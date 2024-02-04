@@ -1,0 +1,25 @@
+e_inicio: skip
+pmb e_inicio
+param_s p1
+t = 1
+param_s t
+t_1 = paco
+param_s t_1
+call e_nuevaPersona
+param_s p2
+t_2 = 2
+param_s t_2
+t_3 = pepa
+param_s t_3
+call e_nuevaPersona
+rtn e_inicio
+
+
+e_nuevaPersona: skip
+pmb e_nuevaPersona
+t_4 = 0
+p[t_4] = idPersona
+t_5 = 4
+p[t_5] = nombrePersona
+rtn e_nuevaPersona
+
