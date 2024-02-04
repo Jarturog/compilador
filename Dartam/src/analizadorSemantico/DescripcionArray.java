@@ -1,5 +1,6 @@
 package analizadorSemantico;
 
+import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
 import java.util.ArrayList;
 import jflex.base.Pair;
@@ -25,7 +26,7 @@ public class DescripcionArray extends DescripcionSimbolo {
         this.variablesDimension = variablesDimension;
         this.valorConegutEnTC = valorConegutEnTC;
     }
-    
+
     public DescripcionArray(String t, boolean isConst, Integer num, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
         super(t, isConst, valorAsignado, tipoTupla, var);
         tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
@@ -33,8 +34,8 @@ public class DescripcionArray extends DescripcionSimbolo {
         this.variablesDimension = variablesDimension;
         this.valorConegutEnTC = valorConegutEnTC;
     }
-    
-    public DescripcionArray(DescripcionArray d){
+
+    public DescripcionArray(DescripcionArray d) {
         super(d);
         dimensiones = d.dimensiones;
         variablesDimension = d.variablesDimension;
@@ -42,11 +43,11 @@ public class DescripcionArray extends DescripcionSimbolo {
         tipoElementoDelArray = d.tipoElementoDelArray;
         numDimensionesVacias = d.numDimensionesVacias;
     }
-    
+
     public ArrayList<String> getVariablesDimension() {
         return variablesDimension;
     }
-    
+
     public Integer getOffsetTempsCompilacio() {
         return valorConegutEnTC;
     }
@@ -83,5 +84,9 @@ public class DescripcionArray extends DescripcionSimbolo {
         String s = "Array de tipo '" + tipo + "' con dimensiones " + dim.substring(0, dim.length() - 1);
 
         return s + " declarado en el nivel " + getNivel();
+    }
+
+    boolean isString() {
+        return tipo.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.CAR] + " []");
     }
 }

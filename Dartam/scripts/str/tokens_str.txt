@@ -22,4 +22,13 @@ SYM_LPAREN: (
 ID: string
 SYM_RPAREN: )
 SYM_ENDINSTR: ;
+ID: string
+OP_ASIG: :
+VAL_CADENA: "miau"
+SYM_ENDINSTR: ;
+SHOW: show
+SYM_LPAREN: (
+ID: string
+SYM_RPAREN: )
+SYM_ENDINSTR: ;
 SYM_RKEY: }

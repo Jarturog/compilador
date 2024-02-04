@@ -2,9 +2,8 @@ package genCodigoEnsamblador;
 
 import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
-import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
-import static analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr.SCAN;
-import static dartam.Dartam.DEBUG;
+import analizadorSemantico.genCodigoIntermedio.Operador;
+import analizadorSemantico.genCodigoIntermedio.Tipo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,15 +18,16 @@ public class GeneradorEnsamblador {
     private String etiquetaActual = "";
     private final String nombreFichero;
     //public ArrayList<String> data, text;
-    private final ArrayList<String> codigo, datos;
+    private final ArrayList<String> codigo, datos, subprogramasIO;
     private final ArrayList<Instruccion> instrucciones;
     private Instruccion instruccionActual = null;
-    private boolean IO = false;
+    private boolean IO = false, printUsado = false, scanUsado = false, readUsado = false, writeUsado = false;
 
     private final HashMap<String, VData> variablesSinInicializar;
 //    private HashMap<String, String> variableDictionary;
     private final HashMap<String, PData> procedureTable;
     private final HashSet<String> inicializaciones;
+    private final PData main;
 //
 //    // Info from the current process
 //    private Stack<ProcTableEntry> pteStack;
@@ -40,18 +40,16 @@ public class GeneradorEnsamblador {
     public GeneradorEnsamblador(String fichero, Generador3Direcciones generador) throws Exception {
         nombreFichero = fichero;
         instrucciones = generador.getInstrucciones();
+        main = generador.getMain();
         variablesSinInicializar = generador.getTablaVariables();
         procedureTable = generador.getTablaProcedimientos();
         inicializaciones = generador.getVariablesInicializadas();
         codigo = new ArrayList<>();
         datos = new ArrayList<>();
+        subprogramasIO = new ArrayList<>();
 //        text = new ArrayList<>();
 //        pteStack = new Stack<>();
         procesarCodigo();
-    }
-
-    private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
-        datos.add(margen(id, data.getDeclaracionEnsamblador(inicializacion), "", ""));
     }
 
     private void procesarCodigo() throws Exception {
@@ -67,6 +65,9 @@ public class GeneradorEnsamblador {
             add("MOVE.W", "#$0103, D1", "Enable keyboard IRQ level 1 for key up and key down");
             add("TRAP", "#15", "Interruption generated");
         }
+        add("");
+        add("JSR", main.getEtiqueta(), "Se ejecuta el main");
+        add("SIMHALT", "", "Fin de la ejecución");
         add("");
         for (int i = 0; i < instrucciones.size(); i++) {
             Instruccion instr = instrucciones.get(i);
@@ -94,18 +95,20 @@ public class GeneradorEnsamblador {
                 declararVariable(id, data, instr.op1.getValor());
             } else {
                 String et = dst;
-                if(instruccionActual.getTipo().tieneEtiqueta()) {
-                    et = procedureTable.containsKey(dst) ? "" : "." + dst;
+                // si es goto, ifxx, skip, pmb, call, etc... y no es una función añade . para indicar que es local
+                if (instruccionActual.getTipo().tieneEtiqueta() && !procedureTable.containsKey(dst)) {
+                    et = "." + dst;
                 }
                 procesarInstruccion(op1, op2, dst, et);
             }
-
         }
         String et = getEtiqueta();
         if (!et.isEmpty()) {
             add(et, "NOP", "", "NO OPERATION");
         }
-        add("SIMHALT", "", "Fin de la ejecución");
+        for (String s : subprogramasIO) {
+            add(s);
+        }
         add("END " + nombreFichero.toUpperCase(), "", "Fin del programa");
         for (HashMap.Entry<String, VData> variable : variablesSinInicializar.entrySet()) {
             declararVariable(variable.getKey(), variable.getValue(), null);
@@ -116,8 +119,17 @@ public class GeneradorEnsamblador {
 //        String extensiones = instruccionActual.getExtensiones68K();
 //        String biggestExtension = (extensiones.contains("L") ? ".L" : (extensiones.contains("W") ? "W" : "B"));
 //        
+        Operador opop1, opop2, opdst;
+        opop1 = instruccionActual.op1;
+        opop2 = instruccionActual.op2;
+        opdst = instruccionActual.dst;
         switch (instruccionActual.getTipo()) {
             case COPY -> { // op1 -> dst
+                if (!opop1.isLiteral()) {
+                    add(getEtiqueta(), "LEA.L", op1 + ", A0", "A0 = (" + op1 + ")");
+                    add("MOVE.L ", "A0, " + dst, dst + " = A0");
+                    break;
+                }
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("MOVE.L ", "D0, " + dst, dst + " = D0");
             }
@@ -148,8 +160,8 @@ public class GeneradorEnsamblador {
                 add("ASR.L", "#8, D0", "D0.L = old D0.H");
                 add("ASR.L", "#8, D1", "FIRST 8 BITS OF D1 MOVED RIGHT");
                 add("ASR.L", "#8, D1", "D1.L = old D1.H");
-                add("MULS.W","D1, D0", "D0 = D0 * D1");
-                add("MULS.W","D2, D3", "D3 = D2 * D3");
+                add("MULS.W", "D1, D0", "D0 = D0 * D1");
+                add("MULS.W", "D2, D3", "D3 = D2 * D3");
                 add("ASL.L", "#8, D0", "FIRST 8 BITS OF D0 MOVED LEFT");
                 add("ASL.L", "#8, D0", "D0.H = old D0.L");
                 add("ADD.L", "D3, D0", "D0 = D0 + D3");
@@ -214,10 +226,84 @@ public class GeneradorEnsamblador {
                 add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
                 add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
             }
+            case IND_ASS -> { // dst[op1] = op2
+                add(getEtiqueta(), "MOVEA.L", dst + ", A0", "A0 = " + dst);
+                add("ADDA.L ", op1 + ", A0", "A0 = A0 + " + op1);
+                add("MOVE.L ", op2 + ", (A0)", "(A0) = " + op2);
+            }
+            case IND_VAL -> { // dst = op1[op2]
+                add(getEtiqueta(), "MOVEA.L", op1 + ", A0", "A0 = " + op1);
+                add("ADDA.L ", op2 + ", A0", "A0 = A0 + " + op2);
+                add("MOVE.L ", "(A0), " + dst, dst + " = (A0)");
+            }
+            case PARAM_S -> { // param_s dst
+                add(getEtiqueta(), "MOVE.L", dst + ", -(SP)", "PUSH INTO STACK " + dst);
+            }
+            case PMB -> { // pmb dst
+                PData func = procedureTable.get(dst);
+                int indice = func.getBytesRetorno();
+                for (Pair<String, String> par : func.getParametros()) {
+                    // par.snd son es el tipo
+                    indice += 4; //indice += Tipo.getBytes(par.snd);
+                    add(getEtiqueta(), "MOVE.L", indice + "(SP), " + par.fst, par.fst + " = POP FROM STACK");
+                }
+            }
+            case RETURN -> { // rtn dst, ?
+                PData func = procedureTable.get(dst);
+                if (func.getBytesRetorno() > 0) {
+                    add(getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
+                }
+                add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
+            }
+            case CALL -> { // call dst
+                PData func = procedureTable.get(dst);
+                if (func == null) {
+                    throw new Exception("Error, la función con etiqueta " + dst + " no existe");
+                }
+                PData.TipoMetodoEspecial tipo = PData.getEspecial(func.getNombre());
+                if (tipo != null) {
+                    procesarMetodoEspecial(procedureTable.get(dst), tipo, dst);
+                }
+                add(getEtiqueta(), "JSR", dstConPunto, "JUMP TO SUBROUTINE " + dstConPunto);
+                int numBytes = 0;
+                for (Pair<String, String> par : func.getParametros()) {
+                    // par.snd son los bytes
+                    numBytes += 4; //numBytes += Tipo.getBytes(par.snd);
+                }
+                if (numBytes > 0) {
+                    add("ADDA.L", "#" + numBytes + ", SP", "SP = SP + " + numBytes);
+                }
+                if (func.getBytesRetorno() > 0) {
+                    add("MOVE.L", "(SP)+, " + op1, op1 + " = POP FROM STACK");
+                }
+            }
+            case SKIP -> { // dst: skip
+                setEtiqueta(dstConPunto); // para etiquetas locales ponemos .
+            }
+            case SEPARADOR -> { // no hace nada pero resulta en mayor legibilidad del código ensamblador
+                codigo.add("");
+            }
+            default ->
+                throw new Exception("Instrucción " + instruccionActual + " no se puede pasar a código ensamblador");
+        }
+    }
+
+    private void procesarMetodoEspecial(PData f, PData.TipoMetodoEspecial tipo, String dst) throws Exception {
+        switch (tipo) {
             case PRINT -> { // print(dst)
-                add(getEtiqueta(), "LEA.L", dst + ", A1", "A1 = " + dst);
-                add("MOVE.L", "#14, D0", "Task 14 of TRAP 15: Display the NULL terminated string pointed to by (A1)");
-                add("TRAP", "#15", "Interruption generated");
+                if (f.getParametros().size() != 1) {
+                    throw new Exception("Error, no se ha implementao el print para tratar con " + f.getParametros().size() + " parámetros, sino con 1");
+                }
+                if (printUsado) {
+                    return;
+                }
+                printUsado = true;
+                int bytes = f.getBytesRetorno() + Tipo.getBytes(f.getParametros().get(0).snd);
+                subprogramasIO.add(margen(dst, "MOVEA.L", bytes + "(SP), A1", "A1 = POP FROM STACK"));
+                subprogramasIO.add(margen("", "MOVE.L", "#14, D0", "Task 14 of TRAP 15: Display the NULL terminated string pointed to by (A1)"));
+                subprogramasIO.add(margen("", "TRAP", "#15", "Interruption generated"));
+                //subprogramasIO.add(margen("", getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
+                subprogramasIO.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
             case SCAN -> { // scan(dst)
                 add(getEtiqueta(), "CLR.L", "D1", "Empty D1 for later use");
@@ -234,47 +320,6 @@ public class GeneradorEnsamblador {
             case WRITE -> {
                 // ---
             }
-            case IND_ASS -> { // dst[op1] = op2
-                add(getEtiqueta(), "MOVEA.L", dst + ", A0", "A0 = " + dst);
-                add("ADDA.L ", op1 + ", A0", "A0 = A0 + " + op1);
-                add("MOVE.L ", op2 + ", (A0)", "(A0) = " + op2);
-            }
-            case IND_VAL -> { // dst = op1[op2]
-                add(getEtiqueta(), "MOVEA.L", op1 + ", A0", "A0 = " + op1);
-                add("ADDA.L ", op2 + ", A0", "A0 = A0 + " + op2);
-                add("MOVE.L ", "(A0), " + dst, dst + " = (A0)");
-            }
-            case PARAM_S -> { // param_s dst
-                add(getEtiqueta(), "MOVE.L", dst + ", -(SP)", "PUSH INTO STACK " + dst);
-            }
-            case PMB -> { // pmb dst
-                PData func = procedureTable.get(dst);
-                for (Pair<String, String> par : func.getParametros()) {
-                    // par.snd son los bytes
-                    add(getEtiqueta(), "MOVE.L", "(SP)+, " + par.fst, par.fst + " = POP FROM STACK");
-                }
-            }
-            case RETURN -> { // rtn dst, ?
-                PData func = procedureTable.get(dst);
-                if (func.getBytesRetorno() > 0) {
-                    add(getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
-                }
-                add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
-            }
-            case CALL -> { // call dst
-                add(getEtiqueta(), "JSR", dstConPunto, "JUMP TO SUBROUTINE " + dstConPunto);
-                if (op1 != null) {
-                    add("MOVE.L", "(SP)+, " + op1, op1 + " = POP FROM STACK");
-                }
-            }
-            case SKIP -> { // dst: skip
-                setEtiqueta(dstConPunto); // para etiquetas locales ponemos .
-            }
-            case SEPARADOR -> { // no hace nada pero resulta en mayor legibilidad del código ensamblador
-                codigo.add("");
-            }
-            default ->
-                throw new Exception("Instrucción " + instruccionActual + " no se puede pasar a código ensamblador");
         }
     }
 
@@ -285,7 +330,7 @@ public class GeneradorEnsamblador {
     }
 
     private void setEtiqueta(String s) {
-        etiquetaActual = s;
+        etiquetaActual = s + ":";
     }
 
     @Override
@@ -300,6 +345,10 @@ public class GeneradorEnsamblador {
         return s;
     }
 
+    private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
+        datos.add(margen(id, data.getDeclaracionEnsamblador(inicializacion), "", ""));
+    }
+
     private String cabecera() {
         return "; ==============================================================================\n"
                 + "; TITLE       : " + nombreFichero + "\n"
@@ -311,10 +360,10 @@ public class GeneradorEnsamblador {
                 + "\n"
                 + margen("", "ORG", "$" + ORIGEN_MEM, "Origen") + "\n"
                 + "\n";
-        //add("INCLUDE", "\"PRINT.X68\"", "Escritura en consola");
-        //add("INCLUDE", "\"SCAN.X68\"", "Lectura de teclado");
-        //add("INCLUDE", "\"WRITE.X68\"", "Escritura de ficheros");
-        //add("INCLUDE", "\"READ.X68\"", "Lectura de ficheros");
+//                + (printUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "")
+//                + (scanUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "")
+//                + (writeUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "")
+//                + (readUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "");
     }
 
     private void add(String s) {

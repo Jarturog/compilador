@@ -101,18 +101,6 @@ public class Instruccion {
             case RETURN -> {
                 return "rtn " + dst + (op1 == null ? "" : ", " + op1);
             }
-            case READ -> {
-                return "read " + dst;
-            }
-            case WRITE -> {
-                return "write " + dst;
-            }
-            case SCAN -> {
-                return "scan " + dst;
-            }
-            case PRINT -> {
-                return "print " + dst;
-            }
             case COPY -> {
                 return dst + " = " + op1;
             }
@@ -160,16 +148,11 @@ public class Instruccion {
         IFNE("ifne"),
         CALL("call"),
         RETURN("return"),
-        READ("read"),
-        WRITE("write"),
-        SCAN("scan"),
-        PRINT("print"),
         COPY("copy"),
         PMB("init"),
         IND_ASS("ind_ass"),
         IND_VAL("ind_val"),
         PARAM_S("param_s"),
-        PARAM_C("param_c"),
         SEPARADOR(""); // para legibilidad separamos los métodos con una instrucción que no hace nada
 
         public final String tipo;

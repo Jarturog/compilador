@@ -19,6 +19,7 @@ public class Generador3Direcciones {
     private final HashSet<String> variablesInicializadas = new HashSet<>();
 //    private final ArrayList<String> listaProcedimientos; //Funcionara como una pila
     private final ArrayList<Instruccion> instrucciones;
+    private PData main = null;
 //    private final ArrayList<Integer> inicializaciones = new ArrayList<>();
 
     public Generador3Direcciones() {
@@ -120,10 +121,18 @@ public class Generador3Direcciones {
     //Permite crear un nuevo procedimiento y añadirlo a la tabla
     public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Pair<String, String>> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
-        PData data = new PData(etiqueta, params, bytesRetorno);
+        PData data = new PData(id, etiqueta, params, bytesRetorno);
         //tablaProcedimientos.put(id, data);
         tablaProcedimientos.put(etiqueta, data);
-        
+        return contador;
+    }
+    
+    public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Pair<String, String>> params, int bytesRetorno) {
+        int contador = tablaProcedimientos.size();
+        PData data = new PData(id, etiqueta, params, bytesRetorno);
+        //tablaProcedimientos.put(id, data);
+        main = data;
+        tablaProcedimientos.put(etiqueta, data);
         return contador;
     }
 
@@ -174,6 +183,10 @@ public class Generador3Direcciones {
     
     public HashSet<String> getVariablesInicializadas() {
         return variablesInicializadas;
+    }
+
+    public PData getMain() {
+        return main;
     }
     
 }
