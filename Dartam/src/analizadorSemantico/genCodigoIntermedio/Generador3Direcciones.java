@@ -13,8 +13,9 @@ import jflex.base.Pair;
 public class Generador3Direcciones {
     
     private final HashMap<String, VData> tablaVariables;
-    private final HashMap<String, Integer> numEtiquetasOVariablesConId;
+    private final HashSet<String> tablaEtiquetas;
     private final HashMap<String, PData> tablaProcedimientos;
+    private final HashMap<String, Integer> numEtiquetasOVariablesConId;
     private final HashSet<String> variablesInicializadas = new HashSet<>();
 //    private final ArrayList<String> listaProcedimientos; //Funcionara como una pila
     private final ArrayList<Instruccion> instrucciones;
@@ -26,6 +27,7 @@ public class Generador3Direcciones {
 //        this.listaProcedimientos = new ArrayList<>();
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
+        tablaEtiquetas = new HashSet<>();
     }
     
     public Generador3Direcciones(HashMap<String, VData> tv, HashMap<String, PData> tp) {
@@ -34,6 +36,7 @@ public class Generador3Direcciones {
 //        this.listaProcedimientos = new ArrayList<>();
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
+        tablaEtiquetas = new HashSet<>();
     }
     
 //    public String nuevoN(String nombre) {
@@ -42,11 +45,15 @@ public class Generador3Direcciones {
 
     //Crecion de una etiqueta: Sintaxi etX donde X es el contador de etiquetas puestas
     public String nuevaEtiqueta() {
-        return conseguirIdentificadorUnico("e");
+        String s = conseguirIdentificadorUnico("e");
+        tablaEtiquetas.add(s);
+        return s;
     }
 
     public String nuevaEtiqueta(String nombre) {
-        return conseguirIdentificadorUnico("e_"+nombre);
+        String s = conseguirIdentificadorUnico("e_"+nombre);
+        tablaEtiquetas.add(s);
+        return s;
     }
 
     public String nuevaVariable() {
@@ -78,7 +85,7 @@ public class Generador3Direcciones {
         boolean hayRepe = num != null;
         String idVar = id;
         if (hayRepe) {
-            while (tablaVariables.containsKey(idVar) || tablaProcedimientos.containsKey(idVar)) {
+            while (tablaVariables.containsKey(idVar) || tablaProcedimientos.containsKey(idVar) || tablaEtiquetas.contains(idVar)) {
                 num++;
                 numEtiquetasOVariablesConId.put(id, num);
                 idVar = id +"_"+ num;

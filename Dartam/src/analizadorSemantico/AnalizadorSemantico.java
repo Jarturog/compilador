@@ -1167,7 +1167,7 @@ public class AnalizadorSemantico {
                     String etFi = g3d.nuevaEtiqueta();
                     String varRes = g3d.nuevaVariable(TipoReferencia.var);
                     String varDecrementadora = g3d.nuevaVariable(TipoReferencia.var);
-                    g3d.generarInstr(TipoInstr.IFNE, new Operador(Tipo.INT, 0), new Operador(variableOp2), new Operador(etInit));
+                    g3d.generarInstr(TipoInstr.IFGE, new Operador(Tipo.INT, 0), new Operador(variableOp2), new Operador(etInit));
                     g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.INT, 1), null, new Operador(varRes));
                     g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etFi));
                     g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etInit));

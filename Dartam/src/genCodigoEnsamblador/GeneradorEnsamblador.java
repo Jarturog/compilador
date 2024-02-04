@@ -50,7 +50,7 @@ public class GeneradorEnsamblador {
         procesarCodigo();
     }
 
-    private void declararVariable(String id, VData data, String inicializacion) {
+    private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
         datos.add(margen(id, data.getDeclaracionEnsamblador(inicializacion), "", ""));
     }
 
@@ -64,7 +64,7 @@ public class GeneradorEnsamblador {
             add("TRAP", "#15", "Interruption generated");
             add("");
             add("MOVE.L", "#62, D0", "Task 62 of TRAP 15: Enable/Disable keyboard IRQ");
-            add("MOVE.W", "$0103, D1", "Enable keyboard IRQ level 1 for key up and key down");
+            add("MOVE.W", "#$0103, D1", "Enable keyboard IRQ level 1 for key up and key down");
             add("TRAP", "#15", "Interruption generated");
         }
         add("");
@@ -91,9 +91,13 @@ public class GeneradorEnsamblador {
                 if (data == null) {
                     throw new Exception("Se ha intentado inicializar una varible inexistente: " + id);
                 }
-                declararVariable(id, data, instr.op1.toString());
+                declararVariable(id, data, instr.op1.getValor());
             } else {
-                procesarInstruccion(op1, op2, dst);
+                String et = dst;
+                if(instruccionActual.getTipo().tieneEtiqueta()) {
+                    et = procedureTable.containsKey(dst) ? "" : "." + dst;
+                }
+                procesarInstruccion(op1, op2, dst, et);
             }
 
         }
@@ -108,7 +112,7 @@ public class GeneradorEnsamblador {
         }
     }
 
-    private void procesarInstruccion(String op1, String op2, String dst) throws Exception {
+    private void procesarInstruccion(String op1, String op2, String dst, String dstConPunto) throws Exception {
 //        String extensiones = instruccionActual.getExtensiones68K();
 //        String biggestExtension = (extensiones.contains("L") ? ".L" : (extensiones.contains("W") ? "W" : "B"));
 //        
@@ -133,8 +137,22 @@ public class GeneradorEnsamblador {
                 add("MOVE.L", "D0, " + dst, dst + " = D0");
             }
             case MUL -> { // op1*op2 -> dst
+                // EASy68K no permite MULS.L, por lo que se ha de operar así:
+                // A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16
+                add("; " + " ".repeat(MARGEN - 3), "A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16", "", "");
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
-                add("MULS.L", op2 + ", D0", "D0 = D0 * " + op2);
+                add("MOVE.L", op2 + ", D1", "D1 = " + op2);
+                add("MOVE.W", "D0, D2", "D2.L = D1.L");
+                add("MOVE.W", "D1, D3", "D1.L = D3.L");
+                add("ASR.L", "#8, D0", "FIRST 8 BITS OF D0 MOVED RIGHT");
+                add("ASR.L", "#8, D0", "D0.L = old D0.H");
+                add("ASR.L", "#8, D1", "FIRST 8 BITS OF D1 MOVED RIGHT");
+                add("ASR.L", "#8, D1", "D1.L = old D1.H");
+                add("MULS.W","D1, D0", "D0 = D0 * D1");
+                add("MULS.W","D2, D3", "D3 = D2 * D3");
+                add("ASL.L", "#8, D0", "FIRST 8 BITS OF D0 MOVED LEFT");
+                add("ASL.L", "#8, D0", "D0.H = old D0.L");
+                add("ADD.L", "D3, D0", "D0 = D0 + D3");
                 add("MOVE.L", "D0, " + dst, dst + " = D0");
             }
             case DIV -> { // op1/op2 -> dst
@@ -164,37 +182,37 @@ public class GeneradorEnsamblador {
                 add("MOVE.L", "D0, " + dst, dst + " = D0");
             }
             case GOTO -> { // goto dst
-                add(getEtiqueta(), "JMP", dst, "goto " + dst);
+                add(getEtiqueta(), "JMP", dstConPunto, "goto " + dstConPunto);
             }
             case IFEQ -> { // if op1 = op2 goto dst
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
-                add("BEQ", dst, "IF Z FLAG = 1 GOTO " + dst);
+                add("BEQ", dstConPunto, "IF Z FLAG = 1 GOTO " + dstConPunto);
             }
             case IFNE -> { // if op1 /= op2 goto dst
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
-                add("BNE", dst, "IF Z FLAG = 0 GOTO " + dst);
+                add("BNE", dstConPunto, "IF Z FLAG = 0 GOTO " + dstConPunto);
             }
             case IFGE -> { // if op1 >= op2 goto dst
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
-                add("BGE", dst, "IF (N XOR V) FLAGS = 0 GOTO " + dst);
-            }
-            case IFGT -> { // if op1 > op2 goto dst
-                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
-                add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
-                add("BGT", dst, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dst);
-            }
-            case IFLE -> { // if op1 <= op2 goto dst
-                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
-                add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
-                add("BLE", dst, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dst);
+                add("BLT", dstConPunto, "IF (N XOR V) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IFLT -> { // if op1 < op2 goto dst
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
                 add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
-                add("BLT", dst, "IF (N XOR V) FLAGS = 1 GOTO " + dst);
+                add("BGE", dstConPunto, "IF (N XOR V) FLAGS = 0 GOTO " + dstConPunto);
+            }
+            case IFGT -> { // if op1 > op2 goto dst
+                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
+                add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
+                add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
+            }
+            case IFLE -> { // if op1 <= op2 goto dst
+                add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
+                add("CMP.L", op2 + ", D0", "UPDATE FLAGS WITH D0 - " + op2);
+                add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
             }
             case PRINT -> { // print(dst)
                 add(getEtiqueta(), "LEA.L", dst + ", A1", "A1 = " + dst);
@@ -239,18 +257,18 @@ public class GeneradorEnsamblador {
             case RETURN -> { // rtn dst, ?
                 PData func = procedureTable.get(dst);
                 if (func.getBytesRetorno() > 0) {
-                    add(getEtiqueta(), "MOVE.L", dst + ", -(SP)", "PUSH INTO STACK " + dst);
+                    add(getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
                 }
-                add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dst);
+                add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
             }
             case CALL -> { // call dst
-                add(getEtiqueta(), "JSR", dst, "JUMP TO SUBROUTINE " + dst);
+                add(getEtiqueta(), "JSR", dstConPunto, "JUMP TO SUBROUTINE " + dstConPunto);
                 if (op1 != null) {
                     add("MOVE.L", "(SP)+, " + op1, op1 + " = POP FROM STACK");
                 }
             }
             case SKIP -> { // dst: skip
-                setEtiqueta((procedureTable.containsKey(dst) ? "" : ".") + dst); // para etiquetas locales ponemos .
+                setEtiqueta(dstConPunto); // para etiquetas locales ponemos .
             }
             case SEPARADOR -> { // no hace nada pero resulta en mayor legibilidad del código ensamblador
                 codigo.add("");

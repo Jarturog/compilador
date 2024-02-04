@@ -26,7 +26,7 @@ public class Instruccion {
     public boolean isTipo(TipoInstr t) {
         return tipoInstruccion.tipo.equals(t.tipo);
     }
-    
+
     public String getExtensiones68K() {
         String s1 = " ", s2 = " ", s3 = " ";
         if (op1.tipoValor != null) {
@@ -40,7 +40,7 @@ public class Instruccion {
         }
         return s1 + s2 + s3;
     }
-    
+
     @Override
     public String toString() {
         switch (tipoInstruccion) {
@@ -122,18 +122,15 @@ public class Instruccion {
             case IND_ASS -> {
                 return dst + "[" + op2 + "] = " + op1;
             }
-            case CAST -> {
-                return "cast " + op1 + ", " + op2;
-            }
             case IND_VAL -> {
                 return dst + " = " + op1 + "[" + op2 + "]";
             }
             case PARAM_S -> {
                 return "param_s " + dst;
             }
-            case PARAM_C -> {
-                return "param_c " + dst + "[" + op1 + "]";
-            }
+//            case PARAM_C -> {
+//                return "param_c " + dst + "[" + op1 + "]";
+//            }
             case SEPARADOR -> {
                 return ""; // para legibilidad separamos los métodos con una instrucción que no hace nada
             }
@@ -170,7 +167,6 @@ public class Instruccion {
         COPY("copy"),
         PMB("init"),
         IND_ASS("ind_ass"),
-        CAST("cast"),
         IND_VAL("ind_val"),
         PARAM_S("param_s"),
         PARAM_C("param_c"),
@@ -194,6 +190,11 @@ public class Instruccion {
         public boolean isCondGOTO() {
             return isTipo(IFLT) || isTipo(IFLE) || isTipo(IFGT)
                     || isTipo(IFGE) || isTipo(IFEQ) || isTipo(IFNE);
+        }
+
+        public boolean tieneEtiqueta() {
+            return isCondGOTO() || isTipo(GOTO) || isTipo(SKIP)
+                    || isTipo(CALL) || isTipo(RETURN) || isTipo(PMB);
         }
 
     }

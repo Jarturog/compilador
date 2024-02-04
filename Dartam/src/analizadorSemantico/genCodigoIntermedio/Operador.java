@@ -45,4 +45,11 @@ public class Operador {
         return valor != null;
     }
     
+    public Object getValor() throws Exception {
+        if(valor == null) {
+            throw new Exception("Se ha intentado acceder a un valor inexistente");
+        }
+        return valor;
+    }
+    
 }
