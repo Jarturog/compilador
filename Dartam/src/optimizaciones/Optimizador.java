@@ -21,34 +21,45 @@ public class Optimizador {
 
     private boolean asignacionesDiferidas() {
         boolean cambio = false;
-        for (int i = 0; i + 1 < instrucciones.size(); i++) {
-            TipoInstr t1 = instrucciones.get(i).getTipo(), t2 = instrucciones.get(i + 1).getTipo();
-            if (!t1.isTipo(TipoInstr.COPY) || !t2.isTipo(TipoInstr.COPY)) {
+        for (int i = 0; i < instrucciones.size(); i++) {
+            TipoInstr t1 = instrucciones.get(i).getTipo();
+            if (!t1.isTipo(TipoInstr.COPY)) { // añado la opción de IND_ASS?
                 continue;
             }
             Operador var = instrucciones.get(i).dst();
             String nombre = var.getNombre();
-            boolean seRepite = false;
-            Operador segundaAparicionVar = instrucciones.get(i + 1).op1();
-            if (segundaAparicionVar.getNombre() == null || nombre == null || !segundaAparicionVar.getNombre().equals(nombre)) {
+            if (nombre == null) {
                 continue;
             }
-            for (int j = i + 2; j < instrucciones.size(); j++) {
-                Instruccion instr = instrucciones.get(j);
-                if ((instr.op1() != null && instr.op1().getNombre() != null && instr.op1().getNombre().equals(nombre))
-                        || (instr.op2() != null && instr.op2().getNombre() != null && instr.op2().getNombre().equals(nombre))
-                        || (instr.dst() != null && instr.dst().getNombre() != null && instr.dst().getNombre().equals(nombre))) {
-                    seRepite = true;
+            for (int j = i + 1; j < instrucciones.size(); j++) {
+                TipoInstr t2 = instrucciones.get(j).getTipo();
+                if (!t2.isTipo(TipoInstr.COPY)) {
+                    continue;
+                }
+                boolean seRepite = false;
+                Operador segundaAparicionVar = instrucciones.get(j).op1();
+                if (segundaAparicionVar.getNombre() == null || !segundaAparicionVar.getNombre().equals(nombre)) {
+                    continue;
+                }
+                for (int k = j + 1; k < instrucciones.size(); k++) {
+                    Instruccion instr = instrucciones.get(k);
+                    if ((instr.op1() != null && instr.op1().getNombre() != null && instr.op1().getNombre().equals(nombre))
+                            || (instr.op2() != null && instr.op2().getNombre() != null && instr.op2().getNombre().equals(nombre))
+                            || (instr.dst() != null && instr.dst().getNombre() != null && instr.dst().getNombre().equals(nombre))) {
+                        seRepite = true;
+                        break;
+                    }
+                }
+                if (!seRepite) {
+                    String nuevaVar = instrucciones.get(j).dst().getNombre();
+                    instrucciones.get(j).setOp1(instrucciones.remove(i).op1());
+                    i--; // resto 1 por la eliminación
+                    VData datosAntiguos = variables.remove(nombre);
+                    VData nuevosDatos = variables.get(nuevaVar);
+                    nuevosDatos.sustituirPor(datosAntiguos);
+                    cambio = true;
                     break;
                 }
-            }
-            if (!seRepite) {
-                String nuevaVar = instrucciones.get(i + 1).dst().getNombre();
-                instrucciones.get(i + 1).setOp1(instrucciones.remove(i).op1());
-                VData datosAntiguos = variables.remove(nombre);
-                VData nuevosDatos = variables.get(nuevaVar);
-                nuevosDatos.sustituirPor(datosAntiguos);
-                cambio = true;
             }
         }
         return cambio;
