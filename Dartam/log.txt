@@ -1,5 +1,5 @@
 java.lang.NullPointerException: Cannot read field "value" because "t" is null
-	at analizadorSintactico.symbols.SymbolOperand.<init>(SymbolOperand.java:165)
+	at analizadorSintactico.symbols.SymbolOperand.<init>(SymbolOperand.java:166)
 	at analizadorSintactico.Parser$CUP$Parser$actions.CUP$Parser$do_action_part00000000(Parser.java:2183)
 	at analizadorSintactico.Parser$CUP$Parser$actions.CUP$Parser$do_action(Parser.java:2840)
 	at analizadorSintactico.Parser.do_action(Parser.java:815)

@@ -1427,7 +1427,7 @@ public class AnalizadorSemantico {
                 g3d.generarInstr(TipoInstr.IND_VAL, new Operador(Tipo.getTipo(tipoTupla), varTupla), new Operador(Tipo.INT, varDesp), new Operador(Tipo.getTipo(miembro.tipo), nuevaVariable));
                 varActual = nuevaVariable;
                 return miembro.tipo;
-            }
+            }   
             case CASTING -> {
                 SymbolOperand operando = op.op;
                 String casting = op.casting.getTipo();

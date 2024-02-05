@@ -29,7 +29,7 @@ public class SymbolOperand extends SymbolBase {
     public final SymbolBinaryExpression binaryExp;
     public final SymbolConditionalExpression conditionalExp;
     public final String member;
-    public final SymbolTipoPrimitivo casting;
+    public final SymbolTipoCasting casting;
     private final String lBracket, rBracket;
 
     // atomic expression
@@ -163,7 +163,7 @@ public class SymbolOperand extends SymbolBase {
     }
 
     public SymbolOperand(SymbolTipoPrimitivo t, SymbolOperand op, Object lParen, Object rParen, Location l, Location r) {
-        super("operand", (String)lParen + (t.value != null ? t.value : (ParserSym.terminalNames[ParserSym.CAR] + " []")) + rParen + op.value, l, r );
+        super("operand", (String)lParen + (t != null ? t.value : (ParserSym.terminalNames[ParserSym.CAR] + " []")) + rParen + op.value, l, r );
         this.op = op;
         this.member = null;
         this.atomicExp = null;
@@ -174,7 +174,7 @@ public class SymbolOperand extends SymbolBase {
         this.conditionalExp = null;
         this.lBracket = null;
         this.rBracket = null;
-        this.casting = t;
+        this.casting = new SymbolStringCasting(ParserSym.terminalNames[ParserSym.CAR] + " []");
     }
     
     public static enum TIPO {

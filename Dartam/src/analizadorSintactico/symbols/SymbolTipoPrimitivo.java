@@ -17,7 +17,7 @@ TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(e
         | KW_CHAR:et                       {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         ;
  */
-public class SymbolTipoPrimitivo extends SymbolBase {
+public class SymbolTipoPrimitivo extends SymbolTipoCasting {
 
     public final String tipo;
 
@@ -26,6 +26,7 @@ public class SymbolTipoPrimitivo extends SymbolBase {
         this.tipo = ((String) tipo).toUpperCase();
     }
 
+    @Override
     public String getTipo() {
         return tipo;
     }
@@ -34,14 +35,12 @@ public class SymbolTipoPrimitivo extends SymbolBase {
         return t.equals(ParserSym.terminalNames[ParserSym.PROP])
                 || t.equals(ParserSym.terminalNames[ParserSym.ENT])
                 || t.equals(ParserSym.terminalNames[ParserSym.REAL])
-                || t.equals(ParserSym.terminalNames[ParserSym.CAR])
-                ;//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
+                || t.equals(ParserSym.terminalNames[ParserSym.CAR]);//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
-    
+
     public static boolean isTipoNumericoDiscreto(String t) {
         return t.equals(ParserSym.terminalNames[ParserSym.ENT])
-                || t.equals(ParserSym.terminalNames[ParserSym.CAR])
-                ;//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
+                || t.equals(ParserSym.terminalNames[ParserSym.CAR]);//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
-    
+
 }
