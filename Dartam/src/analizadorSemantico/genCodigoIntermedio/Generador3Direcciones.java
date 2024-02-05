@@ -105,21 +105,15 @@ public class Generador3Direcciones {
     public void anyadirTupla(String id, DescripcionDefinicionTupla t) {
         tablaTuplas.put(id, t);
     }
+    
+    public HashMap<String, DescripcionDefinicionTupla> getTuplas() {
+        return this.tablaTuplas;
+    }
 
-//    //Devuelve la función que esta en el top de la pila
-//    public String getFuncionActual(){
-//        return listaProcedimientos.isEmpty() ? null : listaProcedimientos.get(listaProcedimientos.size() - 1);
-//    }
-//    
-//    //Eliminar funcion
-//    public String eliminarFuncion(){
-//        return listaProcedimientos.remove(listaProcedimientos.size() - 1);
-//    }
-//    
-//    //Permite añadir una nueva funcion
-//    public void añadirFuncion(String id){
-//        listaProcedimientos.add(id);
-//    }
+    public void relacionarDatoVariableConTupla(String var, DescripcionDefinicionTupla t) {
+        tablaVariables.get(var).setTupla(t);
+    }
+    
     //Permite crear un nuevo procedimiento y añadirlo a la tabla
     public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Pair<String, String>> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();

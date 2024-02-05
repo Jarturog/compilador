@@ -1,5 +1,6 @@
 package genCodigoEnsamblador;
 
+import analizadorSemantico.DescripcionDefinicionTupla;
 import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
 import java.util.ArrayList;
@@ -11,14 +12,21 @@ public class VData {
     private Object initCodigoIntermedio = null;
     private boolean initCodigoEnsamblador = false;
     private Integer bytesEstructura = null;
-    private ArrayList<Pair<Integer, Tipo>> parametrosTupla; //Elementos de la tupla
+    private DescripcionDefinicionTupla tupla = null;
 
     public VData(Tipo t) throws Exception {
         tipo = t;
         if(t == null) {
             throw new Exception("No puede haber una variable sin tipo");
         }
-        this.parametrosTupla = new ArrayList<>();
+    }
+    
+    public void setTupla(DescripcionDefinicionTupla t){
+        tupla = t;
+    }
+    
+    public DescripcionDefinicionTupla getTupla(){
+        return tupla;
     }
 
     public boolean estaInicializadaEnCodigoIntermedio() {
@@ -29,10 +37,16 @@ public class VData {
         return initCodigoEnsamblador;
     }
 
+    /**
+     * Inicializar en código intermedio
+     */
     public void inicializar(Object o) {
         initCodigoIntermedio = o;
     }
 
+    /**
+     * Inicializar en ensamblador
+     */
     public void inicializar() {
         initCodigoEnsamblador = true;
     }
@@ -50,7 +64,7 @@ public class VData {
         initCodigoIntermedio = d.initCodigoIntermedio;
         initCodigoEnsamblador = d.initCodigoEnsamblador;
         bytesEstructura = d.bytesEstructura;
-        parametrosTupla = d.parametrosTupla;
+        tupla = d.tupla;
     }
 
     public Tipo tipo() {

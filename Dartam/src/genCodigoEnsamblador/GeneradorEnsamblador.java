@@ -1,5 +1,7 @@
 package genCodigoEnsamblador;
 
+import analizadorSemantico.DescripcionDefinicionTupla;
+import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
 import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
@@ -13,6 +15,7 @@ import static analizadorSemantico.genCodigoIntermedio.Tipo.STRING;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import jflex.base.Pair;
 
 public class GeneradorEnsamblador {
@@ -35,6 +38,7 @@ public class GeneradorEnsamblador {
     private final PData main;
     private final String etConc;
     private int DnActual = 0, AnActual = 0;
+    private final HashMap<String, DescripcionDefinicionTupla> tablaTuplas;
 //
 //    // Info from the current process
 //    private Stack<ProcTableEntry> pteStack;
@@ -51,6 +55,7 @@ public class GeneradorEnsamblador {
         variables = generador.getTablaVariables();
         procedureTable = generador.getTablaProcedimientos();
         etiquetas = generador.getEtiquetas();
+        tablaTuplas = generador.getTuplas();
         codigo = new ArrayList<>();
         datos = new ArrayList<>();
         subprogramas = new ArrayList<>();
@@ -63,6 +68,24 @@ public class GeneradorEnsamblador {
 
     private void procesarCodigo() throws Exception {
         String etiqueta_main = crearEtiqueta(nombreFichero.toUpperCase());
+        for (Map.Entry<String, DescripcionDefinicionTupla> entry : tablaTuplas.entrySet()) {
+            if (entry.getValue().getMiembros().isEmpty()) {
+                continue;
+            }
+            String id = entry.getKey();
+            DescripcionDefinicionTupla tupla = entry.getValue();
+            setEtiqueta(tupla.variableAsociada);
+            variables.get(tupla.variableAsociada).inicializar();
+            for (DefinicionMiembro miembro : tupla.getMiembros()) {
+                if (miembro.tieneValorAsignado()) {
+                    String s = getDeclaracionEnsamblador(new VData(Tipo.getTipo(miembro.tipo)), miembro.varInit);
+                    //datos.add(margen(getEtiqueta(), "DC.B "+miembro.varInit, "", "Reservando memoria para el miembro " + miembro.nombre + " de la tupla "+id));
+                    datos.add(margen(getEtiqueta(), s, "", "Inicializando el miembro " + miembro.nombre + " de la tupla " + id));
+                } else {
+                    datos.add(margen(getEtiqueta(), "DS.B " + miembro.getBytes(), "", "Reservando memoria para el miembro " + miembro.nombre + " de la tupla " + id));
+                }
+            }
+        }
 
         add("JSR", main.getEtiqueta(), "Se ejecuta el main");
         add("SIMHALT", "", "Fin de la ejecución");
@@ -118,6 +141,33 @@ public class GeneradorEnsamblador {
             preMain.add(margen("", "MOVE.L", "#62, D0", "Task 62 of TRAP 15: Enable/Disable keyboard IRQ"));
             preMain.add(margen("", "MOVE.W", "#$0103, D1", "Enable keyboard IRQ level 1 for key up and key down"));
             preMain.add(margen("", "TRAP", "#15", "Interruption generated"));
+        }
+        add("");
+        // inicializamos las tuplas
+        for (Map.Entry<String, VData> e : variables.entrySet()) {
+            String id = e.getKey();
+            VData data = e.getValue();
+            if (data.getTupla() == null) {
+                continue;
+            }
+            int bytes = data.getTupla().getBytes();
+            int bytesLeft = bytes % 4;
+            bytes -= bytesLeft;
+            bytes /= 4;
+            String finBucle = this.crearEtiqueta("endinit" + id), bucle = this.crearEtiqueta("init" + id);
+            preMain.add(margen("", "LEA.L", data.getTupla().variableAsociada + ", A0", "load " + data.getTupla().variableAsociada + " into A0"));
+            preMain.add(margen("", "LEA.L", id + ", A1", "load " + id + " into A1"));
+            preMain.add(margen("", "MOVE.L", "#" + bytes + ", D0", ""));
+            preMain.add(margen(bucle, "CMP.L", "#0, D0", ""));
+            preMain.add(margen("", "BEQ", finBucle, ""));
+            preMain.add(margen("", "MOVE.L", "(A0)+, (A1)+", "copy 4 bytes"));
+            preMain.add(margen("", "SUB.L", "#1, D0", ""));
+            preMain.add(margen("", "JMP", bucle, ""));
+            preMain.add(margen(finBucle, "", "", "end of loop"));
+            for (int i = 0; i < bytesLeft; i++) {
+                preMain.add(margen("", "MOVE.B", "(A0)+, (A1)+", "copy 1 byte"));
+            }
+            preMain.add("");
         }
     }
 
@@ -190,9 +240,6 @@ public class GeneradorEnsamblador {
     }
 
     private void procesarInstruccion(String dstConPunto) throws Exception {
-//        String extensiones = instruccionActual.getExtensiones68K();
-//        String biggestExtension = (extensiones.contains("L") ? ".L" : (extensiones.contains("W") ? "W" : "B"));
-//        
         switch (instr.getTipo()) {
             case COPY -> { // op1 -> dst
                 String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
@@ -544,7 +591,7 @@ public class GeneradorEnsamblador {
                         return "DS.B " + n; // instancia de array, string o tupla
                     }
                 }
-                default ->{
+                default -> {
                     throw new Exception("Declarando tipo inválido: " + tipo);
                 }
             }

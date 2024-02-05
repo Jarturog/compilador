@@ -8,22 +8,20 @@
 
             ORG         $1000       ; Origen
 
-t           DC.L 20                 ; INT
-t_1         DC.L 25                 ; INT
-t_2         DC.L 0                  ; INT
+b:          DC.L 20                 ; Inicializando el miembro a de la tupla b
+            DS.B 1                  ; Reservando memoria para el miembro b de la tupla b
+t           DC.L 25                 ; INT
+t_1         DC.L 0                  ; INT
 uxiono      DC.L 21                 ; INT
-t_4         DC.L 0                  ; INT
-t_6         DC.L 0                  ; INT
-t_8         DC.B 'yuju'             ; STRING
+t_3         DC.L 0                  ; INT
+t_5         DC.L 0                  ; INT
+t_7         DC.B 'yuju'             ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
 a           DS.B 0                  ; POINTER TO ARRAY OR TUPLE
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-b           DS.B 5                  ; POINTER TO ARRAY OR TUPLE
-            DC.B 0                  ; Los strings y chars acaban en 0
-            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-t_7         DS.L 1                  ; INT
+t_6         DS.L 1                  ; INT
 pimpin      DS.B 5                  ; COPY OF ARRAY OR TUPLE
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
@@ -35,6 +33,27 @@ CALC2                               ; Etiqueta inicial (main)
             MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
             TRAP        #15         ; Interruption generated
+            LEA.L       b, A0       ; load b into A0
+            LEA.L       pimpin, A1  ; load pimpin into A1
+            MOVE.L      #1, D0      
+initpimpin  CMP.L       #0, D0      
+            BEQ         endinitpimpin 
+            MOVE.L      (A0)+, (A1)+ ; copy 4 bytes
+            SUB.L       #1, D0      
+            JMP         initpimpin  
+endinitpimpin                       ; end of loop
+            MOVE.B      (A0)+, (A1)+ ; copy 1 byte
+
+            LEA.L       a, A0       ; load a into A0
+            LEA.L       ups, A1     ; load ups into A1
+            MOVE.L      #0, D0      
+initups     CMP.L       #0, D0      
+            BEQ         endinitups  
+            MOVE.L      (A0)+, (A1)+ ; copy 4 bytes
+            SUB.L       #1, D0      
+            JMP         initups     
+endinitups                          ; end of loop
+
             JSR         e_inicio    ; Se ejecuta el main
             SIMHALT                 ; Fin de la ejecución
 
@@ -48,27 +67,27 @@ e_inicio:   CLR.L       D0          ; CLEAR D0
             CLR.L       D0          ; CLEAR D0
             MOVE.B      b, D0       ; D0 = b
             MOVE.B      D0, pimpin  ; pimpin = D0
-; --------- pimpin[t_2] = t_1       
+; --------- pimpin[t_1] = t         
             MOVEA.L     pimpin, A0  ; A0 = pimpin
-            ADDA.L      t_1, A0     ; A0 = A0 + t_1
-            MOVE.L      t_2, (A0)   ; (A0) = t_2
-; --------- pimpin[t_4] = uxiono    
+            ADDA.L      t, A0       ; A0 = A0 + t
+            MOVE.L      t_1, (A0)   ; (A0) = t_1
+; --------- pimpin[t_3] = uxiono    
             MOVEA.L     pimpin, A0  ; A0 = pimpin
             ADDA.L      uxiono, A0  ; A0 = A0 + uxiono
-            MOVE.L      t_4, (A0)   ; (A0) = t_4
+            MOVE.L      t_3, (A0)   ; (A0) = t_3
 ; --------- uxiono = 26             
             MOVE.L      #26, D0     ; D0 = #26
             MOVE.L      D0, uxiono  ; uxiono = D0
-; --------- t_7 = pimpin[t_6]       
+; --------- t_6 = pimpin[t_5]       
             MOVEA.L     pimpin, A0  ; A0 = pimpin
-            ADDA.L      t_6, A0     ; A0 = A0 + t_6
-            MOVE.L      (A0), t_7   ; t_7 = (A0)
-; --------- uxiono = t_7            
-            MOVE.L      t_7, D0     ; D0 = t_7
+            ADDA.L      t_5, A0     ; A0 = A0 + t_5
+            MOVE.L      (A0), t_6   ; t_6 = (A0)
+; --------- uxiono = t_6            
+            MOVE.L      t_6, D0     ; D0 = t_6
             MOVE.L      D0, uxiono  ; uxiono = D0
-; --------- param_s t_8             
-            LEA.L       t_8, A0     ; A0 = t_8
-            MOVE.L      A0, -(SP)   ; PUSH INTO STACK t_8
+; --------- param_s t_7             
+            LEA.L       t_7, A0     ; A0 = t_7
+            MOVE.L      A0, -(SP)   ; PUSH INTO STACK t_7
 ; --------- call e_show             
             JSR         e_show      ; JUMP TO SUBROUTINE e_show
             ADDA.L      #4, SP      ; SP = SP + 4
@@ -83,4 +102,5 @@ e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
             TRAP        #15         ; Interruption generated
             RTS                     ; RETURN TO SUBROUTINE ...
             END CALC2               ; Fin del programa
+
 

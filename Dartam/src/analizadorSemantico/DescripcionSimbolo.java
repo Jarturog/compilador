@@ -19,7 +19,7 @@ import jflex.base.Pair;
 
 public class DescripcionSimbolo {
 
-    protected final String tipo, variableAsociada;
+    public final String tipo, variableAsociada;
     private Integer nBytes = null; // null si es un método
     private int nivel;
     private boolean isConstante = false, valorAsignado = false;

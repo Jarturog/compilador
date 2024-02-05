@@ -192,7 +192,7 @@ public class AnalizadorSemantico {
 
             String id = dec.id; // nombre variable
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
-            if (tuplaActualmenteSiendoTratada == null) { // si forma parte de una tupla sí se puede declarar 
+            if (tuplaActualmenteSiendoTratada == null) { // si forma parte de una tupla sí se puede declarar  ---------------------------------------------------------------------
                 String errMsg = tablaSimbolos.sePuedeDeclarar(id);
                 if (!errMsg.isEmpty()) {
                     errores.add(errMsg);
@@ -298,12 +298,12 @@ public class AnalizadorSemantico {
                 // si no hay error
                 tuplaActualmenteSiendoTratada.snd.anyadirMiembro(
                         new DefinicionMiembro(id, tipo.getTipo(), decs.isConst,
-                                seHaAsignado || arrayInicializado, descTipoTupla, variableQueSeAsigna));
+                                seHaAsignado || arrayInicializado, descTipoTupla, seHaAsignado ? valorAsignado.atomicExp.getValorCodigoIntermedio() : null)); // suponiendo que se asignan constantes
                 continue;
             }
             // no es un miembro de una tupla
             String variableCodigoIntermedio = g3d.nuevaVariable(id, tipo.isTupla() ? Tipo.ESTRUCTURA : (Tipo.getTipo(tipoValor == null ? tipo.getTipo() : tipoValor)));
-            if (seHaAsignado) {
+            if (seHaAsignado && this.tuplaActualmenteSiendoTratada == null) {
                 g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoValor), variableQueSeAsigna), null, new Operador(Tipo.getTipo(tipoValor), variableCodigoIntermedio));
             }
             DescripcionSimbolo descVar;
@@ -330,10 +330,12 @@ public class AnalizadorSemantico {
                         seHaAsignado || arrayInicializado, descTipoTupla,
                         variableCodigoIntermedio);
                 if (tipo.isTupla()) {
+                    g3d.relacionarDatoVariableConTupla(descVar.variableAsociada, descTipoTupla);
                     g3d.anyadirBytesEstructura(descVar.variableAsociada, descTipoTupla.getBytes());//descVar.getBytes());
                 }
             }
-            if (tipo.isTupla()) {
+            if (tipo.isTupla() && tuplaActualmenteSiendoTratada == null) {
+                g3d.relacionarDatoVariableConTupla(descVar.variableAsociada, descTipoTupla);
                 g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.ESTRUCTURA, descTipoTupla.variableAsociada), null, new Operador(Tipo.ESTRUCTURA, descVar.variableAsociada));
             }
             tablaSimbolos.poner(id, descVar);
@@ -1014,10 +1016,13 @@ public class AnalizadorSemantico {
                         return null;
                     }
                     //Copiamos el valor x -> A
-                    String variable = g3d.nuevaVariable(Tipo.getTipo(tipo));
-                    Object valor = literal.getValorCodigoIntermedio();
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), valor), null, new Operador(Tipo.getTipo(tipo), variable));
-                    varActual = variable;
+                    if (tuplaActualmenteSiendoTratada == null) {
+                        String variable = g3d.nuevaVariable(Tipo.getTipo(tipo));
+                        Object valor = literal.getValorCodigoIntermedio();
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), valor), null, new Operador(Tipo.getTipo(tipo), variable));
+                        varActual = variable;
+
+                    }
                     return tipo; // si no es ID
                 }
                 String nombreID = (String) literal.value;

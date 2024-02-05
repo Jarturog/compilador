@@ -1,22 +1,21 @@
-t = 20
 e_inicio: skip
 pmb e_inicio
 ups = a
 pimpin = b
-t_1 = 25
-t_2 = 0
-pimpin[t_2] = t_1
-t_3 = 21
-uxiono = t_3
-t_4 = 0
-pimpin[t_4] = uxiono
-t_5 = 26
-uxiono = t_5
-t_6 = 0
-t_7 = pimpin[t_6]
-uxiono = t_7
-t_8 = yuju
-param_s t_8
+t = 25
+t_1 = 0
+pimpin[t_1] = t
+t_2 = 21
+uxiono = t_2
+t_3 = 0
+pimpin[t_3] = uxiono
+t_4 = 26
+uxiono = t_4
+t_5 = 0
+t_6 = pimpin[t_5]
+uxiono = t_6
+t_7 = yuju
+param_s t_7
 call e_show
 rtn e_inicio
 

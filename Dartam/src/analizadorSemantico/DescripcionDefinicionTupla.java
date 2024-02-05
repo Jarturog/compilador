@@ -51,16 +51,20 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         throw new Exception("Miembro " + miembro + " no encontrado"); // error
     }
     
+    public ArrayList<DefinicionMiembro> getMiembros() {
+        return miembros;
+    }
+    
     public static class DefinicionMiembro {
 
         private Integer bytes = null;
-        protected final String nombre, tipo;
+        public final String nombre, tipo;
         protected final boolean isConst;
         private boolean valorAsignado;
         protected final DescripcionDefinicionTupla tipoTupla;
-        protected final String varInit;
+        public final Object varInit;
 
-        public DefinicionMiembro(String nombre, String tipo, boolean isConst, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, String varInit) {
+        public DefinicionMiembro(String nombre, String tipo, boolean isConst, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, Object varInit) {
             this.nombre = nombre;
             this.tipo = tipo;
             this.isConst = isConst;
