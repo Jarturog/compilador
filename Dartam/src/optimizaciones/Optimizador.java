@@ -16,7 +16,7 @@ public class Optimizador {
     public Optimizador(Generador3Direcciones g3d) throws Exception {
         instrucciones = g3d.getInstrucciones();
         variables = g3d.getTablaVariables();
-        while (saltosAdyacentes() || saltoSobreSalto() || asignacionesDiferidas()); // se realiza la optimización hasta que no hayan cambios
+        while (saltosAdyacentes() || saltoSobreSalto() || asignacionesDiferidas() || etiquetasSinUsarse()); // se realiza la optimización hasta que no hayan cambios
     }
 
     private boolean asignacionesDiferidas() {
@@ -53,38 +53,29 @@ public class Optimizador {
         }
         return cambio;
     }
-    
+
     private boolean saltosAdyacentes() throws Exception {
         boolean cambio = false;
         for (int i = 0; i + 2 < instrucciones.size(); i++) {
-            Instruccion instr1 = instrucciones.get(i);
-            TipoInstr tipo = instr1.getTipo();
-            if (!tipo.isCondGOTO()) {
+            Instruccion cond = instrucciones.get(i);
+            Instruccion saltoGoto = instrucciones.get(i + 1);
+            Instruccion skip = instrucciones.get(i + 2);
+            if (!cond.getTipo().isCondGOTO() || !saltoGoto.isTipo(TipoInstr.GOTO) || !skip.isTipo(TipoInstr.SKIP)
+                    || !cond.dst().getNombre().equals(skip.dst().getNombre())
+                    || cond.dst().getNombre().equals(saltoGoto.dst().getNombre())
+                    || skip.dst().getNombre().equals(saltoGoto.dst().getNombre())) {
                 continue;
             }
-            Instruccion instr2 = instrucciones.get(i + 1);
-            if (instr2.getTipo() != TipoInstr.GOTO) {
-                continue;
-            }
-            Instruccion instr3 = instrucciones.get(i + 2);
-            if (!instr3.dst().toString().equals(instr1.dst().toString()) || !instr3.getTipo().isTipo(TipoInstr.SKIP)) {
-                continue;
-            }
-            TipoInstr contrario = instrucciones.get(i).getTipo().getContrario();
-            instrucciones.get(i).setTipo(contrario);
-            instrucciones.get(i).setDst(instr2.dst());
-            instrucciones.remove(i + 1);
-            cambio = true;
-            boolean borrar = true;
-            for (int j = 0; j < instrucciones.size(); j++) {
-                if (instrucciones.get(j).dst().toString().equals(instr1.dst().toString())
-                        && (instrucciones.get(j).getTipo().isCondGOTO() || instrucciones.get(j).isTipo(TipoInstr.GOTO))) {
-                    borrar = false;
-                    break;
+            for (int j = i + 3; j < instrucciones.size(); j++) {
+                Instruccion skip2 = instrucciones.get(j);
+                if (!skip2.isTipo(TipoInstr.SKIP) && !skip2.dst().getNombre().equals(saltoGoto.dst().getNombre())) {
+                    continue;
                 }
-            }
-            if (borrar) {
+                cond.setTipo(cond.getTipo().getContrario());
+                cond.setDst(skip2.dst());
                 instrucciones.remove(i + 1);
+                cambio = true;
+                break;
             }
         }
         return cambio;
@@ -93,30 +84,46 @@ public class Optimizador {
     private boolean saltoSobreSalto() {
         boolean cambio = false;
         for (int i = 0; i < instrucciones.size(); i++) {
-            if (!instrucciones.get(i).getTipo().isCondGOTO()) {
+            Instruccion salto = instrucciones.get(i);
+            if (!salto.getTipo().isCondGOTO() && !salto.isTipo(TipoInstr.GOTO)) {
                 continue;
             }
-            String etiqueta = instrucciones.get(i).dst().getNombre();
             for (int j = i + 1; j + 1 < instrucciones.size(); j++) {
-                String etiqueta2 = instrucciones.get(j).dst().getNombre();
-                if (!instrucciones.get(j + 1).isTipo(TipoInstr.GOTO)
-                        && (!instrucciones.get(j).isTipo(TipoInstr.SKIP) || !etiqueta2.equals(etiqueta))) {
+                Instruccion skip = instrucciones.get(j);
+                Instruccion saltoGoto = instrucciones.get(j + 1);
+                if (!saltoGoto.isTipo(TipoInstr.GOTO) && !skip.isTipo(TipoInstr.SKIP)) {
                     continue;
                 }
-                instrucciones.get(i).setDst(instrucciones.get(j + 1).dst());
-                boolean eliminar = true;
-                for (int k = 0; k < instrucciones.size(); k++) {
-                    etiqueta2 = instrucciones.get(k).dst().toString();
-                    if (etiqueta2.equals(etiqueta)
-                            && (instrucciones.get(k).getTipo().isCondGOTO() || instrucciones.get(k).isTipo(TipoInstr.GOTO))) {
-                        eliminar = false;
-                        break;
-                    }
+                salto.setDst(saltoGoto.dst());
+                cambio = true;
+            }
+        }
+        return cambio;
+    }
+
+    private boolean etiquetasSinUsarse() {
+        boolean cambio = false;
+        for (int i = 0; i < instrucciones.size(); i++) {
+            Instruccion skip = instrucciones.get(i);
+            if (!skip.isTipo(TipoInstr.SKIP)) {
+                continue;
+            }
+            boolean seUsa = false;
+            for (int j = i + 1; !seUsa && j < instrucciones.size(); j++) {
+                Instruccion instr = instrucciones.get(j);
+                if (!instr.isTipo(TipoInstr.GOTO)
+                        && !instr.getTipo().isCondGOTO()
+                        && !instr.isTipo(TipoInstr.CALL)
+                        && !instr.isTipo(TipoInstr.RETURN)
+                        && !instr.isTipo(TipoInstr.PMB)) {
+                    continue;
                 }
-                if (eliminar) {
-                    cambio = true;
-                    instrucciones.remove(j);
-                }
+                seUsa = skip.dst().getNombre().equals(instr.dst().getNombre());
+            }
+            if (!seUsa) {
+                instrucciones.remove(i);
+                i--; // resto uno porque todos se han movido hacia la izquierda y en la siguiente iteración volverá a sumar 1
+                cambio = true;
             }
         }
         return cambio;
