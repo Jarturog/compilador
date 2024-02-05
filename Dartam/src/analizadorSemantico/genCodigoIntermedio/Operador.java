@@ -59,7 +59,7 @@ public class Operador {
         return valor;
     }
     
-    public String toStringEnsamblador() throws Exception {
+    public String toAssembly() throws Exception {
         if(isLiteral()) {
             return "#"+valor;
         }
@@ -69,7 +69,7 @@ public class Operador {
         return nombre;
     }
     
-    public Tipo getTipo() {
+    public Tipo tipo() {
         return tipoValor;
     }
     

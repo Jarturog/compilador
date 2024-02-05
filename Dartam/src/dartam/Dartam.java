@@ -70,6 +70,7 @@ public class Dartam {
                 System.err.println("No se ha podido guardar el error en el " + LOG + "\nContacta con los desarrolladores: ");
                 e.printStackTrace();
             }
+            return;
         }
         System.out.flush();
         System.out.println("Compilacion finalizada");

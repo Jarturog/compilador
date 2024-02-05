@@ -3,6 +3,10 @@ package analizadorSemantico.genCodigoIntermedio;
 import analizadorSintactico.ParserSym;
 
 public enum Tipo {
+    /**
+     * Un string tiene una variable tipo string que contiene los datos, y puede o no tener
+     * otras variables que apuntan a este string pero que son de tipo puntero
+     */
     INT(Integer.BYTES), CHAR(1 /* elegido por 68K */), BOOL(1), DOUBLE(Double.BYTES), PUNTERO(4), STRING(256);
 
     public static final int FALSE = 0, TRUE = -1;
@@ -52,6 +56,7 @@ public enum Tipo {
             case 1 -> ".B";
             case 2 -> ".W";
             case 4 -> ".L";
+            case 256 -> ".L";
             default -> null;
         };
     }

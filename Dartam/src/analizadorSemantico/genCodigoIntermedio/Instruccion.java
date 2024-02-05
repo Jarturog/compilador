@@ -2,8 +2,8 @@ package analizadorSemantico.genCodigoIntermedio;
 
 public class Instruccion {
 
-    private final TipoInstr tipoInstruccion;
-    public final Operador op1, op2, dst;
+    private TipoInstr tipoInstruccion;
+    private Operador op1, op2, dst;
 
     public Instruccion(TipoInstr tipoInstruccion, Operador op1, Operador op2, Operador dst) {
         this.tipoInstruccion = tipoInstruccion;
@@ -11,16 +11,38 @@ public class Instruccion {
         this.op2 = op2;
         this.dst = dst;
     }
-
-    //Devuelve todos los operadores de la instruccion
-    public Operador[] operadores() {
-        Operador[] ops = {this.op1, this.op2, this.dst};
-        return ops;
+    
+    public Operador op1(){
+        return op1;
+    }
+    
+    public Operador op2(){
+        return op2;
+    }
+    
+    public Operador dst(){
+        return dst;
+    }
+    
+    public void setOp1(Operador o) {
+        op1 = o;
+    }
+    
+    public void setOp2(Operador o) {
+        op2 = o;
+    }
+    
+    public void setDst(Operador o) {
+        dst = o;
     }
 
     //Tipo de instruccion
     public TipoInstr getTipo() {
         return tipoInstruccion;
+    }
+    
+    public void setTipo(TipoInstr t) {
+        this.tipoInstruccion = t;
     }
 
     public boolean isTipo(TipoInstr t) {
@@ -29,14 +51,14 @@ public class Instruccion {
 
     public String getExtensiones68K() {
         String s1 = " ", s2 = " ", s3 = " ";
-        if (op1.getTipo() != null) {
-            s1 = op1.getTipo().getExtension68K().substring(1);
+        if (op1.tipo() != null) {
+            s1 = op1.tipo().getExtension68K().substring(1);
         }
-        if (op2.getTipo() != null) {
-            s2 = op1.getTipo().getExtension68K().substring(1);
+        if (op2.tipo() != null) {
+            s2 = op1.tipo().getExtension68K().substring(1);
         }
-        if (dst.getTipo() != null) {
-            s3 = op1.getTipo().getExtension68K().substring(1);
+        if (dst.tipo() != null) {
+            s3 = op1.tipo().getExtension68K().substring(1);
         }
         return s1 + s2 + s3;
     }
@@ -174,6 +196,21 @@ public class Instruccion {
         public boolean isCondGOTO() {
             return isTipo(IFLT) || isTipo(IFLE) || isTipo(IFGT)
                     || isTipo(IFGE) || isTipo(IFEQ) || isTipo(IFNE);
+        }
+        
+        public TipoInstr getContrario() throws Exception{
+            if(!isCondGOTO()){
+                throw new Exception("Solo se pueden pasar condicionales a este método");
+            }
+            return switch (this) {
+                case IFEQ -> TipoInstr.IFNE;
+                case IFNE -> TipoInstr.IFEQ;
+                case IFGT -> TipoInstr.IFLE;
+                case IFGE -> TipoInstr.IFLT;
+                case IFLT -> TipoInstr.IFGE;
+                case IFLE -> TipoInstr.IFGT;
+                default -> null;
+            };
         }
 
         public boolean tieneEtiqueta() {

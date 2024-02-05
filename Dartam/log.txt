@@ -1,8 +1,5 @@
-java.lang.NullPointerException: Cannot read field "value" because "t" is null
-	at analizadorSintactico.symbols.SymbolOperand.<init>(SymbolOperand.java:166)
-	at analizadorSintactico.Parser$CUP$Parser$actions.CUP$Parser$do_action_part00000000(Parser.java:2183)
-	at analizadorSintactico.Parser$CUP$Parser$actions.CUP$Parser$do_action(Parser.java:2840)
-	at analizadorSintactico.Parser.do_action(Parser.java:815)
-	at java_cup.runtime.lr_parser.parse(lr_parser.java:699)
-	at dartam.Dartam.<init>(Dartam.java:92)
+java.lang.NullPointerException: Cannot invoke "analizadorSemantico.genCodigoIntermedio.Operador.toAssembly()" because "this.instr.dst" is null
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:96)
+	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:61)
+	at dartam.Dartam.<init>(Dartam.java:117)
 	at dartam.Dartam.main(Dartam.java:56)

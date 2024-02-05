@@ -1,10 +1,13 @@
 e_inicio: skip
 pmb e_inicio
-t = 2
-a = t
-t_1 = 2
-t_2 = t_1
-b = t_2
+t = 256
+d_a = t
+t_1 = codigoIntermedio_calc2.txt
+param_s t_1
+param_s a
+call e_from_1
+param_s a
+call e_show
 rtn e_inicio
 
 

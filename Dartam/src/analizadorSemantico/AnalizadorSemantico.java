@@ -31,7 +31,7 @@ public class AnalizadorSemantico {
 
     private Generador3Direcciones g3d;
 
-    private String varActual, tipoVarActual;
+    private String varActual;
 
     public TablaSimbolos tablaSimbolos;
 
@@ -167,7 +167,7 @@ public class AnalizadorSemantico {
         numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.FROM].toLowerCase();
-        df = new DescripcionFuncion(tipoString, "file", tipoString, g3d.nuevaEtiqueta(nombre));
+        df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "file", tipoString, g3d.nuevaEtiqueta(nombre), tipoString, g3d.nuevaEtiqueta(nombre));
         numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.INTO].toLowerCase();
@@ -992,7 +992,6 @@ public class AnalizadorSemantico {
                     Object valor = literal.getValorCodigoIntermedio();
                     g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), valor), null, new Operador(Tipo.getTipo(tipo), variable));
                     varActual = variable;
-                    tipoVarActual = tipo;
                     return tipo; // si no es ID
                 }
                 String nombreID = (String) literal.value;
@@ -1443,17 +1442,16 @@ public class AnalizadorSemantico {
                 }
                 boolean opEsIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 boolean castingEsIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) || casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
-                //boolean charAString = casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]);
-                // casting posible entre int <-> char <-> double <-> int y de char -> string
+                // casting posible entre int <-> char <-> double <-> int y se hace solo esto: char -> string
                 if (opEsIntCharDouble && castingEsIntCharDouble) {
                     String nuevaVar = g3d.nuevaVariable(Tipo.getTipo(casting));
                     g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), varActual), null, new Operador(Tipo.getTipo(casting), nuevaVar));
                     varActual = nuevaVar;
                     return casting;
                 } else if (charAString) {
-                    String nuevaVar = g3d.nuevaVariable(Tipo.STRING);
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.CHAR, varActual), null, new Operador(Tipo.STRING, nuevaVar));
-                    varActual = nuevaVar;
+                //    String nuevaVar = g3d.nuevaVariable(Tipo.STRING);
+                //    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.CHAR, varActual), null, new Operador(Tipo.STRING, nuevaVar));
+                //    varActual = nuevaVar;
                     return casting;
                 }
                 errores.add("Se ha intentado realizar un casting no permitido (" + op.toString() + ") de " + tipo + " a " + casting);
