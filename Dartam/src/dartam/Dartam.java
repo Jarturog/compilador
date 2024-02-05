@@ -36,6 +36,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import optimizaciones.Optimizador;
 
 public class Dartam {
 
@@ -110,10 +111,10 @@ public class Dartam {
         }
         // Generación de código intermedio realizada durante el análisis semántico
         Generador3Direcciones generadorCodigoIntermedio = sem.getGenerador();
-        //System.out.println(sem.instruccionesToString());
         escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
         // Optimzaciones
-//            Optimizador op = new Optimizador(sem.getInstrucciones());
+        Optimizador op = new Optimizador(generadorCodigoIntermedio);
+        escribir("codigoOptimizado_" + nombreFichero + ".txt", op.toString());
         // Generación de código ensamblador
         GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
         escribir(nombreFichero + ".X68", codigoEnsamblador.toString());
