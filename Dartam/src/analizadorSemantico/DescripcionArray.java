@@ -12,34 +12,30 @@ public class DescripcionArray extends DescripcionSimbolo {
     private Integer numDimensionesVacias;
     //
     private ArrayList<String> variablesDimension;
-    private Integer valorConegutEnTC;
     public final String tipoElementoDelArray;
 //    public int dcamp; //Desplazamiento dentro del array
 
     /**
      * Array
      */
-    public DescripcionArray(String t, boolean isConst, ArrayList<SymbolOperand> dim, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
+    public DescripcionArray(String t, boolean isConst, ArrayList<SymbolOperand> dim, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, String var) {
         super(t, isConst, valorAsignado, tipoTupla, var);
         tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
         dimensiones = dim;
         this.variablesDimension = variablesDimension;
-        this.valorConegutEnTC = valorConegutEnTC;
     }
 
-    public DescripcionArray(String t, boolean isConst, Integer num, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, Integer valorConegutEnTC, String var) {
+    public DescripcionArray(String t, boolean isConst, Integer num, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, String var) {
         super(t, isConst, valorAsignado, tipoTupla, var);
         tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
         numDimensionesVacias = num;
         this.variablesDimension = variablesDimension;
-        this.valorConegutEnTC = valorConegutEnTC;
     }
 
     public DescripcionArray(DescripcionArray d) {
         super(d);
         dimensiones = d.dimensiones;
         variablesDimension = d.variablesDimension;
-        valorConegutEnTC = d.valorConegutEnTC;
         tipoElementoDelArray = d.tipoElementoDelArray;
         numDimensionesVacias = d.numDimensionesVacias;
     }
@@ -48,9 +44,6 @@ public class DescripcionArray extends DescripcionSimbolo {
         return variablesDimension;
     }
 
-    public Integer getOffsetTempsCompilacio() {
-        return valorConegutEnTC;
-    }
 
     //    //Array
 //    public void setTipoBase(SymbolTipo base) {

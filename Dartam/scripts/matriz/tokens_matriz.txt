@@ -368,14 +368,8 @@ OP_INC: ++
 SYM_LKEY: {
 TYPE_INT: ent
 SYM_LBRACKET: [
-ID: m
-SYM_PUNTO: .
-ID: filas
 SYM_RBRACKET: ]
 SYM_LBRACKET: [
-ID: m
-SYM_PUNTO: .
-ID: columnas
 SYM_RBRACKET: ]
 ID: aux
 OP_ASIG: :

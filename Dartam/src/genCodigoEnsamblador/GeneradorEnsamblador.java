@@ -134,7 +134,7 @@ public class GeneradorEnsamblador {
     private String crearEtiqueta(String s) {
         String etOriginal = s;
         int acumulador = 0;
-        while (etiquetas.contains(s)) {
+        while (etiquetas.contains(s) || variables.containsKey(s) || procedureTable.containsKey(s)) {
             s = etOriginal + acumulador++;
         }
         etiquetas.add(s);

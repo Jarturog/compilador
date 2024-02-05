@@ -7,6 +7,7 @@
  */
 package analizadorSintactico.symbols;
 
+import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 /**
@@ -162,7 +163,7 @@ public class SymbolOperand extends SymbolBase {
     }
 
     public SymbolOperand(SymbolTipoPrimitivo t, SymbolOperand op, Object lParen, Object rParen, Location l, Location r) {
-        super("operand", (String)lParen + t.value + rParen + op.value, l, r );
+        super("operand", (String)lParen + (t.value != null ? t.value : (ParserSym.terminalNames[ParserSym.CAR] + " []")) + rParen + op.value, l, r );
         this.op = op;
         this.member = null;
         this.atomicExp = null;
