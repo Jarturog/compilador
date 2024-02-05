@@ -9,19 +9,13 @@ package analizadorSemantico;
 
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
 import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
-import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
-import genCodigoEnsamblador.TablaProcedimientos;
 import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
-import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
-import genCodigoEnsamblador.VData;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import analizadorSintactico.symbols.*;
 import static dartam.Dartam.DEBUG;
-import genCodigoEnsamblador.PData;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -122,14 +116,23 @@ public class AnalizadorSemantico {
         inicializarMetodosEspeciales();
         // tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            DescripcionDefinicionTupla d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>(), g3d.nuevaVariable(tupla.id, Tipo.PUNTERO));
+            DescripcionDefinicionTupla d = (DescripcionDefinicionTupla) tablaSimbolos.consulta(tupla.id);
+            if (d != null) {
+                errores.add("Se han intentado nombrar dos tuplas iguales: " + tupla.id);
+                indicarLocalizacion(tupla);
+                continue;
+            }
+            d = new DescripcionDefinicionTupla(tupla.id, new ArrayList<>(), g3d.nuevaVariable(tupla.id, Tipo.PUNTERO));
             tablaSimbolos.poner(tupla.id, d);
+            g3d.anyadirTupla(tupla.id, d);
         }
         // interor de las tuplas
         for (SymbolScriptElemento tupla : tuplas) {
-            tuplaActualmenteSiendoTratada = new Pair<>(tupla.id, (DescripcionDefinicionTupla) tablaSimbolos.consulta(tupla.id));
+            DescripcionDefinicionTupla d = (DescripcionDefinicionTupla) tablaSimbolos.consulta(tupla.id);
+            tuplaActualmenteSiendoTratada = new Pair<>(tupla.id, d);
             procesarDeclaracionTupla(tupla);
             tuplaActualmenteSiendoTratada = null;
+            g3d.anyadirBytesEstructura(d.variableAsociada, d.getBytes());
         }
         // declaraciones
         for (SymbolDecs decs : declaraciones) {
@@ -137,10 +140,16 @@ public class AnalizadorSemantico {
         }
         // metodos
         for (SymbolScriptElemento metodo : metodos) {
+            DescripcionSimbolo d = tablaSimbolos.consulta(metodo.id);
+            if (d != null) {
+                errores.add("Se ha intentado nombrar el método " + metodo.id + " pero este identificador ya está en uso");
+                indicarLocalizacion(metodo);
+                continue;
+            }
             tablaSimbolos.entraBloque();
             ArrayList<Pair<String, String>> parametros = procesarParametros(metodo.parametros, metodo.id);
             tablaSimbolos.salirBloque();
-            DescripcionFuncion d = new DescripcionFuncion(metodo.tipoRetorno.getTipo(), parametros, g3d.nuevaEtiqueta(metodo.id));
+            d = new DescripcionFuncion(metodo.tipoRetorno.getTipo(), parametros, g3d.nuevaEtiqueta(metodo.id));
             tablaSimbolos.poner(metodo.id, d);
         }
         // main
@@ -193,10 +202,12 @@ public class AnalizadorSemantico {
             }
             // si es array
             ArrayList<String> variablesDimension = null;
+            ArrayList<Integer> valoresDimension = null;
             boolean arrayInicializado = false;
             if (tipo.isArray()) {
                 arrayInicializado = !tipo.dimArray.isEmpty();
                 variablesDimension = new ArrayList<>();
+                valoresDimension = new ArrayList<>();
                 int n = 0;
                 // procesamiento de izquierda a derecha
                 for (SymbolDimensiones dim = tipo.dimArray; dim != null; dim = dim.siguienteDimension) {
@@ -222,6 +233,7 @@ public class AnalizadorSemantico {
                     String varDimension = g3d.nuevaDimension(id, Tipo.getTipo(tipoIdx));
                     g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoIdx), varValor), null, new Operador(Tipo.getTipo(tipoIdx), varDimension));
                     variablesDimension.add(varDimension);
+                    valoresDimension.add((Integer) dim.operando.atomicExp.value); // suponiendo que son cosntantes valores
                 }
             }
             // si se ha asignado un valor
@@ -288,7 +300,7 @@ public class AnalizadorSemantico {
                 continue;
             }
             // no es un miembro de una tupla
-            String variableCodigoIntermedio = g3d.nuevaVariable(id, Tipo.getTipo(tipoValor == null ? tipo.getTipo() : tipoValor));
+            String variableCodigoIntermedio = g3d.nuevaVariable(id, tipo.isTupla() ? Tipo.ESTRUCTURA : (Tipo.getTipo(tipoValor == null ? tipo.getTipo() : tipoValor)));
             if (seHaAsignado) {
                 g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoValor), variableQueSeAsigna), null, new Operador(Tipo.getTipo(tipoValor), variableCodigoIntermedio));
             }
@@ -300,15 +312,27 @@ public class AnalizadorSemantico {
                             seHaAsignado || arrayInicializado, descTipoTupla, variablesDimension,
                             variableCodigoIntermedio);
                 } else { // array inicializado
+                    // suponiendo que valores son constantes
+                    int total = 0;
+                    for (int i = 0; i < valoresDimension.size(); i++) {
+                        total += valoresDimension.get(i);
+                    }
                     descVar = new DescripcionArray(tipo.getTipo(), decs.isConst,
                             tipo.dimArray.getDimensiones(),
                             seHaAsignado || arrayInicializado, descTipoTupla, variablesDimension,
                             variableCodigoIntermedio);
+                    g3d.anyadirBytesEstructura(descVar.variableAsociada, (tipo.isTupla() ? descTipoTupla.getBytes() : Tipo.getBytes(tipo.getTipoSinDimensiones())) * total);
                 }
             } else { // variable no array (puede o no ser de tipo tupla)
                 descVar = new DescripcionSimbolo(tipo.getTipo(), decs.isConst,
                         seHaAsignado || arrayInicializado, descTipoTupla,
                         variableCodigoIntermedio);
+                if (tipo.isTupla()) {
+                    g3d.anyadirBytesEstructura(descVar.variableAsociada, descTipoTupla.getBytes());//descVar.getBytes());
+                }
+            }
+            if (tipo.isTupla()) {
+                g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.ESTRUCTURA, descTipoTupla.variableAsociada), null, new Operador(Tipo.ESTRUCTURA, descVar.variableAsociada));
             }
             tablaSimbolos.poner(id, descVar);
         }
@@ -1421,7 +1445,7 @@ public class AnalizadorSemantico {
                 g3d.generarInstr(TipoInstr.IND_VAL, new Operador(Tipo.getTipo(tipoTupla), varTupla), new Operador(Tipo.INT, varDesp), new Operador(Tipo.getTipo(miembro.tipo), nuevaVariable));
                 varActual = nuevaVariable;
                 return miembro.tipo;
-            }   
+            }
             case CASTING -> {
                 SymbolOperand operando = op.op;
                 String casting = op.casting.getTipo();
@@ -1449,9 +1473,9 @@ public class AnalizadorSemantico {
                     varActual = nuevaVar;
                     return casting;
                 } else if (charAString) {
-                //    String nuevaVar = g3d.nuevaVariable(Tipo.STRING);
-                //    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.CHAR, varActual), null, new Operador(Tipo.STRING, nuevaVar));
-                //    varActual = nuevaVar;
+                    //    String nuevaVar = g3d.nuevaVariable(Tipo.STRING);
+                    //    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.CHAR, varActual), null, new Operador(Tipo.STRING, nuevaVar));
+                    //    varActual = nuevaVar;
                     return casting;
                 }
                 errores.add("Se ha intentado realizar un casting no permitido (" + op.toString() + ") de " + tipo + " a " + casting);

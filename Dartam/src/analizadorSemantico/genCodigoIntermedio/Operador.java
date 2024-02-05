@@ -40,7 +40,7 @@ public class Operador {
         return nombre;
     }
     
-    public String getNombreEnsamblador() {
+    public String getNombre() {
         return nombre;
     }
     

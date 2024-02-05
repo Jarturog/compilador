@@ -1,7 +1,16 @@
+tupla a {}
+tupla b {ent a: 20; car b;}
 f vacio inicio() {
-	car [256] a;
-	from("codigoIntermedio_calc2.txt", a); // izq: fichero. der: return value
-	show(a);
+	tupla a ups;
+	tupla b pimpin;
+	pimpin.a: 25; // 25
+	ent uxiono: 21; // 21
+	pimpin.a: uxiono; // 21
+	uxiono: 26; // 26
+	uxiono: pimpin.a; // 21
+	show("yuju");
+	//from("codigoIntermedio_calc2.txt", a); // izq: fichero. der: return value
+	//show(a);
 	//car[] a: "hola";
 	//car[] b: (car[])'m';
 	//show("a"+"hola");

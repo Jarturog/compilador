@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import jflex.base.Pair;
 
 public class PData {
-//        private final int profundidad; //Nivel de profundidad
-
     private final String nombre, etiqueta;
     private final ArrayList<Pair<String, String>> parametros;
     private final int bytesRetorno;
@@ -22,10 +20,6 @@ public class PData {
         this.bytesRetorno = bytesValorRetorno;
     }
 
-    //Recibimos la profundidad del procedimiento
-//        public int getProfundidad(){
-//            return this.profundidad;
-//        }
     //Recibimos la etiqueta del procedimientos
     public String getEtiqueta() {
         return this.etiqueta;

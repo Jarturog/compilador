@@ -406,6 +406,7 @@ public class GeneradorEnsamblador {
 
                 subprogramas.add(margen(idMetodo, "MOVEA.L", (2 * Tipo.PUNTERO.bytes) + "(SP), A1", "Pre: (A1) null terminated file name"));
                 subprogramas.add(margen("", "MOVEA.L", Tipo.PUNTERO.bytes + "(SP), A2", "A2: pop"));
+                //MOVE.L      A1, (A2)      ; -//subprogramas.add(margen("", "MOVE.L", "A2, A1", ""));
                 subprogramas.add(margen("", "MOVE.L", "#51, D0", "Task 51 of TRAP 15: Open existing file"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 subprogramas.add(margen("", "CMP.W", "#2, D0", "Si error"));
@@ -455,8 +456,8 @@ public class GeneradorEnsamblador {
     }
 
     private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
-        String s = getDeclaracionEnsamblador(data.tipo, inicializacion);
-        datos.add(margen(id, s, "", data.tipo.toString()));
+        String s = getDeclaracionEnsamblador(data, inicializacion);
+        datos.add(margen(id, s, "", data.tipo().toString()));
         if (s.startsWith("DC.B") || s.startsWith("DS.B")) {
             datos.add(margen("", "DC.B 0", "", "Los strings y chars acaban en 0"));
         }
@@ -515,7 +516,8 @@ public class GeneradorEnsamblador {
         return parteIzq + " ".repeat(margenDer) + (com.isEmpty() ? "" : "; ") + com;
     }
 
-    public static String getDeclaracionEnsamblador(Tipo tipo, Object inicializacion) throws Exception {
+    public static String getDeclaracionEnsamblador(VData data, Object inicializacion) throws Exception {
+        Tipo tipo = data.tipo();
         String ext = tipo.getExtension68K();
         if (inicializacion == null) {
             switch (tipo) {
@@ -531,13 +533,18 @@ public class GeneradorEnsamblador {
                 case INT -> {
                     return "DS" + ext + " " + 1;
                 }
-                case STRING -> {
-                    return "DS.L 1"; // como un puntero
+                case ESTRUCTURA -> {
+                    return "DS.B " + data.getBytesEstructura();
                 }
-                case PUNTERO -> {
-                    return "DS.L 1";
+                case STRING, PUNTERO -> {
+                    Integer n = data.getBytesEstructura();
+                    if (n == null) {
+                        return "DS.L 1"; // puntero a algo (a un string, a un array, a una tupla)
+                    } else {
+                        return "DS.B " + n; // instancia de array, string o tupla
+                    }
                 }
-                default -> {
+                default ->{
                     throw new Exception("Declarando tipo inválido: " + tipo);
                 }
             }

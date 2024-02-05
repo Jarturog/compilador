@@ -8,14 +8,28 @@
 
             ORG         $1000       ; Origen
 
-t           DC.L 256                ; INT
-t_1         DC.B 'codigoIntermedio_calc2.txt'  ; STRING
+t           DC.L 20                 ; INT
+t_1         DC.L 25                 ; INT
+t_2         DC.L 0                  ; INT
+uxiono      DC.L 21                 ; INT
+t_4         DC.L 0                  ; INT
+t_6         DC.L 0                  ; INT
+t_8         DC.B 'yuju'             ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-errRead     DC.B 'Error de lectura',0  ; Mensaje de error
-            DS.W 0                  ; Para evitar imparidad
-a           DS.L 1                  ; STRING
-d_a         DS.L 1                  ; INT
+a           DS.B 0                  ; POINTER TO ARRAY OR TUPLE
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+b           DS.B 5                  ; POINTER TO ARRAY OR TUPLE
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+t_7         DS.L 1                  ; INT
+pimpin      DS.B 5                  ; COPY OF ARRAY OR TUPLE
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+ups         DS.B 0                  ; COPY OF ARRAY OR TUPLE
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
 CALC2                               ; Etiqueta inicial (main)
 
             MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
@@ -26,21 +40,35 @@ CALC2                               ; Etiqueta inicial (main)
 
 ; --------- e_inicio: skip          
 ; --------- pmb e_inicio            
-; --------- d_a = t                 
-e_inicio:   MOVE.L      t, D0       ; D0 = t
-            MOVE.L      D0, d_a     ; d_a = D0
-; --------- param_s t_1             
-            LEA.L       t_1, A0     ; A0 = t_1
-            MOVE.L      A0, -(SP)   ; PUSH INTO STACK t_1
-; --------- param_s a               
-            LEA.L       a, A0       ; A0 = a
-            MOVE.L      A0, -(SP)   ; PUSH INTO STACK a
-; --------- call e_from_1           
-            JSR         e_from_1    ; JUMP TO SUBROUTINE e_from_1
-            ADDA.L      #8, SP      ; SP = SP + 8
-; --------- param_s a               
-            LEA.L       a, A0       ; A0 = a
-            MOVE.L      A0, -(SP)   ; PUSH INTO STACK a
+; --------- ups = a                 
+e_inicio:   CLR.L       D0          ; CLEAR D0
+            MOVE.B      a, D0       ; D0 = a
+            MOVE.B      D0, ups     ; ups = D0
+; --------- pimpin = b              
+            CLR.L       D0          ; CLEAR D0
+            MOVE.B      b, D0       ; D0 = b
+            MOVE.B      D0, pimpin  ; pimpin = D0
+; --------- pimpin[t_2] = t_1       
+            MOVEA.L     pimpin, A0  ; A0 = pimpin
+            ADDA.L      t_1, A0     ; A0 = A0 + t_1
+            MOVE.L      t_2, (A0)   ; (A0) = t_2
+; --------- pimpin[t_4] = uxiono    
+            MOVEA.L     pimpin, A0  ; A0 = pimpin
+            ADDA.L      uxiono, A0  ; A0 = A0 + uxiono
+            MOVE.L      t_4, (A0)   ; (A0) = t_4
+; --------- uxiono = 26             
+            MOVE.L      #26, D0     ; D0 = #26
+            MOVE.L      D0, uxiono  ; uxiono = D0
+; --------- t_7 = pimpin[t_6]       
+            MOVEA.L     pimpin, A0  ; A0 = pimpin
+            ADDA.L      t_6, A0     ; A0 = A0 + t_6
+            MOVE.L      (A0), t_7   ; t_7 = (A0)
+; --------- uxiono = t_7            
+            MOVE.L      t_7, D0     ; D0 = t_7
+            MOVE.L      D0, uxiono  ; uxiono = D0
+; --------- param_s t_8             
+            LEA.L       t_8, A0     ; A0 = t_8
+            MOVE.L      A0, -(SP)   ; PUSH INTO STACK t_8
 ; --------- call e_show             
             JSR         e_show      ; JUMP TO SUBROUTINE e_show
             ADDA.L      #4, SP      ; SP = SP + 4
@@ -50,23 +78,6 @@ e_inicio:   MOVE.L      t, D0       ; D0 = t
 
 
 
-e_from_1    MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
-            MOVEA.L     4(SP), A2   ; A2: pop
-            MOVE.L      #51, D0     ; Task 51 of TRAP 15: Open existing file
-            TRAP        #15         ; Interruption generated
-            CMP.W       #2, D0      ; Si error
-            BEQ         .e_from_1   ; Fin
-            MOVEA.L     A2, A1      
-            MOVE.L      #256, D2    
-            MOVE.L      #53, D0     ; Task 53 of TRAP 15: Read file
-            TRAP        #15         ; Interruption generated
-            MOVE.L      #56, D0     ; Task 56 of TRAP 15: Close file
-            TRAP        #15         ; Interruption generated
-            RTS                     ; RETURN TO SUBROUTINE ...
-.e_from_1:  LEA.L       errRead, A1 ; A1 = mnsj error
-            MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
-            TRAP        #15         ; Interruption generated
-            RTS                     ; RETURN TO SUBROUTINE ...
 e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
             MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
             TRAP        #15         ; Interruption generated

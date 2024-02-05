@@ -1,7 +1,7 @@
 package analizadorSemantico.genCodigoIntermedio;
 
+import analizadorSemantico.DescripcionDefinicionTupla;
 import genCodigoEnsamblador.PData;
-import genCodigoEnsamblador.TablaProcedimientos;
 import genCodigoEnsamblador.VData;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
 import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
@@ -16,6 +16,7 @@ public class Generador3Direcciones {
     private final HashSet<String> tablaEtiquetas;
     private final HashMap<String, PData> tablaProcedimientos;
     private final HashMap<String, Integer> numEtiquetasOVariablesConId;
+    private final HashMap<String, DescripcionDefinicionTupla> tablaTuplas;
     //private final HashSet<String> variablesInicializadas = new HashSet<>();
 //    private final ArrayList<String> listaProcedimientos; //Funcionara como una pila
     private final ArrayList<Instruccion> instrucciones;
@@ -29,6 +30,7 @@ public class Generador3Direcciones {
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
         tablaEtiquetas = new HashSet<>();
+        tablaTuplas = new HashMap<>();
     }
 
     public Generador3Direcciones(HashMap<String, VData> tv, HashMap<String, PData> tp) {
@@ -38,6 +40,7 @@ public class Generador3Direcciones {
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
         tablaEtiquetas = new HashSet<>();
+        tablaTuplas = new HashMap<>();
     }
 
 //    public String nuevoN(String nombre) {
@@ -57,7 +60,7 @@ public class Generador3Direcciones {
     }
 
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public String nuevaVariable(Tipo t) {
+    public String nuevaVariable(Tipo t) throws Exception {
         String idVar = conseguirIdentificadorUnico("t");
         VData data = new VData(t);
         tablaVariables.put(idVar, data);
@@ -65,7 +68,7 @@ public class Generador3Direcciones {
     }
 
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public String nuevaVariable(String id, Tipo t) {
+    public String nuevaVariable(String id, Tipo t) throws Exception {
         String idVar = conseguirIdentificadorUnico(id);
         VData data = new VData(t);
         tablaVariables.put(idVar, data);
@@ -88,11 +91,19 @@ public class Generador3Direcciones {
         return idVar;
     }
 
-    public String nuevaDimension(String idArray, Tipo t) {
+    public String nuevaDimension(String idArray, Tipo t) throws Exception {
         String idVar = conseguirIdentificadorUnico("d_" + idArray);
-        VData data = new VData(t);
+        VData data = new VData(t); // es un entero
         tablaVariables.put(idVar, data);
         return idVar;
+    }
+    
+    public void anyadirBytesEstructura(String var, int b) {
+        tablaVariables.get(var).setBytesEstructura(b);
+    }
+    
+    public void anyadirTupla(String id, DescripcionDefinicionTupla t) {
+        tablaTuplas.put(id, t);
     }
 
 //    //Devuelve la función que esta en el top de la pila

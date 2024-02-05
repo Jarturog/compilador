@@ -66,7 +66,11 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
             this.isConst = isConst;
             this.valorAsignado = valorAsignado;
             this.tipoTupla = tipoTupla;
-            bytes = Tipo.getTipo(tipo).bytes;
+            if (tipoTupla == null) {
+                bytes = Tipo.getTipo(tipo).bytes;
+            } else {
+                bytes = tipoTupla.getBytes();
+            }
             this.varInit = varInit;
         }
 

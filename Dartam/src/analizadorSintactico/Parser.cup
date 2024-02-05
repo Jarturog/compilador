@@ -233,8 +233,8 @@ DECS ::= KW_CONST:et1 TIPO:et2 DEC_ASIG_LISTA:et3 ENDINSTR     {: RESULT = new S
         | TIPO:et1 DEC_ASIG_LISTA:et2 ENDINSTR                 {: RESULT = new SymbolDecs(false, et1,et2, et1xleft, et1xright); :}
         ; 
 
-DIMENSIONES ::= LBRACKET:l OPERAND:et1 RBRACKET:r DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(et1, et2, l, r, lxleft, lxright); :}
-        | LBRACKET:l OPERAND:et1 RBRACKET:r                         {: RESULT = new SymbolDimensiones(et1, l, r, lxleft, lxright); :}
+DIMENSIONES ::= LBRACKET:l ATOMIC_EXPRESSION:et1 RBRACKET:r DIMENSIONES:et2   {: RESULT = new SymbolDimensiones(new SymbolOperand(et1, et1xleft, et1xright), et2, l, r, lxleft, lxright); :}
+        | LBRACKET:l ATOMIC_EXPRESSION:et1 RBRACKET:r                         {: RESULT = new SymbolDimensiones(new SymbolOperand(et1, et1xleft, et1xright), l, r, lxleft, lxright); :}
         ;
 
 DIMENSIONES_VACIAS ::= LBRACKET:l RBRACKET:r DIMENSIONES_VACIAS:et2   {: RESULT = new SymbolDimensiones(null, et2, l, r, lxleft, lxright); :}

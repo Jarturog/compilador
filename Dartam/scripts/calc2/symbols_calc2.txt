@@ -1,4 +1,6 @@
 into:		Función de tipo 'PROP'  con argumentosCAR [] file, CAR [] content declarado en el nivel 1
+a:			Tupla sin miembros declarado en el nivel 1
+b:			Tupla con miembros ENT a CAR b declarado en el nivel 1
 show:		Función de tipo 'KW_VOID'  con argumentosCAR [] output declarado en el nivel 1
 inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
 from:		Función de tipo 'KW_VOID'  con argumentosCAR [] file, CAR [] e_from declarado en el nivel 1

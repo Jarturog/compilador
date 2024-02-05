@@ -91,7 +91,7 @@ public class TablaSimbolos {
 
         if (sd != null) { //Existe actualmente
             if (sd.getNivel() == this.n) { //Si ya hay uno al mismo nivel error
-                throw new Exception("Ya existe una entrada con el mismo nombre en el mismo nivel");
+                throw new Exception("El identificador " + id + " se repite varias veces para la declaración de elementos");
             }
 
             //Si no estan declaradas al mismo nivel

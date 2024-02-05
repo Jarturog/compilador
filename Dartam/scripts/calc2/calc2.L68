@@ -1,6 +1,6 @@
-0000103A Starting Address
+00001032 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 05/02/2024 18:10:11
+Created On: 05/02/2024 22:48:00
 
 00000000                             1  ; ==============================================================================
 00000000                             2  ; TITLE       : calc2
@@ -12,70 +12,81 @@ Created On: 05/02/2024 18:10:11
 00000000                             8  
 00001000                             9              ORG         $1000       ; Origen
 00001000                            10  
-00001000= 00000100                  11  t           DC.L 256                ; INT
-00001004= 63 6F 64 69 67 6F ...     12  t_1         DC.B 'codigoIntermedio_calc2.txt'  ; STRING
-0000101E= 00                        13              DC.B 0                  ; Los strings y chars acaban en 0
-00001020                            14              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001020= 45 72 72 6F 72 20 ...     15  errRead     DC.B 'Error de lectura',0  ; Mensaje de error
-00001032                            16              DS.W 0                  ; Para evitar imparidad
-00001032                            17  a           DS.L 1                  ; STRING
-00001036                            18  d_a         DS.L 1                  ; INT
-0000103A                            19  CALC2                               ; Etiqueta inicial (main)
-0000103A                            20  
-0000103A  7020                      21              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
-0000103C  123C 0005                 22              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
-00001040  4E4F                      23              TRAP        #15         ; Interruption generated
-00001042  4EB9 0000104C             24              JSR         e_inicio    ; Se ejecuta el main
-00001048  FFFF FFFF                 25              SIMHALT                 ; Fin de la ejecución
-0000104C                            26  
-0000104C                            27  ; --------- e_inicio: skip          
-0000104C                            28  ; --------- pmb e_inicio            
-0000104C                            29  ; --------- d_a = t                 
-0000104C  2038 1000                 30  e_inicio:   MOVE.L      t, D0       ; D0 = t
-00001050  21C0 1036                 31              MOVE.L      D0, d_a     ; d_a = D0
-00001054                            32  ; --------- param_s t_1             
-00001054  41F8 1004                 33              LEA.L       t_1, A0     ; A0 = t_1
-00001058  2F08                      34              MOVE.L      A0, -(SP)   ; PUSH INTO STACK t_1
-0000105A                            35  ; --------- param_s a               
-0000105A  41F8 1032                 36              LEA.L       a, A0       ; A0 = a
-0000105E  2F08                      37              MOVE.L      A0, -(SP)   ; PUSH INTO STACK a
-00001060                            38  ; --------- call e_from_1           
-00001060  4EB9 00001078             39              JSR         e_from_1    ; JUMP TO SUBROUTINE e_from_1
-00001066  508F                      40              ADDA.L      #8, SP      ; SP = SP + 8
-00001068                            41  ; --------- param_s a               
-00001068  41F8 1032                 42              LEA.L       a, A0       ; A0 = a
-0000106C  2F08                      43              MOVE.L      A0, -(SP)   ; PUSH INTO STACK a
-0000106E                            44  ; --------- call e_show             
-0000106E  4EB9 000010A8             45              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-00001074  588F                      46              ADDA.L      #4, SP      ; SP = SP + 4
-00001076                            47  ; --------- rtn e_inicio            
-00001076  4E75                      48              RTS                     ; RETURN TO SUBROUTINE e_inicio
-00001078                            49  
-00001078                            50  
-00001078                            51  
-00001078                            52  
-00001078  226F 0008                 53  e_from_1    MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
-0000107C  246F 0004                 54              MOVEA.L     4(SP), A2   ; A2: pop
-00001080  7033                      55              MOVE.L      #51, D0     ; Task 51 of TRAP 15: Open existing file
-00001082  4E4F                      56              TRAP        #15         ; Interruption generated
-00001084  B07C 0002                 57              CMP.W       #2, D0      ; Si error
-00001088  6700 0014                 58              BEQ         .e_from_1   ; Fin
-0000108C  224A                      59              MOVEA.L     A2, A1      
-0000108E  243C 00000100             60              MOVE.L      #256, D2    
-00001094  7035                      61              MOVE.L      #53, D0     ; Task 53 of TRAP 15: Read file
-00001096  4E4F                      62              TRAP        #15         ; Interruption generated
-00001098  7038                      63              MOVE.L      #56, D0     ; Task 56 of TRAP 15: Close file
-0000109A  4E4F                      64              TRAP        #15         ; Interruption generated
-0000109C  4E75                      65              RTS                     ; RETURN TO SUBROUTINE ...
-0000109E  43F8 1020                 66  .e_from_1:  LEA.L       errRead, A1 ; A1 = mnsj error
-000010A2  700D                      67              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
-000010A4  4E4F                      68              TRAP        #15         ; Interruption generated
-000010A6  4E75                      69              RTS                     ; RETURN TO SUBROUTINE ...
-000010A8  226F 0004                 70  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
-000010AC  700D                      71              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
-000010AE  4E4F                      72              TRAP        #15         ; Interruption generated
-000010B0  4E75                      73              RTS                     ; RETURN TO SUBROUTINE ...
-000010B2                            74              END CALC2               ; Fin del programa
+00001000= 00000014                  11  t           DC.L 20                 ; INT
+00001004= 00000019                  12  t_1         DC.L 25                 ; INT
+00001008= 00000000                  13  t_2         DC.L 0                  ; INT
+0000100C= 00000015                  14  uxiono      DC.L 21                 ; INT
+00001010= 00000000                  15  t_4         DC.L 0                  ; INT
+00001014= 00000000                  16  t_6         DC.L 0                  ; INT
+00001018= 79 75 6A 75               17  t_8         DC.B 'yuju'             ; STRING
+0000101C= 00                        18              DC.B 0                  ; Los strings y chars acaban en 0
+0000101E                            19              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000101E                            20  a           DS.B 0                  ; POINTER TO ARRAY OR TUPLE
+0000101E= 00                        21              DC.B 0                  ; Los strings y chars acaban en 0
+00001020                            22              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001020                            23  b           DS.B 5                  ; POINTER TO ARRAY OR TUPLE
+00001025= 00                        24              DC.B 0                  ; Los strings y chars acaban en 0
+00001026                            25              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001026                            26  t_7         DS.L 1                  ; INT
+0000102A                            27  pimpin      DS.B 5                  ; COPY OF ARRAY OR TUPLE
+0000102F= 00                        28              DC.B 0                  ; Los strings y chars acaban en 0
+00001030                            29              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001030                            30  ups         DS.B 0                  ; COPY OF ARRAY OR TUPLE
+00001030= 00                        31              DC.B 0                  ; Los strings y chars acaban en 0
+00001032                            32              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001032                            33  CALC2                               ; Etiqueta inicial (main)
+00001032                            34  
+00001032  7020                      35              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+00001034  123C 0005                 36              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+00001038  4E4F                      37              TRAP        #15         ; Interruption generated
+0000103A  4EB9 00001044             38              JSR         e_inicio    ; Se ejecuta el main
+00001040  FFFF FFFF                 39              SIMHALT                 ; Fin de la ejecución
+00001044                            40  
+00001044                            41  ; --------- e_inicio: skip          
+00001044                            42  ; --------- pmb e_inicio            
+00001044                            43  ; --------- ups = a                 
+00001044  4280                      44  e_inicio:   CLR.L       D0          ; CLEAR D0
+00001046  1038 101E                 45              MOVE.B      a, D0       ; D0 = a
+0000104A  11C0 1030                 46              MOVE.B      D0, ups     ; ups = D0
+0000104E                            47  ; --------- pimpin = b              
+0000104E  4280                      48              CLR.L       D0          ; CLEAR D0
+00001050  1038 1020                 49              MOVE.B      b, D0       ; D0 = b
+00001054  11C0 102A                 50              MOVE.B      D0, pimpin  ; pimpin = D0
+00001058                            51  ; --------- pimpin[t_2] = t_1       
+00001058  2078 102A                 52              MOVEA.L     pimpin, A0  ; A0 = pimpin
+0000105C  D1F8 1004                 53              ADDA.L      t_1, A0     ; A0 = A0 + t_1
+00001060  20B8 1008                 54              MOVE.L      t_2, (A0)   ; (A0) = t_2
+00001064                            55  ; --------- pimpin[t_4] = uxiono    
+00001064  2078 102A                 56              MOVEA.L     pimpin, A0  ; A0 = pimpin
+00001068  D1F8 100C                 57              ADDA.L      uxiono, A0  ; A0 = A0 + uxiono
+0000106C  20B8 1010                 58              MOVE.L      t_4, (A0)   ; (A0) = t_4
+00001070                            59  ; --------- uxiono = 26             
+00001070  701A                      60              MOVE.L      #26, D0     ; D0 = #26
+00001072  21C0 100C                 61              MOVE.L      D0, uxiono  ; uxiono = D0
+00001076                            62  ; --------- t_7 = pimpin[t_6]       
+00001076  2078 102A                 63              MOVEA.L     pimpin, A0  ; A0 = pimpin
+0000107A  D1F8 1014                 64              ADDA.L      t_6, A0     ; A0 = A0 + t_6
+0000107E  21D0 1026                 65              MOVE.L      (A0), t_7   ; t_7 = (A0)
+00001082                            66  ; --------- uxiono = t_7            
+00001082  2038 1026                 67              MOVE.L      t_7, D0     ; D0 = t_7
+00001086  21C0 100C                 68              MOVE.L      D0, uxiono  ; uxiono = D0
+0000108A                            69  ; --------- param_s t_8             
+0000108A  41F8 1018                 70              LEA.L       t_8, A0     ; A0 = t_8
+0000108E  2F08                      71              MOVE.L      A0, -(SP)   ; PUSH INTO STACK t_8
+00001090                            72  ; --------- call e_show             
+00001090  4EB9 0000109A             73              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001096  588F                      74              ADDA.L      #4, SP      ; SP = SP + 4
+00001098                            75  ; --------- rtn e_inicio            
+00001098  4E75                      76              RTS                     ; RETURN TO SUBROUTINE e_inicio
+0000109A                            77  
+0000109A                            78  
+0000109A                            79  
+0000109A                            80  
+0000109A  226F 0004                 81  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+0000109E  700D                      82              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+000010A0  4E4F                      83              TRAP        #15         ; Interruption generated
+000010A2  4E75                      84              RTS                     ; RETURN TO SUBROUTINE ...
+000010A4                            85              END CALC2               ; Fin del programa
 
 No errors detected
 No warnings generated
@@ -84,13 +95,18 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-A                   1032
-CALC2               103A
-D_A                 1036
-ERRREAD             1020
-E_FROM_1            1078
-E_FROM_1:E_FROM_1   109E
-E_INICIO            104C
-E_SHOW              10A8
+A                   101E
+B                   1020
+CALC2               1032
+E_INICIO            1044
+E_SHOW              109A
+PIMPIN              102A
 T                   1000
 T_1                 1004
+T_2                 1008
+T_4                 1010
+T_6                 1014
+T_7                 1026
+T_8                 1018
+UPS                 1030
+UXIONO              100C
