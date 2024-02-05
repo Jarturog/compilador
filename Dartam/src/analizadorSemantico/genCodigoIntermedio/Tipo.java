@@ -3,7 +3,7 @@ package analizadorSemantico.genCodigoIntermedio;
 import analizadorSintactico.ParserSym;
 
 public enum Tipo {
-    INT(Integer.BYTES), CHAR(Character.BYTES), BOOL(1), DOUBLE(Double.BYTES), PUNTERO(4), STRING(256);
+    INT(Integer.BYTES), CHAR(1 /* elegido por 68K */), BOOL(1), DOUBLE(Double.BYTES), PUNTERO(4), STRING(256);
 
     public static final int FALSE = 0, TRUE = -1;
     public final Integer bytes;
@@ -34,6 +34,19 @@ public enum Tipo {
         return t == null ? null : t.bytes;
     }
 
+    public static Integer getBytes(Object valor) {
+        if (valor instanceof Integer) {
+            return INT.bytes;
+        } else if (valor instanceof Character) {
+            return CHAR.bytes;
+        } else if (valor instanceof Boolean) {
+            return BOOL.bytes;
+        } else if (valor instanceof Double) {
+            return DOUBLE.bytes;
+        }
+        return null;
+    }
+    
     public String getExtension68K() {
         return switch (bytes) {
             case 1 -> ".B";
@@ -49,7 +62,15 @@ public enum Tipo {
 
     @Override
     public String toString() {
-        return bytes.toString();
+        return switch (this) {
+            case INT -> "INT";
+            case CHAR -> "CHAR";
+            case BOOL -> "BOOLEAN";
+            case DOUBLE -> "REAL NUMBER";
+            case PUNTERO -> "POINTER TO ARRAY OR TUPLE";
+            case STRING -> "STRING";
+            default -> null;
+        };
     }
 
     public static enum TipoReferencia {

@@ -9,7 +9,7 @@ public class VData {
 
     private int indiceTablaVariables;
 //    private final TipoReferencia tipoVariable;
-    private final Tipo tipo;
+    public final Tipo tipo;
     private Object initCodigoIntermedio = null;
     private boolean initCodigoEnsamblador = false;
     private String idProcedimiento;
@@ -20,24 +20,24 @@ public class VData {
 
     public VData(Tipo t) {
         tipo = t;
-       // this.inicializacion = init;
+        // this.inicializacion = init;
 //        this.idProcedimiento = idp;
         this.parametrosTupla = new ArrayList<>();
     }
-    
+
     public boolean estaInicializadaEnCodigoIntermedio() {
         return initCodigoIntermedio != null;
     }
-    
+
     public boolean estaInicializadaEnCodigoEnsamblador() {
         return initCodigoEnsamblador;
     }
-    
+
     public void inicializar(Object o) {
         initCodigoIntermedio = o;
     }
-    
-    public void inicializar(){
+
+    public void inicializar() {
         initCodigoEnsamblador = true;
     }
 
@@ -79,20 +79,7 @@ public class VData {
 //    public void añadirElementoTupla(Pair<Integer, Tipo> e){
 //        this.parametrosTupla.add(e);
 //    }
-    /**
-     * !!!!!!!!!! los bytes deberían influir en el tamaño ----------------------------------------------------------------------------------------------------------------------------------------
-     * @param inicializacion
-     * @return
-     * @throws Exception 
-     */
-    public String getDeclaracionEnsamblador(Object inicializacion) throws Exception {
-        if (inicializacion == null) {
-            return "DS.L 1";
-        } else if (!(inicializacion instanceof String)) {
-            return "DC.L " + inicializacion.toString();
-        } else if (inicializacion instanceof String) {
-            return "DC.B '" + inicializacion.toString() + "',0";
-        }
-        throw new Exception("Valor de inicialización " + inicializacion.toString() + " inválido");
-    }
+
+    
+
 }

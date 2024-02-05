@@ -62,13 +62,13 @@ public class SymbolAtomicExpression extends SymbolBase {
 
     public Object getValorCodigoIntermedio() {
         if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR])) {
-            return (int)(char)value;
+            return (Character)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-            return (int)value;
+            return (Integer)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-            return (double)value;
+            return (Double)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
-            return (int)((Boolean) value ? Tipo.TRUE : Tipo.FALSE);
+            return (Integer)((Boolean) value ? Tipo.TRUE : Tipo.FALSE);
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {
             return value.toString();
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR] + " []")) {

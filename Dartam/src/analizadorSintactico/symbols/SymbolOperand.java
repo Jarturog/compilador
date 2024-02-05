@@ -163,7 +163,7 @@ public class SymbolOperand extends SymbolBase {
     }
 
     public SymbolOperand(SymbolTipoPrimitivo t, SymbolOperand op, Object lParen, Object rParen, Location l, Location r) {
-        super("operand", (String)lParen + (t != null ? t.value : (ParserSym.terminalNames[ParserSym.CAR] + " []")) + rParen + op.value, l, r );
+        super("operand", (String)lParen + (t != null ? t.value : (ParserSym.terminalNames[ParserSym.CAR].toLowerCase() + " []")) + rParen + op.value, l, r );
         this.op = op;
         this.member = null;
         this.atomicExp = null;
@@ -174,7 +174,7 @@ public class SymbolOperand extends SymbolBase {
         this.conditionalExp = null;
         this.lBracket = null;
         this.rBracket = null;
-        this.casting = new SymbolStringCasting(ParserSym.terminalNames[ParserSym.CAR] + " []");
+        this.casting = t != null ? t : new SymbolStringCasting(ParserSym.terminalNames[ParserSym.CAR] + " []");
     }
     
     public static enum TIPO {

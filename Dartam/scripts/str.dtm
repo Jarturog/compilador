@@ -1,4 +1,4 @@
-f vacio inicio(car[][] argumentos) {
+f vacio inicio() {
 	car[] string: "Hola mundo";
 	show(string);
 	string: "miau";

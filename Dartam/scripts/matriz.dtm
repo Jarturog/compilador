@@ -5,7 +5,7 @@ tupla matriz3 {
 	ent [3][3] datos;
 }
 
-f vacio inicio(car[][] argumentos) {
+f vacio inicio() {
  
 	tupla matriz3 A;
     // Inicializar matrices A y B

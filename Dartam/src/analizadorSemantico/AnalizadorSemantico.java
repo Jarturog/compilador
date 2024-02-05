@@ -951,16 +951,11 @@ public class AnalizadorSemantico {
         tablaSimbolos.entraBloque();
         DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(main.nombreMain);
         metodoActualmenteSiendoTratado = new Pair(main.nombreMain, df);
-        String tipo = ParserSym.terminalNames[ParserSym.CAR] + " " + main.lBracket + main.rBracket + main.lBracket + main.rBracket;
 
-        //String etiquetaMain = g3d.nuevaEtiqueta(main.nombreMain); //Etiqueta main
-        //Lo añadimos a la tabla de funciones TODO: Revisar tema de profundidad!!
 //        int numeroProcedure = g3d.nuevoProcedimiento(main.nombreMain, metodoActualmenteSiendoTratado.snd.nivel, etiquetaMain);
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(df.variableAsociada));
         g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(df.variableAsociada));
 
-        DescripcionSimbolo d = new DescripcionSimbolo(tipo, false, true, null, g3d.nuevaVariable(main.nombreArgumentos, Tipo.getTipo(tipo)));
-        tablaSimbolos.poner(main.nombreArgumentos, d);
         procesarBody(body);
         tablaSimbolos.salirBloque();
         g3d.generarInstr(TipoInstr.RETURN, null, null, new Operador(Tipo.getTipo(df.tipo), df.variableAsociada));
@@ -1449,8 +1444,11 @@ public class AnalizadorSemantico {
                 boolean opEsIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 boolean castingEsIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) || casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 //boolean charAString = casting.equals(ParserSym.terminalNames[ParserSym.STRING]) && tipo.equals(ParserSym.terminalNames[ParserSym.CAR]);
-                // casting posible entre int <-> char <-> double <-> int // no: y de char -> string
+                // casting posible entre int <-> char <-> double <-> int y de char -> string
                 if (opEsIntCharDouble && castingEsIntCharDouble) {
+                    String nuevaVar = g3d.nuevaVariable(Tipo.getTipo(casting));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipo), varActual), null, new Operador(Tipo.getTipo(casting), nuevaVar));
+                    varActual = nuevaVar;
                     return casting;
                 } else if (charAString) {
                     String nuevaVar = g3d.nuevaVariable(Tipo.STRING);

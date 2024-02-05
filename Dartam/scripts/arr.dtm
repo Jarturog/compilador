@@ -1,4 +1,4 @@
-f vacio inicio(car[][] argumentos) {
+f vacio inicio() {
 	car [3][4+5] arr;
 	arr[0][1]: ' ';
 	car[][] c;

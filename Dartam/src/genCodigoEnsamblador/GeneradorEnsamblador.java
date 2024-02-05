@@ -4,6 +4,12 @@ import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
 import analizadorSemantico.genCodigoIntermedio.Tipo;
+import static analizadorSemantico.genCodigoIntermedio.Tipo.BOOL;
+import static analizadorSemantico.genCodigoIntermedio.Tipo.CHAR;
+import static analizadorSemantico.genCodigoIntermedio.Tipo.DOUBLE;
+import static analizadorSemantico.genCodigoIntermedio.Tipo.INT;
+import static analizadorSemantico.genCodigoIntermedio.Tipo.PUNTERO;
+import static analizadorSemantico.genCodigoIntermedio.Tipo.STRING;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -113,7 +119,10 @@ public class GeneradorEnsamblador {
         }
         add("END " + etiqueta_main, "", "Fin del programa");
         for (HashMap.Entry<String, VData> variable : variables.entrySet()) {
-            declararVariable(variable.getKey(), variable.getValue(), null);
+            VData data = variable.getValue();
+            if (!data.estaInicializadaEnCodigoEnsamblador()) {
+                declararVariable(variable.getKey(), data, null);
+            }
         }
     }
 
@@ -141,23 +150,28 @@ public class GeneradorEnsamblador {
         return s;
     }
 
-    private String load(Operador op, String sOp) throws Exception {
+    private String load(Operador op, String sOp, Tipo t) throws Exception {
         if (AnActual > 6 || DnActual > 7) {
             throw new Exception("Error fatal, no existen suficientes registros para conseguir A" + AnActual + " y D" + DnActual + " sin generar conflictos");
         }
-        String register;
-        if (!op.isLiteral()) {
+        String register, instr;
+        if (op.isPuntero()) {//(!op.isLiteral()) {
             register = "A" + AnActual++;
-            add(getEtiqueta(), "LEA" + op.getExtension68K(), sOp + ", " + register, register + " = @" + sOp);
+            instr = "LEA";
         } else {
             register = "D" + DnActual++;
-            add(getEtiqueta(), "MOVE" + op.getExtension68K(), sOp + ", " + register, register + " = " + sOp);
+            instr = "MOVE";
         }
+        String ext = t.getExtension68K();
+        if(!ext.endsWith("L")){
+            add(getEtiqueta(), "CLR.L ", register, "CLEAR " + register);
+        }
+        add(getEtiqueta(), instr + ext, sOp + ", " + register, register + " = " + sOp);
         return register;
     }
 
-    private void store(String from, String to) {
-        add(getEtiqueta(), "MOVE.L ", from + ", " + to, to + " = " + from);
+    private void store(String from, String to, Tipo t) {
+        add(getEtiqueta(), "MOVE" + t.getExtension68K() + " ", from + ", " + to, to + " = " + from);
     }
 
     private void push(String s) {
@@ -186,8 +200,8 @@ public class GeneradorEnsamblador {
         opdst = instruccion.dst;
         switch (instruccion.getTipo()) {
             case COPY -> { // op1 -> dst
-                String register = load(opop1, op1);
-                store(register, dst);
+                String register = load(opop1, op1, opop1.getTipo());
+                store(register, dst, opdst.getTipo());
             }
             case NEG -> { // -op1 -> dst
                 add(getEtiqueta(), "MOVE.L", op1 + ", D0", "D0 = " + op1);
@@ -195,16 +209,16 @@ public class GeneradorEnsamblador {
                 add("MOVE.L", "D0, " + dst, dst + " = D0");
             }
             case ADD -> { // op1+op2 -> dst
-                String r1 = load(opop1, op1);
-                String r2 = load(opop2, op2);
+                String r1 = load(opop1, op1, opop1.getTipo());
+                String r2 = load(opop2, op2, opop2.getTipo());
                 add("ADD.L", r1 + ", " + r2, r2 + " = " + r2 + "" + " + " + r1);
-                store(r2, dst);
+                store(r2, dst, opdst.getTipo());
             }
             case SUB -> { // op1-op2 -> dst
-                String r1 = load(opop1, op1);
-                String r2 = load(opop2, op2);
+                String r1 = load(opop1, op1, opop1.getTipo());
+                String r2 = load(opop2, op2, opop2.getTipo());
                 add("SUB.L", r1 + ", " + r2, r2 + " = " + r2 + "" + " - " + r1);
-                store(r2, dst);
+                store(r2, dst, opdst.getTipo());
             }
             case MUL -> { // op1*op2 -> dst
                 // EASy68K no permite MULS.L, por lo que se ha de operar así:
@@ -254,8 +268,8 @@ public class GeneradorEnsamblador {
             }
             case CONCAT -> { // op1 concat op2 -> dst
                 seConcatena = true;
-                String r1 = load(opop1, op1); // A0
-                String r2 = load(opop2, op2); // A1
+                String r1 = load(opop1, op1, opop1.getTipo()); // A0
+                String r2 = load(opop2, op2, opop2.getTipo()); // A1
                 add("LEA.L", dst + ", A2", "FETCH " + dst);
                 add("JSR", etConc, "");
             }
@@ -414,8 +428,8 @@ public class GeneradorEnsamblador {
     }
 
     private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
-        String s = data.getDeclaracionEnsamblador(inicializacion);
-        datos.add(margen(id, s, "", ""));
+        String s = getDeclaracionEnsamblador(data.tipo, inicializacion);
+        datos.add(margen(id, s, "", data.tipo.toString()));
         if (s.startsWith("DC.B")) {
             datos.add(margen("", "DS.W 0", "", "No pueden haber variables en zonas de memoria impar"));
         }
@@ -469,6 +483,59 @@ public class GeneradorEnsamblador {
             margenDer = 1;
         }
         return parteIzq + " ".repeat(margenDer) + (com.isEmpty() ? "" : "; ") + com;
+    }
+
+    public static String getDeclaracionEnsamblador(Tipo tipo, Object inicializacion) throws Exception {
+        String ext = tipo.getExtension68K();
+        if (inicializacion == null) {
+            switch (tipo) {
+                case BOOL -> {
+                    return "DS" + ext + " " + 1;
+                }
+                case CHAR -> {
+                    return "DS" + ext + " " + 2;
+                }
+                case DOUBLE -> {
+                    return "DS.L 2";
+                }
+                case INT -> {
+                    return "DS" + ext + " " + 1;
+                }
+                case STRING -> {
+                    return "DS.B '" + (Tipo.STRING.bytes + 1);
+                }
+                case PUNTERO -> {
+                    return "DS.L 1";
+                }
+                default -> {
+                    throw new Exception("Declarando tipo inválido: " + tipo);
+                }
+            }
+        } else {
+            switch (tipo) {
+                case BOOL -> {
+                    return "DC" + ext + " " + inicializacion;
+                }
+                case CHAR -> {
+                    return "DC" + ext + " '" + inicializacion + "',0";
+                }
+//            case DOUBLE -> {
+//                return "DC" + ext + " " + inicializacion;
+//            }
+                case INT -> {
+                    return "DC" + ext + " " + inicializacion;
+                }
+                case STRING -> {
+                    return "DC.B '" + inicializacion + "',0";
+                }
+                case PUNTERO -> {
+                    return "DC.L " + inicializacion;
+                }
+                default -> {
+                    throw new Exception("Valor de inicialización " + inicializacion.toString() + " inválido");
+                }
+            }
+        }
     }
 
 }

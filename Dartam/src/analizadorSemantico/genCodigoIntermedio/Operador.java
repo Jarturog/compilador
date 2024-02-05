@@ -48,6 +48,10 @@ public class Operador {
         return valor != null;
     }
     
+    public boolean isPuntero() {
+        return tipoValor.equals(Tipo.PUNTERO) || tipoValor.equals(Tipo.STRING);
+    }
+    
     public Object getValor() throws Exception {
         if(valor == null) {
             throw new Exception("Se ha intentado acceder a un valor inexistente");
@@ -63,10 +67,6 @@ public class Operador {
 //            return -1;
 //        } 
         return nombre;
-    }
-
-    public String getExtension68K() {
-        return ".L";
     }
     
     public Tipo getTipo() {

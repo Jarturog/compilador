@@ -1,6 +1,6 @@
-0000102C Starting Address
+00001016 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 04/02/2024 19:13:47
+Created On: 05/02/2024 13:59:52
 
 00000000                             1  ; ==============================================================================
 00000000                             2  ; TITLE       : calc2
@@ -12,93 +12,37 @@ Created On: 04/02/2024 19:13:47
 00000000                             8  
 00001000                             9              ORG         $1000       ; Origen
 00001000                            10  
-00001000= 61 00                     11  t           DC.B 'a',0              
-00001002                            12              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001002= 68 6F 6C 61 00            13  t_1         DC.B 'hola',0           
-00001008                            14              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001008= 00000061                  15  t_3         DC.L 97                 
-0000100C= 68 6F 6C 61 00            16  t_4         DC.B 'hola',0           
-00001012                            17              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001012= 00000061                  18  t_6         DC.L 97                 
-00001016= 68 6F 6C 61 00            19  t_7         DC.B 'hola',0           
-0000101C                            20              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-0000101C                            21  argumentos  DS.L 1                  
-00001020                            22  t_2         DS.L 1                  
-00001024                            23  t_5         DS.L 1                  
-00001028                            24  t_8         DS.L 1                  
-0000102C                            25  CALC2                               ; Etiqueta inicial (main)
-0000102C                            26  
-0000102C  4EB9 00001036             27              JSR         e_inicio    ; Se ejecuta el main
-00001032  FFFF FFFF                 28              SIMHALT                 ; Fin de la ejecución
-00001036                            29  
-00001036                            30  ; --------- e_inicio: skip          
-00001036                            31  ; --------- pmb e_inicio            
-00001036                            32  ; --------- t_2 = t concat t_1      
-00001036  41F8 1000                 33  e_inicio:   LEA.L       t, A0       ; A0 = @t
-0000103A  43F8 1002                 34              LEA.L       t_1, A1     ; A1 = @t_1
-0000103E  45F8 1020                 35              LEA.L       t_2, A2     ; FETCH t_2
-00001042  4EB9 000010A2             36              JSR         CONCATENAR  
-00001048                            37  ; --------- param_s t_2             
-00001048  2F38 1020                 38              MOVE.L      t_2, -(SP)  ; PUSH INTO STACK t_2
-0000104C                            39  ; --------- call e_show             
-0000104C  4EB9 000010CC             40              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-00001052  588F                      41              ADDA.L      #4, SP      ; SP = SP + 4
-00001054                            42  ; --------- t_5 = t_3 concat t_4    
-00001054  41F8 1008                 43              LEA.L       t_3, A0     ; A0 = @t_3
-00001058  43F8 100C                 44              LEA.L       t_4, A1     ; A1 = @t_4
-0000105C  45F8 1024                 45              LEA.L       t_5, A2     ; FETCH t_5
-00001060  4EB9 000010A2             46              JSR         CONCATENAR  
-00001066                            47  ; --------- param_s t_5             
-00001066  2F38 1024                 48              MOVE.L      t_5, -(SP)  ; PUSH INTO STACK t_5
-0000106A                            49  ; --------- call e_show             
-0000106A  4EB9 000010CC             50              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-00001070  588F                      51              ADDA.L      #4, SP      ; SP = SP + 4
-00001072                            52  ; --------- t_8 = t_6 concat t_7    
-00001072  41F8 1012                 53              LEA.L       t_6, A0     ; A0 = @t_6
-00001076  43F8 1016                 54              LEA.L       t_7, A1     ; A1 = @t_7
-0000107A  45F8 1028                 55              LEA.L       t_8, A2     ; FETCH t_8
-0000107E  4EB9 000010A2             56              JSR         CONCATENAR  
-00001084                            57  ; --------- param_s t_8             
-00001084  2F38 1028                 58              MOVE.L      t_8, -(SP)  ; PUSH INTO STACK t_8
-00001088                            59  ; --------- call e_show             
-00001088  4EB9 000010CC             60              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-0000108E  588F                      61              ADDA.L      #4, SP      ; SP = SP + 4
-00001090                            62  ; --------- rtn e_inicio            
-00001090  4E75                      63              RTS                     ; RETURN TO SUBROUTINE e_inicio
-00001092                            64  
-00001092                            65  
-00001092  1018                      66  .GET_LETRA:  MOVE.B      (A0)+, D0
-00001094  B03C 00FF                 67              CMP.B       #-1, D0
-00001098  6600 0006                 68              BNE         .PEPE
-0000109C  2058                      69              MOVEA.L     (A0)+, A0
-0000109E                            70              ;MOVE.L      124(A0), 
-0000109E  1018                      71              MOVE.B      (A0)+, D0
-000010A0  4E75                      72  .PEPE:        RTS
-000010A2                            73              
-000010A2                            74           
-000010A2                            75  
-000010A2  1018                      76  CONCATENAR: MOVE.B      (A0)+, D0   
-000010A4  6700 0010                 77              BEQ         .CONC    
-000010A8  B03C 00FF                 78              CMP.B       #-1, D0
-000010AC  4EB9 000010CC             79              JSR         .RESERVAR_MEM   
-000010B2  14C0                      80              MOVE.B      D0, (A2)+   
-000010B4  60EC                      81              BRA         CONCATENAR  
-000010B6  1019                      82  .CONC:      MOVE.B      (A1)+, D0   
-000010B8  6700 0010                 83              BEQ         .ENDCONC 
-000010BC  B03C 00FF                 84              CMP.B       #-1, D0
-000010C0  4EB9 000010CC             85              JSR         .RESERVAR_MEM    
-000010C6  14C0                      86              MOVE.B      D0, (A2)+   
-000010C8  60EC                      87              BRA         .CONC       
-000010CA  4E75                      88  .ENDCONC:   RTS                     ; RETURN TO SUBROUTINE ...
-000010CC                            89  
-000010CC                            90  .RESERVAR_MEM: 
-000010CC                            91          
-000010CC                            92  
-000010CC  226F 0004                 93  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
-000010D0  700E                      94              MOVE.L      #14, D0     ; Task 14 of TRAP 15: Display the NULL terminated string pointed to by (A1)
-000010D2  4E4F                      95              TRAP        #15         ; Interruption generated
-000010D4  4E75                      96              RTS                     ; RETURN TO SUBROUTINE ...
-000010D6                            97              END CALC2               ; Fin del programa
+00001000= 00000002                  11  t           DC.L 2                  
+00001004= 32 00                     12  t_1         DC.B '2',0                
+00001006                            13              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001006                            14  a           DS.L 1                  
+0000100A                            15  b           DS.L 1                  
+0000100E                            16  argumentos  DS.L 1                  
+00001012                            17  t_2         DS.L 1                  
+00001016                            18  CALC2                               ; Etiqueta inicial (main)
+00001016                            19  
+00001016  4EB9 00001020             20              JSR         e_inicio    ; Se ejecuta el main
+0000101C  FFFF FFFF                 21              SIMHALT                 ; Fin de la ejecución
+00001020                            22  
+00001020                            23  ; --------- e_inicio: skip          
+00001020                            24  ; --------- pmb e_inicio            
+00001020                            25  ; --------- a = t                   
+00001020  2038 1000                 26  e_inicio:   MOVE.L      t, D0       ; D0 = t
+00001024  21C0 1006                 27              MOVE.L      D0, a       ; a = D0
+00001028                            28  ; --------- t_2 = t_1               
+00001028  4280                      29              CLR.L       D0          ; CLEAR D0
+0000102A  1038 1004                 30              MOVE.B      t_1, D0     ; D0 = t_1
+0000102E  21C0 1012                 31              MOVE.L      D0, t_2     ; t_2 = D0
+00001032                            32  ; --------- b = t_2                 
+00001032  2038 1012                 33              MOVE.L      t_2, D0     ; D0 = t_2
+00001036  21C0 100A                 34              MOVE.L      D0, b       ; b = D0
+0000103A                            35  ; --------- rtn e_inicio            
+0000103A  4E75                      36              RTS                     ; RETURN TO SUBROUTINE e_inicio
+0000103C                            37  
+0000103C                            38  
+0000103C                            39  
+0000103C                            40  
+0000103C                            41              END CALC2               ; Fin del programa
 
 No errors detected
 No warnings generated
@@ -107,22 +51,11 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-ARGUMENTOS          101C
-CALC2               102C
-CONCATENAR          10A2
-CONCATENAR:CONC     10B6
-CONCATENAR:ENDCONC  10CA
-CONCATENAR:RESERVAR_MEM  10CC
-E_INICIO            1036
-E_INICIO:GET_LETRA  1092
-E_INICIO:PEPE       10A0
-E_SHOW              10CC
+A                   1006
+ARGUMENTOS          100E
+B                   100A
+CALC2               1016
+E_INICIO            1020
 T                   1000
-T_1                 1002
-T_2                 1020
-T_3                 1008
-T_4                 100C
-T_5                 1024
-T_6                 1012
-T_7                 1016
-T_8                 1028
+T_1                 1004
+T_2                 1012

@@ -54,7 +54,7 @@ parser code {:
         String causa = "" + cur_token.value;
         if (cur_token.sym == ParserSym.EOF) {
             causa = "No se ha encontrado metodo main. Sintaxis: \n"+
-                "f void inicio(string[]argumentos){ # codigo # }\n";
+                "f void inicio(){ # codigo # }\n";
         }
         errores += "No se ha podido recuperar del ultimo error. \nCausa: " + causa;
         done_parsing();
@@ -109,7 +109,7 @@ terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
 terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
-terminal    KW_MAIN, KW_ARGS, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, /*KW_DO,*/ KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
+terminal    KW_MAIN, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
 terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP, CASTING;
 
@@ -199,7 +199,7 @@ MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMi
         |                                              {:  RESULT = new SymbolMiembrosTupla(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
-MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN KW_CHAR LBRACKET RBRACKET LBRACKET:l RBRACKET:r KW_ARGS:args RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, args, l, r, et, posxleft, posxright); :}
+MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, et, posxleft, posxright); :}
         | MAIN:et1 SCRIPT_ELEMENTO:et2     {: RESULT = new SymbolMain(et1,et2, et1xleft, et1xright); :}
         ;
 

@@ -123,7 +123,7 @@ type_void      = "vacio"
 // palabras reservadas (const esta entre type y kw)
 kw_const     = "inmut"  // inmutable
 kw_main      = "inicio"
-kw_args      = "argumentos"
+//kw_args      = "argumentos"
 kw_method    = "f"
 kw_if        = "si"
 kw_elif      = "sino"
@@ -314,7 +314,7 @@ private Symbol procesarNumero() {
 
 // keywords
 {kw_main}               { tokens += "KW_MAIN: "   +yytext()+"\n"; return symbol(ParserSym.KW_MAIN, yytext()); }
-{kw_args}               { tokens += "KW_ARGS: "   +yytext()+"\n"; return symbol(ParserSym.KW_ARGS, yytext()); }
+//{kw_args}               { tokens += "KW_ARGS: "   +yytext()+"\n"; return symbol(ParserSym.KW_ARGS, yytext()); }
 {kw_method}             { tokens += "KW_METHOD: " +yytext()+"\n"; return symbol(ParserSym.KW_METHOD, yytext()); }
 {kw_const}              { tokens += "KW_CONST: "  +yytext()+"\n"; return symbol(ParserSym.KW_CONST, yytext()); }
 {kw_if}                 { tokens += "KW_IF: "     +yytext()+"\n"; return symbol(ParserSym.KW_IF, yytext()); }

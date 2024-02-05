@@ -1,5 +1,7 @@
-f vacio inicio(car[][] argumentos) {
+f vacio inicio() {
+	ent a: 2;
+	ent b: (ent)'2';
 	//show("a"+"hola");
-	show(((car [])'a')+"hola");
+	//show(((car [])'a')+"hola");
 	//show(((car [])(car)97)+"hola");
 }
