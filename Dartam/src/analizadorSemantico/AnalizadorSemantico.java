@@ -229,10 +229,12 @@ public class AnalizadorSemantico {
                     if (error) {
                         continue;
                     }
-                    String varValor = varActual;
-                    String varDimension = g3d.nuevaDimension(id, Tipo.getTipo(tipoIdx));
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoIdx), varValor), null, new Operador(Tipo.getTipo(tipoIdx), varDimension));
-                    variablesDimension.add(varDimension);
+                    if (tuplaActualmenteSiendoTratada == null) {
+                        String varValor = varActual;
+                        String varDimension = g3d.nuevaDimension(id, Tipo.getTipo(tipoIdx));
+                        g3d.generarInstr(TipoInstr.COPY, new Operador(Tipo.getTipo(tipoIdx), varValor), null, new Operador(Tipo.getTipo(tipoIdx), varDimension));
+                        variablesDimension.add(varDimension);
+                    }
                     valoresDimension.add((Integer) dim.operando.atomicExp.value); // suponiendo que son cosntantes valores
                 }
             }
