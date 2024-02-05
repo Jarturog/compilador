@@ -1,3 +1,3 @@
-inicio(string[]argumentos){
+inicio(){
 	ent a: 1, b:2;
 }

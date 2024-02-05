@@ -1,3 +1,3 @@
-f vacio inicio(string[]argumentos){
+f vacio inicio(){
 	ent gradiosCelsiusº;
 }
