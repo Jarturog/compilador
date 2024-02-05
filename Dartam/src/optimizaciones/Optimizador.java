@@ -91,7 +91,10 @@ public class Optimizador {
             for (int j = i + 1; j + 1 < instrucciones.size(); j++) {
                 Instruccion skip = instrucciones.get(j);
                 Instruccion saltoGoto = instrucciones.get(j + 1);
-                if (!saltoGoto.isTipo(TipoInstr.GOTO) && !skip.isTipo(TipoInstr.SKIP)) {
+                if (!saltoGoto.isTipo(TipoInstr.GOTO) || !skip.isTipo(TipoInstr.SKIP)
+                        || !saltoGoto.dst().getNombre().equals(salto.dst().getNombre())
+                        || saltoGoto.dst().getNombre().equals(skip.dst().getNombre())
+                        || salto.dst().getNombre().equals(skip.dst().getNombre())) {
                     continue;
                 }
                 salto.setDst(saltoGoto.dst());
