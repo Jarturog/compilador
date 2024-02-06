@@ -2,6 +2,7 @@ package genCodigoEnsamblador;
 
 import analizadorSemantico.DescripcionDefinicionTupla;
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
+import analizadorSemantico.DescripcionFuncion.Parametro;
 import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
@@ -274,8 +275,8 @@ public class GeneradorEnsamblador {
             case SUB -> { // op1-op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("SUB" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " - " + r1);
-                store(r2, instr.dst().toAssembly(), instr.dst().tipo());
+                add("SUB" + extSuperior, r2 + ", " + r1, r1 + " = " + r1 + "" + " - " + r2);
+                store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case MUL -> { // op1*op2 -> dst
                 // EASy68K no permite MULS.L, por lo que se ha de operar así:
@@ -351,22 +352,22 @@ public class GeneradorEnsamblador {
             case IFGE -> { // if op1 >= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
-                add("BLT", dstConPunto, "IF (N XOR V) FLAGS = 1 GOTO " + dstConPunto);
+                add("BGE", dstConPunto, "IF (N XOR V) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFLT -> { // if op1 < op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
-                add("BGE", dstConPunto, "IF (N XOR V) FLAGS = 0 GOTO " + dstConPunto);
+                add("BLT", dstConPunto, "IF (N XOR V) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IFGT -> { // if op1 > op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
-                add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
+                add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFLE -> { // if op1 <= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
-                add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
+                add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IND_ASS -> { // dst[op1] = op2
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
@@ -387,10 +388,10 @@ public class GeneradorEnsamblador {
                 PData func = procedureTable.get(instr.dst().toAssembly());
                 int indice = func.getBytesRetorno();
                 for (int i = func.getParametros().size() - 1; i >= 0; i--) {
-                    Pair<String, Integer> par = func.getParametros().get(i);
+                    Parametro param = func.getParametros().get(i);
                     // par.snd son es el tipo
-                    indice += par.snd; //indice += Tipo.getBytes(par.snd);
-                    add(getEtiqueta(), "MOVE" + Tipo.getExtension68K(par.snd), indice + "(SP), " + par.fst, par.fst + " = POP FROM STACK");
+                    indice += Tipo.getBytes(param.tipo);
+                    add(getEtiqueta(), "MOVE" + Tipo.getExtension68K(Tipo.getBytes(param.tipo)), indice + "(SP), " + param.variable, param.variable + " = POP FROM STACK");
                 }
             }
             case RETURN -> { // rtn dst, ?
@@ -416,9 +417,9 @@ public class GeneradorEnsamblador {
                 }
                 add(getEtiqueta(), "JSR", dstConPunto, "JUMP TO SUBROUTINE " + dstConPunto);
                 int numBytes = 0;
-                for (Pair<String, Integer> par : func.getParametros()) {
+                for (Parametro param : func.getParametros()) {
                     // par.snd son los bytes
-                    numBytes += par.snd; //numBytes += Tipo.getBytes(par.snd);
+                    numBytes += Tipo.getBytes(param.tipo);
                 }
                 if (func.getBytesRetorno() > 0) {
                     add(getEtiqueta(), "MOVE" + extOp1, "(SP)+, " + instr.op1().toAssembly(), instr.op1().toAssembly() + " = POP FROM STACK");
@@ -463,6 +464,9 @@ public class GeneradorEnsamblador {
                 subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
             case SCAN -> { // scan(dst)
+                if (f.getParametros().size() != 2) {
+                    throw new Exception("Error, no se ha implementao el scan para tratar con " + f.getParametros().size() + " parámetros, sino con 2");
+                }
                 if (scanUsado) {
                     return;
                 }

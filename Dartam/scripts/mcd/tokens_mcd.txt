@@ -32,6 +32,15 @@ ID: a
 SYM_COMMA: ,
 ID: b
 SYM_RPAREN: )
+SYM_COMMA: ,
+ID: c3
+OP_ASIG: :
+ID: mcm
+SYM_LPAREN: (
+ID: a
+SYM_COMMA: ,
+ID: b
+SYM_RPAREN: )
 SYM_ENDINSTR: ;
 SYM_RKEY: }
 KW_METHOD: f

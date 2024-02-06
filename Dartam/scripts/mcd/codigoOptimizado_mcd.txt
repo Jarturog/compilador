@@ -10,6 +10,10 @@ param_s a
 param_s b
 call e_mcd2, t_3
 c2 = t_3
+param_s a
+param_s b
+call e_mcm, t_4
+c3 = t_4
 rtn e_inicio
 
 
@@ -19,67 +23,85 @@ a_1 = a0
 b_1 = b0
 e: skip
 if a_1 /= b_1 goto e_3
-t_4 = 0
-goto e_4
-t_4 = -1
-if t_4 == 0 goto e_1
-if a_1 > b_1 goto e_5
 t_5 = 0
-goto e_6
+goto e_4
+e_3: skip
 t_5 = -1
-if t_5 == 0 goto e_8
-t_6 = a_1 - b_1
-a_1 = t_6
+e_4: skip
+if t_5 == 0 goto e_1
+if a_1 > b_1 goto e_5
+t_6 = 0
+goto e_6
+e_5: skip
+t_6 = -1
+e_6: skip
+if t_6 == 0 goto e_8
+t_7 = a_1 - b_1
+a_1 = t_7
 goto e_7
-t_7 = b_1 - a_1
-b_1 = t_7
+e_8: skip
+t_8 = b_1 - a_1
+b_1 = t_8
+e_7: skip
 goto e
+e_1: skip
 rtn e_mcd1, a_1
 
 e_mcm: skip
 pmb e_mcm
 if num1 > num2 goto e_9
-t_8 = 0
+t_9 = 0
 goto e_10
-t_8 = -1
-if t_8 == 0 goto e_12
+e_9: skip
+t_9 = -1
+e_10: skip
+if t_9 == 0 goto e_12
 a_2 = num1
 b_2 = num2
 goto e_11
+e_12: skip
 a_2 = num2
 b_2 = num1
+e_11: skip
 param_s num1
 param_s num2
-call e_mcd2, t_9
-t_10 = a_2 / t_9
-t_11 = t_10 * b_2
-resultado = t_11
+call e_mcd2, t_10
+t_11 = a_2 / t_10
+t_12 = t_11 * b_2
+resultado = t_12
 rtn e_mcm, resultado
 
 e_mcd2: skip
 pmb e_mcd2
 if num1_1 > num2_1 goto e_13
-t_12 = 0
+t_13 = 0
 goto e_14
-t_12 = -1
-if t_12 == 0 goto e_16
+e_13: skip
+t_13 = -1
+e_14: skip
+if t_13 == 0 goto e_16
 a_3 = num1_1
 b_3 = num2_1
 goto e_15
+e_16: skip
 a_3 = num2_1
 b_3 = num1_1
+e_15: skip
 resultado_1 = 0
 e_17: skip
 resultado_1 = b_3
-t_14 = a_3 mod b_3
-b_3 = t_14
+t_15 = a_3 mod b_3
+b_3 = t_15
 a_3 = resultado_1
-t_15 = 0
-if b_3 /= t_15 goto e_20
 t_16 = 0
+if b_3 /= t_16 goto e_20
+t_17 = 0
 goto e_21
-t_16 = -1
-if t_16 == 0 goto e_18
+e_20: skip
+t_17 = -1
+e_21: skip
+if t_17 == 0 goto e_18
 goto e_17
+e_18: skip
 rtn e_mcd2, resultado_1
 

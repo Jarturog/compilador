@@ -1,6 +1,7 @@
 package analizadorSemantico.genCodigoIntermedio;
 
 import analizadorSemantico.DescripcionDefinicionTupla;
+import analizadorSemantico.DescripcionFuncion.Parametro;
 import genCodigoEnsamblador.PData;
 import genCodigoEnsamblador.VData;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
@@ -144,7 +145,7 @@ public class GeneradorCodigoIntermedio {
     }
 
     //Permite crear un nuevo procedimiento y añadirlo a la tabla
-    public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Pair<String, Integer>> params, int bytesRetorno) {
+    public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Parametro> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
         PData data = new PData(id, etiqueta, params, bytesRetorno);
         //tablaProcedimientos.put(id, data);
@@ -152,7 +153,7 @@ public class GeneradorCodigoIntermedio {
         return contador;
     }
 
-    public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Pair<String, Integer>> params, int bytesRetorno) {
+    public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Parametro> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
         PData data = new PData(id, etiqueta, params, bytesRetorno);
         //tablaProcedimientos.put(id, data);

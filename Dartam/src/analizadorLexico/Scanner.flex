@@ -160,9 +160,7 @@ id          = ({sub_letra}|_)({sub_car}|_)*
 // casos especiales
 espacioBlanco = [ \t]+
 finLinea = [\r\n]+
-comentarLinea  = "\/\/"
-comentarBloque = "#" // tanto para el inicio como para el final
-comentario = {comentarLinea}.*|{comentarBloque}[^]*{comentarBloque}
+comentario = ("\/\/".*)|("#"[^"#"]*"#")
 
 // El següent codi es copiarà tambe, dins de la classe. És a dir, si es posa res
 // ha de ser en el format adient: mètodes, atributs, etc. 

@@ -1,17 +1,17 @@
 f vacio inicio(){
 	ent a: 16, b:20;
-	inmut ent c1: mcd1(a, b), c2: mcd2(a, b);
+	inmut ent c1: mcd1(a, b), c2: mcd2(a, b), c3: mcm(a, b);
 }
 
 f ent mcd1(ent a0, ent b0) {
 	ent a, b;
-	a: a0;
-	b: b0;
+	a: a0; // 16
+	b: b0; // 20
 	loop (a /= b) {
 		si (a > b) {
-			a-: b;
+			a-: b; // 12, 8, 4
 		} no {
-			b-: a;
+			b-: a; // 4, 
 		}
 	}
 	pop a;
@@ -29,12 +29,14 @@ f ent mcm(ent num1, ent num2) {
 }
 
 f ent mcd2(ent num1, ent num2) {
-	ent a, b;
-	si num1 > num2 {
+	ent a, b; 
+	si num1 > num2 { 
 		a: num1, b: num2;
-	} no {
+	} no { 
 		a: num2, b: num1;
 	}
+	// a: max(a, b);
+	// b: min(a, b);
 	ent resultado: 0;
 	loop {
 		resultado: b;

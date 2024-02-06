@@ -8,6 +8,7 @@
 package analizadorSemantico;
 
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
+import analizadorSemantico.DescripcionFuncion.Parametro;
 import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Operador;
 import analizadorSemantico.genCodigoIntermedio.Tipo;
@@ -147,7 +148,7 @@ public class AnalizadorSemantico {
                 continue;
             }
             tablaSimbolos.entraBloque();
-            ArrayList<Pair<String, String>> parametros = procesarParametros(metodo.parametros, metodo.id);
+            ArrayList<Parametro> parametros = procesarParametros(metodo.parametros, metodo.id);
             tablaSimbolos.salirBloque();
             d = new DescripcionFuncion(metodo.tipoRetorno.getTipo(), parametros, g3d.nuevaEtiqueta(metodo.id));
             tablaSimbolos.poner(metodo.id, d);
@@ -169,19 +170,19 @@ public class AnalizadorSemantico {
         // metodos especiales
         nombre = ParserSym.terminalNames[ParserSym.ENTER].toLowerCase();
         df = new DescripcionFuncion(tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.SHOW].toLowerCase();
         df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "output", tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.FROM].toLowerCase();
         df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "file", tipoString, g3d.nuevaEtiqueta(nombre), tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.INTO].toLowerCase();
         df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.PROP], "file", tipoString, "content", tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
     }
 
@@ -597,11 +598,11 @@ public class AnalizadorSemantico {
             indicarLocalizacion(fcall);
             return;
         }
-        ArrayList<String> params = df.getTiposParametros();
+        ArrayList<Parametro> params = df.getParametros();
         SymbolOperandsLista opLista = fcall.operandsLista;
         int n = 0;
         boolean error = false;
-        for (String tipoParam : params) {
+        for (Parametro param : params) {
             n++;
             if (opLista == null) {
                 errores.add("La funcion " + nombre + " tiene " + params.size() + " parametros, pero se han pasado mas al momento de llamarla");
@@ -618,8 +619,8 @@ public class AnalizadorSemantico {
                 opLista = opLista.siguienteOperando;
                 error = true;
                 continue;
-            } else if (!tipoOp.equals(tipoParam)) {
-                errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + tipoParam);
+            } else if (!tipoOp.equals(param.tipo)) {
+                errores.add("Se ha intentado pasar por parametro un operando de tipo " + tipoOp + " en el parametro " + n + " de la funcion " + nombre + " que es de tipo " + param.tipo);
                 indicarLocalizacion(op);
                 opLista = opLista.siguienteOperando;
                 error = true;
@@ -842,14 +843,14 @@ public class AnalizadorSemantico {
         //        g3d.añadirFuncion(metodo.id);
         //String efi = g3d.nuevaEtiqueta(metodo.id); //Creamos la etiqueta de la funcion
         //Añadimos la funcion a la tabla
-        int numeroProcedure = g3d.nuevoProcedimiento(metodo.id, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
+        int numeroProcedure = g3d.nuevoProcedimiento(metodo.id, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(df.variableAsociada));
         g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(df.variableAsociada));
         metodoActualmenteSiendoTratado = new Pair(metodo.id, df);
-        for (Pair<String, String> p : df.getParametros()) {
+        for (Parametro p : df.getParametros()) {
             DescripcionDefinicionTupla tupla = null;
-            String id = p.fst;
-            String tipo = p.snd;
+            String id = p.id;
+            String tipo = p.tipo;
             if (tipo.startsWith(ParserSym.terminalNames[ParserSym.KW_TUPLE])) {
                 int from = tipo.indexOf(" ") + 1;
                 int to = tipo.length();
@@ -867,9 +868,9 @@ public class AnalizadorSemantico {
                     for (int i = 0; i < numDim; i++) {
                         variablesDimension.add(null);
                     }
-                    ds = new DescripcionArray(tipo, false, variablesDimension.size(), true, tupla, variablesDimension, g3d.nuevaVariable(id, Tipo.getTipo(tipo)));
+                    ds = new DescripcionArray(tipo, false, variablesDimension.size(), true, tupla, variablesDimension, p.variable);
                 } else {
-                    ds = new DescripcionSimbolo(tipo, false, true, tupla, g3d.nuevaVariable(id, Tipo.getTipo(tipo)));
+                    ds = new DescripcionSimbolo(tipo, false, true, tupla, p.variable);
                 }
 
                 tablaSimbolos.poner(id, ds);
@@ -891,10 +892,10 @@ public class AnalizadorSemantico {
         g3d.generarInstr(TipoInstr.SEPARADOR, null, null, null);
     }
 
-    private ArrayList<Pair<String, String>> procesarParametros(SymbolParams params, String idMetodo) throws Exception {
+    private ArrayList<Parametro> procesarParametros(SymbolParams params, String idMetodo) throws Exception {
 //        PData data = g3d.getProcedimeinto(idMetodo);
 
-        ArrayList<Pair<String, String>> parametros = new ArrayList<>();
+        ArrayList<Parametro> parametros = new ArrayList<>();
         if (params == null) {
             return parametros;
         }
@@ -915,10 +916,10 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(param);
             }
             if (!error) {
-                parametros.add(new Pair<>(nombreParam, param.tipoParam.getTipo()));
-//                String tipo = param.tipoParam.getTipo();
-//                String variable = g3d.nuevaVariable(TipoReferencia.param, idMetodo);
-//                data.añadirParametro(variable, tipo); //Le añadimos el parametro 
+                String variable = g3d.nuevaVariable(nombreParam, Tipo.getTipo(param.tipoParam.getTipo()));
+                //parametros.add(new Pair<>(nombreParam, param.tipoParam.getTipo()));
+                Parametro p = new Parametro(nombreParam, variable, param.tipoParam.getTipo());
+                parametros.add(p);
             }
             param = param.siguienteParam;
         }

@@ -1,6 +1,8 @@
-java.lang.NullPointerException: Cannot read field "nombre" because "o" is null
-	at analizadorSemantico.genCodigoIntermedio.Operador.<init>(Operador.java:18)
-	at analizadorSemantico.genCodigoIntermedio.Instruccion.<init>(Instruccion.java:10)
-	at analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio.<init>(GeneradorCodigoIntermedio.java:50)
-	at dartam.Dartam.<init>(Dartam.java:121)
+java.lang.RuntimeException: Uncompilable code - cannot find symbol
+  symbol:   method println(java.lang.String)
+  location: class java.lang.System
+	at analizadorLexico.Scanner.next_token(Scanner.java:1)
+	at analizadorSintactico.Parser.scan(Parser.java:823)
+	at java_cup.runtime.lr_parser.parse(lr_parser.java:693)
+	at dartam.Dartam.<init>(Dartam.java:96)
 	at dartam.Dartam.main(Dartam.java:58)

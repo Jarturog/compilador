@@ -4,16 +4,17 @@
  */
 package genCodigoEnsamblador;
 
+import analizadorSemantico.DescripcionFuncion.Parametro;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import jflex.base.Pair;
 
 public class PData {
     private final String nombre, etiqueta;
-    private final ArrayList<Pair<String, Integer>> parametros;
+    private final ArrayList<Parametro> parametros; // id, bytes
     private final int bytesRetorno;
     
-    public PData(String nombre, String etiqueta, ArrayList<Pair<String, Integer>> params, int bytesValorRetorno) {
+    public PData(String nombre, String etiqueta, ArrayList<Parametro> params, int bytesValorRetorno) {
         this.nombre = nombre;
         this.etiqueta = etiqueta;
         this.parametros = params;
@@ -26,7 +27,7 @@ public class PData {
     }
 
     //Metodo con el que podemos recuperar los parametros del procedimiento
-    public ArrayList<Pair<String, Integer>> getParametros() {
+    public ArrayList<Parametro> getParametros() {
         return parametros;
     }
 
@@ -36,9 +37,8 @@ public class PData {
     }
 
     //Metodo que permite añadir un nuevo parametro al procedimiento
-    public void añadirParametro(String i, Integer bytes) {
-        Pair<String, Integer> param = new Pair(i, bytes);
-        this.parametros.add(param);
+    public void añadirParametro(String i, String variable, String tipo) {
+        this.parametros.add(new Parametro(i, variable, tipo));
     }
 
     public int getBytesRetorno() {

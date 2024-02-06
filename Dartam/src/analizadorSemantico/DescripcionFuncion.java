@@ -9,7 +9,7 @@ import jflex.base.Pair;
 
 public class DescripcionFuncion extends DescripcionSimbolo {
 
-    private ArrayList<Pair<String, String>> parametros;
+    private ArrayList<Parametro> parametros;
     private boolean tieneReturnObligatorio = false; // que siempre se ejecuta independientemente de los ifs o loops que haya
     private boolean isMain = false;
     
@@ -24,22 +24,28 @@ public class DescripcionFuncion extends DescripcionSimbolo {
         parametros = new ArrayList<>();
     }
     
-    public DescripcionFuncion(String tipoRetorno, ArrayList<Pair<String, String>> params, String var) {
+    public DescripcionFuncion(String tipoRetorno, ArrayList<Parametro> params, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = params;
     }
     
+    /**
+     * Para métodos especiales
+     */
     public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
-        parametros.add(new Pair(idParam, tipoParam));
+        parametros.add(new Parametro(idParam, null, tipoParam));
     }
     
+    /**
+     * Para métodos especiales
+     */
     public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2, String var) {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
-        parametros.add(new Pair(idParam1, tipoParam1));
-        parametros.add(new Pair(idParam2, tipoParam2));
+        parametros.add(new Parametro(idParam1, null, tipoParam1));
+        parametros.add(new Parametro(idParam2, null, tipoParam2));
     }
 
     public void cambiarTipo(int t) {
@@ -50,33 +56,25 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     }
 
     //Funciones
-    public void anyadirParametro(String id, String tipo) {
-        parametros.add(new Pair<>(id, tipo));
+    public void anyadirParametro(String id, String var, String tipo) {
+        parametros.add(new Parametro(id, var, tipo));
     }
 
 //    public int getNumeroParametros() {
 //        return parametros.size();
 //    }
-    public ArrayList<String> getTiposParametros() {
-        ArrayList<String> tipos = new ArrayList<>();
-        for (Pair<String, String> p : parametros) {
-            tipos.add(p.snd);
-        }
-        return tipos;
-    }
+//    public ArrayList<String> getTiposParametros() {
+//        ArrayList<String> tipos = new ArrayList<>();
+//        for (Parametro p : parametros) {
+//            tipos.add(p.snd);
+//        }
+//        return tipos;
+//    }
     
-    public ArrayList<Pair<String, String>> getParametros() {
+    public ArrayList<Parametro> getParametros() {
         return parametros;
     }
     
-    public ArrayList<Pair<String, Integer>> paramsToIdBytes() {
-        ArrayList<Pair<String, Integer>> arr = new ArrayList<>();
-        for (Pair<String, String> parametro : parametros) {
-            arr.add(new Pair<>(parametro.fst, Tipo.getBytes(tipo)));
-        }
-        return arr;
-    }
-
 //    public HashMap<String, DescripcionSimbolo> getTiposMiembros() {
 //        return new HashMap<>(miembros);
 //    }
@@ -92,8 +90,8 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public String toString() {
 
         String params = "";
-        for (Pair<String, String> param : parametros) {
-            params += param.snd + " " + param.fst + ", ";
+        for (Parametro param : parametros) {
+            params += param.tipo + " " + param.id + ", ";
         }
         params = params.length() > 0 ? "con argumentos" + params.substring(0, params.length() - 2) : "sin argumentos";
 
@@ -123,6 +121,16 @@ public class DescripcionFuncion extends DescripcionSimbolo {
 
     boolean isMain() {
         return isMain;
+    }
+    
+    public static class Parametro {
+        public final String id, variable, tipo;
+
+        public Parametro(String id, String variable, String tipo) {
+            this.id = id;
+            this.variable = variable;
+            this.tipo = tipo;
+        }
     }
     
 }
