@@ -1298,7 +1298,7 @@ private Symbol procesarNumero() {
           // fall through
           case 154: break;
           case 76:
-            { tokens += "TYPE_VOID: "  +yytext()+"\n"; return symbol(ParserSym.KW_VOID, yytext());
+            { tokens += "TYPE_VOID: "  +yytext()+"\n"; return symbol(ParserSym.VOID, yytext());
             }
           // fall through
           case 155: break;

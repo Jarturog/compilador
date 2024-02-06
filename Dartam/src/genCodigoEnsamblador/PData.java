@@ -66,4 +66,18 @@ public class PData {
         return nombre;
     }
     
+    @Override
+    public String toString() {
+        String params = "";
+        for (Parametro parametro : parametros) {
+            params += parametro + ", ";
+        }
+        if (!params.isEmpty()) {
+            params = " y sus parámetros son " + params.substring(0, params.length() - 2);
+        } else {
+            params = " y no recibe parámetros";
+        }
+        return nombre + ": identificado por " + etiqueta + ", devuelve " + bytesRetorno + " bytes de retorno" + params;
+    }
+    
 }

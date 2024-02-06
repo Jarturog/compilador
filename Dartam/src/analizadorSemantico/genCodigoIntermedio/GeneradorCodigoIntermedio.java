@@ -218,5 +218,21 @@ public class GeneradorCodigoIntermedio {
     public HashSet<String> getEtiquetas() {
         return tablaEtiquetas;
     }
+    
+    public String tablas() {
+        String s = "Tabla de procedimientos\n";
+        for (Map.Entry<String, PData> entry : tablaProcedimientos.entrySet()) {
+            s += entry.getValue() + "\n";
+        }
+        s += "\nTabla de variables\n";
+        for (Map.Entry<String, VData> entry : tablaVariables.entrySet()) {
+            s += entry.getKey() + ": " + entry.getValue() + "\n";
+        }
+//        s += "\nEtiquetas utilizadas en el programa\n";
+//        for (String et : tablaEtiquetas) {
+//            s += et + "\n";
+//        }
+        return s;
+    }
 
 }

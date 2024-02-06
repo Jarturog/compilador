@@ -427,7 +427,6 @@ public class GeneradorEnsamblador {
                 if (numBytes > 0) {
                     add("ADDA.L", "#" + numBytes + ", SP", "SP = SP + " + numBytes);
                 }
-
             }
             case SKIP -> { // dst: skip
                 String et = getEtiqueta();

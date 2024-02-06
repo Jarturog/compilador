@@ -1025,7 +1025,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 7: // TIPO_RETORNO ::= KW_VOID 
+          case 7: // TIPO_RETORNO ::= VOID 
             {
               SymbolTipoRetorno RESULT =null;
 		Location etxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.peek()).xleft;
@@ -1061,7 +1061,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 10: // MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN RPAREN LKEY BODY RKEY 
+          case 10: // MAIN ::= KW_METHOD VOID KW_MAIN LPAREN RPAREN LKEY BODY RKEY 
             {
               SymbolMain RESULT =null;
 		Location posxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)).xleft;

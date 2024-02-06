@@ -65,7 +65,7 @@ public class DescripcionSimbolo {
     public Integer getBytes() {
         return nBytes;
     }
-    
+
     public void setBytes(Integer b) {
         nBytes = b;
     }
@@ -136,8 +136,9 @@ public class DescripcionSimbolo {
     @Override
     public String toString() {
         String c = (isConstante() ? "constante " : "");
-        String v = (valorAsignado ? "con" : "sin");
-        String s = "Variable " + c + "de tipo '" + tipo + "' " + v + " valor asignado";
-        return s + " declarado en el nivel " + nivel;
+        String v = (valorAsignado ? " con valor asignado" : " sin valor asignado");
+        String varA = variableAsociada == null ? "" : " siendo su variable de CI " + variableAsociada;
+        String bytes = nBytes == null ? "" : " ocupando " + nBytes + " bytes";
+        return "Variable " + c + "tipo " + tipo + v + " declarado en el nivel " + nivel + varA + bytes;
     }
 }

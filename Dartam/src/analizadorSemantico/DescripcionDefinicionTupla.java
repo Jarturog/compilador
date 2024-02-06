@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class DescripcionDefinicionTupla extends DescripcionSimbolo {
 
     protected final ArrayList<DefinicionMiembro> miembros;
+
     /**
      * Tupla
      */
@@ -23,7 +24,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         miembros.add(dm);
         setBytes(getBytes() + dm.bytes);
     }
-    
+
     public DefinicionMiembro getMiembro(String nombre) {
         for (DefinicionMiembro m : miembros) {
             if (nombre.equals(m.nombre)) {
@@ -36,7 +37,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
     public boolean tieneMiembro(String nombre) {
         return getMiembro(nombre) != null;
     }
-    
+
     public Integer getDesplazamiento(String miembro) throws Exception {
         if (!tieneMiembro(miembro)) {
             return null;
@@ -50,11 +51,11 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         }
         throw new Exception("Miembro " + miembro + " no encontrado"); // error
     }
-    
+
     public ArrayList<DefinicionMiembro> getMiembros() {
         return miembros;
     }
-    
+
     public static class DefinicionMiembro {
 
         private Integer bytes = null;
@@ -82,21 +83,21 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         public String toString() {
             return isConst ? "constante " : "" + tipo + " " + nombre;
         }
-        
+
         public Integer getBytes() {
             return bytes;
         }
-        
+
         public boolean tieneValorAsignado() {
             return valorAsignado;
         }
-        
+
         public void asignarValor() {
             valorAsignado = true;
         }
 
     }
-    
+
     @Override
     public String getNombreTupla() throws Exception {
         return super.tipo;
@@ -109,6 +110,8 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
             m += miembro + " ";
         }
         m = m.length() > 0 ? "con miembros " + m.substring(0, m.length() - 1) : "sin miembros";
-        return "Tupla " + m + " declarado en el nivel " + getNivel();
+        String varA = variableAsociada == null ? "" : " siendo su variable de CI " + variableAsociada;
+        String bytes = getBytes() == null ? "" : " ocupando " + getBytes() + " bytes";
+        return "Tupla" + m + " declarada en el nivel " + getNivel() + varA + bytes;
     }
 }

@@ -154,7 +154,7 @@ public class AnalizadorSemantico {
             tablaSimbolos.poner(metodo.id, d);
         }
         // main
-        DescripcionFuncion d = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], g3d.nuevaEtiqueta(scriptMainYElementos.nombreMain), true);
+        DescripcionFuncion d = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.VOID], g3d.nuevaEtiqueta(scriptMainYElementos.nombreMain), true);
         tablaSimbolos.poner(scriptMainYElementos.nombreMain, d);
         procesarMain(scriptMainYElementos);
         // interior de los métodos
@@ -173,11 +173,11 @@ public class AnalizadorSemantico {
         numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.SHOW].toLowerCase();
-        df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "output", tipoString, g3d.nuevaEtiqueta(nombre));
+        df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.VOID], "output", tipoString, g3d.nuevaEtiqueta(nombre));
         numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.FROM].toLowerCase();
-        df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "file", tipoString, g3d.nuevaEtiqueta(nombre), tipoString, g3d.nuevaEtiqueta(nombre));
+        df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.VOID], "file", tipoString, g3d.nuevaEtiqueta(nombre), tipoString, g3d.nuevaEtiqueta(nombre));
         numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.INTO].toLowerCase();

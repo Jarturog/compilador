@@ -1,8 +1,8 @@
-java.lang.RuntimeException: Uncompilable code - cannot find symbol
-  symbol:   method println(java.lang.String)
-  location: class java.lang.System
-	at analizadorLexico.Scanner.next_token(Scanner.java:1)
-	at analizadorSintactico.Parser.scan(Parser.java:823)
-	at java_cup.runtime.lr_parser.parse(lr_parser.java:693)
-	at dartam.Dartam.<init>(Dartam.java:96)
+java.io.FileNotFoundException: scripts\cmd.dtm (El sistema no puede encontrar el archivo especificado)
+	at java.base/java.io.FileInputStream.open0(Native Method)
+	at java.base/java.io.FileInputStream.open(FileInputStream.java:219)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:158)
+	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:112)
+	at java.base/java.io.FileReader.<init>(FileReader.java:60)
+	at dartam.Dartam.<init>(Dartam.java:83)
 	at dartam.Dartam.main(Dartam.java:58)

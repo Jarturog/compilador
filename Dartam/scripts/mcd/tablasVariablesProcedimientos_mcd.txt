@@ -1,0 +1,48 @@
+Tabla de procedimientos
+mcm: identificado por e_mcm, devuelve 4 bytes de retorno y sus parámetros son ENT num1, ENT num2
+from: identificado por e_from_1, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] e_from
+mcd2: identificado por e_mcd2, devuelve 4 bytes de retorno y sus parámetros son ENT num1, ENT num2
+enter: identificado por e_enter, devuelve 256 bytes de retorno y no recibe parámetros
+mcd1: identificado por e_mcd1, devuelve 4 bytes de retorno y sus parámetros son ENT a0, ENT b0
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
+into: identificado por e_into, devuelve 1 bytes de retorno y sus parámetros son CAR [] file, CAR [] content
+
+Tabla de variables
+num1_1: tipo INT
+num2_1: tipo INT
+b0: tipo INT
+a_1: tipo INT
+b_2: tipo INT
+a_3: tipo INT
+b_1: tipo INT
+a_2: tipo INT
+b_3: tipo INT
+num1: tipo INT
+num2: tipo INT
+a: tipo INT
+b: tipo INT
+resultado: tipo INT
+t_2: tipo INT
+t_16: tipo INT inicializado a 0
+t_1: tipo INT inicializado a 20
+t_17: tipo BOOLEAN inicializado a 0
+t_4: tipo INT
+t_3: tipo INT
+t_6: tipo BOOLEAN inicializado a 0
+t_5: tipo BOOLEAN inicializado a 0
+t_8: tipo INT
+t_7: tipo INT
+c1: tipo INT
+a0: tipo INT
+c2: tipo INT
+t_9: tipo BOOLEAN inicializado a 0
+c3: tipo INT
+resultado_1: tipo INT
+t: tipo INT inicializado a 16
+t_14: tipo INT inicializado a 0
+t_15: tipo INT
+t_12: tipo INT
+t_13: tipo BOOLEAN inicializado a 0
+t_10: tipo INT
+t_11: tipo INT

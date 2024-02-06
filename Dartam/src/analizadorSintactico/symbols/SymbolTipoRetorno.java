@@ -13,7 +13,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 /**
  * 
  * TIPO_RETORNO ::= TIPO_VAR:et            {: RESULT = new SymbolTipoRetorno(et, etleft, etright); :}
-        | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(true, etleft, etright); :} //Revisar
+        | VOID:et                    {: RESULT = new SymbolTipoRetorno(true, etleft, etright); :} //Revisar
         ;
  */
 public class SymbolTipoRetorno extends SymbolBase {
@@ -31,7 +31,7 @@ public class SymbolTipoRetorno extends SymbolBase {
 
     public String getTipo() {
         if (tipo == null) {
-            return ParserSym.terminalNames[ParserSym.KW_VOID];
+            return ParserSym.terminalNames[ParserSym.VOID];
         }
         return tipo.getTipo();
     }

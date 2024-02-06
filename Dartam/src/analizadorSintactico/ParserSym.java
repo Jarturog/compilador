@@ -45,6 +45,7 @@ public class ParserSym {
   public static final int KW_LOOP = 53;
   public static final int AS_MODA = 15;
   public static final int PREC_R_U_EXP = 66;
+  public static final int VOID = 37;
   public static final int PREC_L_U_EXP = 65;
   public static final int AS_ADDA = 10;
   public static final int AS_DIVA = 13;
@@ -63,7 +64,6 @@ public class ParserSym {
   public static final int OP_COND = 30;
   public static final int OP_MEMBER = 32;
   public static final int ID = 69;
-  public static final int KW_VOID = 37;
   public static final int PREC_C_EXP = 67;
   public static final int KW_ELSE = 52;
   public static final int AS_SUBA = 11;
@@ -121,7 +121,7 @@ public class ParserSym {
   "KW_INT",
   "KW_DOUBLE",
   "KW_CHAR",
-  "KW_VOID",
+  "VOID",
   "LPAREN",
   "RPAREN",
   "LKEY",

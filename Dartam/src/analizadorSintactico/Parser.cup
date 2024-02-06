@@ -107,7 +107,7 @@ terminal    AS_ASSIGN, AS_ADDA, AS_SUBA, AS_MULA, AS_DIVA, AS_POTA, AS_MODA, AS_
 terminal    OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
-terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, KW_VOID;
+terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
 terminal    KW_MAIN, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
@@ -192,14 +192,14 @@ SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAR
         ;
 
 TIPO_RETORNO ::= TIPO:et            {: RESULT = new SymbolTipoRetorno(et, etxleft, etxright); :}
-        | KW_VOID:et                    {: RESULT = new SymbolTipoRetorno(etxleft, etxright); :}
+        | VOID:et                    {: RESULT = new SymbolTipoRetorno(etxleft, etxright); :}
         ;
 
 MIEMBROS_TUPLA ::= DECS:et1 MIEMBROS_TUPLA:et2         {:  RESULT = new SymbolMiembrosTupla(et1,et2, et1xleft, et1xright); :}
         |                                              {:  RESULT = new SymbolMiembrosTupla(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
-MAIN ::= KW_METHOD:pos KW_VOID KW_MAIN:nombre LPAREN RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, et, posxleft, posxright); :}
+MAIN ::= KW_METHOD:pos VOID KW_MAIN:nombre LPAREN RPAREN LKEY BODY:et RKEY  {: RESULT = new SymbolMain(nombre, et, posxleft, posxright); :}
         | MAIN:et1 SCRIPT_ELEMENTO:et2     {: RESULT = new SymbolMain(et1,et2, et1xleft, et1xright); :}
         ;
 

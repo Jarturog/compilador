@@ -296,7 +296,7 @@ private Symbol procesarNumero() {
 {type_int}              { tokens += "TYPE_INT: "   +yytext()+"\n"; return symbol(ParserSym.KW_INT, yytext()); }
 {type_char}             { tokens += "TYPE_CHAR: "  +yytext()+"\n"; return symbol(ParserSym.KW_CHAR, yytext()); }
 {type_bool}             { tokens += "TYPE_BOOL: "  +yytext()+"\n"; return symbol(ParserSym.KW_BOOL, yytext()); }
-{type_void}             { tokens += "TYPE_VOID: "  +yytext()+"\n"; return symbol(ParserSym.KW_VOID, yytext()); }
+{type_void}             { tokens += "TYPE_VOID: "  +yytext()+"\n"; return symbol(ParserSym.VOID, yytext()); }
 //{type_string}           { tokens += "TYPE_STRING: "+yytext()+"\n"; return symbol(ParserSym.KW_STRING, yytext()); }
 
 // simbolos

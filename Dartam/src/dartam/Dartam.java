@@ -116,9 +116,11 @@ public class Dartam {
         }
         // Generación de código intermedio realizada durante el análisis semántico
         GeneradorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
-        escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
-        // Generación de código ensamblador
         GeneradorCodigoIntermedio generadorParaOptimizar = new GeneradorCodigoIntermedio(generadorCodigoIntermedio); // se copia
+        escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
+        escribir("tablasVariablesProcedimientos_" + nombreFichero + ".txt", generadorCodigoIntermedio.tablas());
+        // Generación de código ensamblador
+        
         GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
         escribir(nombreFichero + "SinOptimizaciones.X68", codigoEnsamblador.toString());
         // Optimzaciones

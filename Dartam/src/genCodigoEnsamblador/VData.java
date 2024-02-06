@@ -78,4 +78,19 @@ public class VData {
     public Tipo tipo() {
         return tipo;
     }
+    
+    @Override
+    public String toString() {
+        String init = "", bytes = "", tupl = "";
+        if (initCodigoIntermedio != null) {
+            init = " inicializado a " + initCodigoIntermedio;
+        }
+        if (bytesEstructura != null) {
+            bytes = " almacenando una estructura de datos de " + bytesEstructura + " bytes";
+        }
+        if (tupla != null) {
+            tupl = " de tipo " + tupla.tipo;
+        }
+        return "tipo " + tipo + init + bytes + tupl;
+    }
 }

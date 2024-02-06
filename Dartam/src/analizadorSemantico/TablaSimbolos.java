@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import jflex.base.Pair;
 
 public class TablaSimbolos {
 
@@ -20,6 +21,7 @@ public class TablaSimbolos {
     private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private ArrayList<Integer> ta; //Tabla de ambitos
     private HashMap<Integer, Entrada> te; //Table de expansion
+    private ArrayList<Pair<String, DescripcionSimbolo>> historialSimbolos;
 
     public TablaSimbolos() {
         vaciar();
@@ -75,7 +77,7 @@ public class TablaSimbolos {
         this.td = new HashMap();
         this.ta = new ArrayList();
         this.te = new HashMap();
-
+        historialSimbolos = new ArrayList<>();
         ta.add(n, 0);
         this.n++;
         ta.add(n, 0);
@@ -142,7 +144,6 @@ public class TablaSimbolos {
             throw new Exception("Error grave del compilador, contacta con los desarrolladores por favor\n");
         }
         int lini = ta.get(this.n);
-        //ta.remove(this.n); //Esto revisarlo
         n--;
         int lfi = ta.get(this.n);
 
@@ -156,136 +157,12 @@ public class TablaSimbolos {
         for (Iterator<Map.Entry<String, DescripcionSimbolo>> it = td.entrySet().iterator(); it.hasNext();) {
             HashMap.Entry<String, DescripcionSimbolo> e = it.next();
             if (e.getValue().getNivel() > n) { //Si son de un nivel de profundidad superior, se quita
+                historialSimbolos.add(new Pair<>(e.getKey(), e.getValue()));
                 it.remove();//td.remove(e.getKey());
             }
         }
     }
 
-    //idr es la tupla
-    //idc es el campo de la tupla
-    public void ponerCampo(String idr, String idc, DescripcionSimbolo dCamp) throws Exception {
-//        DescripcionSimbolo d = td.get(idr);
-//        if (!d.isTipoTupla()) {
-//            throw new Exception("Error, no es una tupla!");
-//        }
-//        int i = d.first;
-//
-//        //Buscamos dentro una variable con el mismo nombre dentro de la tupla
-//        while (i != 0 && !te.get(i).id.equals(idc)) {
-//            i = te.get(i).d.next;
-//        }
-//
-//        //Si hemos salido o porque no hay mas variables, o hemos encontrado una con el mismo nombre
-//        if (i != 0) {
-//            throw new Exception("Ya hay un campo con el mismo identificador");
-//        }
-//
-//        int idxe = ta.get(this.n) + 1;
-//        ta.set(this.n, idxe); //Actualizamos tabla de ambitos porque añadimos un nuevo parametro
-//
-//        Entrada e = new Entrada(idc, dCamp, n); // Nueva entrada
-//        e.d.setNivel(-1); //No se copiará al hacer el salir bloque, es unicamente un indicador
-//        e.d.next = td.get(idr).first;
-//        e.d.first = idxe;
-//        td.get(idr).next = idxe; //Referenciamos al añadido para crear una lista
-//        te.put(idxe, e); //Ahora la añadimos a la tabla de expansion 
-    }
-//
-//    /*
-//        Vamos a buscar mediante el identificadar de la tupla
-//        el una entrada de esta misma. Devolvera la entrada
-//        que contiene tanto nombre + DescripcionSimbolo
-//     */
-//    public Entrada consultaCamp(String idr, String idc) throws Exception {
-//        DescripcionSimbolo d = td.get(idr); //Buscamos la descripcion de la tupla
-//        if (!d.isTipoTupla()) {
-//            throw new Exception("No es una tupla!");
-//        }
-//
-//        int i = d.first;
-//        while (i != 0 && !te.get(i).id.equals(idc)) {
-//            i = te.get(i).d.next;
-//        }
-//
-//        if (i != 0) {
-//            return te.get(i);
-//        } else {
-//            return null;
-//        }
-//
-//    }
-//
-//    /*
-//      Vamos a meter un elemento de una tabla dentro de la tabla de simbolos
-//      El id hace referencia al id del array, y descripcionSimbolo contendra lo necesirio
-//        para identificar al propio dato a insertar
-//     */
-//    public void ponerIndice(String id, DescripcionSimbolo d) throws Exception {
-//        DescripcionSimbolo da = td.get(id);
-//        if (!da.isArray()) {
-//            throw new Exception("No es un array");
-//        }
-//
-//        int idxe = da.first;
-//        int idxep = 0;
-//
-//        while (idxe != 0) {
-//            idxep = idxe;
-//            idxe = te.get(idxe).next;
-//        }
-//
-//        idxe = ta.get(this.n) + 1;
-//        ta.set(n, idxe); //Elemento nuevo dentro de la tabla de expansion, actualizamos contador
-//
-//        Entrada ent = new Entrada("", d, n); //No tienen nombre las entradas de valores de indices
-//
-//        ent.idcamp = ""; //No tiene identificador ya que será un valor unicamente o referencia a un valor
-//        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
-//        ent.next = 0;   //Si es el primer elemento no tendrá siguiente
-//
-//        if (idxep == 0) { //Si es el primer indice
-//            td.get(id).first = idxe;
-//        } else {  //En el caso de que haya mas indices, es decir mas elementeos lo actualizamos
-//            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte al nuevo
-//        }
-//        te.put(idxe, ent); //Finalmente añadimos la entrada a la tabla de expansion
-//    }
-//
-//    /*
-//        Método auxiliar por si necesitamos saber si es el primer indice
-//     */
-//    private Integer first(String id) throws Exception {
-//        DescripcionSimbolo sd = td.get(id);
-//        if (!sd.isArray()) {
-//            throw new Exception("No es un array el elemento");
-//        }
-//        return sd.first;
-//    }
-
-//    /*
-//        Método auxiliar para saber el siguiente indice
-//     */
-//    private Integer next(int idx) throws Exception {
-//        int ent = te.get(idx).next;
-//        if (ent == 0) {
-//            throw new Exception("Error al conseguir la sigueinte dimension");
-//        }
-//        return ent;
-//    }
-//
-//    /*
-//        Metodo auxiliar para saber si es el ultimo indice
-//     */
-//    private boolean last(int idx) {
-//        return te.get(idx).next == 0;
-//    }
-//    /*
-//        Metodo para consultar una indice dentro de un array, en teoría mandara
-//        la descripcion de dicho elemento
-//     */
-//    public DescripcionSimbolo consulta(int idx) {
-//        return te.get(idx).descripcion;
-//    }
     //Consulatamos una variable ya incorporada
     public DescripcionSimbolo consulta(String id) {
         return td.get(id);
@@ -310,65 +187,27 @@ public class TablaSimbolos {
         return "El identificador '" + id + "' ya ha sido declarado con anterioridad";
     }
 
-    /*
-        Metodo para poner parametros de una función dentro del la tabla de simbolors
-        idpr es el nombre de la funcion, idparam el nombre del parametro
-        y necesitamos la descripcion de dicho parameto
-     */
-//    public void posaparam(String idpr, String idparam, DescripcionSimbolo d) throws Exception {
-//        DescripcionSimbolo des = td.get(idpr);
-//        if (!des.isFunction()) {
-//            throw new Exception("Error, no es una funcion");
-//        }
-//
-//        int idxe = td.get(idpr).first;
-//        int idxep = 0;
-//        while (idxe != 0 && te.get(idxe).id.equals(idparam)) {
-//            idxep = idxe;
-//            idxe = te.get(idxe).next;
-//        }
-//
-//        if (idxe != 0) {
-//            throw new Exception("Error, ya hay un parametro con el mismo nombre");
-//        }
-//
-//        idxe = ta.get(this.n) + 1;
-//        ta.set(this.n, idxe); //Hemos actualizado al tabla de expansion con una nueva entrada
-//
-//        Entrada ent = new Entrada(idparam, d, n);
-//        ent.idcamp = idparam;
-//        ent.np = -1;    //No se copiará en la tabla de descriptores al salir del bloque
-//        ent.next = 0;
-//
-//        if (idxep == 0) {
-//            td.get(idpr).first = idxe;
-//        } else {
-//            te.get(idxep).next = idxe; //Actualizamos el anterior para que apunte a este nuevo
-//        }
-//
-//        te.put(idxe, ent);
-//
-//    }
-
     @Override
     public String toString() {
-        int nChars = 13;
+        int nChars = 12;
         String s = "";//"Tabla de símbolos:\n";
         for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
-            s += e.getKey() + ":" + calcularTabuladores(nChars + 1, e.getKey()) + e.getValue() + "\n";
+            s += e.getKey() + ":" + calcularTabuladores(nChars, e.getKey()) + e.getValue() + "\n";
+        }
+        for (Pair<String, DescripcionSimbolo> e : historialSimbolos) {
+            s += e.fst + ":" + calcularTabuladores(nChars, e.fst) + e.snd + "\n";
         }
         //s += "\nTabla de ámbitos:" + ta.toString() + "\n\nTabla de expansión:" + te.toString() + "\n";
         return s;
     }
 
     private static String calcularTabuladores(int numChars, String s) {
-        int charsPorTab = 4;
-        int tabs = Math.max(0, (numChars - s.length()) / charsPorTab);
-        StringBuilder tabuladores = new StringBuilder();
-        for (int i = 0; i < tabs; i++) {
-            tabuladores.append('\t');
+        int chars = Math.max(1, numChars - s.length());
+        String res = "";
+        for (int i = 0; i < chars; i++) {
+            res += " ";
         }
-        return tabuladores.toString();
+        return res;
     }
 
     public int getProfundidad() {

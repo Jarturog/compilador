@@ -10,7 +10,7 @@ package analizadorSintactico.symbols;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
 /**
- * MAIN ::= KW_METHOD KW_VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY:et RKEY  
+ * MAIN ::= KW_METHOD VOID KW_MAIN LPAREN KW_STRING LBRACKET RBRACKET KW_ARGS RPAREN LKEY BODY:et RKEY  
         | MAIN:et1 SCRIPT_ELEMENTO:et2     
         ;
  */

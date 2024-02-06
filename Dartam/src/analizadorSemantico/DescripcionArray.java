@@ -44,7 +44,6 @@ public class DescripcionArray extends DescripcionSimbolo {
         return variablesDimension;
     }
 
-
     //    //Array
 //    public void setTipoBase(SymbolTipo base) {
 //        //tipo.setTipoBase(base);
@@ -63,7 +62,6 @@ public class DescripcionArray extends DescripcionSimbolo {
 //    }
     @Override
     public String toString() {
-
         String dim = "";
         if (dimensiones != null) {
             for (SymbolOperand op : dimensiones) {
@@ -74,9 +72,19 @@ public class DescripcionArray extends DescripcionSimbolo {
                 dim += "[] ";
             }
         }
-        String s = "Array de tipo '" + tipo + "' con dimensiones " + dim.substring(0, dim.length() - 1);
-
-        return s + " declarado en el nivel " + getNivel();
+        dim = dim.substring(0, dim.length() - 1);
+        String varDim = "";
+        for (String s : variablesDimension) {
+            varDim += s + ", ";
+        }
+        if (!varDim.isEmpty()) {
+            varDim = varDim.substring(0, varDim.length() - 2);
+        }
+        String c = (isConstante() ? "constante " : "");
+        String v = (tieneValorAsignado() ? " con valor asignado" : " sin valor asignado");
+        String varA = variableAsociada == null ? "" : " siendo su variable de CI " + variableAsociada;
+        String bytes = getBytes() == null ? "" : " ocupando " + getBytes() + " bytes";
+        return "Array " + c + "tipo " + tipoElementoDelArray + v + " declarado en el nivel " + getNivel() + varA + bytes + " con dimensiones " + dim;
     }
 
     boolean isString() {

@@ -29,7 +29,7 @@ public enum Tipo {
     }
     
     public static Integer getBytes(String tipo) {
-        if(tipo.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.KW_VOID])) {
+        if(tipo.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.VOID])) {
             return 0;
         }
         Tipo t = getTipo(tipo);
