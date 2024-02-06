@@ -2,7 +2,7 @@ package genCodigoEnsamblador;
 
 import analizadorSemantico.DescripcionDefinicionTupla;
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
-import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
+import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
 import analizadorSemantico.genCodigoIntermedio.Tipo;
@@ -48,7 +48,7 @@ public class GeneradorEnsamblador {
 //    private boolean printUsed = false;
 //    private boolean scanUsed = false;
 
-    public GeneradorEnsamblador(String fichero, Generador3Direcciones generador) throws Exception {
+    public GeneradorEnsamblador(String fichero, GeneradorCodigoIntermedio generador) throws Exception {
         nombreFichero = fichero;
         instrucciones = generador.getInstrucciones();
         main = generador.getMain();
@@ -96,20 +96,20 @@ public class GeneradorEnsamblador {
             if (instr.dst() != null && data != null && data.estaInicializadaEnCodigoIntermedio() && !data.estaInicializadaEnCodigoEnsamblador()) {
                 data.inicializar();
                 declararVariable(instr.dst().toString(), data, instr.op1().getValor());
-            } else {
-                String instrCodigoIntermedio = instr.toString();
-                if (instrCodigoIntermedio.isEmpty()) {
-                    add("");
-                } else {
-                    add("; " + "-".repeat(MARGEN - 3), instr.toString(), "", "");
-                }
-                String et = instr.dst() == null ? null : instr.dst().toAssembly();
-                // si es goto, ifxx, skip, pmb, call, etc... y no es una función añade . para indicar que es local
-                if (et != null && instr.getTipo().tieneEtiqueta() && !procedureTable.containsKey(et)) {
-                    et = "." + et;
-                }
-                procesarInstruccion(et);
             }
+            String instrCodigoIntermedio = instr.toString();
+            if (instrCodigoIntermedio.isEmpty()) {
+                add("");
+            } else {
+                add("; " + "-".repeat(MARGEN - 3), instr.toString(), "", "");
+            }
+            String et = instr.dst() == null ? null : instr.dst().toAssembly();
+            // si es goto, ifxx, skip, pmb, call, etc... y no es una función añade . para indicar que es local
+            if (et != null && instr.getTipo().tieneEtiqueta() && !procedureTable.containsKey(et)) {
+                et = "." + et;
+            }
+            procesarInstruccion(et);
+
         }
         String et = getEtiqueta();
         if (!et.isEmpty()) {
@@ -231,127 +231,149 @@ public class GeneradorEnsamblador {
         add(getEtiqueta(), "SUBA.L", "#" + bytes + ", SP", "SP = SP - " + bytes);
     }
 
-    private void pop(String s) {
-        add(getEtiqueta(), "MOVE.L", "(SP)+, " + s, s + " = POP FROM STACK");
-    }
-
     private void pop(int bytes) {
         add(getEtiqueta(), "ADDA.L", "#" + bytes + ", SP", "SP = SP + " + bytes);
     }
 
+    private String getExtensionSuperior(String ext1, String ext2) {
+        if (ext1 == null) {
+            return ext2;
+        } else if (ext2 == null) {
+            return ext1;
+        }
+        if (ext1.endsWith("L") || ext2.endsWith("L")) {
+            return ext1.endsWith("L") ? ext1 : ext2;
+        }
+        if (ext1.endsWith("W") || ext2.endsWith("W")) {
+            return ext1.endsWith("W") ? ext1 : ext2;
+        }
+        return ext1;
+    }
+
     private void procesarInstruccion(String dstConPunto) throws Exception {
+        String extOp1 = instr.op1() == null ? null : (instr.op1().tipo() == null ? null : instr.op1().tipo().getExtension68K());
+        String extOp2 = instr.op2() == null ? null : (instr.op2().tipo() == null ? null : instr.op2().tipo().getExtension68K());
+        String extSuperior = getExtensionSuperior(extOp1, extOp2);
+        String extDst = instr.dst() == null ? null : (instr.dst().tipo() == null ? null : instr.dst().tipo().getExtension68K());
         switch (instr.getTipo()) {
             case COPY -> { // op1 -> dst
                 String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 store(register, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case NEG -> { // -op1 -> dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("NEG.L", "D0", "D0 = -D0");
-                add("MOVE.L", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0");
+                String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("NEG" + extOp1, register, register + " = -" + register);
+                store(register, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case ADD -> { // op1+op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("ADD.L", r1 + ", " + r2, r2 + " = " + r2 + "" + " + " + r1);
+                add("ADD" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " + " + r1);
                 store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case SUB -> { // op1-op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("SUB.L", r1 + ", " + r2, r2 + " = " + r2 + "" + " - " + r1);
+                add("SUB" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " - " + r1);
                 store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case MUL -> { // op1*op2 -> dst
                 // EASy68K no permite MULS.L, por lo que se ha de operar así:
                 // A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16
                 add("; " + " ".repeat(MARGEN - 3), "A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16", "", "");
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("MOVE.L", instr.op2().toAssembly() + ", D1", "D1 = " + instr.op2().toAssembly());
-                add("MOVE.W", "D0, D2", "D2.L = D1.L");
-                add("MOVE.W", "D1, D3", "D1.L = D3.L");
-                add("ASR.L", "#8, D0", "FIRST 8 BITS OF D0 MOVED RIGHT");
-                add("ASR.L", "#8, D0", "D0.L = old D0.H");
-                add("ASR.L", "#8, D1", "FIRST 8 BITS OF D1 MOVED RIGHT");
-                add("ASR.L", "#8, D1", "D1.L = old D1.H");
-                add("MULS.W", "D1, D0", "D0 = D0 * D1");
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("MOVE.W", r1 + ", D2", "D2.L = " + r2 + ".L");
+                add("MOVE.W", r2 + ", D3", r2 + ".L = D3.L");
+                add("ASR.L", "#8, " + r1, "FIRST 8 BITS OF " + r1 + " MOVED RIGHT");
+                add("ASR.L", "#8, " + r1, r1 + ".L = old " + r1 + ".H");
+                add("ASR.L", "#8, " + r2, "FIRST 8 BITS OF " + r2 + " MOVED RIGHT");
+                add("ASR.L", "#8, " + r2, r2 + ".L = old " + r2 + ".H");
+                add("MULS.W", r2 + ", " + r1, r1 + " = " + r1 + " * " + r2);
                 add("MULS.W", "D2, D3", "D3 = D2 * D3");
-                add("ASL.L", "#8, D0", "FIRST 8 BITS OF D0 MOVED LEFT");
-                add("ASL.L", "#8, D0", "D0.H = old D0.L");
-                add("ADD.L", "D3, D0", "D0 = D0 + D3");
-                add("MOVE.L", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0");
+                add("ASL.L", "#8, " + r1, "FIRST 8 BITS OF " + r1 + " MOVED LEFT");
+                add("ASL.L", "#8, " + r1, r1 + ".H = old " + r1 + ".L");
+                add("ADD.L", "D3, " + r1, r1 + " = " + r1 + " + D3");
+                store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case DIV -> { // op1/op2 -> dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("DIVS.L", instr.op2().toAssembly() + ", D0", "D0.h = D0 % " + instr.op2().toAssembly() + ". D0.l = D0 / " + instr.op2().toAssembly());
-                add("MOVE.B", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0.l");
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("DIVS.W", r2 + ", " + r1, r1 + ".h = " + r1 + " % " + r2 + ". " + r1 + ".l = " + r1 + " / " + r2);
+                add("AND.L", "#$0000FFFF, " + r1, "Mask");
+                store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case MOD -> { // op1%op2 -> dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("DIVS.L", instr.op2().toAssembly() + ", D0", "D0.h = D0 % " + instr.op2().toAssembly() + ". D0.l = D0 / " + instr.op2().toAssembly());
-                add("LSR.L", "#8, D0", "D0.l = D0.h");
-                add("LSR.L", "#8, D0", "D0.l = D0.h");
-                add("MOVE.B", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0.l");
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("DIVS.W", r2 + ", " + r1, r1 + ".h = " + r1 + " % " + r2 + ". " + r1 + ".l = " + r1 + " / " + r2);
+                add("LSR.L", "#8, " + r1, r1 + ".l = " + r1 + ".h");
+                add("LSR.L", "#8, " + r1, r1 + ".l = " + r1 + ".h");
+                store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case NOT -> { // not op1 -> dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("NOT.L", "D0", "D0 = not D0");
-                add("MOVE.L", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0");
+                String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("NOT" + extOp1, register, register + " = not " + register);
+                store(register, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case AND -> { // op1 and op2 -> dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("AND.L", instr.op2().toAssembly() + ", D0", "D0 = D0 and " + instr.op2().toAssembly());
-                add("MOVE.L", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0");
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("AND" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " and " + r1);
+                store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case OR -> { // op1 or op2 -> dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("OR.L", instr.op2().toAssembly() + ", D0", "D0 = D0 or " + instr.op2().toAssembly());
-                add("MOVE.L", "D0, " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = D0");
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("OR" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " or " + r1);
+                store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
-            case CONCAT -> { // op1 concat op2 -> dst
-                seConcatena = true;
-                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo()); // A0
-                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo()); // A1
-                add("LEA.L", instr.dst().toAssembly() + ", A2", "FETCH " + instr.dst().toAssembly());
-                add("JSR", etConc, "");
-            }
+//            case CONCAT -> { // op1 concat op2 -> dst
+//                seConcatena = true;
+//                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo()); // A0
+//                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo()); // A1
+//                add("LEA.L", instr.dst().toAssembly() + ", A2", "FETCH " + instr.dst().toAssembly());
+//                add("JSR", etConc, "");
+//            }
             case GOTO -> { // goto dst
                 add(getEtiqueta(), "JMP", dstConPunto, "goto " + dstConPunto);
             }
             case IFEQ -> { // if op1 = op2 goto dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("CMP.L", instr.op2().toAssembly() + ", D0", "UPDATE FLAGS WITH D0 - " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BEQ", dstConPunto, "IF Z FLAG = 1 GOTO " + dstConPunto);
             }
             case IFNE -> { // if op1 /= op2 goto dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("CMP.L", instr.op2().toAssembly() + ", D0", "UPDATE FLAGS WITH D0 - " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BNE", dstConPunto, "IF Z FLAG = 0 GOTO " + dstConPunto);
             }
             case IFGE -> { // if op1 >= op2 goto dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("CMP.L", instr.op2().toAssembly() + ", D0", "UPDATE FLAGS WITH D0 - " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BLT", dstConPunto, "IF (N XOR V) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IFLT -> { // if op1 < op2 goto dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("CMP.L", instr.op2().toAssembly() + ", D0", "UPDATE FLAGS WITH D0 - " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BGE", dstConPunto, "IF (N XOR V) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFGT -> { // if op1 > op2 goto dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("CMP.L", instr.op2().toAssembly() + ", D0", "UPDATE FLAGS WITH D0 - " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IFLE -> { // if op1 <= op2 goto dst
-                add(getEtiqueta(), "MOVE.L", instr.op1().toAssembly() + ", D0", "D0 = " + instr.op1().toAssembly());
-                add("CMP.L", instr.op2().toAssembly() + ", D0", "UPDATE FLAGS WITH D0 - " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IND_ASS -> { // dst[op1] = op2
-                add(getEtiqueta(), "MOVEA.L", instr.dst().toAssembly() + ", A0", "A0 = " + instr.dst().toAssembly());
-                add("ADDA.L ", instr.op1().toAssembly() + ", A0", "A0 = A0 + " + instr.op1().toAssembly());
-                add("MOVE.L ", instr.op2().toAssembly() + ", (A0)", "(A0) = " + instr.op2().toAssembly());
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                String dt = load(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
+                add("ADDA.L ", r1 + ", " + dt, dt + " = " + dt + " + " + r1);
+                add("MOVE.L ", r2 + ", (" + dt + ")", "(" + dt + ") = " + r2);
             }
             case IND_VAL -> { // dst = op1[op2]
                 add(getEtiqueta(), "MOVEA.L", instr.op1().toAssembly() + ", A0", "A0 = " + instr.op1().toAssembly());
@@ -364,16 +386,18 @@ public class GeneradorEnsamblador {
             case PMB -> { // pmb dst
                 PData func = procedureTable.get(instr.dst().toAssembly());
                 int indice = func.getBytesRetorno();
-                for (Pair<String, String> par : func.getParametros()) {
+                for (int i = func.getParametros().size() - 1; i >= 0; i--) {
+                    Pair<String, Integer> par = func.getParametros().get(i);
                     // par.snd son es el tipo
-                    indice += 4; //indice += Tipo.getBytes(par.snd);
-                    add(getEtiqueta(), "MOVE.L", indice + "(SP), " + par.fst, par.fst + " = POP FROM STACK");
+                    indice += par.snd; //indice += Tipo.getBytes(par.snd);
+                    add(getEtiqueta(), "MOVE" + Tipo.getExtension68K(par.snd), indice + "(SP), " + par.fst, par.fst + " = POP FROM STACK");
                 }
             }
             case RETURN -> { // rtn dst, ?
                 PData func = procedureTable.get(instr.dst().toAssembly());
+                int bytes = func.getBytesRetorno();
                 if (func.getBytesRetorno() > 0) {
-                    push(instr.dst(), dstConPunto, instr.dst().tipo());
+                    add(getEtiqueta(), "MOVE" + extOp1, instr.op1().toAssembly() + ", " + bytes + "(SP)", "PUSH INTO STACK " + instr.op1().toAssembly());
                 }
                 add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
             }
@@ -384,23 +408,31 @@ public class GeneradorEnsamblador {
                 }
                 PData.TipoMetodoEspecial tipo = PData.getEspecial(func.getNombre());
                 boolean esMetodoEspecial = tipo != null;
+                if (func.getBytesRetorno() > 0) {
+                    add("SUBA.L", "#" + func.getBytesRetorno() + ", SP", "SP = SP + " + func.getBytesRetorno());
+                }
                 if (esMetodoEspecial) {
                     procesarMetodoEspecial(procedureTable.get(instr.dst().toAssembly()), tipo, instr.dst().toAssembly());
                 }
                 add(getEtiqueta(), "JSR", dstConPunto, "JUMP TO SUBROUTINE " + dstConPunto);
                 int numBytes = 0;
-                for (Pair<String, String> par : func.getParametros()) {
+                for (Pair<String, Integer> par : func.getParametros()) {
                     // par.snd son los bytes
-                    numBytes += 4; //numBytes += Tipo.getBytes(par.snd);
+                    numBytes += par.snd; //numBytes += Tipo.getBytes(par.snd);
+                }
+                if (func.getBytesRetorno() > 0) {
+                    add(getEtiqueta(), "MOVE" + extOp1, "(SP)+, " + instr.op1().toAssembly(), instr.op1().toAssembly() + " = POP FROM STACK");
                 }
                 if (numBytes > 0) {
                     add("ADDA.L", "#" + numBytes + ", SP", "SP = SP + " + numBytes);
                 }
-                if (func.getBytesRetorno() > 0) {
-                    pop(instr.op1().toAssembly());
-                }
+
             }
             case SKIP -> { // dst: skip
+                String et = getEtiqueta();
+                if (et != null) {
+                    add(et, "", "", "");
+                }
                 setEtiqueta(dstConPunto); // para etiquetas locales ponemos .
             }
             case SEPARADOR -> { // no hace nada pero resulta en mayor legibilidad del código ensamblador

@@ -1,6 +1,6 @@
 package optimizaciones;
 
-import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
+import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
 import analizadorSemantico.genCodigoIntermedio.Operador;
@@ -13,7 +13,7 @@ public class Optimizador {
     private final ArrayList<Instruccion> instrucciones;
     private final HashMap<String, VData> variables;
 
-    public Optimizador(Generador3Direcciones g3d) throws Exception {
+    public Optimizador(GeneradorCodigoIntermedio g3d) throws Exception {
         instrucciones = g3d.getInstrucciones();
         variables = g3d.getTablaVariables();
         while (saltosAdyacentes() || saltoSobreSalto() || asignacionesDiferidas() || etiquetasSinUsarse()); // se realiza la optimización hasta que no hayan cambios
@@ -79,7 +79,7 @@ public class Optimizador {
             }
             for (int j = i + 3; j < instrucciones.size(); j++) {
                 Instruccion skip2 = instrucciones.get(j);
-                if (!skip2.isTipo(TipoInstr.SKIP) && !skip2.dst().getNombre().equals(saltoGoto.dst().getNombre())) {
+                if (!skip2.isTipo(TipoInstr.SKIP) || !skip2.dst().getNombre().equals(saltoGoto.dst().getNombre())) {
                     continue;
                 }
                 cond.setTipo(cond.getTipo().getContrario());
@@ -123,13 +123,13 @@ public class Optimizador {
                 continue;
             }
             boolean seUsa = false;
-            for (int j = i + 1; !seUsa && j < instrucciones.size(); j++) {
+            for (int j = 0; !seUsa && j < instrucciones.size(); j++) {
                 Instruccion instr = instrucciones.get(j);
-                if (!instr.isTipo(TipoInstr.GOTO)
+                if (j == i || (!instr.isTipo(TipoInstr.GOTO)
                         && !instr.getTipo().isCondGOTO()
                         && !instr.isTipo(TipoInstr.CALL)
                         && !instr.isTipo(TipoInstr.RETURN)
-                        && !instr.isTipo(TipoInstr.PMB)) {
+                        && !instr.isTipo(TipoInstr.PMB))) {
                     continue;
                 }
                 seUsa = skip.dst().getNombre().equals(instr.dst().getNombre());

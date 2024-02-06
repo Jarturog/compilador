@@ -8,9 +8,10 @@ import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import jflex.base.Pair;
 
-public class Generador3Direcciones {
+public class GeneradorCodigoIntermedio {
 
     private final HashMap<String, VData> tablaVariables;
     private final HashSet<String> tablaEtiquetas;
@@ -23,7 +24,35 @@ public class Generador3Direcciones {
     private PData main = null;
 //    private final ArrayList<Integer> inicializaciones = new ArrayList<>();
 
-    public Generador3Direcciones() {
+//    public GeneradorCodigoIntermedio(GeneradorCodigoIntermedio gen) {
+//        
+//    }
+    public GeneradorCodigoIntermedio(GeneradorCodigoIntermedio gen) throws Exception {
+        this.tablaVariables = new HashMap<>();
+        for (Map.Entry<String, VData> p : gen.tablaVariables.entrySet()) {
+            tablaVariables.put(p.getKey(), new VData(p.getValue()));
+        }
+        this.tablaEtiquetas = new HashSet<>(gen.tablaEtiquetas);
+        this.tablaProcedimientos = new HashMap<>();
+        for (Map.Entry<String, PData> p : gen.tablaProcedimientos.entrySet()) {
+            tablaProcedimientos.put(p.getKey(), p.getValue());
+        }
+        this.numEtiquetasOVariablesConId = new HashMap<>();
+        for (Map.Entry<String, Integer> p : gen.numEtiquetasOVariablesConId.entrySet()) {
+            numEtiquetasOVariablesConId.put(p.getKey(), p.getValue());
+        }
+        this.tablaTuplas = new HashMap<>();
+        for (Map.Entry<String, DescripcionDefinicionTupla> p : gen.tablaTuplas.entrySet()) {
+            tablaTuplas.put(p.getKey(), p.getValue());
+        }
+        this.instrucciones = new ArrayList<>();
+        for (Instruccion p : gen.instrucciones) {
+            instrucciones.add(new Instruccion(p));
+        }
+        this.main = gen.main;
+    }
+
+    public GeneradorCodigoIntermedio() {
         this.tablaVariables = new HashMap<>();
         this.tablaProcedimientos = new HashMap();
 //        this.listaProcedimientos = new ArrayList<>();
@@ -33,7 +62,7 @@ public class Generador3Direcciones {
         tablaTuplas = new HashMap<>();
     }
 
-    public Generador3Direcciones(HashMap<String, VData> tv, HashMap<String, PData> tp) {
+    public GeneradorCodigoIntermedio(HashMap<String, VData> tv, HashMap<String, PData> tp) {
         this.tablaVariables = tv;
         this.tablaProcedimientos = tp;
 //        this.listaProcedimientos = new ArrayList<>();
@@ -97,15 +126,15 @@ public class Generador3Direcciones {
         tablaVariables.put(idVar, data);
         return idVar;
     }
-    
+
     public void anyadirBytesEstructura(String var, int b) {
         tablaVariables.get(var).setBytesEstructura(b);
     }
-    
+
     public void anyadirTupla(String id, DescripcionDefinicionTupla t) {
         tablaTuplas.put(id, t);
     }
-    
+
     public HashMap<String, DescripcionDefinicionTupla> getTuplas() {
         return this.tablaTuplas;
     }
@@ -113,9 +142,9 @@ public class Generador3Direcciones {
     public void relacionarDatoVariableConTupla(String var, DescripcionDefinicionTupla t) {
         tablaVariables.get(var).setTupla(t);
     }
-    
+
     //Permite crear un nuevo procedimiento y añadirlo a la tabla
-    public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Pair<String, String>> params, int bytesRetorno) {
+    public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Pair<String, Integer>> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
         PData data = new PData(id, etiqueta, params, bytesRetorno);
         //tablaProcedimientos.put(id, data);
@@ -123,7 +152,7 @@ public class Generador3Direcciones {
         return contador;
     }
 
-    public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Pair<String, String>> params, int bytesRetorno) {
+    public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Pair<String, Integer>> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
         PData data = new PData(id, etiqueta, params, bytesRetorno);
         //tablaProcedimientos.put(id, data);

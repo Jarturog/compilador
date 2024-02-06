@@ -14,6 +14,12 @@ public class Operador {
     private final Object valor; //Valor
     private final Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
 
+    public Operador(Operador o){
+        nombre = o.nombre;
+        tipoValor = o.tipoValor;
+        valor = o.valor;
+    }
+    
     public Operador(String etiqueta){
         nombre = etiqueta;
         tipoValor = null;

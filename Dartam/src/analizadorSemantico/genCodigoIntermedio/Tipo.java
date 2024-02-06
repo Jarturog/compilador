@@ -60,6 +60,17 @@ public enum Tipo {
         };
     }
     
+    public static String getExtension68K(Integer bytes) {
+        return switch (bytes) {
+            case 1 -> ".B";
+            case 2 -> ".W";
+            case 4 -> ".L";
+            case 256 -> ".L";
+            case -1 -> ".B"; // estructura
+            default -> null;
+        };
+    }
+    
     private Tipo(Integer t) {
         bytes = t;
     }

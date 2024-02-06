@@ -10,10 +10,10 @@ import jflex.base.Pair;
 
 public class PData {
     private final String nombre, etiqueta;
-    private final ArrayList<Pair<String, String>> parametros;
+    private final ArrayList<Pair<String, Integer>> parametros;
     private final int bytesRetorno;
     
-    public PData(String nombre, String etiqueta, ArrayList<Pair<String, String>> params, int bytesValorRetorno) {
+    public PData(String nombre, String etiqueta, ArrayList<Pair<String, Integer>> params, int bytesValorRetorno) {
         this.nombre = nombre;
         this.etiqueta = etiqueta;
         this.parametros = params;
@@ -26,7 +26,7 @@ public class PData {
     }
 
     //Metodo con el que podemos recuperar los parametros del procedimiento
-    public ArrayList<Pair<String, String>> getParametros() {
+    public ArrayList<Pair<String, Integer>> getParametros() {
         return parametros;
     }
 
@@ -36,8 +36,8 @@ public class PData {
     }
 
     //Metodo que permite añadir un nuevo parametro al procedimiento
-    public void añadirParametro(String i, String t) {
-        Pair<String, String> param = new Pair(i, t);
+    public void añadirParametro(String i, Integer bytes) {
+        Pair<String, Integer> param = new Pair(i, bytes);
         this.parametros.add(param);
     }
 

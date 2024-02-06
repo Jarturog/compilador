@@ -1,0 +1,12 @@
+f vacio inicio(){
+	ent a: 16, b:20;
+	inmut ent c1: mcd1(a, b);
+}
+
+f ent mcd1(ent a0, ent b0) {
+	ent a:a0, b:b0;
+	loop (a /= b) {
+		a+:1;
+	}
+	pop a;
+}

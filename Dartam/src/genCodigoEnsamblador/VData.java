@@ -14,18 +14,26 @@ public class VData {
     private Integer bytesEstructura = null;
     private DescripcionDefinicionTupla tupla = null;
 
+    public VData(VData v) throws Exception {
+        tipo = v.tipo;
+        initCodigoIntermedio = v.initCodigoIntermedio;
+        initCodigoEnsamblador = v.initCodigoEnsamblador;
+        bytesEstructura = v.bytesEstructura;
+        tupla = v.tupla;
+    }
+
     public VData(Tipo t) throws Exception {
         tipo = t;
-        if(t == null) {
+        if (t == null) {
             throw new Exception("No puede haber una variable sin tipo");
         }
     }
-    
-    public void setTupla(DescripcionDefinicionTupla t){
+
+    public void setTupla(DescripcionDefinicionTupla t) {
         tupla = t;
     }
-    
-    public DescripcionDefinicionTupla getTupla(){
+
+    public DescripcionDefinicionTupla getTupla() {
         return tupla;
     }
 

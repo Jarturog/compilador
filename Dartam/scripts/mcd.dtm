@@ -1,4 +1,4 @@
-f vacio inicio(car[][]argumentos){
+f vacio inicio(){
 	ent a: 16, b:20;
 	inmut ent c1: mcd1(a, b), c2: mcd2(a, b);
 }

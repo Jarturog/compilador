@@ -5,6 +5,13 @@ public class Instruccion {
     private TipoInstr tipoInstruccion;
     private Operador op1, op2, dst;
 
+    public Instruccion(Instruccion i) {
+        this.tipoInstruccion = i.tipoInstruccion;
+        this.op1 = i.op1 == null ? null : new Operador(i.op1);
+        this.op2 = i.op2 == null ? null : new Operador(i.op2);
+        this.dst = i.dst == null ? null : new Operador(i.dst);
+    }
+    
     public Instruccion(TipoInstr tipoInstruccion, Operador op1, Operador op2, Operador dst) {
         this.tipoInstruccion = tipoInstruccion;
         this.op1 = op1;

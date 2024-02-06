@@ -8,7 +8,7 @@
 package analizadorSemantico;
 
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
-import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
+import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Operador;
 import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
@@ -23,7 +23,7 @@ import jflex.base.Pair;
 
 public class AnalizadorSemantico {
 
-    private Generador3Direcciones g3d;
+    private GeneradorCodigoIntermedio g3d;
 
     private String varActual;
 
@@ -52,7 +52,7 @@ public class AnalizadorSemantico {
         return tablaSimbolos.toString();
     }
 
-    public Generador3Direcciones getGenerador() {
+    public GeneradorCodigoIntermedio getGenerador() {
         return g3d;
     }
 
@@ -76,7 +76,7 @@ public class AnalizadorSemantico {
         ArrayList<SymbolDecs> declaraciones = new ArrayList<>();
         ArrayList<SymbolScriptElemento> tuplas = new ArrayList<>();
         ArrayList<SymbolScriptElemento> metodos = new ArrayList<>();
-        g3d = new Generador3Direcciones();
+        g3d = new GeneradorCodigoIntermedio();
         int idMidDecs = 0, idMidTuplas = 0, idMidMetodos = 0;
         // elementos antes del main
         SymbolScriptElemento elem = scriptElementosAntesDeMain.elemento;
@@ -169,19 +169,19 @@ public class AnalizadorSemantico {
         // metodos especiales
         nombre = ParserSym.terminalNames[ParserSym.ENTER].toLowerCase();
         df = new DescripcionFuncion(tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.SHOW].toLowerCase();
         df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "output", tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.FROM].toLowerCase();
         df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.KW_VOID], "file", tipoString, g3d.nuevaEtiqueta(nombre), tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
         nombre = ParserSym.terminalNames[ParserSym.INTO].toLowerCase();
         df = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.PROP], "file", tipoString, "content", tipoString, g3d.nuevaEtiqueta(nombre));
-        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
+        numeroProcedure = g3d.nuevoProcedimiento(nombre, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
         tablaSimbolos.poner(nombre, df);
     }
 
@@ -842,7 +842,7 @@ public class AnalizadorSemantico {
         //        g3d.añadirFuncion(metodo.id);
         //String efi = g3d.nuevaEtiqueta(metodo.id); //Creamos la etiqueta de la funcion
         //Añadimos la funcion a la tabla
-        int numeroProcedure = g3d.nuevoProcedimiento(metodo.id, df.variableAsociada, df.getParametros(), Tipo.getBytes(df.getTipo()));
+        int numeroProcedure = g3d.nuevoProcedimiento(metodo.id, df.variableAsociada, df.paramsToIdBytes(), Tipo.getBytes(df.getTipo()));
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(df.variableAsociada));
         g3d.generarInstr(TipoInstr.PMB, null, null, new Operador(df.variableAsociada));
         metodoActualmenteSiendoTratado = new Pair(metodo.id, df);

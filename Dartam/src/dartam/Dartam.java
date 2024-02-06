@@ -15,7 +15,7 @@ import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSemantico.AnalizadorSemantico;
-import analizadorSemantico.genCodigoIntermedio.Generador3Direcciones;
+import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
 import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,6 +40,7 @@ import optimizaciones.Optimizador;
 
 public class Dartam {
 
+    private boolean error = false;
     public static final boolean DEBUG = true;
     private static final String RUTA = "scripts/", LOG = "log.txt", EXTENSION = ".dtm";
     private final String nombreFichero;
@@ -54,7 +55,11 @@ public class Dartam {
             nombreArchivo = elegirArchivo();
         }
         try {
-            new Dartam(nombreArchivo);
+            Dartam dartam = new Dartam(nombreArchivo);
+            if (!dartam.error) {
+                System.out.flush();
+                System.out.println("Compilacion finalizada");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error inesperado de compilacion: " + e.getMessage());
@@ -71,10 +76,7 @@ public class Dartam {
                 System.err.println("No se ha podido guardar el error en el " + LOG + "\nContacta con los desarrolladores: ");
                 e.printStackTrace();
             }
-            return;
         }
-        System.out.flush();
-        System.out.println("Compilacion finalizada");
     }
 
     public Dartam(String nombreArchivo) throws Exception {
@@ -95,9 +97,11 @@ public class Dartam {
         escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens());
         if (!scanner.getErrores().isEmpty()) {
             System.err.println(scanner.getErrores());
+            error = true;
             return;
         } else if (!parser.getErrores().isEmpty()) {
             System.err.println(parser.getErrores());
+            error = true;
             return;
         }
         //System.out.println(scanner.getTokens());
@@ -107,20 +111,26 @@ public class Dartam {
         escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols());
         if (!sem.getErrores().isEmpty()) {
             System.err.println(sem.getErrores());
+            error = true;
             return;
         }
         // Generación de código intermedio realizada durante el análisis semántico
-        Generador3Direcciones generadorCodigoIntermedio = sem.getGenerador();
+        GeneradorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
         escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
+        // Generación de código ensamblador
+        GeneradorCodigoIntermedio generadorParaOptimizar = new GeneradorCodigoIntermedio(generadorCodigoIntermedio); // se copia
+        GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
+        escribir(nombreFichero + "SinOptimizaciones.X68", codigoEnsamblador.toString());
         // Optimzaciones
-        Optimizador op = new Optimizador(generadorCodigoIntermedio);
+        
+        Optimizador op = new Optimizador(generadorParaOptimizar);
         escribir("codigoOptimizado_" + nombreFichero + ".txt", op.toString());
         // Generación de código ensamblador
-        GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
+        codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorParaOptimizar);
         escribir(nombreFichero + ".X68", codigoEnsamblador.toString());
     }
 
-    public void escribir(String fileName, String str) throws IOException {
+    public final void escribir(String fileName, String str) throws IOException {
         try (FileWriter fileOut = new FileWriter(RUTA + nombreFichero + "/" + fileName)) {
             fileOut.write(str);
         }

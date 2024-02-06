@@ -8,6 +8,25 @@
 
             ORG         $1000       ; Origen
 
+t           DC.L 16                 ; INT
+t_1         DC.L 20                 ; INT
+t_4         DC.B 0                  ; BOOLEAN
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+t_5         DC.B 0                  ; BOOLEAN
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+t_8         DC.B 0                  ; BOOLEAN
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+t_12        DC.B 0                  ; BOOLEAN
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+t_13        DC.L 0                  ; INT
+t_15        DC.L 0                  ; INT
+t_16        DC.B 0                  ; BOOLEAN
+            DC.B 0                  ; Los strings y chars acaban en 0
+            DS.W 0                  ; No pueden haber variables en zonas de memoria impar
 num1_1      DS.L 1                  ; INT
 num2_1      DS.L 1                  ; INT
 b0          DS.L 1                  ; INT
@@ -19,6 +38,8 @@ a_2         DS.L 1                  ; INT
 b_3         DS.L 1                  ; INT
 num1        DS.L 1                  ; INT
 num2        DS.L 1                  ; INT
+a           DS.L 1                  ; INT
+b           DS.L 1                  ; INT
 resultado   DS.L 1                  ; INT
 t_2         DS.L 1                  ; INT
 t_3         DS.L 1                  ; INT
@@ -28,21 +49,22 @@ c1          DS.L 1                  ; INT
 c2          DS.L 1                  ; INT
 a0          DS.L 1                  ; INT
 t_9         DS.L 1                  ; INT
+resultado_1 DS.L 1                  ; INT
 t_14        DS.L 1                  ; INT
 t_10        DS.L 1                  ; INT
 t_11        DS.L 1                  ; INT
-MCD0                                ; Etiqueta inicial (main)
+MCD                                 ; Etiqueta inicial (main)
             JSR         e_inicio    ; Se ejecuta el main
             SIMHALT                 ; Fin de la ejecución
 
 ; --------- e_inicio: skip          
                                     
 ; --------- pmb e_inicio            
-; --------- a = 16                  
-e_inicio:   MOVE.L      #16, D0     ; D0 = #16
+; --------- a = t                   
+e_inicio:   MOVE.L      t, D0       ; D0 = t
             MOVE.L      D0, a       ; a = D0
-; --------- b = 20                  
-            MOVE.L      #20, D0     ; D0 = #20
+; --------- b = t_1                 
+            MOVE.L      t_1, D0     ; D0 = t_1
             MOVE.L      D0, b       ; b = D0
 ; --------- param_s a               
             MOVE.L      a, -(SP)    ; PUSH INTO STACK a
@@ -91,36 +113,36 @@ e_mcd1:     MOVE.L      8(SP), a0   ; a0 = POP FROM STACK
 .e:         MOVE.L      a_1, D0     ; D0 = a_1
             CMP.L       b_1, D0     ; UPDATE FLAGS WITH D0 - b_1
             BNE         .e_3        ; IF Z FLAG = 0 GOTO .e_3
-; --------- t_4 = 0                 
-            CLR.L       D0          ; CLEAR D0
-            MOVE.B      #0, D0      ; D0 = #0
-            MOVE.B      D0, t_4     ; t_4 = D0
 ; --------- goto e_4                
             JMP         .e_4        ; goto .e_4
+; --------- e_3: skip               
+                                    
 ; --------- t_4 = -1                
-            CLR.L       D0          ; CLEAR D0
+.e_3:       CLR.L       D0          ; CLEAR D0
             MOVE.B      #-1, D0     ; D0 = #-1
             MOVE.B      D0, t_4     ; t_4 = D0
+; --------- e_4: skip               
+                                    
 ; --------- if t_4 == 0 goto e_1    
-            MOVE.L      t_4, D0     ; D0 = t_4
+.e_4:       MOVE.L      t_4, D0     ; D0 = t_4
             CMP.L       #0, D0      ; UPDATE FLAGS WITH D0 - #0
             BEQ         .e_1        ; IF Z FLAG = 1 GOTO .e_1
 ; --------- if a_1 > b_1 goto e_5   
             MOVE.L      a_1, D0     ; D0 = a_1
             CMP.L       b_1, D0     ; UPDATE FLAGS WITH D0 - b_1
             BLE         .e_5        ; IF ((N XOR V) OR Z) FLAGS = 1 GOTO .e_5
-; --------- t_5 = 0                 
-            CLR.L       D0          ; CLEAR D0
-            MOVE.B      #0, D0      ; D0 = #0
-            MOVE.B      D0, t_5     ; t_5 = D0
 ; --------- goto e_6                
             JMP         .e_6        ; goto .e_6
+; --------- e_5: skip               
+                                    
 ; --------- t_5 = -1                
-            CLR.L       D0          ; CLEAR D0
+.e_5:       CLR.L       D0          ; CLEAR D0
             MOVE.B      #-1, D0     ; D0 = #-1
             MOVE.B      D0, t_5     ; t_5 = D0
+; --------- e_6: skip               
+                                    
 ; --------- if t_5 == 0 goto e_8    
-            MOVE.L      t_5, D0     ; D0 = t_5
+.e_6:       MOVE.L      t_5, D0     ; D0 = t_5
             CMP.L       #0, D0      ; UPDATE FLAGS WITH D0 - #0
             BEQ         .e_8        ; IF Z FLAG = 1 GOTO .e_8
 ; --------- t_6 = a_1 - b_1         
@@ -133,18 +155,26 @@ e_mcd1:     MOVE.L      8(SP), a0   ; a0 = POP FROM STACK
             MOVE.L      D0, a_1     ; a_1 = D0
 ; --------- goto e_7                
             JMP         .e_7        ; goto .e_7
+; --------- e_8: skip               
+                                    
 ; --------- t_7 = b_1 - a_1         
-            MOVE.L      b_1, D0     ; D0 = b_1
+.e_8:       MOVE.L      b_1, D0     ; D0 = b_1
             MOVE.L      a_1, D1     ; D1 = a_1
             SUB.L       D0, D1      ; D1 = D1 - D0
             MOVE.L      D1, t_7     ; t_7 = D1
 ; --------- b_1 = t_7               
             MOVE.L      t_7, D0     ; D0 = t_7
             MOVE.L      D0, b_1     ; b_1 = D0
+; --------- e_7: skip               
+                                    
+; --------- e_2: skip               
+.e_7:                               
 ; --------- goto e                  
-            JMP         .e          ; goto .e
+.e_2:       JMP         .e          ; goto .e
+; --------- e_1: skip               
+                                    
 ; --------- rtn e_mcd1, a_1         
-            MOVE.L      e_mcd1, -(SP) ; PUSH INTO STACK e_mcd1
+.e_1:       MOVE.L      e_mcd1, -(SP) ; PUSH INTO STACK e_mcd1
             RTS                     ; RETURN TO SUBROUTINE e_mcd1
 
 
@@ -157,18 +187,18 @@ e_mcm:      MOVE.L      8(SP), num1 ; num1 = POP FROM STACK
             MOVE.L      num1, D0    ; D0 = num1
             CMP.L       num2, D0    ; UPDATE FLAGS WITH D0 - num2
             BLE         .e_9        ; IF ((N XOR V) OR Z) FLAGS = 1 GOTO .e_9
-; --------- t_8 = 0                 
-            CLR.L       D0          ; CLEAR D0
-            MOVE.B      #0, D0      ; D0 = #0
-            MOVE.B      D0, t_8     ; t_8 = D0
 ; --------- goto e_10               
             JMP         .e_10       ; goto .e_10
+; --------- e_9: skip               
+                                    
 ; --------- t_8 = -1                
-            CLR.L       D0          ; CLEAR D0
+.e_9:       CLR.L       D0          ; CLEAR D0
             MOVE.B      #-1, D0     ; D0 = #-1
             MOVE.B      D0, t_8     ; t_8 = D0
+; --------- e_10: skip              
+                                    
 ; --------- if t_8 == 0 goto e_12   
-            MOVE.L      t_8, D0     ; D0 = t_8
+.e_10:      MOVE.L      t_8, D0     ; D0 = t_8
             CMP.L       #0, D0      ; UPDATE FLAGS WITH D0 - #0
             BEQ         .e_12       ; IF Z FLAG = 1 GOTO .e_12
 ; --------- a_2 = num1              
@@ -179,14 +209,18 @@ e_mcm:      MOVE.L      8(SP), num1 ; num1 = POP FROM STACK
             MOVE.L      D0, b_2     ; b_2 = D0
 ; --------- goto e_11               
             JMP         .e_11       ; goto .e_11
+; --------- e_12: skip              
+                                    
 ; --------- a_2 = num2              
-            MOVE.L      num2, D0    ; D0 = num2
+.e_12:      MOVE.L      num2, D0    ; D0 = num2
             MOVE.L      D0, a_2     ; a_2 = D0
 ; --------- b_2 = num1              
             MOVE.L      num1, D0    ; D0 = num1
             MOVE.L      D0, b_2     ; b_2 = D0
+; --------- e_11: skip              
+                                    
 ; --------- param_s num1            
-            MOVE.L      num1, -(SP) ; PUSH INTO STACK num1
+.e_11:      MOVE.L      num1, -(SP) ; PUSH INTO STACK num1
 ; --------- param_s num2            
             MOVE.L      num2, -(SP) ; PUSH INTO STACK num2
 ; --------- call e_mcd2, t_9        
@@ -233,18 +267,18 @@ e_mcd2:     MOVE.L      8(SP), num1 ; num1 = POP FROM STACK
             MOVE.L      num1_1, D0  ; D0 = num1_1
             CMP.L       num2_1, D0  ; UPDATE FLAGS WITH D0 - num2_1
             BLE         .e_13       ; IF ((N XOR V) OR Z) FLAGS = 1 GOTO .e_13
-; --------- t_12 = 0                
-            CLR.L       D0          ; CLEAR D0
-            MOVE.B      #0, D0      ; D0 = #0
-            MOVE.B      D0, t_12    ; t_12 = D0
 ; --------- goto e_14               
             JMP         .e_14       ; goto .e_14
+; --------- e_13: skip              
+                                    
 ; --------- t_12 = -1               
-            CLR.L       D0          ; CLEAR D0
+.e_13:      CLR.L       D0          ; CLEAR D0
             MOVE.B      #-1, D0     ; D0 = #-1
             MOVE.B      D0, t_12    ; t_12 = D0
+; --------- e_14: skip              
+                                    
 ; --------- if t_12 == 0 goto e_16  
-            MOVE.L      t_12, D0    ; D0 = t_12
+.e_14:      MOVE.L      t_12, D0    ; D0 = t_12
             CMP.L       #0, D0      ; UPDATE FLAGS WITH D0 - #0
             BEQ         .e_16       ; IF Z FLAG = 1 GOTO .e_16
 ; --------- a_3 = num1_1            
@@ -255,14 +289,18 @@ e_mcd2:     MOVE.L      8(SP), num1 ; num1 = POP FROM STACK
             MOVE.L      D0, b_3     ; b_3 = D0
 ; --------- goto e_15               
             JMP         .e_15       ; goto .e_15
+; --------- e_16: skip              
+                                    
 ; --------- a_3 = num2_1            
-            MOVE.L      num2_1, D0  ; D0 = num2_1
+.e_16:      MOVE.L      num2_1, D0  ; D0 = num2_1
             MOVE.L      D0, a_3     ; a_3 = D0
 ; --------- b_3 = num1_1            
             MOVE.L      num1_1, D0  ; D0 = num1_1
             MOVE.L      D0, b_3     ; b_3 = D0
-; --------- resultado_1 = 0         
-            MOVE.L      #0, D0      ; D0 = #0
+; --------- e_15: skip              
+                                    
+; --------- resultado_1 = t_13      
+.e_15:      MOVE.L      t_13, D0    ; D0 = t_13
             MOVE.L      D0, resultado_1 ; resultado_1 = D0
 ; --------- e_17: skip              
                                     
@@ -282,34 +320,35 @@ e_mcd2:     MOVE.L      8(SP), num1 ; num1 = POP FROM STACK
 ; --------- a_3 = resultado_1       
             MOVE.L      resultado_1, D0 ; D0 = resultado_1
             MOVE.L      D0, a_3     ; a_3 = D0
-; --------- t_15 = 0                
-            MOVE.L      #0, D0      ; D0 = #0
-            MOVE.L      D0, t_15    ; t_15 = D0
+; --------- e_19: skip              
+                                    
 ; --------- if b_3 /= t_15 goto e_20  
-            MOVE.L      b_3, D0     ; D0 = b_3
+.e_19:      MOVE.L      b_3, D0     ; D0 = b_3
             CMP.L       t_15, D0    ; UPDATE FLAGS WITH D0 - t_15
             BNE         .e_20       ; IF Z FLAG = 0 GOTO .e_20
-; --------- t_16 = 0                
-            CLR.L       D0          ; CLEAR D0
-            MOVE.B      #0, D0      ; D0 = #0
-            MOVE.B      D0, t_16    ; t_16 = D0
 ; --------- goto e_21               
             JMP         .e_21       ; goto .e_21
+; --------- e_20: skip              
+                                    
 ; --------- t_16 = -1               
-            CLR.L       D0          ; CLEAR D0
+.e_20:      CLR.L       D0          ; CLEAR D0
             MOVE.B      #-1, D0     ; D0 = #-1
             MOVE.B      D0, t_16    ; t_16 = D0
+; --------- e_21: skip              
+                                    
 ; --------- if t_16 == 0 goto e_18  
-            MOVE.L      t_16, D0    ; D0 = t_16
+.e_21:      MOVE.L      t_16, D0    ; D0 = t_16
             CMP.L       #0, D0      ; UPDATE FLAGS WITH D0 - #0
             BEQ         .e_18       ; IF Z FLAG = 1 GOTO .e_18
 ; --------- goto e_17               
             JMP         .e_17       ; goto .e_17
+; --------- e_18: skip              
+                                    
 ; --------- rtn e_mcd2, resultado_1  
-            MOVE.L      e_mcd2, -(SP) ; PUSH INTO STACK e_mcd2
+.e_18:      MOVE.L      e_mcd2, -(SP) ; PUSH INTO STACK e_mcd2
             RTS                     ; RETURN TO SUBROUTINE e_mcd2
 
 
-            END MCD0                ; Fin del programa
+            END MCD                 ; Fin del programa
 
 

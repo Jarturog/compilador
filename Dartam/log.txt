@@ -1,7 +1,6 @@
-java.lang.NullPointerException: Cannot invoke "analizadorSemantico.genCodigoIntermedio.Tipo.getExtension68K()" because "tipo" is null
-	at genCodigoEnsamblador.GeneradorEnsamblador.getDeclaracionEnsamblador(GeneradorEnsamblador.java:521)
-	at genCodigoEnsamblador.GeneradorEnsamblador.declararVariable(GeneradorEnsamblador.java:459)
-	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:105)
-	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:61)
-	at dartam.Dartam.<init>(Dartam.java:119)
-	at dartam.Dartam.main(Dartam.java:57)
+java.lang.NullPointerException: Cannot read field "nombre" because "o" is null
+	at analizadorSemantico.genCodigoIntermedio.Operador.<init>(Operador.java:18)
+	at analizadorSemantico.genCodigoIntermedio.Instruccion.<init>(Instruccion.java:10)
+	at analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio.<init>(GeneradorCodigoIntermedio.java:50)
+	at dartam.Dartam.<init>(Dartam.java:121)
+	at dartam.Dartam.main(Dartam.java:58)

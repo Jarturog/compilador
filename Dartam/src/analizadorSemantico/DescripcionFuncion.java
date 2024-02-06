@@ -1,5 +1,6 @@
 package analizadorSemantico;
 
+import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolTipo;
@@ -66,6 +67,14 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     
     public ArrayList<Pair<String, String>> getParametros() {
         return parametros;
+    }
+    
+    public ArrayList<Pair<String, Integer>> paramsToIdBytes() {
+        ArrayList<Pair<String, Integer>> arr = new ArrayList<>();
+        for (Pair<String, String> parametro : parametros) {
+            arr.add(new Pair<>(parametro.fst, Tipo.getBytes(tipo)));
+        }
+        return arr;
     }
 
 //    public HashMap<String, DescripcionSimbolo> getTiposMiembros() {
