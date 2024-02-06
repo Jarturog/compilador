@@ -1,8 +1,5 @@
-java.io.FileNotFoundException: scripts\persoa.dtm (El sistema no puede encontrar el archivo especificado)
-	at java.base/java.io.FileInputStream.open0(Native Method)
-	at java.base/java.io.FileInputStream.open(FileInputStream.java:219)
-	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:158)
-	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:112)
-	at java.base/java.io.FileReader.<init>(FileReader.java:60)
-	at dartam.Dartam.<init>(Dartam.java:83)
+java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "analizadorSemantico.DescripcionFuncion.getBytes()" is null
+	at analizadorSemantico.AnalizadorSemantico.procesarMetodo(AnalizadorSemantico.java:870)
+	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:162)
+	at dartam.Dartam.<init>(Dartam.java:110)
 	at dartam.Dartam.main(Dartam.java:58)

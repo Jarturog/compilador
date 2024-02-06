@@ -8,7 +8,7 @@
 package analizadorSemantico;
 
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
-import analizadorSemantico.genCodigoIntermedio.Tipo;
+import analizadorSemantico.genCodigoIntermedio.TipoVariable;
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolTipo;
@@ -42,20 +42,21 @@ public class DescripcionSimbolo {
             miembros = null;
         }
         this.variableAsociada = var;
+        if (t.equals(ParserSym.terminalNames[ParserSym.VOID])) {
+            nBytes = 0;
+            return; // si es DescripcionFuncion no ocupa bytes
+        }
         // DescripcionDefinicionTupla tiene de tipo su nombre, sin TUPLE al principio
         if (tipoTupla == null && !SymbolTipoPrimitivo.isTipoPrimitivo(t) && !t.startsWith(ParserSym.terminalNames[ParserSym.TUPLE])) { //t.startsWith(ParserSym.terminalNames[ParserSym.TUPLE])) { 
             return; // si es DescripcionDefinicionTupla bytes se define en su constructor
         }
-        if (this instanceof DescripcionFuncion) {//(tipo.equals(ParserSym.terminalNames[ParserSym.VOID])) {
-            return; // si es DescripcionFuncion no ocupa bytes
-        }
-        if (isTipoTupla()) {
+        if (tipoTupla != null) {
             nBytes = tipoTupla.getBytes();
             return;
         } else if (isArray()) {
             return;// asignado desde fuera del constructor
         }
-        Tipo tipoPrimitivo = Tipo.getTipo(this.tipo);
+        TipoVariable tipoPrimitivo = TipoVariable.getTipo(tipo, false); // false porque es primitivo
         if (tipoPrimitivo != null) { // solo asigna bytes para tipos primitivos
             nBytes = tipoPrimitivo.bytes;
         }

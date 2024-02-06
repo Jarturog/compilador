@@ -1,5 +1,6 @@
 package analizadorSemantico;
 
+import analizadorSemantico.genCodigoIntermedio.TipoVariable;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 
@@ -11,18 +12,18 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     private boolean tieneReturnObligatorio = false;
     private boolean isMain = false;
 
-    public DescripcionFuncion(String tipoRetorno, String var, boolean isMain) {
+    public DescripcionFuncion(String tipoRetorno, String var, boolean isMain) throws Exception {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         this.isMain = isMain;
     }
 
-    public DescripcionFuncion(String tipoRetorno, String var) {
+    public DescripcionFuncion(String tipoRetorno, String var) throws Exception {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
     }
 
-    public DescripcionFuncion(String tipoRetorno, ArrayList<Parametro> params, String var) {
+    public DescripcionFuncion(String tipoRetorno, ArrayList<Parametro> params, String var) throws Exception {
         super(tipoRetorno, false, false, null, var);
         parametros = params;
     }
@@ -30,7 +31,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     /**
      * Para métodos especiales
      */
-    public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam, String var) {
+    public DescripcionFuncion(String tipoRetorno, String idParam, String tipoParam, String var) throws Exception {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         parametros.add(new Parametro(idParam, null, tipoParam));
@@ -39,7 +40,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     /**
      * Para métodos especiales
      */
-    public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2, String var) {
+    public DescripcionFuncion(String tipoRetorno, String idParam1, String tipoParam1, String idParam2, String tipoParam2, String var) throws Exception {
         super(tipoRetorno, false, false, null, var);
         parametros = new ArrayList<>();
         parametros.add(new Parametro(idParam1, null, tipoParam1));
@@ -54,7 +55,7 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     }
 
     //Funciones
-    public void anyadirParametro(String id, String var, String tipo) {
+    public void anyadirParametro(String id, String var, String tipo) throws Exception {
         parametros.add(new Parametro(id, var, tipo));
     }
 
@@ -103,11 +104,13 @@ public class DescripcionFuncion extends DescripcionSimbolo {
     public static class Parametro {
 
         public final String id, variable, tipo;
+        public final TipoVariable t;
 
-        public Parametro(String id, String variable, String tipo) {
+        public Parametro(String id, String variable, String tipo) throws Exception {
             this.id = id;
             this.variable = variable;
             this.tipo = tipo;
+            t = TipoVariable.getTipo(tipo, tipo.contains("[") || tipo.startsWith(ParserSym.terminalNames[ParserSym.TUPLE]));
         }
 
         @Override

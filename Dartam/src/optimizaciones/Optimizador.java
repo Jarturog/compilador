@@ -1,6 +1,6 @@
 package optimizaciones;
 
-import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
+import analizadorSemantico.genCodigoIntermedio.GestorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
 import analizadorSemantico.genCodigoIntermedio.Operador;
@@ -13,7 +13,7 @@ public class Optimizador {
     private final ArrayList<Instruccion> instrucciones;
     private final HashMap<String, VData> variables;
 
-    public Optimizador(GeneradorCodigoIntermedio g3d) throws Exception {
+    public Optimizador(GestorCodigoIntermedio g3d) throws Exception {
         instrucciones = g3d.getInstrucciones();
         variables = g3d.getTablaVariables();
         while (saltosAdyacentes() || saltoSobreSalto() || asignacionesDiferidas() || etiquetasSinUsarse()); // se realiza la optimización hasta que no hayan cambios

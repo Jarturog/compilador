@@ -15,7 +15,7 @@ import analizadorLexico.Scanner;
 import analizadorSintactico.Parser;
 import analizadorSintactico.symbols.SymbolScript;
 import analizadorSemantico.AnalizadorSemantico;
-import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
+import analizadorSemantico.genCodigoIntermedio.GestorCodigoIntermedio;
 import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
@@ -115,8 +115,8 @@ public class Dartam {
             return;
         }
         // Generación de código intermedio realizada durante el análisis semántico
-        GeneradorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
-        GeneradorCodigoIntermedio generadorParaOptimizar = new GeneradorCodigoIntermedio(generadorCodigoIntermedio); // se copia
+        GestorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
+        GestorCodigoIntermedio generadorParaOptimizar = new GestorCodigoIntermedio(generadorCodigoIntermedio); // se copia
         escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
         escribir("tablasVariablesProcedimientos_" + nombreFichero + ".txt", generadorCodigoIntermedio.tablas());
         // Generación de código ensamblador

@@ -1,9 +1,9 @@
 f vacio inicio() {
-	car [3][4+5] arr;
+	car [3][4] arr;
 	arr[0][1]: ' ';
 	car[][] c;
 	c: arr;
-	car [][] b: c + arr;
+	car [][] b: c;
 	si cierto {
 		c: arr;
 		car [3][4][2] c;

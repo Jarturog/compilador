@@ -1,28 +1,18 @@
 Tabla de procedimientos
-from: identificado por e_from_1, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] e_from
-enter: identificado por e_enter, devuelve 256 bytes de retorno y no recibe parámetros
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
+enter: identificado por e_enter, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
 nuevaPersona: identificado por e_nuevapersona, devuelve 0 bytes de retorno y sus parámetros son TUPLE persona p siendo su variable de CI p, ENT idPersona siendo su variable de CI idpersona, CAR let siendo su variable de CI let
 show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
 inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
-into: identificado por e_into, devuelve 1 bytes de retorno y sus parámetros son CAR [] file, CAR [] content
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
 
 Tabla de variables
-p1: tipo COPY OF ARRAY OR TUPLE almacenando una estructura de datos de 5 bytes de tipo persona
-p2: tipo COPY OF ARRAY OR TUPLE almacenando una estructura de datos de 5 bytes de tipo persona
-persona: tipo POINTER TO ARRAY OR TUPLE almacenando una estructura de datos de 5 bytes
-aux: tipo STRING
-t_2: tipo INT inicializado a 2
+p: tipo POINTER TO ARRAY, TUPLE OR STRING
+persona: tipo POINTER TO ARRAY, TUPLE OR STRING almacenando una estructura de datos de 8 bytes
+t: tipo STRING inicializado a hola almacenando una estructura de datos de 256 bytes
+aux: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_2: tipo INT inicializado a 0
 idpersona: tipo INT
-t_1: tipo CHAR inicializado a a
-t_4: tipo STRING inicializado a hola
-t_3: tipo CHAR inicializado a b
-ox: tipo CHAR
-t_6: tipo CHAR
-t_5: tipo INT inicializado a 4
-t_8: tipo CHAR
-t_7: tipo INT inicializado a 4
-t_9: tipo INT inicializado a 0
-p: tipo POINTER TO ARRAY OR TUPLE
-t: tipo INT inicializado a 1
+t_1: tipo STRING inicializado a mundo almacenando una estructura de datos de 256 bytes
+t_3: tipo INT inicializado a 4
 let: tipo CHAR
-t_10: tipo INT inicializado a 4

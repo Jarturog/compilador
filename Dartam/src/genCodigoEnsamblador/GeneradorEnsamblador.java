@@ -3,16 +3,16 @@ package genCodigoEnsamblador;
 import analizadorSemantico.DescripcionDefinicionTupla;
 import analizadorSemantico.DescripcionDefinicionTupla.DefinicionMiembro;
 import analizadorSemantico.DescripcionFuncion.Parametro;
-import analizadorSemantico.genCodigoIntermedio.GeneradorCodigoIntermedio;
+import analizadorSemantico.genCodigoIntermedio.GestorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
-import analizadorSemantico.genCodigoIntermedio.Tipo;
-import static analizadorSemantico.genCodigoIntermedio.Tipo.BOOL;
-import static analizadorSemantico.genCodigoIntermedio.Tipo.CHAR;
-import static analizadorSemantico.genCodigoIntermedio.Tipo.DOUBLE;
-import static analizadorSemantico.genCodigoIntermedio.Tipo.INT;
-import static analizadorSemantico.genCodigoIntermedio.Tipo.PUNTERO;
-import static analizadorSemantico.genCodigoIntermedio.Tipo.STRING;
+import analizadorSemantico.genCodigoIntermedio.TipoVariable;
+import static analizadorSemantico.genCodigoIntermedio.TipoVariable.BOOL;
+import static analizadorSemantico.genCodigoIntermedio.TipoVariable.CHAR;
+import static analizadorSemantico.genCodigoIntermedio.TipoVariable.DOUBLE;
+import static analizadorSemantico.genCodigoIntermedio.TipoVariable.INT;
+import static analizadorSemantico.genCodigoIntermedio.TipoVariable.PUNTERO;
+import static analizadorSemantico.genCodigoIntermedio.TipoVariable.STRING;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,7 +49,7 @@ public class GeneradorEnsamblador {
 //    private boolean printUsed = false;
 //    private boolean scanUsed = false;
 
-    public GeneradorEnsamblador(String fichero, GeneradorCodigoIntermedio generador) throws Exception {
+    public GeneradorEnsamblador(String fichero, GestorCodigoIntermedio generador) throws Exception {
         nombreFichero = fichero;
         instrucciones = generador.getInstrucciones();
         main = generador.getMain();
@@ -79,7 +79,7 @@ public class GeneradorEnsamblador {
             variables.get(tupla.variableAsociada).inicializar();
             for (DefinicionMiembro miembro : tupla.getMiembros()) {
                 if (miembro.tieneValorAsignado()) {
-                    String s = getDeclaracionEnsamblador(new VData(Tipo.getTipo(miembro.tipo)), miembro.varInit);
+                    String s = getDeclaracionEnsamblador(new VData(TipoVariable.getTipo(miembro.tipo, false)), miembro.varInit);
                     //datos.add(margen(getEtiqueta(), "DC.B "+miembro.varInit, "", "Reservando memoria para el miembro " + miembro.nombre + " de la tupla "+id));
                     datos.add(margen(getEtiqueta(), s, "", "Inicializando el miembro " + miembro.nombre + " de la tupla " + id));
                 } else {
@@ -109,7 +109,7 @@ public class GeneradorEnsamblador {
             if (et != null && instr.getTipo().tieneEtiqueta() && !procedureTable.containsKey(et)) {
                 et = "." + et;
             }
-            if (instr.isTipo(Instruccion.TipoInstr.COPY) && instr.op1().tipo().equals(Tipo.STRING) && data.estaInicializadaEnCodigoEnsamblador()) {
+            if (instr.isTipo(Instruccion.TipoInstr.COPY) && instr.op1().tipo().equals(TipoVariable.STRING) && data.estaInicializadaEnCodigoEnsamblador()) {
                 continue; // strings se declaran arriba
             }
             procesarInstruccion(et);
@@ -214,13 +214,13 @@ public class GeneradorEnsamblador {
         return s;
     }
 
-    private String load(Operador op, String sOp, Tipo t) throws Exception {
+    private String load(Operador op, String sOp, TipoVariable t) throws Exception {
         if (AnActual > 6 || DnActual > 7) {
             throw new Exception("Error fatal, no existen suficientes registros para conseguir A" + AnActual + " y D" + DnActual + " sin generar conflictos");
         }
         String ext = t.getExtension68K();
         String register, operacion;
-        if (op.isPuntero()) {//(!op.isLiteral()) {
+        if (op.isEstructura() || op.isArray() || op.isString()) {//op.isPuntero()) {//(!op.isLiteral()) {
             register = "A" + AnActual++;
             operacion = "LEA.L";
         } else {
@@ -234,7 +234,7 @@ public class GeneradorEnsamblador {
         return register;
     }
 
-    private void store(String from, String to, Tipo t) {
+    private void store(String from, String to, TipoVariable t) {
         add(getEtiqueta(), "MOVE" + t.getExtension68K() + " ", from + ", " + to, to + " = " + from);
     }
 
@@ -288,17 +288,18 @@ public class GeneradorEnsamblador {
                 add("; " + " ".repeat(MARGEN - 3), "A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16", "", "");
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("MOVE.W", r1 + ", D2", "D2.L = " + r2 + ".L");
-                add("MOVE.W", r2 + ", D3", r2 + ".L = D3.L");
+                String aux1 = "D" + DnActual++, aux2 = "D" + DnActual++;
+                add("MOVE.W", r1 + ", " + aux1, aux1 + ".L = " + r2 + ".L");
+                add("MOVE.W", r2 + ", " + aux2, r2 + ".L = " + aux2 + ".L");
                 add("ASR.L", "#8, " + r1, "FIRST 8 BITS OF " + r1 + " MOVED RIGHT");
                 add("ASR.L", "#8, " + r1, r1 + ".L = old " + r1 + ".H");
                 add("ASR.L", "#8, " + r2, "FIRST 8 BITS OF " + r2 + " MOVED RIGHT");
                 add("ASR.L", "#8, " + r2, r2 + ".L = old " + r2 + ".H");
                 add("MULS.W", r2 + ", " + r1, r1 + " = " + r1 + " * " + r2);
-                add("MULS.W", "D2, D3", "D3 = D2 * D3");
+                add("MULS.W", aux1 + ", " + aux2, aux2 + " = " + aux1 + " * " + aux2);
                 add("ASL.L", "#8, " + r1, "FIRST 8 BITS OF " + r1 + " MOVED LEFT");
                 add("ASL.L", "#8, " + r1, r1 + ".H = old " + r1 + ".L");
-                add("ADD.L", "D3, " + r1, r1 + " = " + r1 + " + D3");
+                add("ADD.L", aux2 + ", " + r1, r1 + " = " + r1 + " + " + aux2);
                 store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case DIV -> { // op1/op2 -> dst
@@ -373,32 +374,16 @@ public class GeneradorEnsamblador {
                 add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
                 add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
             }
-            case IND_ASS -> { // dst[op1] = op2
+            case IND_ASS -> { // dst[op2] = op1
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                String dt = load(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
-                String offset = "D" + DnActual++;
-                add("CLR.L", offset, "");
-                add("DIVS.W", "#4, " + r1, r1 + ".h = " + r1 + " % 4. " + r1 + ".l = " + r1 + " / 4");
-                add("MOVE.W", r1 + ", " + offset, ""); // numero despalazamientos long en aux
-                add("LSR.L", "#8, " + r1, r1 + ".l = " + r1 + ".h");
-                add("LSR.L", "#8, " + r1, r1 + ".l = " + r1 + ".h"); // numero bytes con las que hacer mascara en r1
-                add("ADDA.L ", offset + ", " + dt, dt + " = " + dt + " + " + offset);
-                String aux = "D" + DnActual++;
-                add("MOVE.L ", "(" + dt + "), " + aux, aux + " = (" + dt + ")");
-                String bucle = crearEtiqueta("mask"), fin = crearEtiqueta("endmask");
-                String mask = "D" + DnActual++;
-                add("MOVE.L", "#$FFFFFFFF, " + mask, "MASK");
-                add(bucle, "CMP.W", "#0, " + r1, ".W porque no hace falta más");
-                add("BEQ", fin, "");
-                add("LSR.L", "#8, " + mask, "");
-                add("SUB.W", "#1, " + r1, "");
-                add("JMP", bucle, "");
-                add(fin, "AND.L", mask + ", " + aux, "MASK");
-                add("MOVE.L ", aux + ", (" + dt + ")", "(" + dt + ") = " + aux);
+                String dst = "A" + AnActual++;
+                add("MOVEA.L", instr.dst().toAssembly() + ", " + dst, dst + " = " + instr.dst().toAssembly());
+                add("ADDA.L ", r2 + ", " + dst, dst + " = " + dst + " + " + r2);
+                add("MOVE.L ", r1 + ", (" + dst + ")", "(" + dst + ") = " + r1);
             }
             case IND_VAL -> { // dst = op1[op2]
-                add(getEtiqueta(), "MOVEA.L", instr.op1().toAssembly() + ", A0", "A0 = " + instr.op1().toAssembly());
+                add(getEtiqueta(), "LEA.L", instr.op1().toAssembly() + ", A0", "A0 = " + instr.op1().toAssembly());
                 add("ADDA.L ", instr.op2().toAssembly() + ", A0", "A0 = A0 + " + instr.op2().toAssembly());
                 add("MOVE.L ", "(A0), " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = (A0)");
             }
@@ -413,7 +398,7 @@ public class GeneradorEnsamblador {
                     Parametro param = func.getParametros().get(i);
                     indice += 4;//Tipo.getBytes(param.tipo);
                     add(getEtiqueta(), "MOVE.L", indice + "(SP), D0", "D0 = POP FROM STACK");
-                    store("D0", param.variable, Tipo.getTipo(param.tipo));
+                    store("D0", param.variable, param.t);
                 }
             }
             case RETURN -> { // rtn dst, ?
@@ -481,7 +466,7 @@ public class GeneradorEnsamblador {
                 }
                 printUsado = true;
                 //int bytes = f.getBytesRetorno() + Tipo.getBytes(f.getParametros().get(0).snd);
-                subprogramas.add(margen(idMetodo, "MOVEA.L", Tipo.PUNTERO.bytes + "(SP), A1", "A1 = POP FROM STACK"));
+                subprogramas.add(margen(idMetodo, "MOVEA.L", 4 + "(SP), A1", "A1 = POP FROM STACK"));
                 subprogramas.add(margen("", "MOVE.L", "#13, D0", "Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 //subprogramasIO.add(margen("", getEtiqueta(), "MOVE.L", dstConPunto + ", -(SP)", "PUSH INTO STACK " + dstConPunto);
@@ -511,15 +496,15 @@ public class GeneradorEnsamblador {
                 datos.add(margen(mnsjError, "DC.B 'Error de lectura',0", "", "Mensaje de error"));
                 datos.add(margen("", "DS.W 0", "", "Para evitar imparidad"));
 
-                subprogramas.add(margen(idMetodo, "MOVEA.L", (2 * Tipo.PUNTERO.bytes) + "(SP), A1", "Pre: (A1) null terminated file name"));
-                subprogramas.add(margen("", "MOVEA.L", Tipo.PUNTERO.bytes + "(SP), A2", "A2: pop"));
+                subprogramas.add(margen(idMetodo, "MOVEA.L", (2 * 4) + "(SP), A1", "Pre: (A1) null terminated file name"));
+                subprogramas.add(margen("", "MOVEA.L", 4 + "(SP), A2", "A2: pop"));
                 //MOVE.L      A1, (A2)      ; -//subprogramas.add(margen("", "MOVE.L", "A2, A1", ""));
                 subprogramas.add(margen("", "MOVE.L", "#51, D0", "Task 51 of TRAP 15: Open existing file"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 subprogramas.add(margen("", "CMP.W", "#2, D0", "Si error"));
                 subprogramas.add(margen("", "BEQ", etFin, "Fin"));
                 subprogramas.add(margen("", "MOVEA.L", "A2, A1", ""));
-                subprogramas.add(margen("", "MOVE.L", "#" + Tipo.STRING.bytes + ", D2", ""));
+                subprogramas.add(margen("", "MOVE.L", "#" + TipoVariable.STRING.bytes + ", D2", ""));
                 subprogramas.add(margen("", "MOVE.L", "#53, D0", "Task 53 of TRAP 15: Read file"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 subprogramas.add(margen("", "MOVE.L", "#56, D0", "Task 56 of TRAP 15: Close file"));
@@ -553,9 +538,13 @@ public class GeneradorEnsamblador {
         for (String d : datos) {
             s += d + "\n";
         }
+        if (!subprogramas.isEmpty()) {
+            s += "\n" + margen("; " + "-".repeat(MARGEN - 3), "SUBROUTINES", "", "") + "\n";
+        }
         for (String i : subprogramas) {
             s += i + "\n";
         }
+        s += "\n" + margen("; " + "-".repeat(MARGEN - 3), "INITIALIZATION", "", "") + "\n";
         for (String i : preMain) {
             s += i + "\n";
         }
@@ -588,10 +577,6 @@ public class GeneradorEnsamblador {
                 + "\n"
                 + margen("", "ORG", "$" + ORIGEN_MEM, "Origen") + "\n"
                 + "\n";
-//                + (printUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "")
-//                + (scanUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "")
-//                + (writeUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "")
-//                + (readUsado ? (margen("", "INCLUDE", "\"PRINT.X68\"", "Escritura en consola") + "\n") : "");
     }
 
     private void add(String s) {
@@ -628,7 +613,7 @@ public class GeneradorEnsamblador {
     }
 
     public static String getDeclaracionEnsamblador(VData data, Object inicializacion) throws Exception {
-        Tipo tipo = data.tipo();
+        TipoVariable tipo = data.tipo();
         String ext = tipo.getExtension68K();
         if (inicializacion == null) {
             switch (tipo) {
@@ -639,21 +624,16 @@ public class GeneradorEnsamblador {
                     return "DS" + ext + " " + 1;
                 }
                 case DOUBLE -> {
-                    return "DS.L 2";
+                    return "DS.L " + 1;
                 }
                 case INT -> {
                     return "DS" + ext + " " + 1;
                 }
-                case ESTRUCTURA -> {
-                    return "DS.B " + data.getBytesEstructura();
+                case STRING, ARRAY, TUPLA -> {
+                    return "DS.B " + data.getBytesEstructura(); // instancia de array, string o tupla
                 }
-                case STRING, PUNTERO -> {
-                    Integer n = data.getBytesEstructura();
-                    if (n == null) {
-                        return "DS.L 1"; // puntero a algo (a un string, a un array, a una tupla)
-                    } else {
-                        return "DS.B " + n; // instancia de array, string o tupla
-                    }
+                case PUNTERO -> {
+                    return "DS.L 1"; // puntero a algo (a un string, a un array, a una tupla)
                 }
                 default -> {
                     throw new Exception("Declarando tipo inválido: " + tipo);

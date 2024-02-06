@@ -1,6 +1,6 @@
-00001072 Starting Address
+00001054 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 06/02/2024 18:07:22
+Created On: 06/02/2024 23:35:16
 
 00000000                             1  ; ==============================================================================
 00000000                             2  ; TITLE       : persona
@@ -13,225 +13,104 @@ Created On: 06/02/2024 18:07:22
 00001000                             9              ORG         $1000       ; Origen
 00001000                            10  
 00001000                            11  persona:    DS.L 1                  ; Inicializando el miembro id de la tupla persona
-00001004                            12              DS.B 1                  ; Inicializando el miembro let de la tupla persona
-00001006= 00000001                  13  t           DC.L 1                  ; INT
-0000100A= 61                        14  t_1         DC.B 'a'                ; CHAR
-0000100B= 00                        15              DC.B 0                  ; Los strings y chars acaban en 0
-0000100C                            16              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-0000100C= 00000002                  17  t_2         DC.L 2                  ; INT
-00001010= 62                        18  t_3         DC.B 'b'                ; CHAR
-00001011= 00                        19              DC.B 0                  ; Los strings y chars acaban en 0
-00001012                            20              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001012= 68 6F 6C 61               21  t_4         DC.B 'hola'             ; STRING
-00001016= 00                        22              DC.B 0                  ; Los strings y chars acaban en 0
-00001018                            23              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001018= 00000004                  24  t_5         DC.L 4                  ; INT
-0000101C= 00000004                  25  t_7         DC.L 4                  ; INT
-00001020= 00000000                  26  t_9         DC.L 0                  ; INT
-00001024= 00000004                  27  t_10        DC.L 4                  ; INT
-00001028                            28  p1          DS.B 5                  ; COPY OF ARRAY OR TUPLE
-0000102D= 00                        29              DC.B 0                  ; Los strings y chars acaban en 0
-0000102E                            30              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-0000102E                            31  p2          DS.B 5                  ; COPY OF ARRAY OR TUPLE
-00001033= 00                        32              DC.B 0                  ; Los strings y chars acaban en 0
-00001034                            33              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001034                            34  aux         DS.L 1                  ; STRING
-00001038                            35  idpersona   DS.L 1                  ; INT
-0000103C                            36  ox          DS.B 1                  ; CHAR
-0000103D= 00                        37              DC.B 0                  ; Los strings y chars acaban en 0
-0000103E                            38              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-0000103E                            39  t_6         DS.B 1                  ; CHAR
-0000103F= 00                        40              DC.B 0                  ; Los strings y chars acaban en 0
-00001040                            41              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001040                            42  t_8         DS.B 1                  ; CHAR
-00001041= 00                        43              DC.B 0                  ; Los strings y chars acaban en 0
-00001042                            44              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001042                            45  p           DS.L 1                  ; POINTER TO ARRAY OR TUPLE
-00001046                            46  let         DS.B 1                  ; CHAR
-00001047= 00                        47              DC.B 0                  ; Los strings y chars acaban en 0
-00001048                            48              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001048  226F 0004                 49  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
-0000104C  700D                      50              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
-0000104E  4E4F                      51              TRAP        #15         ; Interruption generated
-00001050  4E75                      52              RTS                     ; RETURN TO SUBROUTINE ...
-00001052  41F8 1000                 53  initpersona LEA.L       persona, A0 ; load persona into A0
-00001056  226F 0004                 54              MOVEA.L     4(SP), A1   ; load instance into A1
-0000105A  7001                      55              MOVE.L      #1, D0      
-0000105C  B0BC 00000000             56  nextlongwordpersona CMP.L       #0, D0 
-00001062  6700 000A                 57              BEQ         endinitpersona 
-00001066  22D8                      58              MOVE.L      (A0)+, (A1)+ ; copy 4 bytes
-00001068  5380                      59              SUB.L       #1, D0      
-0000106A  4EF8 105C                 60              JMP         nextlongwordpersona 
-0000106E                            61  endinitpersona                      ; end of loop
-0000106E  12D8                      62              MOVE.B      (A0)+, (A1)+ ; copy 1 byte
-00001070  4E75                      63              RTS                     
-00001072                            64  
-00001072                            65  persona0                            ; Etiqueta inicial (main)
-00001072                            66  
-00001072  7020                      67              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
-00001074  123C 0005                 68              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
-00001078  4E4F                      69              TRAP        #15         ; Interruption generated
-0000107A  41F8 1028                 70              LEA.L       p1, A0      
-0000107E  2F08                      71              MOVE.L      A0, -(SP)   
-00001080  4EB8 1052                 72              JSR         initpersona 
-00001084  588F                      73              ADDA.L      #4, SP      
-00001086                            74  
-00001086  41F8 102E                 75              LEA.L       p2, A0      
-0000108A  2F08                      76              MOVE.L      A0, -(SP)   
-0000108C  4EB8 1052                 77              JSR         initpersona 
-00001090  588F                      78              ADDA.L      #4, SP      
-00001092                            79  
-00001092  4EB9 0000109C             80              JSR         e_inicio    ; Se ejecuta el main
-00001098  FFFF FFFF                 81              SIMHALT                 ; Fin de la ejecución
-0000109C                            82  
-0000109C                            83  ; --------- e_inicio: skip          
-0000109C                            84                                      
-0000109C                            85  ; --------- pmb e_inicio            
-0000109C                            86  ; --------- param_s p1              
-0000109C  41F8 1028                 87  e_inicio:   LEA.L       p1, A0      ; A0 = p1
-000010A0  2F08                      88              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-000010A2                            89  ; --------- t = 1                   
-000010A2  7001                      90              MOVE.L      #1, D0      ; D0 = #1
-000010A4  21C0 1006                 91              MOVE.L      D0, t       ; t = D0
-000010A8                            92  ; --------- param_s t               
-000010A8  2038 1006                 93              MOVE.L      t, D0       ; D0 = t
-000010AC  2F00                      94              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
-000010AE                            95  ; --------- t_1 = a                 
-000010AE  4280                      96              CLR.L       D0          ; CLEAR D0
-000010B0  103C 0061                 97              MOVE.B      #'a', D0    ; D0 = #'a'
-000010B4  11C0 100A                 98              MOVE.B      D0, t_1     ; t_1 = D0
-000010B8                            99  ; --------- param_s t_1             
-000010B8  4280                     100              CLR.L       D0          ; CLEAR D0
-000010BA  1038 100A                101              MOVE.B      t_1, D0     ; D0 = t_1
-000010BE  2F00                     102              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
-000010C0                           103  ; --------- call e_nuevapersona     
-000010C0  4EB9 00001158            104              JSR         e_nuevapersona ; JUMP TO SUBROUTINE e_nuevapersona
-000010C6  DFFC 0000000C            105              ADDA.L      #12, SP     ; SP = SP + 12
-000010CC                           106  ; --------- param_s p2              
-000010CC  41F8 102E                107              LEA.L       p2, A0      ; A0 = p2
-000010D0  2F08                     108              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-000010D2                           109  ; --------- t_2 = 2                 
-000010D2  7002                     110              MOVE.L      #2, D0      ; D0 = #2
-000010D4  21C0 100C                111              MOVE.L      D0, t_2     ; t_2 = D0
-000010D8                           112  ; --------- param_s t_2             
-000010D8  2038 100C                113              MOVE.L      t_2, D0     ; D0 = t_2
-000010DC  2F00                     114              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
-000010DE                           115  ; --------- t_3 = b                 
-000010DE  4280                     116              CLR.L       D0          ; CLEAR D0
-000010E0  103C 0062                117              MOVE.B      #'b', D0    ; D0 = #'b'
-000010E4  11C0 1010                118              MOVE.B      D0, t_3     ; t_3 = D0
-000010E8                           119  ; --------- param_s t_3             
-000010E8  4280                     120              CLR.L       D0          ; CLEAR D0
-000010EA  1038 1010                121              MOVE.B      t_3, D0     ; D0 = t_3
-000010EE  2F00                     122              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
-000010F0                           123  ; --------- call e_nuevapersona     
-000010F0  4EB9 00001158            124              JSR         e_nuevapersona ; JUMP TO SUBROUTINE e_nuevapersona
-000010F6  DFFC 0000000C            125              ADDA.L      #12, SP     ; SP = SP + 12
-000010FC                           126  ; --------- t_4 = hola              
-000010FC                           127  ; --------- aux = t_4               
-000010FC  41F8 1012                128              LEA.L       t_4, A0     ; A0 = t_4
-00001100  21C8 1034                129              MOVE.L      A0, aux     ; aux = A0
-00001104                           130  ; --------- param_s aux             
-00001104  41F8 1034                131              LEA.L       aux, A0     ; A0 = aux
-00001108  2F08                     132              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-0000110A                           133  ; --------- call e_show             
-0000110A  4EB8 1048                134              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-0000110E  588F                     135              ADDA.L      #4, SP      ; SP = SP + 4
-00001110                           136  ; --------- t_5 = 4                 
-00001110  7004                     137              MOVE.L      #4, D0      ; D0 = #4
-00001112  21C0 1018                138              MOVE.L      D0, t_5     ; t_5 = D0
-00001116                           139  ; --------- t_6 = p1[t_5]           
-00001116  2078 1028                140              MOVEA.L     p1, A0      ; A0 = p1
-0000111A  D1F8 1018                141              ADDA.L      t_5, A0     ; A0 = A0 + t_5
-0000111E  21D0 103E                142              MOVE.L      (A0), t_6   ; t_6 = (A0)
-00001122                           143  ; --------- ox = t_6                
-00001122  4280                     144              CLR.L       D0          ; CLEAR D0
-00001124  1038 103E                145              MOVE.B      t_6, D0     ; D0 = t_6
-00001128  11C0 103C                146              MOVE.B      D0, ox      ; ox = D0
-0000112C                           147  ; --------- param_s ox              
-0000112C  41F8 103C                148              LEA.L       ox, A0      ; A0 = ox
-00001130  2F08                     149              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-00001132                           150  ; --------- call e_show             
-00001132  4EB8 1048                151              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-00001136  588F                     152              ADDA.L      #4, SP      ; SP = SP + 4
-00001138                           153  ; --------- t_7 = 4                 
-00001138  7004                     154              MOVE.L      #4, D0      ; D0 = #4
-0000113A  21C0 101C                155              MOVE.L      D0, t_7     ; t_7 = D0
-0000113E                           156  ; --------- t_8 = p2[t_7]           
-0000113E  2078 102E                157              MOVEA.L     p2, A0      ; A0 = p2
-00001142  D1F8 101C                158              ADDA.L      t_7, A0     ; A0 = A0 + t_7
-00001146  21D0 1040                159              MOVE.L      (A0), t_8   ; t_8 = (A0)
-0000114A                           160  ; --------- param_s t_8             
-0000114A  41F8 1040                161              LEA.L       t_8, A0     ; A0 = t_8
-0000114E  2F08                     162              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-00001150                           163  ; --------- call e_show             
-00001150  4EB8 1048                164              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-00001154  588F                     165              ADDA.L      #4, SP      ; SP = SP + 4
-00001156                           166  ; --------- rtn e_inicio            
-00001156  4E75                     167              RTS                     ; RETURN TO SUBROUTINE e_inicio
-00001158                           168  
-00001158                           169  
-00001158                           170  
-00001158                           171  
-00001158                           172  ; --------- e_nuevapersona: skip    
-00001158                           173                                      
-00001158                           174  ; --------- pmb e_nuevapersona      
-00001158  202F 0004                175  e_nuevapersona: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
-0000115C  11C0 1046                176              MOVE.B      D0, let     ; let = D0
-00001160  202F 0008                177              MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
-00001164  21C0 1038                178              MOVE.L      D0, idpersona ; idpersona = D0
-00001168  202F 000C                179              MOVE.L      12(SP), D0  ; D0 = POP FROM STACK
-0000116C  21C0 1042                180              MOVE.L      D0, p       ; p = D0
-00001170                           181  ; --------- t_9 = 0                 
-00001170  7000                     182              MOVE.L      #0, D0      ; D0 = #0
-00001172  21C0 1020                183              MOVE.L      D0, t_9     ; t_9 = D0
-00001176                           184  ; --------- p[t_9] = idpersona      
-00001176  2038 1038                185              MOVE.L      idpersona, D0 ; D0 = idpersona
-0000117A  2238 1020                186              MOVE.L      t_9, D1     ; D1 = t_9
-0000117E  41F8 1042                187              LEA.L       p, A0       ; A0 = p
-00001182  4282                     188              CLR.L       D2          
-00001184  81FC 0004                189              DIVS.W      #4, D0      ; D0.h = D0 % 4. D0.l = D0 / 4
-00001188  3400                     190              MOVE.W      D0, D2      
-0000118A  E088                     191              LSR.L       #8, D0      ; D0.l = D0.h
-0000118C  E088                     192              LSR.L       #8, D0      ; D0.l = D0.h
-0000118E  D1C2                     193              ADDA.L      D2, A0      ; A0 = A0 + D2
-00001190  2610                     194              MOVE.L      (A0), D3    ; D3 = (A0)
-00001192  78FF                     195              MOVE.L      #$FFFFFFFF, D4 ; MASK
-00001194  B07C 0000                196  mask        CMP.W       #0, D0      ; .W porque no hace falta más
-00001198  6700 000A                197              BEQ         endmask     
-0000119C  E08C                     198              LSR.L       #8, D4      
-0000119E  5340                     199              SUB.W       #1, D0      
-000011A0  4EF8 1194                200              JMP         mask        
-000011A4  C684                     201  endmask     AND.L       D4, D3      ; MASK
-000011A6  2083                     202              MOVE.L      D3, (A0)    ; (A0) = D3
-000011A8                           203  ; --------- t_10 = 4                
-000011A8  7004                     204              MOVE.L      #4, D0      ; D0 = #4
-000011AA  21C0 1024                205              MOVE.L      D0, t_10    ; t_10 = D0
-000011AE                           206  ; --------- p[t_10] = let           
-000011AE  4280                     207              CLR.L       D0          ; CLEAR D0
-000011B0  1038 1046                208              MOVE.B      let, D0     ; D0 = let
-000011B4  2238 1024                209              MOVE.L      t_10, D1    ; D1 = t_10
-000011B8  41F8 1042                210              LEA.L       p, A0       ; A0 = p
-000011BC  4282                     211              CLR.L       D2          
-000011BE  81FC 0004                212              DIVS.W      #4, D0      ; D0.h = D0 % 4. D0.l = D0 / 4
-000011C2  3400                     213              MOVE.W      D0, D2      
-000011C4  E088                     214              LSR.L       #8, D0      ; D0.l = D0.h
-000011C6  E088                     215              LSR.L       #8, D0      ; D0.l = D0.h
-000011C8  D1C2                     216              ADDA.L      D2, A0      ; A0 = A0 + D2
-000011CA  2610                     217              MOVE.L      (A0), D3    ; D3 = (A0)
-000011CC  78FF                     218              MOVE.L      #$FFFFFFFF, D4 ; MASK
-000011CE  B07C 0000                219  mask0       CMP.W       #0, D0      ; .W porque no hace falta más
-000011D2  6700 000A                220              BEQ         endmask0    
-000011D6  E08C                     221              LSR.L       #8, D4      
-000011D8  5340                     222              SUB.W       #1, D0      
-000011DA  4EF8 11CE                223              JMP         mask0       
-000011DE  C684                     224  endmask0    AND.L       D4, D3      ; MASK
-000011E0  2083                     225              MOVE.L      D3, (A0)    ; (A0) = D3
-000011E2                           226  ; --------- rtn e_nuevapersona      
-000011E2  4E75                     227              RTS                     ; RETURN TO SUBROUTINE e_nuevapersona
-000011E4                           228  
-000011E4                           229  
-000011E4                           230              END persona0            ; Fin del programa
+00001004                            12              DS.L 1                  ; Inicializando el miembro let de la tupla persona
+00001008= 68 6F 6C 61               13  t           DC.B 'hola'             ; STRING
+0000100C= 00                        14              DC.B 0                  ; Los strings y chars acaban en 0
+0000100E                            15              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000100E= 6D 75 6E 64 6F            16  t_1         DC.B 'mundo'            ; STRING
+00001013= 00                        17              DC.B 0                  ; Los strings y chars acaban en 0
+00001014                            18              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001014= 00000000                  19  t_2         DC.L 0                  ; INT
+00001018= 00000004                  20  t_3         DC.L 4                  ; INT
+0000101C                            21  p           DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001020                            22  aux         DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001024                            23  idpersona   DS.L 1                  ; INT
+00001028                            24  let         DS.L 1                  ; CHAR
+0000102C                            25  
+0000102C                            26  ; --------- SUBROUTINES             
+0000102C  226F 0004                 27  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+00001030  700D                      28              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+00001032  4E4F                      29              TRAP        #15         ; Interruption generated
+00001034  4E75                      30              RTS                     ; RETURN TO SUBROUTINE ...
+00001036  41F8 1000                 31  initpersona LEA.L       persona, A0 ; load persona into A0
+0000103A  226F 0004                 32              MOVEA.L     4(SP), A1   ; load instance into A1
+0000103E  7002                      33              MOVE.L      #2, D0      
+00001040  B0BC 00000000             34  nextlongwordpersona CMP.L       #0, D0 
+00001046  6700 000A                 35              BEQ         endinitpersona 
+0000104A  22D8                      36              MOVE.L      (A0)+, (A1)+ ; copy 4 bytes
+0000104C  5380                      37              SUB.L       #1, D0      
+0000104E  4EF8 1040                 38              JMP         nextlongwordpersona 
+00001052                            39  endinitpersona                      ; end of loop
+00001052  4E75                      40              RTS                     
+00001054                            41  
+00001054                            42  
+00001054                            43  ; --------- INITIALIZATION          
+00001054                            44  persona0                            ; Etiqueta inicial (main)
+00001054                            45  
+00001054  7020                      46              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+00001056  123C 0005                 47              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+0000105A  4E4F                      48              TRAP        #15         ; Interruption generated
+0000105C  4EB9 00001066             49              JSR         e_inicio    ; Se ejecuta el main
+00001062  FFFF FFFF                 50              SIMHALT                 ; Fin de la ejecución
+00001066                            51  
+00001066                            52  ; --------- e_inicio: skip          
+00001066                            53                                      
+00001066                            54  ; --------- pmb e_inicio            
+00001066                            55  ; --------- t = hola                
+00001066                            56  ; --------- aux = t                 
+00001066  41F8 1008                 57  e_inicio:   LEA.L       t, A0       ; A0 = t
+0000106A  21C8 1020                 58              MOVE.L      A0, aux     ; aux = A0
+0000106E                            59  ; --------- param_s aux             
+0000106E  2038 1020                 60              MOVE.L      aux, D0     ; D0 = aux
+00001072  2F00                      61              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+00001074                            62  ; --------- call e_show             
+00001074  4EB8 102C                 63              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001078  588F                      64              ADDA.L      #4, SP      ; SP = SP + 4
+0000107A                            65  ; --------- t_1 = mundo             
+0000107A                            66  ; --------- param_s t_1             
+0000107A  41F8 100E                 67              LEA.L       t_1, A0     ; A0 = t_1
+0000107E  2F08                      68              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001080                            69  ; --------- call e_show             
+00001080  4EB8 102C                 70              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001084  588F                      71              ADDA.L      #4, SP      ; SP = SP + 4
+00001086                            72  ; --------- rtn e_inicio            
+00001086  4E75                      73              RTS                     ; RETURN TO SUBROUTINE e_inicio
+00001088                            74  
+00001088                            75  
+00001088                            76  
+00001088                            77  
+00001088                            78  ; --------- e_nuevapersona: skip    
+00001088                            79                                      
+00001088                            80  ; --------- pmb e_nuevapersona      
+00001088  202F 0004                 81  e_nuevapersona: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
+0000108C  21C0 1028                 82              MOVE.L      D0, let     ; let = D0
+00001090  202F 0008                 83              MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
+00001094  21C0 1024                 84              MOVE.L      D0, idpersona ; idpersona = D0
+00001098  202F 000C                 85              MOVE.L      12(SP), D0  ; D0 = POP FROM STACK
+0000109C  21C0 101C                 86              MOVE.L      D0, p       ; p = D0
+000010A0                            87  ; --------- t_2 = 0                 
+000010A0  7000                      88              MOVE.L      #0, D0      ; D0 = #0
+000010A2  21C0 1014                 89              MOVE.L      D0, t_2     ; t_2 = D0
+000010A6                            90  ; --------- p[t_2] = idpersona      
+000010A6  2038 1024                 91              MOVE.L      idpersona, D0 ; D0 = idpersona
+000010AA  2238 1014                 92              MOVE.L      t_2, D1     ; D1 = t_2
+000010AE  2078 101C                 93              MOVEA.L     p, A0       ; A0 = p
+000010B2  D1C1                      94              ADDA.L      D1, A0      ; A0 = A0 + D1
+000010B4  2080                      95              MOVE.L      D0, (A0)    ; (A0) = D0
+000010B6                            96  ; --------- t_3 = 4                 
+000010B6  7004                      97              MOVE.L      #4, D0      ; D0 = #4
+000010B8  21C0 1018                 98              MOVE.L      D0, t_3     ; t_3 = D0
+000010BC                            99  ; --------- p[t_3] = let            
+000010BC  2038 1028                100              MOVE.L      let, D0     ; D0 = let
+000010C0  2238 1018                101              MOVE.L      t_3, D1     ; D1 = t_3
+000010C4  2078 101C                102              MOVEA.L     p, A0       ; A0 = p
+000010C8  D1C1                     103              ADDA.L      D1, A0      ; A0 = A0 + D1
+000010CA  2080                     104              MOVE.L      D0, (A0)    ; (A0) = D0
+000010CC                           105  ; --------- rtn e_nuevapersona      
+000010CC  4E75                     106              RTS                     ; RETURN TO SUBROUTINE e_nuevapersona
+000010CE                           107  
+000010CE                           108  
+000010CE                           109              END persona0            ; Fin del programa
 
 No errors detected
 No warnings generated
@@ -240,33 +119,19 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-AUX                 1034
-ENDINITPERSONA      106E
-ENDMASK             11A4
-ENDMASK0            11DE
-E_INICIO            109C
-E_NUEVAPERSONA      1158
-E_SHOW              1048
-IDPERSONA           1038
-INITPERSONA         1052
-LET                 1046
-MASK                1194
-MASK0               11CE
-NEXTLONGWORDPERSONA  105C
-OX                  103C
-P                   1042
-P1                  1028
-P2                  102E
+AUX                 1020
+ENDINITPERSONA      1052
+E_INICIO            1066
+E_NUEVAPERSONA      1088
+E_SHOW              102C
+IDPERSONA           1024
+INITPERSONA         1036
+LET                 1028
+NEXTLONGWORDPERSONA  1040
+P                   101C
 PERSONA             1000
-PERSONA0            1072
-T                   1006
-T_1                 100A
-T_10                1024
-T_2                 100C
-T_3                 1010
-T_4                 1012
-T_5                 1018
-T_6                 103E
-T_7                 101C
-T_8                 1040
-T_9                 1020
+PERSONA0            1054
+T                   1008
+T_1                 100E
+T_2                 1014
+T_3                 1018

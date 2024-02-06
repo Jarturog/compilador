@@ -12,7 +12,7 @@ package analizadorSemantico.genCodigoIntermedio;
 public class Operador {
     private final String nombre; //Nombre de la variable / campo
     private final Object valor; //Valor
-    private final Tipo tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
+    private final TipoVariable tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
 
     public Operador(Operador o){
         nombre = o.nombre;
@@ -26,13 +26,13 @@ public class Operador {
         valor = null;
     }
     
-    public Operador(Tipo tipo, String id){
+    public Operador(TipoVariable tipo, String id){
         tipoValor = tipo;
         nombre = id;
         valor = null;
     }
     
-    public Operador(Tipo tipo, Object v){
+    public Operador(TipoVariable tipo, Object v){
         tipoValor = tipo;
         valor = v;
         nombre = null;
@@ -55,7 +55,19 @@ public class Operador {
     }
     
     public boolean isPuntero() {
-        return tipoValor.equals(Tipo.PUNTERO) || tipoValor.equals(Tipo.STRING);
+        return tipoValor.equals(TipoVariable.PUNTERO);
+    }
+    
+    public boolean isArray() {
+        return tipoValor.equals(TipoVariable.ARRAY);
+    }
+    
+    public boolean isEstructura() {
+        return tipoValor.equals(TipoVariable.TUPLA);
+    }
+    
+    public boolean isString() {
+        return tipoValor.equals(TipoVariable.STRING);
     }
     
     public Object getValor() throws Exception {
@@ -67,10 +79,10 @@ public class Operador {
     
     public String toAssembly() throws Exception {
         if(isLiteral()) {
-            if (tipoValor.equals(Tipo.STRING)) {
+            if (tipoValor.equals(TipoVariable.STRING)) {
                 return ""+valor;
             }
-            if (tipoValor.equals(Tipo.CHAR)) {
+            if (tipoValor.equals(TipoVariable.CHAR)) {
                 return "#'"+valor+"'";
             }
             return "#"+valor;
@@ -81,7 +93,7 @@ public class Operador {
         return nombre;
     }
     
-    public Tipo tipo() {
+    public TipoVariable tipo() {
         return tipoValor;
     }
     

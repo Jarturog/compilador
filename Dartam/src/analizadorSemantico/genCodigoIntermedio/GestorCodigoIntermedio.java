@@ -5,30 +5,22 @@ import analizadorSemantico.DescripcionFuncion.Parametro;
 import genCodigoEnsamblador.PData;
 import genCodigoEnsamblador.VData;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
-import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import jflex.base.Pair;
 
-public class GeneradorCodigoIntermedio {
+public class GestorCodigoIntermedio {
 
     private final HashMap<String, VData> tablaVariables;
     private final HashSet<String> tablaEtiquetas;
     private final HashMap<String, PData> tablaProcedimientos;
     private final HashMap<String, Integer> numEtiquetasOVariablesConId;
     private final HashMap<String, DescripcionDefinicionTupla> tablaTuplas;
-    //private final HashSet<String> variablesInicializadas = new HashSet<>();
-//    private final ArrayList<String> listaProcedimientos; //Funcionara como una pila
     private final ArrayList<Instruccion> instrucciones;
     private PData main = null;
-//    private final ArrayList<Integer> inicializaciones = new ArrayList<>();
 
-//    public GeneradorCodigoIntermedio(GeneradorCodigoIntermedio gen) {
-//        
-//    }
-    public GeneradorCodigoIntermedio(GeneradorCodigoIntermedio gen) throws Exception {
+    public GestorCodigoIntermedio(GestorCodigoIntermedio gen) throws Exception {
         this.tablaVariables = new HashMap<>();
         for (Map.Entry<String, VData> p : gen.tablaVariables.entrySet()) {
             tablaVariables.put(p.getKey(), new VData(p.getValue()));
@@ -53,29 +45,24 @@ public class GeneradorCodigoIntermedio {
         this.main = gen.main;
     }
 
-    public GeneradorCodigoIntermedio() {
+    public GestorCodigoIntermedio() {
         this.tablaVariables = new HashMap<>();
         this.tablaProcedimientos = new HashMap();
-//        this.listaProcedimientos = new ArrayList<>();
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
         tablaEtiquetas = new HashSet<>();
         tablaTuplas = new HashMap<>();
     }
 
-    public GeneradorCodigoIntermedio(HashMap<String, VData> tv, HashMap<String, PData> tp) {
+    public GestorCodigoIntermedio(HashMap<String, VData> tv, HashMap<String, PData> tp) {
         this.tablaVariables = tv;
         this.tablaProcedimientos = tp;
-//        this.listaProcedimientos = new ArrayList<>();
         this.instrucciones = new ArrayList<>();
         numEtiquetasOVariablesConId = new HashMap<>();
         tablaEtiquetas = new HashSet<>();
         tablaTuplas = new HashMap<>();
     }
 
-//    public String nuevoN(String nombre) {
-//        return conseguirIdentificadorUnico("n_"+nombre);
-//    }
     //Crecion de una etiqueta: Sintaxi etX donde X es el contador de etiquetas puestas
     public String nuevaEtiqueta() {
         String s = conseguirIdentificadorUnico("e");
@@ -90,7 +77,7 @@ public class GeneradorCodigoIntermedio {
     }
 
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public String nuevaVariable(Tipo t) throws Exception {
+    public String nuevaVariable(TipoVariable t) throws Exception {
         String idVar = conseguirIdentificadorUnico("t");
         VData data = new VData(t);
         tablaVariables.put(idVar, data);
@@ -98,11 +85,15 @@ public class GeneradorCodigoIntermedio {
     }
 
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
-    public String nuevaVariable(String id, Tipo t) throws Exception {
+    public String nuevaVariable(String id, TipoVariable t) throws Exception {
         String idVar = conseguirIdentificadorUnico(id);
         VData data = new VData(t);
         tablaVariables.put(idVar, data);
         return idVar;
+    }
+    
+    public TipoVariable getTipoFromVar(String var) {
+        return tablaVariables.get(var).tipo();
     }
 
     private String conseguirIdentificadorUnico(String id) {
@@ -122,7 +113,7 @@ public class GeneradorCodigoIntermedio {
         return idVar;
     }
 
-    public String nuevaDimension(String idArray, Tipo t) throws Exception {
+    public String nuevaDimension(String idArray, TipoVariable t) throws Exception {
         String idVar = conseguirIdentificadorUnico("d_" + idArray);
         VData data = new VData(t); // es un entero
         tablaVariables.put(idVar, data);
@@ -149,7 +140,6 @@ public class GeneradorCodigoIntermedio {
     public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Parametro> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
         PData data = new PData(id, etiqueta, params, bytesRetorno);
-        //tablaProcedimientos.put(id, data);
         tablaProcedimientos.put(etiqueta, data);
         return contador;
     }
@@ -157,7 +147,6 @@ public class GeneradorCodigoIntermedio {
     public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Parametro> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
         PData data = new PData(id, etiqueta, params, bytesRetorno);
-        //tablaProcedimientos.put(id, data);
         main = data;
         tablaProcedimientos.put(etiqueta, data);
         return contador;
@@ -183,14 +172,6 @@ public class GeneradorCodigoIntermedio {
         this.instrucciones.add(ins);
     }
 
-//    public void generarInstr(TipoInstr instruccion, String op1, String op2, String dst) {
-//        Instruccion ins = new Instruccion(instruccion, op1 == null ? null : new Operador(op1), op2 == null ? null : new Operador(op2), dst == null ? null : new Operador(dst));
-//        this.instrucciones.add(ins);
-//    }
-//    //Metodo que nos devolvera el arraylist con los objetos de 3 direcciones 
-//    public ArrayList<Instruccion3Direcciones> instrucciones(){
-//        return this.instrucciones;
-//    }
     public ArrayList<Instruccion> getInstrucciones() {
         return instrucciones;
     }

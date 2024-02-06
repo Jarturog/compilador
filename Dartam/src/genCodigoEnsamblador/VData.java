@@ -1,14 +1,11 @@
 package genCodigoEnsamblador;
 
 import analizadorSemantico.DescripcionDefinicionTupla;
-import analizadorSemantico.genCodigoIntermedio.Tipo;
-import analizadorSemantico.genCodigoIntermedio.Tipo.TipoReferencia;
-import java.util.ArrayList;
-import jflex.base.Pair;
+import analizadorSemantico.genCodigoIntermedio.TipoVariable;
 
 public class VData {
 
-    private Tipo tipo;
+    private TipoVariable tipo;
     private Object initCodigoIntermedio = null;
     private boolean initCodigoEnsamblador = false;
     private Integer bytesEstructura = null;
@@ -22,7 +19,7 @@ public class VData {
         tupla = v.tupla;
     }
 
-    public VData(Tipo t) throws Exception {
+    public VData(TipoVariable t) throws Exception {
         tipo = t;
         if (t == null) {
             throw new Exception("No puede haber una variable sin tipo");
@@ -75,7 +72,7 @@ public class VData {
         tupla = d.tupla;
     }
 
-    public Tipo tipo() {
+    public TipoVariable tipo() {
         return tipo;
     }
     

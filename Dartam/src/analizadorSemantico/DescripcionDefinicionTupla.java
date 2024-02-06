@@ -1,6 +1,6 @@
 package analizadorSemantico;
 
-import analizadorSemantico.genCodigoIntermedio.Tipo;
+import analizadorSemantico.genCodigoIntermedio.TipoVariable;
 import java.util.ArrayList;
 
 public class DescripcionDefinicionTupla extends DescripcionSimbolo {
@@ -82,7 +82,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
             this.valorAsignado = valorAsignado;
             this.tipoTupla = tipoTupla;
             if (tipoTupla == null) {
-                bytes = Tipo.getTipo(tipo).bytes;
+                bytes = TipoVariable.getTipo(tipo, false).bytes; // false porque no pueden haber arrays o tuplas dentro de una tupla
             } else {
                 bytes = tipoTupla.getBytes();
             }

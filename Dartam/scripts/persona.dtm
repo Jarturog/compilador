@@ -1,12 +1,13 @@
 f vacio inicio(){
-	tupla persona p1, p2;
-	nuevaPersona(p1, 1, 'a');
-	nuevaPersona(p2, 2, 'b');
+	//tupla persona p1, p2;
+	//nuevaPersona(p1, 1, 'a');
+	//nuevaPersona(p2, 2, 'b');
 	car [] aux: "hola";
 	show(aux);
-	car ox: p1.let;
-	show((car[])ox);
-	show((car[])p2.let);
+	show("mundo");
+	//car ox: p1.let;
+	//show((car[])ox);
+	//show((car[])p2.let);
 }
 
 f vacio nuevaPersona(tupla persona p, ent idPersona, car let ) {//car[] nombrePersona) {

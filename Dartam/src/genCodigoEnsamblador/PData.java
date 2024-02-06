@@ -5,6 +5,7 @@
 package genCodigoEnsamblador;
 
 import analizadorSemantico.DescripcionFuncion.Parametro;
+import analizadorSemantico.genCodigoIntermedio.TipoVariable;
 import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import jflex.base.Pair;
@@ -37,7 +38,7 @@ public class PData {
     }
 
     //Metodo que permite añadir un nuevo parametro al procedimiento
-    public void añadirParametro(String i, String variable, String tipo) {
+    public void añadirParametro(String i, String variable, String tipo, TipoVariable t) throws Exception {
         this.parametros.add(new Parametro(i, variable, tipo));
     }
 
