@@ -1,15 +1,21 @@
-f vacio inicio(car[][]argumentos){
+f vacio inicio(){
 	tupla persona p1, p2;
-	nuevaPersona(p1, 1, "paco");
-	nuevaPersona(p2, 2, "pepa");
+	nuevaPersona(p1, 1, 'a');
+	nuevaPersona(p2, 2, 'b');
+	car [] aux: "hola";
+	show(aux);
+	car ox: p1.let;
+	show((car[])ox);
+	show((car[])p2.let);
 }
 
-f vacio nuevaPersona(tupla persona p, ent idPersona, car[] nombrePersona) {
+f vacio nuevaPersona(tupla persona p, ent idPersona, car let ) {//car[] nombrePersona) {
 	p.id: idPersona;
-	p.nombre: nombrePersona;
+	p.let: let; //p.nombre: nombrePersona;
 }
 
 tupla persona {
 	inmut ent id;
-	car[] nombre;
+	car let;
+	//car[] nombre;
 }

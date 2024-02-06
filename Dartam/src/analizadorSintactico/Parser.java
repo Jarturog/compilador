@@ -995,7 +995,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // SCRIPT_ELEMENTO ::= KW_TUPLE ID LKEY MIEMBROS_TUPLA RKEY 
+          case 5: // SCRIPT_ELEMENTO ::= TUPLE ID LKEY MIEMBROS_TUPLA RKEY 
             {
               SymbolScriptElemento RESULT =null;
 		Location et1xleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).xleft;
@@ -1160,7 +1160,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 17: // TIPO ::= KW_TUPLE ID 
+          case 17: // TIPO ::= TUPLE ID 
             {
               SymbolTipo RESULT =null;
 		Location txleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).xleft;
@@ -1175,7 +1175,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 18: // TIPO ::= KW_TUPLE ID DIMENSIONES 
+          case 18: // TIPO ::= TUPLE ID DIMENSIONES 
             {
               SymbolTipo RESULT =null;
 		Location txleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).xleft;
@@ -1193,7 +1193,7 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 19: // TIPO ::= KW_TUPLE ID DIMENSIONES_VACIAS 
+          case 19: // TIPO ::= TUPLE ID DIMENSIONES_VACIAS 
             {
               SymbolTipo RESULT =null;
 		Location txleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).xleft;

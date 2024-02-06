@@ -1,4 +1,4 @@
-java.io.FileNotFoundException: scripts\cmd.dtm (El sistema no puede encontrar el archivo especificado)
+java.io.FileNotFoundException: scripts\persoa.dtm (El sistema no puede encontrar el archivo especificado)
 	at java.base/java.io.FileInputStream.open0(Native Method)
 	at java.base/java.io.FileInputStream.open(FileInputStream.java:219)
 	at java.base/java.io.FileInputStream.<init>(FileInputStream.java:158)

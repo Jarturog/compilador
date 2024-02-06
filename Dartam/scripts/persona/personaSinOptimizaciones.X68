@@ -18,7 +18,7 @@ t_2         DC.L 2                  ; INT
 t_3         DC.B 'b'                ; CHAR
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-aux         DC.B 'hola'             ; STRING
+t_4         DC.B 'hola'             ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
 t_5         DC.L 4                  ; INT
@@ -31,6 +31,7 @@ p1          DS.B 5                  ; COPY OF ARRAY OR TUPLE
 p2          DS.B 5                  ; COPY OF ARRAY OR TUPLE
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+aux         DS.L 1                  ; STRING
 idpersona   DS.L 1                  ; INT
 ox          DS.B 1                  ; CHAR
             DC.B 0                  ; Los strings y chars acaban en 0
@@ -122,7 +123,10 @@ e_inicio:   LEA.L       p1, A0      ; A0 = p1
 ; --------- call e_nuevapersona     
             JSR         e_nuevapersona ; JUMP TO SUBROUTINE e_nuevapersona
             ADDA.L      #12, SP     ; SP = SP + 12
-; --------- aux = hola              
+; --------- t_4 = hola              
+; --------- aux = t_4               
+            LEA.L       t_4, A0     ; A0 = t_4
+            MOVE.L      A0, aux     ; aux = A0
 ; --------- param_s aux             
             LEA.L       aux, A0     ; A0 = aux
             MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0

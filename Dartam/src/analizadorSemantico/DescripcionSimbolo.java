@@ -12,6 +12,7 @@ import analizadorSemantico.genCodigoIntermedio.Tipo;
 import analizadorSintactico.ParserSym;
 import analizadorSintactico.symbols.SymbolOperand;
 import analizadorSintactico.symbols.SymbolTipo;
+import analizadorSintactico.symbols.SymbolTipoPrimitivo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,16 +21,16 @@ import jflex.base.Pair;
 public class DescripcionSimbolo {
 
     public final String tipo, variableAsociada;
-    private Integer nBytes = null; // null si es un método
+    private Integer nBytes = null; // null si es un método, constantes si son primitivos y variables si son estructuras
     private int nivel;
     private boolean isConstante = false, valorAsignado = false;
-    private final ArrayList<DefinicionMiembro> miembros; // por si su tipo es de tupla
+    private final ArrayList<DefinicionMiembro> miembros; // por si su tipo es de tupla, pero no DescripcionDefinicionTupla
     private final DescripcionDefinicionTupla tipoTupla;
 
     /**
      * Variable
      */
-    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionDefinicionTupla tipoTupla, String var) {
+    public DescripcionSimbolo(String t, boolean isConst, boolean v, DescripcionDefinicionTupla tipoTupla, String var) throws Exception {
         tipo = t;
         isConstante = isConst;
         valorAsignado = v;
@@ -40,15 +41,24 @@ public class DescripcionSimbolo {
         } else {
             miembros = null;
         }
+        this.variableAsociada = var;
+        // DescripcionDefinicionTupla tiene de tipo su nombre, sin TUPLE al principio
+        if (tipoTupla == null && !SymbolTipoPrimitivo.isTipoPrimitivo(t) && !t.startsWith(ParserSym.terminalNames[ParserSym.TUPLE])) { //t.startsWith(ParserSym.terminalNames[ParserSym.TUPLE])) { 
+            return; // si es DescripcionDefinicionTupla bytes se define en su constructor
+        }
+        if (this instanceof DescripcionFuncion) {//(tipo.equals(ParserSym.terminalNames[ParserSym.VOID])) {
+            return; // si es DescripcionFuncion no ocupa bytes
+        }
+        if (isTipoTupla()) {
+            nBytes = tipoTupla.getBytes();
+            return;
+        } else if (isArray()) {
+            return;// asignado desde fuera del constructor
+        }
         Tipo tipoPrimitivo = Tipo.getTipo(this.tipo);
         if (tipoPrimitivo != null) { // solo asigna bytes para tipos primitivos
             nBytes = tipoPrimitivo.bytes;
-        } else if (isTipoTupla()) {
-            nBytes = tipoTupla.getBytes();
-        } else if (isArray()) {
-            // ----
         }
-        this.variableAsociada = var;
     }
 
     public DescripcionSimbolo(DescripcionSimbolo d) {

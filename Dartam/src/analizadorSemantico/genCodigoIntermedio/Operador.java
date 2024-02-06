@@ -67,6 +67,12 @@ public class Operador {
     
     public String toAssembly() throws Exception {
         if(isLiteral()) {
+            if (tipoValor.equals(Tipo.STRING)) {
+                return ""+valor;
+            }
+            if (tipoValor.equals(Tipo.CHAR)) {
+                return "#'"+valor+"'";
+            }
             return "#"+valor;
         }
 //        if(valor instanceof String) {

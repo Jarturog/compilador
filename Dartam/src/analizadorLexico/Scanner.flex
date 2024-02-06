@@ -142,7 +142,7 @@ kw_in        = "enter"
 kw_out       = "show"
 kw_read      = "from"
 kw_write     = "into"
-kw_tuple     = "tupla"
+TUPLE     = "tupla"
 
 // valores
 val_decimal = {sub_digit}+
@@ -328,7 +328,7 @@ private Symbol procesarNumero() {
 {kw_out}                { tokens += "SHOW: "      +yytext()+"\n"; return symbol(ParserSym.SHOW, yytext()); }
 {kw_read}               { tokens += "FROM: "      +yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
 {kw_write}              { tokens += "INTO: "      +yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }
-{kw_tuple}              { tokens += "KW_TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext()); }
+{TUPLE}              { tokens += "TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.TUPLE, yytext()); }
 {kw_continue}           { tokens += "KW_CONTINUE: "+yytext()+"\n";return symbol(ParserSym.KW_CONTINUE, yytext()); }
 {kw_break}              { tokens += "KW_BREAK: "  +yytext()+"\n"; return symbol(ParserSym.KW_BREAK, yytext()); }
 

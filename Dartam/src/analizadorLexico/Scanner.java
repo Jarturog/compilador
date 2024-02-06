@@ -1293,7 +1293,7 @@ private Symbol procesarNumero() {
           // fall through
           case 153: break;
           case 75:
-            { tokens += "KW_TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.KW_TUPLE, yytext());
+            { tokens += "TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.TUPLE, yytext());
             }
           // fall through
           case 154: break;

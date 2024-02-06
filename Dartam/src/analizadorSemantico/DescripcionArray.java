@@ -18,14 +18,14 @@ public class DescripcionArray extends DescripcionSimbolo {
     /**
      * Array
      */
-    public DescripcionArray(String t, boolean isConst, ArrayList<SymbolOperand> dim, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, String var) {
+    public DescripcionArray(String t, boolean isConst, ArrayList<SymbolOperand> dim, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, String var) throws Exception {
         super(t, isConst, valorAsignado, tipoTupla, var);
         tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
         dimensiones = dim;
         this.variablesDimension = variablesDimension;
     }
 
-    public DescripcionArray(String t, boolean isConst, Integer num, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, String var) {
+    public DescripcionArray(String t, boolean isConst, Integer num, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, ArrayList<String> variablesDimension, String var) throws Exception {
         super(t, isConst, valorAsignado, tipoTupla, var);
         tipoElementoDelArray = t.substring(0, t.lastIndexOf(" "));
         numDimensionesVacias = num;

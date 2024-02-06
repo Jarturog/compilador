@@ -7,7 +7,7 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
  * 
  * SCRIPT_ELEMENTO ::= KW_METHOD TIPO_RETORNO:et1 ID:et2 LPAREN PARAMS:et3 RPAREN LKEY BODY:et4 RKEY                  {: RESULT = new SymbolScriptElemento(et1, et1left, et1right); :}
         | DECS:et                       {: RESULT = new SymbolScriptElemento(et, etleft, etright); :}
-        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY ENDINSTR {: RESULT = new Symbol(et1,et2,et3, et1left, et1right); :}
+        | TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY ENDINSTR {: RESULT = new Symbol(et1,et2,et3, et1left, et1right); :}
         ;
  */
 public class SymbolScriptElemento extends SymbolBase{

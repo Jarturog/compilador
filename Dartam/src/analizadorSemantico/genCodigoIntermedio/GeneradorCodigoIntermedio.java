@@ -106,6 +106,7 @@ public class GeneradorCodigoIntermedio {
     }
 
     private String conseguirIdentificadorUnico(String id) {
+        id = id.toLowerCase();
         Integer num = numEtiquetasOVariablesConId.get(id);
         boolean hayRepe = num != null;
         String idVar = id;

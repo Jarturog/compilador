@@ -109,6 +109,9 @@ public class GeneradorEnsamblador {
             if (et != null && instr.getTipo().tieneEtiqueta() && !procedureTable.containsKey(et)) {
                 et = "." + et;
             }
+            if (instr.isTipo(Instruccion.TipoInstr.COPY) && instr.op1().tipo().equals(Tipo.STRING) && data.estaInicializadaEnCodigoEnsamblador()) {
+                continue; // strings se declaran arriba
+            }
             procesarInstruccion(et);
 
         }
@@ -118,9 +121,6 @@ public class GeneradorEnsamblador {
         }
         if (seConcatena) {
             crearSubprogramaConcatenacion();
-        }
-        for (String s : subprogramas) {
-            add(s);
         }
         add("END " + etiqueta_main, "", "Fin del programa");
         for (HashMap.Entry<String, VData> variable : variables.entrySet()) {
@@ -145,29 +145,46 @@ public class GeneradorEnsamblador {
         }
         add("");
         // inicializamos las tuplas
-        for (Map.Entry<String, VData> e : variables.entrySet()) {
+        //for (Map.Entry<String, VData> e : variables.entrySet()) {
+        for (Map.Entry<String, DescripcionDefinicionTupla> e : tablaTuplas.entrySet()) {
             String id = e.getKey();
-            VData data = e.getValue();
-            if (data.getTupla() == null) {
-                continue;
-            }
-            int bytes = data.getTupla().getBytes();
+            DescripcionDefinicionTupla tupla = e.getValue();//VData data = e.getValue();
+//            if (data.getTupla() == null) {
+//                continue;
+//            }
+            int bytes = tupla.getBytes();
             int bytesLeft = bytes % 4;
             bytes -= bytesLeft;
             bytes /= 4;
-            String finBucle = this.crearEtiqueta("endinit" + id), bucle = this.crearEtiqueta("init" + id);
-            preMain.add(margen("", "LEA.L", data.getTupla().variableAsociada + ", A0", "load " + data.getTupla().variableAsociada + " into A0"));
-            preMain.add(margen("", "LEA.L", id + ", A1", "load " + id + " into A1"));
-            preMain.add(margen("", "MOVE.L", "#" + bytes + ", D0", ""));
-            preMain.add(margen(bucle, "CMP.L", "#0, D0", ""));
-            preMain.add(margen("", "BEQ", finBucle, ""));
-            preMain.add(margen("", "MOVE.L", "(A0)+, (A1)+", "copy 4 bytes"));
-            preMain.add(margen("", "SUB.L", "#1, D0", ""));
-            preMain.add(margen("", "JMP", bucle, ""));
-            preMain.add(margen(finBucle, "", "", "end of loop"));
+            String finBucle = this.crearEtiqueta("endinit" + id), bucle = this.crearEtiqueta("nextLongWord" + id), iniBucle = this.crearEtiqueta("init" + id);
+            subprogramas.add(margen(iniBucle, "LEA.L", tupla.variableAsociada + ", A0", "load " + tupla.variableAsociada + " into A0"));
+            subprogramas.add(margen("", "MOVEA.L", "4(SP), A1", "load instance into A1"));
+            subprogramas.add(margen("", "MOVE.L", "#" + bytes + ", D0", ""));
+            subprogramas.add(margen(bucle, "CMP.L", "#0, D0", ""));
+            subprogramas.add(margen("", "BEQ", finBucle, ""));
+            subprogramas.add(margen("", "MOVE.L", "(A0)+, (A1)+", "copy 4 bytes"));
+            subprogramas.add(margen("", "SUB.L", "#1, D0", ""));
+            subprogramas.add(margen("", "JMP", bucle, ""));
+            subprogramas.add(margen(finBucle, "", "", "end of loop"));
             for (int i = 0; i < bytesLeft; i++) {
-                preMain.add(margen("", "MOVE.B", "(A0)+, (A1)+", "copy 1 byte"));
+                subprogramas.add(margen("", "MOVE.B", "(A0)+, (A1)+", "copy 1 byte"));
             }
+            subprogramas.add(margen("", "RTS", "", ""));
+            subprogramas.add("");
+            tupla.setEtInit(iniBucle);
+        }
+        for (Map.Entry<String, VData> e : variables.entrySet()) {
+            String id = e.getKey();
+            VData data = e.getValue();
+            DescripcionDefinicionTupla tupla = data.getTupla();
+            if (tupla == null) {
+                continue;
+            }
+            String etBucle = tupla.getEtInit();
+            preMain.add(margen("", "LEA.L", id + ", A0", ""));
+            preMain.add(margen("", "MOVE.L", "A0, -(SP)", ""));
+            preMain.add(margen("", "JSR", etBucle, ""));
+            preMain.add(margen("", "ADDA.L", "#4, SP", ""));
             preMain.add("");
         }
     }
@@ -187,6 +204,7 @@ public class GeneradorEnsamblador {
     }
 
     private String crearEtiqueta(String s) {
+        s = s.toLowerCase();
         String etOriginal = s;
         int acumulador = 0;
         while (etiquetas.contains(s) || variables.containsKey(s) || procedureTable.containsKey(s)) {
@@ -220,22 +238,6 @@ public class GeneradorEnsamblador {
         add(getEtiqueta(), "MOVE" + t.getExtension68K() + " ", from + ", " + to, to + " = " + from);
     }
 
-    private void push(Operador op, String s, Tipo t) throws Exception {
-        String thingToPush = s;
-        if (t.equals(Tipo.PUNTERO) || t.equals(Tipo.STRING)) {
-            thingToPush = load(op, s, t);
-        }
-        add(getEtiqueta(), "MOVE" + t.getExtension68K(), thingToPush + ", -(SP)", "PUSH INTO STACK " + s);
-    }
-
-    private void push(int bytes) {
-        add(getEtiqueta(), "SUBA.L", "#" + bytes + ", SP", "SP = SP - " + bytes);
-    }
-
-    private void pop(int bytes) {
-        add(getEtiqueta(), "ADDA.L", "#" + bytes + ", SP", "SP = SP + " + bytes);
-    }
-
     private String getExtensionSuperior(String ext1, String ext2) {
         if (ext1 == null) {
             return ext2;
@@ -254,8 +256,10 @@ public class GeneradorEnsamblador {
     private void procesarInstruccion(String dstConPunto) throws Exception {
         String extOp1 = instr.op1() == null ? null : (instr.op1().tipo() == null ? null : instr.op1().tipo().getExtension68K());
         String extOp2 = instr.op2() == null ? null : (instr.op2().tipo() == null ? null : instr.op2().tipo().getExtension68K());
-        String extSuperior = getExtensionSuperior(extOp1, extOp2);
         String extDst = instr.dst() == null ? null : (instr.dst().tipo() == null ? null : instr.dst().tipo().getExtension68K());
+        String extSupOps = getExtensionSuperior(extOp1, extOp2);
+        String extSupOp1Dst = getExtensionSuperior(extOp1, extDst);
+        String extTotal = getExtensionSuperior(extSupOps, extSupOp1Dst);
         switch (instr.getTipo()) {
             case COPY -> { // op1 -> dst
                 String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
@@ -269,13 +273,13 @@ public class GeneradorEnsamblador {
             case ADD -> { // op1+op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("ADD" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " + " + r1);
+                add("ADD" + extSupOps, r1 + ", " + r2, r2 + " = " + r2 + "" + " + " + r1);
                 store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case SUB -> { // op1-op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("SUB" + extSuperior, r2 + ", " + r1, r1 + " = " + r1 + "" + " - " + r2);
+                add("SUB" + extSupOps, r2 + ", " + r1, r1 + " = " + r1 + "" + " - " + r2);
                 store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case MUL -> { // op1*op2 -> dst
@@ -320,13 +324,13 @@ public class GeneradorEnsamblador {
             case AND -> { // op1 and op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("AND" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " and " + r1);
+                add("AND" + extSupOps, r1 + ", " + r2, r2 + " = " + r2 + "" + " and " + r1);
                 store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case OR -> { // op1 or op2 -> dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("OR" + extSuperior, r1 + ", " + r2, r2 + " = " + r2 + "" + " or " + r1);
+                add("OR" + extSupOps, r1 + ", " + r2, r2 + " = " + r2 + "" + " or " + r1);
                 store(r2, instr.dst().toAssembly(), instr.dst().tipo());
             }
 //            case CONCAT -> { // op1 concat op2 -> dst
@@ -373,8 +377,25 @@ public class GeneradorEnsamblador {
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
                 String dt = load(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
-                add("ADDA.L ", r1 + ", " + dt, dt + " = " + dt + " + " + r1);
-                add("MOVE.L ", r2 + ", (" + dt + ")", "(" + dt + ") = " + r2);
+                String offset = "D" + DnActual++;
+                add("CLR.L", offset, "");
+                add("DIVS.W", "#4, " + r1, r1 + ".h = " + r1 + " % 4. " + r1 + ".l = " + r1 + " / 4");
+                add("MOVE.W", r1 + ", " + offset, ""); // numero despalazamientos long en aux
+                add("LSR.L", "#8, " + r1, r1 + ".l = " + r1 + ".h");
+                add("LSR.L", "#8, " + r1, r1 + ".l = " + r1 + ".h"); // numero bytes con las que hacer mascara en r1
+                add("ADDA.L ", offset + ", " + dt, dt + " = " + dt + " + " + offset);
+                String aux = "D" + DnActual++;
+                add("MOVE.L ", "(" + dt + "), " + aux, aux + " = (" + dt + ")");
+                String bucle = crearEtiqueta("mask"), fin = crearEtiqueta("endmask");
+                String mask = "D" + DnActual++;
+                add("MOVE.L", "#$FFFFFFFF, " + mask, "MASK");
+                add(bucle, "CMP.W", "#0, " + r1, ".W porque no hace falta más");
+                add("BEQ", fin, "");
+                add("LSR.L", "#8, " + mask, "");
+                add("SUB.W", "#1, " + r1, "");
+                add("JMP", bucle, "");
+                add(fin, "AND.L", mask + ", " + aux, "MASK");
+                add("MOVE.L ", aux + ", (" + dt + ")", "(" + dt + ") = " + aux);
             }
             case IND_VAL -> { // dst = op1[op2]
                 add(getEtiqueta(), "MOVEA.L", instr.op1().toAssembly() + ", A0", "A0 = " + instr.op1().toAssembly());
@@ -382,23 +403,25 @@ public class GeneradorEnsamblador {
                 add("MOVE.L ", "(A0), " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = (A0)");
             }
             case PARAM_S -> { // param_s dst
-                push(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
+                String r = load(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
+                add(getEtiqueta(), "MOVE.L", r + ", -(SP)", "PUSH INTO STACK " + r);
             }
             case PMB -> { // pmb dst
                 PData func = procedureTable.get(instr.dst().toAssembly());
-                int indice = func.getBytesRetorno();
+                int indice = (func.getBytesRetorno() > 0 ? 4 : 0); // 4 por @return
                 for (int i = func.getParametros().size() - 1; i >= 0; i--) {
                     Parametro param = func.getParametros().get(i);
-                    // par.snd son es el tipo
-                    indice += Tipo.getBytes(param.tipo);
-                    add(getEtiqueta(), "MOVE" + Tipo.getExtension68K(Tipo.getBytes(param.tipo)), indice + "(SP), " + param.variable, param.variable + " = POP FROM STACK");
+                    indice += 4;//Tipo.getBytes(param.tipo);
+                    add(getEtiqueta(), "MOVE.L", indice + "(SP), D0", "D0 = POP FROM STACK");
+                    store("D0", param.variable, Tipo.getTipo(param.tipo));
                 }
             }
             case RETURN -> { // rtn dst, ?
                 PData func = procedureTable.get(instr.dst().toAssembly());
-                int bytes = func.getBytesRetorno();
+                int bytes = 4; //func.getBytesRetorno();
                 if (func.getBytesRetorno() > 0) {
-                    add(getEtiqueta(), "MOVE" + extOp1, instr.op1().toAssembly() + ", " + bytes + "(SP)", "PUSH INTO STACK " + instr.op1().toAssembly());
+                    String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                    add(getEtiqueta(), "MOVE.L", r1 + ", " + bytes + "(SP)", "PUSH INTO STACK " + r1);
                 }
                 add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
             }
@@ -410,7 +433,7 @@ public class GeneradorEnsamblador {
                 PData.TipoMetodoEspecial tipo = PData.getEspecial(func.getNombre());
                 boolean esMetodoEspecial = tipo != null;
                 if (func.getBytesRetorno() > 0) {
-                    add("SUBA.L", "#" + func.getBytesRetorno() + ", SP", "SP = SP + " + func.getBytesRetorno());
+                    add("SUBA.L", "#" + 4 /*func.getBytesRetorno()*/ + ", SP", "SP = SP + " + 4);//func.getBytesRetorno());
                 }
                 if (esMetodoEspecial) {
                     procesarMetodoEspecial(procedureTable.get(instr.dst().toAssembly()), tipo, instr.dst().toAssembly());
@@ -419,10 +442,11 @@ public class GeneradorEnsamblador {
                 int numBytes = 0;
                 for (Parametro param : func.getParametros()) {
                     // par.snd son los bytes
-                    numBytes += Tipo.getBytes(param.tipo);
+                    numBytes += 4;//Tipo.getBytes(param.tipo);
                 }
                 if (func.getBytesRetorno() > 0) {
-                    add(getEtiqueta(), "MOVE" + extOp1, "(SP)+, " + instr.op1().toAssembly(), instr.op1().toAssembly() + " = POP FROM STACK");
+                    String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                    add(getEtiqueta(), "MOVE.L", "(SP)+, " + r1, r1 + " = POP FROM STACK");
                 }
                 if (numBytes > 0) {
                     add("ADDA.L", "#" + numBytes + ", SP", "SP = SP + " + numBytes);
@@ -446,6 +470,7 @@ public class GeneradorEnsamblador {
     }
 
     private void procesarMetodoEspecial(PData f, PData.TipoMetodoEspecial tipo, String idMetodo) throws Exception {
+        //idMetodo = crearEtiqueta(idMetodo); // no hace falta porque ya son reservadas por el semántico
         switch (tipo) {
             case PRINT -> { // print(dst)
                 if (f.getParametros().size() != 1) {
@@ -528,12 +553,16 @@ public class GeneradorEnsamblador {
         for (String d : datos) {
             s += d + "\n";
         }
+        for (String i : subprogramas) {
+            s += i + "\n";
+        }
         for (String i : preMain) {
             s += i + "\n";
         }
         for (String i : codigo) {
             s += i + "\n";
         }
+
         return s;
     }
 

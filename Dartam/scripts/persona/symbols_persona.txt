@@ -1,7 +1,14 @@
-into:		Función de tipo 'PROP'  con argumentosCAR [] file, CAR [] content declarado en el nivel 1
-persona:	Tupla con miembros constante  CAR [] nombre declarado en el nivel 1
-show:		Función de tipo 'KW_VOID'  con argumentosCAR [] output declarado en el nivel 1
-inicio:		Función de tipo 'KW_VOID'  sin argumentos declarado en el nivel 1
-from:		Función de tipo 'CAR []'  con argumentosCAR [] file declarado en el nivel 1
-nuevaPersona:Función de tipo 'KW_VOID'  con argumentosKW_TUPLE persona p, ENT idPersona, CAR [] nombrePersona declarado en el nivel 1
-enter:		Función de tipo 'CAR []'  sin argumentos declarado en el nivel 1
+into:        Función tipo PROP declarada en el nivel 1 con etiqueta e_into con parámetros CAR [] file, CAR [] content
+persona:     Tuplacon miembros constante  CAR let declarada en el nivel 1 siendo su variable de CI persona ocupando 5 bytes
+show:        Función tipo VOID declarada en el nivel 1 con etiqueta e_show con parámetros CAR [] output
+inicio:      Función tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parámetros
+from:        Función tipo VOID declarada en el nivel 1 con etiqueta e_from_1 con parámetros CAR [] file, CAR [] e_from
+nuevaPersona: Función tipo VOID declarada en el nivel 1 con etiqueta e_nuevapersona con parámetros TUPLE persona p siendo su variable de CI p, ENT idPersona siendo su variable de CI idpersona, CAR let siendo su variable de CI let
+enter:       Función tipo CAR [] declarada en el nivel 1 con etiqueta e_enter sin parámetros
+p1:          Variable tipo TUPLE persona con valor asignado declarado en el nivel 2 siendo su variable de CI p1 ocupando 5 bytes
+p2:          Variable tipo TUPLE persona con valor asignado declarado en el nivel 2 siendo su variable de CI p2 ocupando 5 bytes
+aux:         Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI aux con dimensiones []
+ox:          Variable tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI ox ocupando 1 bytes
+p:           Variable tipo TUPLE persona con valor asignado declarado en el nivel 2 siendo su variable de CI p ocupando 5 bytes
+let:         Variable tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI let ocupando 1 bytes
+idPersona:   Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI idpersona ocupando 4 bytes

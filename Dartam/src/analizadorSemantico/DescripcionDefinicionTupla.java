@@ -6,11 +6,12 @@ import java.util.ArrayList;
 public class DescripcionDefinicionTupla extends DescripcionSimbolo {
 
     protected final ArrayList<DefinicionMiembro> miembros;
+    private String etInit = null;
 
     /**
      * Tupla
      */
-    public DescripcionDefinicionTupla(String nombre, ArrayList<DefinicionMiembro> m, String var) {
+    public DescripcionDefinicionTupla(String nombre, ArrayList<DefinicionMiembro> m, String var) throws Exception {
         super(nombre, false, false, null, var);
         miembros = m;
         int b = 0;
@@ -51,6 +52,15 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         }
         throw new Exception("Miembro " + miembro + " no encontrado"); // error
     }
+    
+//    @Override
+//    public Integer getBytes() {
+//        int b = 0;
+//        for (DefinicionMiembro m : miembros) {
+//            b += m.bytes;
+//        }
+//        return b;
+//    }
 
     public ArrayList<DefinicionMiembro> getMiembros() {
         return miembros;
@@ -65,7 +75,7 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         protected final DescripcionDefinicionTupla tipoTupla;
         public final Object varInit;
 
-        public DefinicionMiembro(String nombre, String tipo, boolean isConst, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, Object varInit) {
+        public DefinicionMiembro(String nombre, String tipo, boolean isConst, boolean valorAsignado, DescripcionDefinicionTupla tipoTupla, Object varInit) throws Exception {
             this.nombre = nombre;
             this.tipo = tipo;
             this.isConst = isConst;
@@ -113,5 +123,13 @@ public class DescripcionDefinicionTupla extends DescripcionSimbolo {
         String varA = variableAsociada == null ? "" : " siendo su variable de CI " + variableAsociada;
         String bytes = getBytes() == null ? "" : " ocupando " + getBytes() + " bytes";
         return "Tupla" + m + " declarada en el nivel " + getNivel() + varA + bytes;
+    }
+    
+    public void setEtInit(String et) {
+        etInit = et;
+    }
+    
+    public String getEtInit() {
+        return etInit;
     }
 }

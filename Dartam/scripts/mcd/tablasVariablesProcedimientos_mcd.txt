@@ -1,9 +1,9 @@
 Tabla de procedimientos
-mcm: identificado por e_mcm, devuelve 4 bytes de retorno y sus parámetros son ENT num1, ENT num2
+mcm: identificado por e_mcm, devuelve 4 bytes de retorno y sus parámetros son ENT num1 siendo su variable de CI num1, ENT num2 siendo su variable de CI num2
 from: identificado por e_from_1, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] e_from
-mcd2: identificado por e_mcd2, devuelve 4 bytes de retorno y sus parámetros son ENT num1, ENT num2
+mcd2: identificado por e_mcd2, devuelve 4 bytes de retorno y sus parámetros son ENT num1 siendo su variable de CI num1_1, ENT num2 siendo su variable de CI num2_1
 enter: identificado por e_enter, devuelve 256 bytes de retorno y no recibe parámetros
-mcd1: identificado por e_mcd1, devuelve 4 bytes de retorno y sus parámetros son ENT a0, ENT b0
+mcd1: identificado por e_mcd1, devuelve 4 bytes de retorno y sus parámetros son ENT a0 siendo su variable de CI a0, ENT b0 siendo su variable de CI b0
 show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
 inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
 into: identificado por e_into, devuelve 1 bytes de retorno y sus parámetros son CAR [] file, CAR [] content

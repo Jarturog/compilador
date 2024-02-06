@@ -23,6 +23,7 @@ public class ParserSym {
   public static final int RKEY = 41;
   public static final int KW_CASE = 58;
   public static final int COMMA = 45;
+  public static final int TUPLE = 48;
   public static final int RPAREN = 39;
   public static final int LPAREN = 38;
   public static final int OP_ADD = 4;
@@ -38,7 +39,6 @@ public class ParserSym {
   public static final int KW_DEFAULT = 59;
   public static final int CASTING = 68;
   public static final int OP_LT = 22;
-  public static final int KW_TUPLE = 48;
   public static final int KW_RETURN = 57;
   public static final int KW_ELIF = 51;
   public static final int ENDINSTR = 44;
@@ -132,7 +132,7 @@ public class ParserSym {
   "COMMA",
   "KW_MAIN",
   "KW_METHOD",
-  "KW_TUPLE",
+  "TUPLE",
   "KW_CONST",
   "KW_IF",
   "KW_ELIF",

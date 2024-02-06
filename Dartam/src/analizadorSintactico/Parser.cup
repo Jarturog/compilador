@@ -109,7 +109,7 @@ terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
 terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
-terminal    KW_MAIN, KW_METHOD, KW_TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
+terminal    KW_MAIN, KW_METHOD, TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
 terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP, CASTING;
 
@@ -188,7 +188,7 @@ SCRIPT ::= SCRIPT_ELEMENTO:et1 SCRIPT:et2       {: RESULT = new SymbolScript(et1
 
 SCRIPT_ELEMENTO ::= KW_METHOD:et1 TIPO_RETORNO:et2 ID:et3 LPAREN PARAMS:et4 RPAREN LKEY BODY:et5 RKEY   {: RESULT = new SymbolScriptElemento(et2, et3, et4, et5, et1xleft, et1xright); :}
         | DECS:et                                                       {: RESULT = new SymbolScriptElemento(et, etxleft, etxright); :}
-        | KW_TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY     {: RESULT = new SymbolScriptElemento(et2, et3, et1xleft, et1xright); :}
+        | TUPLE:et1 ID:et2 LKEY MIEMBROS_TUPLA:et3 RKEY     {: RESULT = new SymbolScriptElemento(et2, et3, et1xleft, et1xright); :}
         ;
 
 TIPO_RETORNO ::= TIPO:et            {: RESULT = new SymbolTipoRetorno(et, etxleft, etxright); :}
@@ -210,9 +210,9 @@ BODY ::= METODO_ELEMENTO:et1 BODY:et2   {: RESULT = new SymbolBody(et1, et2, et1
 TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, txleft, txright); :}
         | TIPO_PRIMITIVO:t DIMENSIONES:d        {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
         | TIPO_PRIMITIVO:t DIMENSIONES_VACIAS:d {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
-        | KW_TUPLE:t ID:i                       {: RESULT = new SymbolTipo(i, txleft, txright); :}
-        | KW_TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
-        | KW_TUPLE:t ID:i DIMENSIONES_VACIAS:d  {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
+        | TUPLE:t ID:i                       {: RESULT = new SymbolTipo(i, txleft, txright); :}
+        | TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
+        | TUPLE:t ID:i DIMENSIONES_VACIAS:d  {: RESULT = new SymbolTipo(i, d, txleft, txright); :}
         ;
 
 TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}

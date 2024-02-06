@@ -13,8 +13,8 @@ import java_cup.runtime.ComplexSymbolFactory.Location;
 /**
 TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, txleft, txright); :}
         | TIPO_PRIMITIVO:t DIMENSIONES:d        {: RESULT = new SymbolTipo(t, d, txleft, txright); :}
-        | KW_TUPLE:t ID:i                       {: RESULT = new SymbolTipo(t, i, txleft, txright); :}
-        | KW_TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(t, d, i, txleft, txright); :}
+        | TUPLE:t ID:i                       {: RESULT = new SymbolTipo(t, i, txleft, txright); :}
+        | TUPLE:t ID:i DIMENSIONES:d         {: RESULT = new SymbolTipo(t, d, i, txleft, txright); :}
         ;
  */
 public class SymbolTipo extends SymbolBase {
@@ -60,7 +60,7 @@ public class SymbolTipo extends SymbolBase {
     }
     
     public String getTipo() {
-        String tuplaKW = ParserSym.terminalNames[ParserSym.KW_TUPLE];
+        String tuplaKW = ParserSym.terminalNames[ParserSym.TUPLE];
         if (!isTupla()) {
             String t = tipo.getTipo();
 //            return t;
@@ -81,7 +81,7 @@ public class SymbolTipo extends SymbolBase {
             String t = tipo.getTipo();
             return t;
         }
-        return ParserSym.terminalNames[ParserSym.KW_TUPLE] + " " + idTupla;
+        return ParserSym.terminalNames[ParserSym.TUPLE] + " " + idTupla;
     }
 
 }

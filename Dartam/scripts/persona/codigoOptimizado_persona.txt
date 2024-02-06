@@ -12,8 +12,7 @@ param_s t_2
 t_3 = b
 param_s t_3
 call e_nuevapersona
-t_4 = hola
-aux = t_4
+aux = hola
 param_s aux
 call e_show
 t_5 = 4
