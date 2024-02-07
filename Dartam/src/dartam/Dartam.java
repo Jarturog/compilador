@@ -30,7 +30,7 @@ import optimizaciones.Optimizador;
 public class Dartam {
 
     private boolean error = false;
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     private static final String RUTA = "scriptsCorrectos/", RUTA_ERRORES = "scriptsErroneos/", LOG = "log.txt", EXTENSION = ".dtm";
     private final String nombreFichero;
 
@@ -86,20 +86,32 @@ public class Dartam {
         Parser parser = new Parser(scanner, new ComplexSymbolFactory());
         Symbol resultado = parser.parse();
         if (!scanner.getErrores().isEmpty()) {
-            System.err.println(scanner.getErrores());
+            if (DEBUG) {
+                System.err.println(scanner.getErrores());
+            }
             error = true;
+            escribir("errores_" + nombreFichero + ".txt", scanner.getErrores(), true);
+            System.err.println("Error léxico, descripción detallada en errores_" + nombreFichero + ".txt");
             return;
         } else if (!parser.getErrores().isEmpty()) {
-            System.err.println(parser.getErrores());
+            if (DEBUG) {
+                System.err.println(parser.getErrores());
+            }
             error = true;
+            escribir("errores_" + nombreFichero + ".txt", parser.getErrores(), true);
+            System.err.println("Error sintáctico, descripción detallada en errores_" + nombreFichero + ".txt");
             return;
         }
         SymbolScript script = (SymbolScript) resultado.value;
         // Analisis semantico
         AnalizadorSemantico sem = new AnalizadorSemantico(script);
         if (!sem.getErrores().isEmpty()) {
-            System.err.println(sem.getErrores());
+            if (DEBUG) {
+                System.err.println(sem.getErrores());
+            }
             error = true;
+            escribir("errores_" + nombreFichero + ".txt", sem.getErrores(), true);
+            System.err.println("Error semántico, descripción detallada en errores_" + nombreFichero + ".txt");
             return;
         }
         File directory = new File(RUTA + nombreFichero);
@@ -107,28 +119,28 @@ public class Dartam {
             directory.mkdirs(); // creates parent directories as needed
         }
         // si no ha habido errores empieza a escribir en los ficheros
-        escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens());
-        escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols());
+        escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens(), false);
+        escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols(), false);
         // Generacion de codigo intermedio realizada durante el analisis semantico
         GestorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
         GestorCodigoIntermedio generadorParaOptimizar = new GestorCodigoIntermedio(generadorCodigoIntermedio); // se copia
-        escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
-        escribir("tablasVariablesProcedimientos_" + nombreFichero + ".txt", generadorCodigoIntermedio.tablas());
+        escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString(), false);
+        escribir("tablasVariablesProcedimientos_" + nombreFichero + ".txt", generadorCodigoIntermedio.tablas(), false);
         // Generacion de codigo ensamblador
 
         GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
-        escribir(nombreFichero + "SinOptimizaciones.X68", codigoEnsamblador.toString());
+        escribir(nombreFichero + "SinOptimizaciones.X68", codigoEnsamblador.toString(), false);
         // Optimzaciones
 
         Optimizador op = new Optimizador(generadorParaOptimizar);
-        escribir("codigoOptimizado_" + nombreFichero + ".txt", op.toString());
+        escribir("codigoOptimizado_" + nombreFichero + ".txt", op.toString(), false);
         // Generacion de codigo ensamblador
         codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorParaOptimizar);
-        escribir(nombreFichero + ".X68", codigoEnsamblador.toString());
+        escribir(nombreFichero + ".X68", codigoEnsamblador.toString(), false);
     }
 
-    public final void escribir(String fileName, String str) throws IOException {
-        try (FileWriter fileOut = new FileWriter(RUTA + nombreFichero + "/" + fileName)) {
+    public final void escribir(String fileName, String str, boolean error) throws IOException {
+        try (FileWriter fileOut = new FileWriter((error ? RUTA_ERRORES : (RUTA + nombreFichero + "/")) + fileName)) {
             fileOut.write(str);
         }
     }
