@@ -1,9 +1,9 @@
 Tabla de procedimientos
-from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
-show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
-inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
-scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
-into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] input
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parametros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parametros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parametros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] output
 
 Tabla de variables
 file: tipo STRING almacenando una estructura de datos de 324 bytes

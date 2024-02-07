@@ -3,8 +3,10 @@ pmb e_inicio
 t = Escribe el fichero a leer:
 param_s t
 call e_show
-d_file = 81
-d_content = 81
+t_1 = 81
+d_file = t_1
+t_2 = 81
+d_content = t_2
 param_s file
 call e_scan
 param_s file

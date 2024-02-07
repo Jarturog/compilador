@@ -3,5 +3,4 @@ scan:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_scan con p
 show:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_show con parametros CAR [] output
 inicio:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parametros
 from:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_from con parametros CAR [] file, CAR [] input
-file:        Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI file con dimensiones 81
-content:     Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI content con dimensiones 81
+c:           Variable tipo PROP con valor asignado declarado en el nivel 2 siendo su variable de CI c ocupando 4 bytes

@@ -3,7 +3,7 @@
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
-;               Marta González Juan
+;               Marta Gonzalez Juan
 ; ==============================================================================
 
             ORG         $1000       ; Origen
@@ -15,7 +15,7 @@ t_4         DC.L 0                  ; BOOLEAN
 t_5         DC.B '2 * 3 = 6'        ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-t_6         DC.B '6 está almacenado en 'a''  ; STRING
+t_6         DC.B '6 esta almacenado en a'  ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
 t_7         DC.B 'ERROR: 2*3 no ha dado 6'  ; STRING
@@ -52,7 +52,7 @@ prod                                ; Etiqueta inicial (main)
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
             TRAP        #15         ; Interruption generated
             JSR         e_inicio    ; Se ejecuta el main
-            SIMHALT                 ; Fin de la ejecución
+            SIMHALT                 ; Fin de la ejecucion
 
 ; --------- e_inicio: skip          
                                     
@@ -110,7 +110,7 @@ e_inicio:   MOVE.L      #2, D0      ; D0 = #2
 ; --------- call e_show             
             JSR         e_show      ; JUMP TO SUBROUTINE e_show
             ADDA.L      #4, SP      ; SP = SP + 4
-; --------- t_6 = 6 está almacenado en 'a'  
+; --------- t_6 = 6 esta almacenado en a  
 ; --------- param_s t_6             
             LEA.L       t_6, A0     ; A0 = t_6
             MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0

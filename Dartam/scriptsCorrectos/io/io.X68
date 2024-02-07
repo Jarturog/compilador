@@ -3,7 +3,7 @@
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
-;               Marta González Juan
+;               Marta Gonzalez Juan
 ; ==============================================================================
 
             ORG         $1000       ; Origen
@@ -11,8 +11,8 @@
 t           DC.B 'Escribe el fichero a leer:'  ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-d_file      DC.L 81                 ; INT
-d_content   DC.L 81                 ; INT
+t_1         DC.L 81                 ; INT
+t_2         DC.L 81                 ; INT
 errread     DC.B 'Error de lectura',0  ; Mensaje de error
             DS.W 0                  ; Para evitar imparidad
 t_3         DC.B 'El fichero contiene:'  ; STRING
@@ -31,6 +31,8 @@ t_5         DC.B 'Ahora el fichero contiene:'  ; STRING
 file        DS.B 256                ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+d_file      DS.L 1                  ; INT
+d_content   DS.L 1                  ; INT
 content     DS.B 256                ; STRING
             DC.B 0                  ; Los strings y chars acaban en 0
             DS.W 0                  ; No pueden haber variables en zonas de memoria impar
@@ -54,9 +56,9 @@ e_from      MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
             MOVE.L      #53, D0     ; Task 53 of TRAP 15: Read file
             MOVEA.L     A2, A1      
             TRAP        #15         ; Interruption generated
-            CMP.W       #1, D0      ; Si vacío
+            CMP.W       #1, D0      ; Si vacio
             BNE         emptyfile   ; Fin
-            CMP.W       #256, D2    ; Si vacío
+            CMP.W       #256, D2    ; Si vacio
             BNE         emptyfile   ; Fin
             CLR.L       D2          
 emptyfile   MOVEA.L     A2, A1      
@@ -106,7 +108,7 @@ io                                  ; Etiqueta inicial (main)
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
             TRAP        #15         ; Interruption generated
             JSR         e_inicio    ; Se ejecuta el main
-            SIMHALT                 ; Fin de la ejecución
+            SIMHALT                 ; Fin de la ejecucion
 
 ; --------- e_inicio: skip          
                                     
@@ -118,11 +120,17 @@ e_inicio:   LEA.L       t, A0       ; A0 = t
 ; --------- call e_show             
             JSR         e_show      ; JUMP TO SUBROUTINE e_show
             ADDA.L      #4, SP      ; SP = SP + 4
-; --------- d_file = 81             
+; --------- t_1 = 81                
             MOVE.L      #81, D0     ; D0 = #81
+            MOVE.L      D0, t_1     ; t_1 = D0
+; --------- d_file = t_1            
+            MOVE.L      t_1, D0     ; D0 = t_1
             MOVE.L      D0, d_file  ; d_file = D0
-; --------- d_content = 81          
+; --------- t_2 = 81                
             MOVE.L      #81, D0     ; D0 = #81
+            MOVE.L      D0, t_2     ; t_2 = D0
+; --------- d_content = t_2         
+            MOVE.L      t_2, D0     ; D0 = t_2
             MOVE.L      D0, d_content ; d_content = D0
 ; --------- param_s file            
             LEA.L       file, A0    ; A0 = file

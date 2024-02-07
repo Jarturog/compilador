@@ -3,7 +3,7 @@
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
-;               Marta González Juan
+;               Marta Gonzalez Juan
 ; ==============================================================================
 
             ORG         $1000       ; Origen
@@ -74,7 +74,7 @@ mcd                                 ; Etiqueta inicial (main)
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
             TRAP        #15         ; Interruption generated
             JSR         e_inicio    ; Se ejecuta el main
-            SIMHALT                 ; Fin de la ejecución
+            SIMHALT                 ; Fin de la ejecucion
 
 ; --------- e_inicio: skip          
                                     
@@ -296,7 +296,7 @@ e_mcd1:     MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
 ; --------- if a_1 > b_1 goto e_17  
             MOVE.L      a_1, D0     ; D0 = a_1
             MOVE.L      b_1, D1     ; D1 = b_1
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_17       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_17
 ; --------- t_15 = 0                
             MOVE.L      #0, D0      ; D0 = #0
@@ -359,7 +359,7 @@ e_mcm:      MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
 ; --------- if num1 > num2 goto e_21  
             MOVE.L      num1, D0    ; D0 = num1
             MOVE.L      num2, D1    ; D1 = num2
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_21       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_21
 ; --------- t_18 = 0                
             MOVE.L      #0, D0      ; D0 = #0
@@ -449,7 +449,7 @@ e_mcd2:     MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
 ; --------- if num1_1 > num2_1 goto e_25  
             MOVE.L      num1_1, D0  ; D0 = num1_1
             MOVE.L      num2_1, D1  ; D1 = num2_1
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_25       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_25
 ; --------- t_22 = 0                
             MOVE.L      #0, D0      ; D0 = #0

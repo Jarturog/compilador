@@ -26,7 +26,7 @@ SYM_RPAREN: )
 SYM_ENDINSTR: ;
 SHOW: show
 SYM_LPAREN: (
-VAL_CADENA: "6 está almacenado en 'a'"
+VAL_CADENA: "6 esta almacenado en a"
 SYM_RPAREN: )
 SYM_ENDINSTR: ;
 SYM_RKEY: }

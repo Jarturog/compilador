@@ -3,7 +3,7 @@
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
-;               Marta González Juan
+;               Marta Gonzalez Juan
 ; ==============================================================================
 
             ORG         $1000       ; Origen
@@ -56,9 +56,9 @@ e_from      MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
             MOVE.L      #53, D0     ; Task 53 of TRAP 15: Read file
             MOVEA.L     A2, A1      
             TRAP        #15         ; Interruption generated
-            CMP.W       #1, D0      ; Si vacío
+            CMP.W       #1, D0      ; Si vacio
             BNE         emptyfile   ; Fin
-            CMP.W       #256, D2    ; Si vacío
+            CMP.W       #256, D2    ; Si vacio
             BNE         emptyfile   ; Fin
             CLR.L       D2          
 emptyfile   MOVEA.L     A2, A1      
@@ -108,7 +108,7 @@ io                                  ; Etiqueta inicial (main)
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
             TRAP        #15         ; Interruption generated
             JSR         e_inicio    ; Se ejecuta el main
-            SIMHALT                 ; Fin de la ejecución
+            SIMHALT                 ; Fin de la ejecucion
 
 ; --------- e_inicio: skip          
                                     
