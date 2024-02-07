@@ -1,0 +1,152 @@
+e_inicio: skip
+pmb e_inicio
+t = 16
+a = t
+t_1 = 20
+b = t_1
+param_s a
+param_s b
+call e_mcd1, t_2
+c1 = t_2
+param_s a
+param_s b
+call e_mcd2, t_3
+c2 = t_3
+param_s a
+param_s b
+call e_mcm, t_4
+c3 = t_4
+t_5 = 4
+if c1 == t_5 goto e
+t_6 = 0
+goto e_1
+e: skip
+t_6 = -1
+e_1: skip
+if t_6 == 0 goto e_3
+t_7 = El primer algoritmo de mcd entre 16 y 20 resulta en 4
+param_s t_7
+call e_show
+goto e_2
+e_3: skip
+e_2: skip
+t_8 = 4
+if c2 == t_8 goto e_4
+t_9 = 0
+goto e_5
+e_4: skip
+t_9 = -1
+e_5: skip
+if t_9 == 0 goto e_7
+t_10 = El segundo algoritmo de mcd entre 16 y 20 resulta en 4
+param_s t_10
+call e_show
+goto e_6
+e_7: skip
+e_6: skip
+t_11 = 80
+if c3 == t_11 goto e_8
+t_12 = 0
+goto e_9
+e_8: skip
+t_12 = -1
+e_9: skip
+if t_12 == 0 goto e_11
+t_13 = El algoritmo de mcm entre 16 y 20 resulta en 80
+param_s t_13
+call e_show
+goto e_10
+e_11: skip
+e_10: skip
+rtn e_inicio
+
+
+e_mcd1: skip
+pmb e_mcd1
+a_1 = a0
+b_1 = b0
+e_12: skip
+if a_1 /= b_1 goto e_15
+t_14 = 0
+goto e_16
+e_15: skip
+t_14 = -1
+e_16: skip
+if t_14 == 0 goto e_13
+if a_1 > b_1 goto e_17
+t_15 = 0
+goto e_18
+e_17: skip
+t_15 = -1
+e_18: skip
+if t_15 == 0 goto e_20
+t_16 = a_1 - b_1
+a_1 = t_16
+goto e_19
+e_20: skip
+t_17 = b_1 - a_1
+b_1 = t_17
+e_19: skip
+goto e_12
+e_13: skip
+rtn e_mcd1, a_1
+
+e_mcm: skip
+pmb e_mcm
+if num1 > num2 goto e_21
+t_18 = 0
+goto e_22
+e_21: skip
+t_18 = -1
+e_22: skip
+if t_18 == 0 goto e_24
+a_2 = num1
+b_2 = num2
+goto e_23
+e_24: skip
+a_2 = num2
+b_2 = num1
+e_23: skip
+param_s num1
+param_s num2
+call e_mcd2, t_19
+t_20 = a_2 / t_19
+t_21 = t_20 * b_2
+resultado = t_21
+rtn e_mcm, resultado
+
+e_mcd2: skip
+pmb e_mcd2
+if num1_1 > num2_1 goto e_25
+t_22 = 0
+goto e_26
+e_25: skip
+t_22 = -1
+e_26: skip
+if t_22 == 0 goto e_28
+a_3 = num1_1
+b_3 = num2_1
+goto e_27
+e_28: skip
+a_3 = num2_1
+b_3 = num1_1
+e_27: skip
+t_23 = 0
+resultado_1 = t_23
+e_29: skip
+resultado_1 = b_3
+t_24 = a_3 mod b_3
+b_3 = t_24
+a_3 = resultado_1
+t_25 = 0
+if b_3 /= t_25 goto e_32
+t_26 = 0
+goto e_33
+e_32: skip
+t_26 = -1
+e_33: skip
+if t_26 == 0 goto e_30
+goto e_29
+e_30: skip
+rtn e_mcd2, resultado_1
+

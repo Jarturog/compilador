@@ -1,0 +1,57 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
+mcm: identificado por e_mcm, devuelve 4 bytes de retorno y sus parámetros son ENT num1 siendo su variable de CI num1, ENT num2 siendo su variable de CI num2
+mcd2: identificado por e_mcd2, devuelve 4 bytes de retorno y sus parámetros son ENT num1 siendo su variable de CI num1_1, ENT num2 siendo su variable de CI num2_1
+mcd1: identificado por e_mcd1, devuelve 4 bytes de retorno y sus parámetros son ENT a0 siendo su variable de CI a0, ENT b0 siendo su variable de CI b0
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+
+Tabla de variables
+num1_1: tipo INT
+num2_1: tipo INT
+b0: tipo INT
+a_1: tipo INT
+b_2: tipo INT
+a_3: tipo INT
+b_1: tipo INT
+a_2: tipo INT
+b_3: tipo INT
+num1: tipo INT
+t_25: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_26: tipo BOOLEAN inicializado a 0
+t_23: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_24: tipo INT
+t_21: tipo INT
+t_22: tipo BOOLEAN inicializado a 0
+num2: tipo INT
+t_20: tipo INT
+a: tipo INT
+b: tipo INT
+t_18: tipo BOOLEAN inicializado a 0
+resultado: tipo INT
+t_19: tipo INT
+t_2: tipo INT
+t_16: tipo INT
+t_1: tipo INT inicializado a 20 almacenando una estructura de datos de 256 bytes
+t_17: tipo INT
+t_4: tipo INT
+t_3: tipo INT
+t_6: tipo BOOLEAN inicializado a 0
+t_5: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_8: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_7: tipo STRING inicializado a El primer algoritmo de mcd entre 16 y 20 resulta en 4 almacenando una estructura de datos de 256 bytes
+c1: tipo INT
+a0: tipo INT
+c2: tipo INT
+t_9: tipo BOOLEAN inicializado a 0
+c3: tipo INT
+resultado_1: tipo INT
+t: tipo INT inicializado a 16 almacenando una estructura de datos de 256 bytes
+t_14: tipo BOOLEAN inicializado a 0
+t_15: tipo BOOLEAN inicializado a 0
+t_12: tipo BOOLEAN inicializado a 0
+t_13: tipo STRING inicializado a El algoritmo de mcm entre 16 y 20 resulta en 80 almacenando una estructura de datos de 256 bytes
+t_10: tipo STRING inicializado a El segundo algoritmo de mcd entre 16 y 20 resulta en 4 almacenando una estructura de datos de 256 bytes
+t_11: tipo INT inicializado a 80 almacenando una estructura de datos de 256 bytes

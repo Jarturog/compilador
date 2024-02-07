@@ -1,6 +1,15 @@
 f vacio inicio(){
 	ent a: 16, b:20;
 	inmut ent c1: mcd1(a, b), c2: mcd2(a, b), c3: mcm(a, b);
+	si c1 = 4 {
+		show("El primer algoritmo de mcd entre 16 y 20 resulta en 4");
+	}
+	si c2 = 4 {
+		show("El segundo algoritmo de mcd entre 16 y 20 resulta en 4");
+	}
+	si c3 = 80 {
+		show("El algoritmo de mcm entre 16 y 20 resulta en 80");
+	}
 }
 
 f ent mcd1(ent a0, ent b0) {

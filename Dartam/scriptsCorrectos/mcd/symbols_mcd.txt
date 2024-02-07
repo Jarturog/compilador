@@ -1,0 +1,27 @@
+scan:        Función tipo VOID declarada en el nivel 1 con etiqueta e_scan con parámetros CAR [] input
+show:        Función tipo VOID declarada en el nivel 1 con etiqueta e_show con parámetros CAR [] output
+inicio:      Función tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parámetros
+mcd1:        Función tipo ENT declarada en el nivel 1 con etiqueta e_mcd1 con parámetros ENT a0 siendo su variable de CI a0, ENT b0 siendo su variable de CI b0
+into:        Función tipo VOID declarada en el nivel 1 con etiqueta e_into con parámetros CAR [] file, CAR [] output
+mcm:         Función tipo ENT declarada en el nivel 1 con etiqueta e_mcm con parámetros ENT num1 siendo su variable de CI num1, ENT num2 siendo su variable de CI num2
+mcd2:        Función tipo ENT declarada en el nivel 1 con etiqueta e_mcd2 con parámetros ENT num1 siendo su variable de CI num1_1, ENT num2 siendo su variable de CI num2_1
+from:        Función tipo VOID declarada en el nivel 1 con etiqueta e_from con parámetros CAR [] file, CAR [] input
+a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a ocupando 4 bytes
+b:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI b ocupando 4 bytes
+c1:          Variable constante tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI c1 ocupando 4 bytes
+c2:          Variable constante tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI c2 ocupando 4 bytes
+c3:          Variable constante tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI c3 ocupando 4 bytes
+a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a_1 ocupando 4 bytes
+b:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI b_1 ocupando 4 bytes
+b0:          Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI b0 ocupando 4 bytes
+a0:          Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a0 ocupando 4 bytes
+a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a_2 ocupando 4 bytes
+b:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI b_2 ocupando 4 bytes
+resultado:   Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI resultado ocupando 4 bytes
+num1:        Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI num1 ocupando 4 bytes
+num2:        Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI num2 ocupando 4 bytes
+a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a_3 ocupando 4 bytes
+b:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI b_3 ocupando 4 bytes
+resultado:   Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI resultado_1 ocupando 4 bytes
+num1:        Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI num1_1 ocupando 4 bytes
+num2:        Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI num2_1 ocupando 4 bytes
