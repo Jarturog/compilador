@@ -3,7 +3,7 @@
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
-;               Marta González Juan
+;               Marta Gonzalez Juan
 ; ==============================================================================
 
             ORG         $1000       ; Origen
@@ -177,7 +177,7 @@ cond                                ; Etiqueta inicial (main)
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
             TRAP        #15         ; Interruption generated
             JSR         e_inicio    ; Se ejecuta el main
-            SIMHALT                 ; Fin de la ejecución
+            SIMHALT                 ; Fin de la ejecucion
 
 ; --------- e_inicio: skip          
                                     
@@ -346,11 +346,11 @@ e_parte1:   LEA.L       t, A0       ; A0 = t
 ; --------- t_15 = 3                
             MOVE.L      #3, D0      ; D0 = #3
             MOVE.L      D0, t_15    ; t_15 = D0
-; --------- if 0 >= t_15 goto e_11  
-            MOVE.L      #0, D0      ; D0 = #0
-            MOVE.L      t_15, D1    ; D1 = t_15
-            CMP.L       D0, D1      ; UPDATE FLAGS WITH D1 - D0
-            BGE         .e_11       ; IF (N XOR V) FLAGS = 0 GOTO .e_11
+; --------- if t_15 > 0 goto e_11   
+            MOVE.L      t_15, D0    ; D0 = t_15
+            MOVE.L      #0, D1      ; D1 = #0
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
+            BGT         .e_11       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_11
 ; --------- t_16 = 1                
             MOVE.L      #1, D0      ; D0 = #1
             MOVE.L      D0, t_16    ; t_16 = D0
@@ -612,11 +612,11 @@ e_parte2:   LEA.L       t_23, A0    ; A0 = t_23
 ; --------- t_38 = 3                
             MOVE.L      #3, D0      ; D0 = #3
             MOVE.L      D0, t_38    ; t_38 = D0
-; --------- if 0 >= t_38 goto e_29  
-            MOVE.L      #0, D0      ; D0 = #0
-            MOVE.L      t_38, D1    ; D1 = t_38
-            CMP.L       D0, D1      ; UPDATE FLAGS WITH D1 - D0
-            BGE         .e_29       ; IF (N XOR V) FLAGS = 0 GOTO .e_29
+; --------- if t_38 > 0 goto e_29   
+            MOVE.L      t_38, D0    ; D0 = t_38
+            MOVE.L      #0, D1      ; D1 = #0
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
+            BGT         .e_29       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_29
 ; --------- t_39 = 1                
             MOVE.L      #1, D0      ; D0 = #1
             MOVE.L      D0, t_39    ; t_39 = D0

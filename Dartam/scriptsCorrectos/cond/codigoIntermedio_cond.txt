@@ -62,7 +62,7 @@ param_s a
 call e_switch
 t_14 = 2
 t_15 = 3
-if 0 >= t_15 goto e_11
+if t_15 > 0 goto e_11
 t_16 = 1
 goto e_13
 e_11: skip
@@ -154,7 +154,7 @@ param_s a_1
 call e_switchconbreak
 t_37 = 2
 t_38 = 3
-if 0 >= t_38 goto e_29
+if t_38 > 0 goto e_29
 t_39 = 1
 goto e_31
 e_29: skip

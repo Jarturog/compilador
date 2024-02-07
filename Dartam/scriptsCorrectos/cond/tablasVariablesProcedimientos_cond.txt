@@ -1,15 +1,15 @@
 Tabla de procedimientos
-from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
-switchConBreak: identificado por e_switchconbreak, devuelve 0 bytes de retorno y sus parámetros son ENT v siendo su variable de CI v_1
-ifs: identificado por e_ifs, devuelve 0 bytes de retorno y sus parámetros son ENT v siendo su variable de CI v_2
-parte1: identificado por e_parte1, devuelve 0 bytes de retorno y no recibe parámetros
-parte3: identificado por e_parte3, devuelve 0 bytes de retorno y no recibe parámetros
-parte2: identificado por e_parte2, devuelve 0 bytes de retorno y no recibe parámetros
-switch: identificado por e_switch, devuelve 0 bytes de retorno y sus parámetros son ENT v siendo su variable de CI v
-show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
-inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
-scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
-into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] input
+switchConBreak: identificado por e_switchconbreak, devuelve 0 bytes de retorno y sus parametros son ENT v siendo su variable de CI v_1
+ifs: identificado por e_ifs, devuelve 0 bytes de retorno y sus parametros son ENT v siendo su variable de CI v_2
+parte1: identificado por e_parte1, devuelve 0 bytes de retorno y no recibe parametros
+parte3: identificado por e_parte3, devuelve 0 bytes de retorno y no recibe parametros
+parte2: identificado por e_parte2, devuelve 0 bytes de retorno y no recibe parametros
+switch: identificado por e_switch, devuelve 0 bytes de retorno y sus parametros son ENT v siendo su variable de CI v
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parametros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parametros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parametros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] output
 
 Tabla de variables
 t_49: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes

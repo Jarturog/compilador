@@ -1,14 +1,14 @@
-scan:        Función tipo VOID declarada en el nivel 1 con etiqueta e_scan con parámetros CAR [] input
-show:        Función tipo VOID declarada en el nivel 1 con etiqueta e_show con parámetros CAR [] output
-inicio:      Función tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parámetros
-parte3:      Función tipo VOID declarada en el nivel 1 con etiqueta e_parte3 sin parámetros
-parte2:      Función tipo VOID declarada en el nivel 1 con etiqueta e_parte2 sin parámetros
-switch:      Función tipo VOID declarada en el nivel 1 con etiqueta e_switch con parámetros ENT v siendo su variable de CI v
-into:        Función tipo VOID declarada en el nivel 1 con etiqueta e_into con parámetros CAR [] file, CAR [] output
-parte1:      Función tipo VOID declarada en el nivel 1 con etiqueta e_parte1 sin parámetros
-ifs:         Función tipo VOID declarada en el nivel 1 con etiqueta e_ifs con parámetros ENT v siendo su variable de CI v_2
-from:        Función tipo VOID declarada en el nivel 1 con etiqueta e_from con parámetros CAR [] file, CAR [] input
-switchConBreak: Función tipo VOID declarada en el nivel 1 con etiqueta e_switchconbreak con parámetros ENT v siendo su variable de CI v_1
+scan:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_scan con parametros CAR [] input
+show:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_show con parametros CAR [] output
+inicio:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parametros
+parte3:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_parte3 sin parametros
+parte2:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_parte2 sin parametros
+switch:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_switch con parametros ENT v siendo su variable de CI v
+into:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_into con parametros CAR [] file, CAR [] output
+parte1:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_parte1 sin parametros
+ifs:         Funcion tipo VOID declarada en el nivel 1 con etiqueta e_ifs con parametros ENT v siendo su variable de CI v_2
+from:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_from con parametros CAR [] file, CAR [] input
+switchConBreak: Funcion tipo VOID declarada en el nivel 1 con etiqueta e_switchconbreak con parametros ENT v siendo su variable de CI v_1
 a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a ocupando 4 bytes
 b:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI b ocupando 4 bytes
 a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a_1 ocupando 4 bytes
