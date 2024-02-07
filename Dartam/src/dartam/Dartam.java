@@ -20,23 +20,11 @@ import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-//import optimizaciones.Optimizador;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java_cup.Lexer;
-import java_cup.runtime.ScannerBuffer;
 import java_cup.runtime.Symbol;
-import java_cup.runtime.XMLElement;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import optimizaciones.Optimizador;
 
 public class Dartam {
@@ -47,6 +35,7 @@ public class Dartam {
     private final String nombreFichero;
 
     public static void main(String[] args) {
+
         String nombreArchivo;
         if (args.length > 0) {
             nombreArchivo = args[0]; // por si es ejecutado mediante la terminal
@@ -67,9 +56,7 @@ public class Dartam {
                 System.err.println("Fichero " + nombreArchivo + " no encontrado en " + RUTA + " ni en " + RUTA_ERRORES);
                 return;
             }
-            e.printStackTrace();
-            System.err.println("Error inesperado de compilacion: " + e.getMessage());
-            //System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
+            System.err.println("Error inesperado de compilacion, error detallado en " + LOG);
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             e.printStackTrace(pw);
@@ -80,7 +67,7 @@ public class Dartam {
                 fileOut.close();
             } catch (IOException ex) {
                 System.err.println("No se ha podido guardar el error en el " + LOG + "\nContacta con los desarrolladores: ");
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -89,7 +76,7 @@ public class Dartam {
         Reader ficheroIn;
         try {
             ficheroIn = new FileReader(RUTA + nombreArchivo);
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             ficheroIn = new FileReader(RUTA_ERRORES + nombreArchivo);
         }
         nombreFichero = nombreArchivo.replace(EXTENSION, "");
@@ -128,11 +115,11 @@ public class Dartam {
         escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
         escribir("tablasVariablesProcedimientos_" + nombreFichero + ".txt", generadorCodigoIntermedio.tablas());
         // Generacion de codigo ensamblador
-        
+
         GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
         escribir(nombreFichero + "SinOptimizaciones.X68", codigoEnsamblador.toString());
         // Optimzaciones
-        
+
         Optimizador op = new Optimizador(generadorParaOptimizar);
         escribir("codigoOptimizado_" + nombreFichero + ".txt", op.toString());
         // Generacion de codigo ensamblador
@@ -185,7 +172,7 @@ public class Dartam {
         }
         System.out.println("Ficheros correctos en la ruta " + dir1.getAbsolutePath()
                 + ": \n" + strArchvios1.substring(0, strArchvios1.length() - 2) + "\n");
-        
+
         String strArchvios2 = "";
         for (File archivo : archivos2) {
             if (archivo.isFile() && archivo.toString().endsWith(EXTENSION)) {

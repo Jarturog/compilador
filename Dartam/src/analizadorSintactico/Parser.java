@@ -842,15 +842,15 @@ public class Parser extends java_cup.runtime.lr_parser {
             return;
         }
         boolean englishChar = false, englishInt = false;
-        if (anterior.size() > 2 && anterior.get(2) != null) {
+        if (anterior.size() > 2 && anterior.get(2) != null && anterior.get(2).sym != this.error_sym()) {
             englishChar = anterior.get(2).value.toString().equals("char");
             englishInt = anterior.get(2).value.toString().equals("int");
         } 
-        if (!englishChar && !englishInt && anterior.size() > 1 && anterior.get(1) != null) {
+        if (!englishChar && !englishInt && anterior.size() > 1 && anterior.get(1) != null && anterior.get(1).sym != this.error_sym()) {
             englishChar = anterior.get(1).value.toString().equals("char");
             englishInt = anterior.get(1).value.toString().equals("int");
         } 
-        if (!englishChar && !englishInt && anterior.size() > 0 && anterior.get(0) != null) {
+        if (!englishChar && !englishInt && anterior.size() > 0 && anterior.get(0) != null && anterior.get(0).sym != this.error_sym()) {
             englishChar = anterior.get(0).value.toString().equals("char");
             englishInt = anterior.get(0).value.toString().equals("int");
         }
