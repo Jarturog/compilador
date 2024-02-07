@@ -1,5 +1,6 @@
-java.lang.Exception: Instrucción t_17 = t_15 concat t_16 no se puede pasar a código ensamblador
-	at genCodigoEnsamblador.GeneradorEnsamblador.procesarInstruccion(GeneradorEnsamblador.java:447)
+java.lang.Exception: Error, no se ha implementao el scan para tratar con 1 parámetros, sino con 2
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarMetodoEspecial(GeneradorEnsamblador.java:476)
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarInstruccion(GeneradorEnsamblador.java:423)
 	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:108)
 	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:60)
 	at dartam.Dartam.<init>(Dartam.java:124)

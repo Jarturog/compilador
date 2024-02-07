@@ -21,7 +21,7 @@ public class TablaSimbolos {
     private HashMap<String, DescripcionSimbolo> td; //Nuestra tabla de simbolos
     private ArrayList<Integer> ta; //Tabla de ambitos
     private HashMap<Integer, Entrada> te; //Table de expansion
-    private ArrayList<Pair<String, DescripcionSimbolo>> historialSimbolos;
+    private ArrayList<Pair<String, DescripcionSimbolo>> historialSimbolos; // para dejarlo en un fichero
 
     public TablaSimbolos() {
         vaciar();
@@ -165,7 +165,7 @@ public class TablaSimbolos {
 
     //Consulatamos una variable ya incorporada
     public DescripcionSimbolo consulta(String id) {
-        return td.get(id);
+        return td.get(id); 
     }
 
     /**
@@ -181,7 +181,7 @@ public class TablaSimbolos {
         if (ds.isDefinicionTupla() || ds.isFunction()) {
             return "El identificador '" + id + "' ha intentado hacer override de una función o de una tupla";
         }
-        if (ds.getNivel() != n) {
+        if (ds.getNivel() < n) { // !=
             return "";
         }
         return "El identificador '" + id + "' ya ha sido declarado con anterioridad";

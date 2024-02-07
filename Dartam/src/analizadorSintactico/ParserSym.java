@@ -18,6 +18,7 @@ public class ParserSym {
   public static final int AS_MULA = 12;
   public static final int OP_MUL = 6;
   public static final int OP_MOD = 8;
+  public static final int SCAN = 59;
   public static final int RKEY = 40;
   public static final int KW_CASE = 57;
   public static final int COMMA = 44;
@@ -58,7 +59,6 @@ public class ParserSym {
   public static final int AS_ASSIGN = 9;
   public static final int error = 1;
   public static final int KW_CHAR = 35;
-  public static final int ENTER = 59;
   public static final int OP_COND = 30;
   public static final int OP_MEMBER = 32;
   public static final int ID = 68;
@@ -141,7 +141,7 @@ public class ParserSym {
   "KW_RETURN",
   "KW_CASE",
   "KW_DEFAULT",
-  "ENTER",
+  "SCAN",
   "SHOW",
   "FROM",
   "INTO",

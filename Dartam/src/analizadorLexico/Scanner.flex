@@ -134,7 +134,7 @@ kw_break     = "parar"
 kw_return    = "pop" 
 kw_true      = "cierto"
 kw_false     = "falso"
-kw_in        = "enter"
+kw_in        = "scan"
 kw_out       = "show"
 kw_read      = "from"
 kw_write     = "into"
@@ -303,7 +303,7 @@ private Symbol procesarNumero() {
 {kw_case}               { tokens += "KW_CASE: "   +yytext()+"\n"; return symbol(ParserSym.KW_CASE, yytext()); }
 {kw_default}            { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT, yytext()); }
 {kw_return}             { tokens += "KW_RETURN: " +yytext()+"\n"; return symbol(ParserSym.KW_RETURN, yytext()); }
-{kw_in}                 { tokens += "ENTER: "     +yytext()+"\n"; return symbol(ParserSym.ENTER, yytext()); }
+{kw_in}                 { tokens += "SCAN: "     +yytext()+"\n"; return symbol(ParserSym.SCAN, yytext()); }
 {kw_out}                { tokens += "SHOW: "      +yytext()+"\n"; return symbol(ParserSym.SHOW, yytext()); }
 {kw_read}               { tokens += "FROM: "      +yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
 {kw_write}              { tokens += "INTO: "      +yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }

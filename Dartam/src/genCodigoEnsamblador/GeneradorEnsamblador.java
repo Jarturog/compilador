@@ -216,6 +216,9 @@ public class GeneradorEnsamblador {
         if (op.isEstructura() || op.isArray() || op.isString()) {//op.isPuntero()) {//(!op.isLiteral()) {
             register = "A" + AnActual++;
             operacion = "LEA.L";
+        } else if (op.isPuntero()){
+            register = "A" + AnActual++;
+            operacion = "MOVEA" + ext;
         } else {
             register = "D" + DnActual++;
             operacion = "MOVE" + ext;
@@ -256,7 +259,7 @@ public class GeneradorEnsamblador {
         switch (instr.getTipo()) {
             case COPY -> { // op1 -> dst
                 String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                if(instr.op1() != null && instr.op1().getCasting() != null && instr.op1().getCasting().equals(TipoVariable.STRING)) {
+                if (instr.op1() != null && instr.op1().getCasting() != null && instr.op1().getCasting().equals(TipoVariable.STRING)) {
                     add("ROR.L", "#8, " + register, "move to the left so it is followed by 0's, since it is a casting from char to string");
                 }
                 store(register, instr.dst().toAssembly(), instr.dst().tipo());
@@ -373,15 +376,15 @@ public class GeneradorEnsamblador {
             case IND_ASS -> { // dst[op2] = op1
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                String dst = "A" + AnActual++;
-                add("MOVEA.L", instr.dst().toAssembly() + ", " + dst, dst + " = " + instr.dst().toAssembly());
+                String dst = load(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
                 add("ADDA.L ", r2 + ", " + dst, dst + " = " + dst + " + " + r2);
                 add("MOVE.L ", r1 + ", (" + dst + ")", "(" + dst + ") = " + r1);
             }
             case IND_VAL -> { // dst = op1[op2]
-                add(getEtiqueta(), "LEA.L", instr.op1().toAssembly() + ", A0", "A0 = " + instr.op1().toAssembly());
-                add("ADDA.L ", instr.op2().toAssembly() + ", A0", "A0 = A0 + " + instr.op2().toAssembly());
-                add("MOVE.L ", "(A0), " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = (A0)");
+                String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("ADDA.L ", r2 + ", " + r1, r1 + " = " + r1 + " + " + r2);
+                add("MOVE.L ", "(" + r1 + "), " + instr.dst().toAssembly(), instr.dst().toAssembly() + " = (" + r1 + ")");
             }
             case PARAM_S -> { // param_s dst
                 String r = load(instr.dst(), instr.dst().toAssembly(), instr.dst().tipo());
@@ -469,18 +472,16 @@ public class GeneradorEnsamblador {
                 subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
             case SCAN -> { // scan(dst)
-                if (f.getParametros().size() != 2) {
-                    throw new Exception("Error, no se ha implementao el scan para tratar con " + f.getParametros().size() + " parámetros, sino con 2");
+                if (f.getParametros().size() != 1) {
+                    throw new Exception("Error, no se ha implementao el scan para tratar con " + f.getParametros().size() + " parámetros, sino con 1");
                 }
                 if (scanUsado) {
                     return;
                 }
                 scanUsado = true;
-                String etFin = crearEtiqueta("." + idMetodo), mnsjError = crearEtiqueta("errorTeclado");
-                subprogramas.add(margen(idMetodo, "CLR.L", "D1", "Empty D1 for later use"));
-                subprogramas.add(margen("", "MOVE.L", "#5, D0", "Task 5 of TRAP 15: Read single ASCII character from the keyboard into D1.B"));
+                subprogramas.add(margen(idMetodo, "MOVEA.L", 4 + "(SP), A1", "A1 = POP FROM STACK"));
+                subprogramas.add(margen("", "MOVE.L", "#2, D0", "Read string from keyboard and store at (A1), NULL (0) terminated, length returned in D1.W (max 80)"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
-                subprogramas.add(margen("", "MOVE.L", "D1, " + idMetodo, "D1 = character typed on the keyboard"));
                 subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
             case READ -> { // read(dst)

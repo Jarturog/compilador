@@ -137,7 +137,7 @@ terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
 terminal    KW_BOOL, KW_INT, /*KW_DOUBLE,*/ KW_CHAR, VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
 terminal    KW_MAIN, KW_METHOD, TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
-terminal    ENTER, SHOW, FROM, INTO;
+terminal    SCAN, SHOW, FROM, INTO;
 terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP, CASTING;
 
 terminal    String              ID, STRING;
@@ -302,7 +302,7 @@ FCALL ::= METODO_NOMBRE:et1 LPAREN OPERANDS_LISTA:et2 RPAREN   {: RESULT = new S
         ;
 
 METODO_NOMBRE ::= ID:et                 {: RESULT = new SymbolMetodoNombre(null, et, etxleft, etxright); :}
-        | ENTER:et                      {: RESULT = new SymbolMetodoNombre(ParserSym.ENTER, et, etxleft, etxright); :}
+        | SCAN:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.SCAN, et, etxleft, etxright); :}
         | SHOW:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.SHOW, et, etxleft, etxright); :}
         | INTO:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.INTO, et, etxleft, etxright); :}
         | FROM:et                       {: RESULT = new SymbolMetodoNombre(ParserSym.FROM, et, etxleft, etxright); :}

@@ -53,7 +53,7 @@ public class PData {
     public static TipoMetodoEspecial getEspecial(String id) throws Exception {
         if (id.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.SHOW])) {
             return TipoMetodoEspecial.PRINT;
-        } else if (id.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.ENTER])) {
+        } else if (id.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.SCAN])) {
             return TipoMetodoEspecial.SCAN;
         } else if (id.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.FROM])) {
             return TipoMetodoEspecial.READ;
