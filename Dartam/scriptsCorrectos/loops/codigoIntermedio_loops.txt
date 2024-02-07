@@ -1,0 +1,133 @@
+t = 0
+global = t
+t_1 = 10
+max_global = t_1
+e_inicio: skip
+pmb e_inicio
+call e_dowhile
+t_2 = global
+t_3 = t_2
+param_s t_3
+call e_show
+call e_while
+t_4 = global
+t_5 = t_4
+param_s t_5
+call e_show
+call e_dofor
+t_6 = global
+t_7 = t_6
+param_s t_7
+call e_show
+call e_for
+t_8 = global
+t_9 = t_8
+param_s t_9
+call e_show
+rtn e_inicio
+
+
+e_dowhile: skip
+pmb e_dowhile
+e: skip
+t_10 = 1
+t_11 = global + t_10
+global = t_11
+t_12 = 1
+t_13 = global + t_12
+global = t_13
+goto e_2
+e_2: skip
+if global < max_global goto e_3
+t_14 = 0
+goto e_4
+e_3: skip
+t_14 = -1
+e_4: skip
+if t_14 == 0 goto e_1
+goto e
+e_1: skip
+rtn e_dowhile
+
+e_while: skip
+pmb e_while
+e_5: skip
+t_15 = 2
+t_16 = max_global * t_15
+if global < t_16 goto e_8
+t_17 = 0
+goto e_9
+e_8: skip
+t_17 = -1
+e_9: skip
+if t_17 == 0 goto e_6
+t_18 = 1
+t_19 = global + t_18
+global = t_19
+t_20 = 1
+t_21 = global + t_20
+global = t_21
+goto e_7
+e_7: skip
+goto e_5
+e_6: skip
+rtn e_while
+
+e_dofor: skip
+pmb e_dofor
+t_22 = 0
+global_1 = t_22
+e_10: skip
+t_23 = 1
+t_24 = global_1 + t_23
+global_1 = t_24
+t_25 = 1
+t_26 = global_1 + t_25
+global_1 = t_26
+goto e_12
+e_12: skip
+t_27 = 1
+t_28 = global_1 + t_27
+global_1 = t_28
+t_29 = 3
+t_30 = max_global * t_29
+if global_1 < t_30 goto e_13
+t_31 = 0
+goto e_14
+e_13: skip
+t_31 = -1
+e_14: skip
+if t_31 == 0 goto e_11
+goto e_10
+e_11: skip
+rtn e_dofor
+
+e_for: skip
+pmb e_for
+t_32 = 0
+global_2 = t_32
+e_15: skip
+t_33 = 4
+t_34 = max_global * t_33
+if global_2 < t_34 goto e_18
+t_35 = 0
+goto e_19
+e_18: skip
+t_35 = -1
+e_19: skip
+if t_35 == 0 goto e_16
+t_36 = 1
+t_37 = global_2 + t_36
+global_2 = t_37
+t_38 = 1
+t_39 = global_2 + t_38
+global_2 = t_39
+goto e_17
+e_17: skip
+t_40 = 1
+t_41 = global_2 + t_40
+global_2 = t_41
+goto e_15
+e_16: skip
+rtn e_for
+

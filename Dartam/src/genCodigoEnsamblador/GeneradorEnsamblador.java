@@ -80,16 +80,20 @@ public class GeneradorEnsamblador {
                 }
             }
         }
-
-        add("JSR", main.getEtiqueta(), "Se ejecuta el main");
-        add("SIMHALT", "", "Fin de la ejecución");
-        add("");
+        
         for (int i = 0; i < instrucciones.size(); i++) {
             instr = instrucciones.get(i);
             VarInfo data = instr.dst() == null ? null : variables.get(instr.dst().toString());
             if (instr.dst() != null && data != null && data.estaInicializadaEnCodigoIntermedio() && !data.estaInicializadaEnCodigoEnsamblador()) {
                 data.inicializar();
                 declararVariable(instr.dst().toString(), data, instr.op1().getValor());
+            } else if (instr.isTipo(Instruccion.TipoInstr.SKIP)) {
+                ProcInfo p = procedureTable.get(instr.dst().toAssembly());
+                if (p!= null && p.equals(main)){
+                    add("JSR", main.getEtiqueta(), "Se ejecuta el main");
+                    add("SIMHALT", "", "Fin de la ejecución");
+                    add("");
+                }
             }
             String instrCodigoIntermedio = instr.toString();
             if (instrCodigoIntermedio.isEmpty()) {
@@ -228,8 +232,12 @@ public class GeneradorEnsamblador {
             add(getEtiqueta(), "CLR.L ", register, "CLEAR " + register);
         }
         add(getEtiqueta(), operacion, sOp + ", " + register, register + " = " + sOp);
-        if (instr.op1() != null && instr.op1().getCasting() != null && instr.op1().getCasting().equals(TipoVariable.STRING)) {
-            add("ROR.L", "#8, " + register, "move to the left so it is followed by 0's, since it is a casting from char to string");
+        if (instr.op1() != null && instr.op1().getCasting() != null){
+            if (instr.op1().getCasting().equals(TipoVariable.STRING)) {
+                add("ROR.L", "#8, " + register, "move to the left so it is followed by 0's, since it is a casting from char to string");
+            }else if (instr.op1().getCasting().equals(TipoVariable.INT)) { // int to char
+                //add("ADD.L", "#61, " + register, "0 char starts at 48 in ascii");
+            }
         }
         return register;
     }
