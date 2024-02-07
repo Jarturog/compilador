@@ -1,12 +1,12 @@
 persona:     Tuplacon miembros constante  CAR inicial ENT hambre declarada en el nivel 1 siendo su variable de CI persona ocupando 12 bytes
-scan:        Función tipo VOID declarada en el nivel 1 con etiqueta e_scan con parámetros CAR [] input
-show:        Función tipo VOID declarada en el nivel 1 con etiqueta e_show con parámetros CAR [] output
-inicio:      Función tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parámetros
+scan:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_scan con parametros CAR [] input
+show:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_show con parametros CAR [] output
+inicio:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parametros
 TURNOS:      Variable constante tipo ENT con valor asignado declarado en el nivel 1 siendo su variable de CI turnos ocupando 4 bytes
-into:        Función tipo VOID declarada en el nivel 1 con etiqueta e_into con parámetros CAR [] file, CAR [] output
-imprimirTexto: Función tipo VOID declarada en el nivel 1 con etiqueta e_imprimirtexto con parámetros CAR [] s1 siendo su variable de CI s1, CAR [] s2 siendo su variable de CI s2, CAR [] s3 siendo su variable de CI s3
-from:        Función tipo VOID declarada en el nivel 1 con etiqueta e_from con parámetros CAR [] file, CAR [] input
-nuevaPersona: Función tipo VOID declarada en el nivel 1 con etiqueta e_nuevapersona con parámetros TUPLE persona p siendo su variable de CI p, ENT maxHambre siendo su variable de CI maxhambre, CAR inicial siendo su variable de CI inicial
+into:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_into con parametros CAR [] file, CAR [] output
+imprimirTexto: Funcion tipo VOID declarada en el nivel 1 con etiqueta e_imprimirtexto con parametros CAR [] s1 siendo su variable de CI s1, CAR [] s2 siendo su variable de CI s2, CAR [] s3 siendo su variable de CI s3
+from:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_from con parametros CAR [] file, CAR [] input
+nuevaPersona: Funcion tipo VOID declarada en el nivel 1 con etiqueta e_nuevapersona con parametros TUPLE persona p siendo su variable de CI p, ENT maxHambre siendo su variable de CI maxhambre, CAR inicial siendo su variable de CI inicial
 i:           Variable tipo ENT con valor asignado declarado en el nivel 3 siendo su variable de CI i ocupando 4 bytes
 p1:          Variable tipo TUPLE persona con valor asignado declarado en el nivel 2 siendo su variable de CI p1 ocupando 12 bytes
 p2:          Variable tipo TUPLE persona con valor asignado declarado en el nivel 2 siendo su variable de CI p2 ocupando 12 bytes

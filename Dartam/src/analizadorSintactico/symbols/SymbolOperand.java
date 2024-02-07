@@ -24,13 +24,13 @@ OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxlef
 public class SymbolOperand extends SymbolBase {
     public final SymbolAtomicExpression atomicExp;
     public final SymbolFCall fcall;
-    public final SymbolOperand op, idxArr;
+    public final SymbolOperand op;
+    public final SymbolDimensiones dim;
     public final SymbolUnaryExpression unaryExp;
     public final SymbolBinaryExpression binaryExp;
     public final SymbolConditionalExpression conditionalExp;
     public final String member;
     public final SymbolTipoCasting casting;
-    private final String lBracket, rBracket;
 
     // atomic expression
     public SymbolOperand(SymbolAtomicExpression et, Location l, Location r) {
@@ -38,13 +38,11 @@ public class SymbolOperand extends SymbolBase {
         this.atomicExp = et;
         this.fcall = null;
         this.op = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
     
@@ -54,13 +52,11 @@ public class SymbolOperand extends SymbolBase {
         this.fcall = et;
         this.atomicExp = null;
         this.op = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
     
@@ -70,13 +66,11 @@ public class SymbolOperand extends SymbolBase {
         this.op = et;
         this.atomicExp = null;
         this.fcall = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
     
@@ -87,12 +81,10 @@ public class SymbolOperand extends SymbolBase {
         this.atomicExp = null;
         this.fcall = null;
         this.op = null;
-        this.idxArr = null;
+        this.dim = null;
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
 
@@ -103,12 +95,10 @@ public class SymbolOperand extends SymbolBase {
         this.atomicExp = null;
         this.fcall = null;
         this.op = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
     
@@ -119,28 +109,24 @@ public class SymbolOperand extends SymbolBase {
         this.atomicExp = null;
         this.fcall = null;
         this.op = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.member = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
 
     // array operation
-    public SymbolOperand(SymbolOperand arr, Object lb, SymbolOperand idx, Object lr, Location l, Location r) {
+    public SymbolOperand(SymbolOperand arr, SymbolDimensiones dim, Location l, Location r) {
         super("operand",l ,r );
         this.op = arr;
-        this.idxArr = idx;
+        this.dim = dim;
         this.atomicExp = null;
         this.fcall = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
         this.member = null;
-        this.lBracket = (String)lb;
-        this.rBracket = (String)lr;
         value = arrayToString();
         this.casting = null;
     }
@@ -152,13 +138,11 @@ public class SymbolOperand extends SymbolBase {
         this.member = member;
         this.atomicExp = null;
         this.fcall = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
         value = tuplaToString();
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = null;
     }
 
@@ -168,12 +152,10 @@ public class SymbolOperand extends SymbolBase {
         this.member = null;
         this.atomicExp = null;
         this.fcall = null;
-        this.idxArr = null;
+        this.dim = null;
         this.unaryExp = null;
         this.binaryExp = null;
         this.conditionalExp = null;
-        this.lBracket = null;
-        this.rBracket = null;
         this.casting = t != null ? t : new SymbolStringCasting(ParserSym.terminalNames[ParserSym.CAR] + " []");
     }
     
@@ -196,7 +178,7 @@ public class SymbolOperand extends SymbolBase {
             return TIPO.FCALL;
         } else if (casting != null) {
             return TIPO.CASTING;
-        } else if (idxArr != null) {
+        } else if (dim != null) {
             return TIPO.IDX_ARRAY;
         } else if (unaryExp != null) {
             return TIPO.UNARY_EXPRESSION;
@@ -217,7 +199,7 @@ public class SymbolOperand extends SymbolBase {
     }
     
     private String arrayToString(){
-        return op.value+lBracket+idxArr.value+rBracket;
+        return op.value+"["+dim.value+"]";
     }
     
     private String tuplaToString(){

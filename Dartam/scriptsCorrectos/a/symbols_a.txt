@@ -3,4 +3,7 @@ scan:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_scan con p
 show:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_show con parametros CAR [] output
 inicio:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parametros
 from:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_from con parametros CAR [] file, CAR [] input
-matrizCars:  Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI matrizcars con dimensiones 4 4
+k:           Variable tipo ENT con valor asignado declarado en el nivel 5 siendo su variable de CI k ocupando 4 bytes
+j:           Variable tipo ENT con valor asignado declarado en el nivel 4 siendo su variable de CI j ocupando 4 bytes
+i:           Variable tipo ENT con valor asignado declarado en el nivel 3 siendo su variable de CI i ocupando 4 bytes
+matrizCars:  Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI matrizcars con dimensiones 3 4 5

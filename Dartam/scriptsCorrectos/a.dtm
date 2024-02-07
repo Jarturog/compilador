@@ -1,4 +1,17 @@
 f vacio inicio() {
-	car [4][4] matrizCars;
-	matrizCars[2][3]: 'A'+(car)2;
+	car [3][4][5] matrizCars; // 3 * 4 * 5
+	matrizCars[2][3][4]: 'A'; // 24 + 4 + 4 // 20 + 3 + 2
+	loop ent i: 0; i < 3; i++ {
+		loop ent j: 0; j < 4; j++ {
+			loop ent k: 0; k < 5; k++ {
+				matrizCars[i][j][k]: 'A'+(car)(((i * 4 * 5) + (j * 5) + k) \ 26);
+				show((car[])(matrizCars[i][j][k]));
+			}
+		}
+	}
+	// car [3][4];
+	//matrizCars[2] pasadas de 3
+	//matrizCars[2][3] pasadas de 12: 'A';
 }
+
+//3* 20 = x[3][0]

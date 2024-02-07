@@ -1,19 +1,94 @@
 e_inicio: skip
 pmb e_inicio
-t = 4
+t = 3
 d_matrizcars = t
 t_1 = 4
 d_matrizcars_1 = t_1
-t_2 = A
-t_3 = 2
-t_4 = t_3
-t_5 = t_2 + t_4
-t_6 = 2
-t_7 = 3
-t_8 = t_7 * d_matrizcars_1
-t_9 = t_7 + t_8
-t_10 = t_9 * 4
-matrizcars[t_10] = t_5
+t_2 = 5
+d_matrizcars_2 = t_2
+t_3 = A
+t_4 = 2
+t_5 = 3
+t_6 = 4
+t_7 = t_4 * d_matrizcars
+t_8 = t_5 + t_7
+t_9 = t_8 * d_matrizcars_1
+t_10 = t_6 + t_9
+t_11 = t_10 * 4
+matrizcars[t_11] = t_3
+t_12 = 0
+i = t_12
+e: skip
+t_13 = 3
+if i < t_13 goto e_3
+t_14 = 0
+goto e_4
+e_3: skip
+t_14 = -1
+e_4: skip
+if t_14 == 0 goto e_1
+t_15 = 0
+j = t_15
+e_5: skip
+t_16 = 4
+if j < t_16 goto e_8
+t_17 = 0
+goto e_9
+e_8: skip
+t_17 = -1
+e_9: skip
+if t_17 == 0 goto e_6
+t_18 = 0
+k = t_18
+e_10: skip
+t_19 = 5
+if k < t_19 goto e_13
+t_20 = 0
+goto e_14
+e_13: skip
+t_20 = -1
+e_14: skip
+if t_20 == 0 goto e_11
+t_21 = A
+t_22 = 4
+t_23 = 5
+t_24 = t_22 * t_23
+t_25 = i * t_24
+t_26 = 5
+t_27 = j * t_26
+t_28 = t_27 + k
+t_29 = t_25 + t_28
+t_30 = 26
+t_31 = t_29 mod t_30
+t_32 = t_31
+t_33 = t_21 + t_32
+t_34 = i * d_matrizcars
+t_35 = j + t_34
+t_36 = t_35 * d_matrizcars_1
+t_37 = k + t_36
+t_38 = t_37 * 4
+matrizcars[t_38] = t_33
+t_39 = matrizcars[i]
+t_40 = t_39[j]
+t_41 = t_40[k]
+t_42 = t_41
+param_s t_42
+call e_show
+t_43 = 1
+t_44 = k + t_43
+k = t_44
+goto e_10
+e_11: skip
+t_45 = 1
+t_46 = j + t_45
+j = t_46
+goto e_5
+e_6: skip
+t_47 = 1
+t_48 = i + t_47
+i = t_48
+goto e
+e_1: skip
 rtn e_inicio
 
 

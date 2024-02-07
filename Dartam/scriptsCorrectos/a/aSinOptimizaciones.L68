@@ -1,6 +1,6 @@
-00001076 Starting Address
+000012D6 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 07/02/2024 20:31:30
+Created On: 07/02/2024 21:05:55
 
 00000000                             1  ; ==============================================================================
 00000000                             2  ; TITLE       : a
@@ -12,113 +12,513 @@ Created On: 07/02/2024 20:31:30
 00000000                             8  
 00001000                             9              ORG         $1000       ; Origen
 00001000                            10  
-00001000= 00000004                  11  t           DC.L 4                  ; INT
+00001000= 00000003                  11  t           DC.L 3                  ; INT
 00001004= 00000004                  12  t_1         DC.L 4                  ; INT
-00001008= 41000000                  13  t_2         DC.L 'A'                ; CHAR
-0000100C= 00000002                  14  t_3         DC.L 2                  ; INT
-00001010= 00000002                  15  t_6         DC.L 2                  ; INT
-00001014= 00000003                  16  t_7         DC.L 3                  ; INT
-00001018                            17  t_4         DS.L 1                  ; INT
-0000101C                            18  d_matrizcars DS.L 1                 ; INT
-00001020                            19  t_5         DS.L 1                  ; CHAR
-00001024                            20  t_8         DS.L 1                  ; INT
-00001028                            21  t_9         DS.L 1                  ; INT
-0000102C                            22  d_matrizcars_1 DS.L 1               ; INT
-00001030                            23  matrizcars  DS.B 64                 ; ARRAY
-00001070= 00                        24              DC.B 0                  ; Los strings y chars acaban en 0
-00001072                            25              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001072                            26  t_10        DS.L 1                  ; INT
-00001076                            27  
-00001076                            28  ; --------- INITIALIZATION          
-00001076                            29  a                                   ; Etiqueta inicial (main)
-00001076  4EB9 00001080             30              JSR         e_inicio    ; Se ejecuta el main
-0000107C  FFFF FFFF                 31              SIMHALT                 ; Fin de la ejecucion
-00001080                            32  
-00001080                            33  ; --------- e_inicio: skip          
-00001080                            34                                      
-00001080                            35  ; --------- pmb e_inicio            
-00001080                            36  ; --------- t = 4                   
-00001080  7004                      37  e_inicio:   MOVE.L      #4, D0      ; D0 = #4
-00001082  21C0 1000                 38              MOVE.L      D0, t       ; t = D0
-00001086                            39  ; --------- d_matrizcars = t        
-00001086  2038 1000                 40              MOVE.L      t, D0       ; D0 = t
-0000108A  21C0 101C                 41              MOVE.L      D0, d_matrizcars ; d_matrizcars = D0
-0000108E                            42  ; --------- t_1 = 4                 
-0000108E  7004                      43              MOVE.L      #4, D0      ; D0 = #4
-00001090  21C0 1004                 44              MOVE.L      D0, t_1     ; t_1 = D0
-00001094                            45  ; --------- d_matrizcars_1 = t_1    
-00001094  2038 1004                 46              MOVE.L      t_1, D0     ; D0 = t_1
-00001098  21C0 102C                 47              MOVE.L      D0, d_matrizcars_1 ; d_matrizcars_1 = D0
-0000109C                            48  ; --------- t_2 = A                 
-0000109C  7041                      49              MOVE.L      #'A', D0    ; D0 = #'A'
-0000109E  21C0 1008                 50              MOVE.L      D0, t_2     ; t_2 = D0
-000010A2                            51  ; --------- t_3 = 2                 
-000010A2  7002                      52              MOVE.L      #2, D0      ; D0 = #2
-000010A4  21C0 100C                 53              MOVE.L      D0, t_3     ; t_3 = D0
-000010A8                            54  ; --------- t_4 = t_3               
-000010A8  2038 100C                 55              MOVE.L      t_3, D0     ; D0 = t_3
-000010AC  21C0 1018                 56              MOVE.L      D0, t_4     ; t_4 = D0
-000010B0                            57  ; --------- t_5 = t_2 + t_4         
-000010B0  2038 1008                 58              MOVE.L      t_2, D0     ; D0 = t_2
-000010B4  2238 1018                 59              MOVE.L      t_4, D1     ; D1 = t_4
-000010B8  D280                      60              ADD.L       D0, D1      ; D1 = D1 + D0
-000010BA  21C1 1020                 61              MOVE.L      D1, t_5     ; t_5 = D1
-000010BE                            62  ; --------- t_6 = 2                 
-000010BE  7002                      63              MOVE.L      #2, D0      ; D0 = #2
-000010C0  21C0 1010                 64              MOVE.L      D0, t_6     ; t_6 = D0
-000010C4                            65  ; --------- t_7 = 3                 
-000010C4  7003                      66              MOVE.L      #3, D0      ; D0 = #3
-000010C6  21C0 1014                 67              MOVE.L      D0, t_7     ; t_7 = D0
-000010CA                            68  ; --------- t_8 = t_7 * d_matrizcars_1  
-000010CA                            69  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
-000010CA  2038 1014                 70              MOVE.L      t_7, D0     ; D0 = t_7
-000010CE  2238 102C                 71              MOVE.L      d_matrizcars_1, D1 ; D1 = d_matrizcars_1
-000010D2  3400                      72              MOVE.W      D0, D2      ; D2.L = D1.L
-000010D4  3601                      73              MOVE.W      D1, D3      ; D1.L = D3.L
-000010D6  E080                      74              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
-000010D8  E080                      75              ASR.L       #8, D0      ; D0.L = old D0.H
-000010DA  E081                      76              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
-000010DC  E081                      77              ASR.L       #8, D1      ; D1.L = old D1.H
-000010DE  C1C1                      78              MULS.W      D1, D0      ; D0 = D0 * D1
-000010E0  C7C2                      79              MULS.W      D2, D3      ; D3 = D2 * D3
-000010E2  E180                      80              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
-000010E4  E180                      81              ASL.L       #8, D0      ; D0.H = old D0.L
-000010E6  D083                      82              ADD.L       D3, D0      ; D0 = D0 + D3
-000010E8  21C0 1024                 83              MOVE.L      D0, t_8     ; t_8 = D0
-000010EC                            84  ; --------- t_9 = t_7 + t_8         
-000010EC  2038 1014                 85              MOVE.L      t_7, D0     ; D0 = t_7
-000010F0  2238 1024                 86              MOVE.L      t_8, D1     ; D1 = t_8
-000010F4  D280                      87              ADD.L       D0, D1      ; D1 = D1 + D0
-000010F6  21C1 1028                 88              MOVE.L      D1, t_9     ; t_9 = D1
-000010FA                            89  ; --------- t_10 = t_9 * 4          
-000010FA                            90  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
-000010FA  2038 1028                 91              MOVE.L      t_9, D0     ; D0 = t_9
-000010FE  7204                      92              MOVE.L      #4, D1      ; D1 = #4
-00001100  3400                      93              MOVE.W      D0, D2      ; D2.L = D1.L
-00001102  3601                      94              MOVE.W      D1, D3      ; D1.L = D3.L
-00001104  E080                      95              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
-00001106  E080                      96              ASR.L       #8, D0      ; D0.L = old D0.H
-00001108  E081                      97              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
-0000110A  E081                      98              ASR.L       #8, D1      ; D1.L = old D1.H
-0000110C  C1C1                      99              MULS.W      D1, D0      ; D0 = D0 * D1
-0000110E  C7C2                     100              MULS.W      D2, D3      ; D3 = D2 * D3
-00001110  E180                     101              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
-00001112  E180                     102              ASL.L       #8, D0      ; D0.H = old D0.L
-00001114  D083                     103              ADD.L       D3, D0      ; D0 = D0 + D3
-00001116  21C0 1072                104              MOVE.L      D0, t_10    ; t_10 = D0
-0000111A                           105  ; --------- matrizcars[t_10] = t_5  
-0000111A  2038 1020                106              MOVE.L      t_5, D0     ; D0 = t_5
-0000111E  2238 1072                107              MOVE.L      t_10, D1    ; D1 = t_10
-00001122  41F8 1030                108              LEA.L       matrizcars, A0 ; A0 = matrizcars
-00001126  D1C1                     109              ADDA.L      D1, A0      ; A0 = A0 + D1
-00001128  2080                     110              MOVE.L      D0, (A0)    ; (A0) = D0
-0000112A                           111  ; --------- rtn e_inicio            
-0000112A  4E75                     112              RTS                     ; RETURN TO SUBROUTINE e_inicio
-0000112C                           113  
-0000112C                           114  
-0000112C                           115  
-0000112C                           116  
-0000112C                           117              END a                   ; Fin del programa
+00001008= 00000005                  13  t_2         DC.L 5                  ; INT
+0000100C= 41000000                  14  t_3         DC.L 'A'                ; CHAR
+00001010= 00000002                  15  t_4         DC.L 2                  ; INT
+00001014= 00000003                  16  t_5         DC.L 3                  ; INT
+00001018= 00000004                  17  t_6         DC.L 4                  ; INT
+0000101C= 00000000                  18  t_12        DC.L 0                  ; INT
+00001020= 00000003                  19  t_13        DC.L 3                  ; INT
+00001024= 00000000                  20  t_14        DC.L 0                  ; BOOLEAN
+00001028= 00000000                  21  t_15        DC.L 0                  ; INT
+0000102C= 00000004                  22  t_16        DC.L 4                  ; INT
+00001030= 00000000                  23  t_17        DC.L 0                  ; BOOLEAN
+00001034= 00000000                  24  t_18        DC.L 0                  ; INT
+00001038= 00000005                  25  t_19        DC.L 5                  ; INT
+0000103C= 00000000                  26  t_20        DC.L 0                  ; BOOLEAN
+00001040= 41000000                  27  t_21        DC.L 'A'                ; CHAR
+00001044= 00000004                  28  t_22        DC.L 4                  ; INT
+00001048= 00000005                  29  t_23        DC.L 5                  ; INT
+0000104C= 00000005                  30  t_26        DC.L 5                  ; INT
+00001050= 0000001A                  31  t_30        DC.L 26                 ; INT
+00001054= 00000001                  32  t_43        DC.L 1                  ; INT
+00001058= 00000001                  33  t_45        DC.L 1                  ; INT
+0000105C= 00000001                  34  t_47        DC.L 1                  ; INT
+00001060                            35  d_matrizcars DS.L 1                 ; INT
+00001064                            36  t_40        DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001068                            37  t_48        DS.L 1                  ; INT
+0000106C                            38  t_46        DS.L 1                  ; INT
+00001070                            39  t_44        DS.L 1                  ; INT
+00001074                            40  t_41        DS.L 1                  ; CHAR
+00001078                            41  t_42        DS.B 256                ; STRING
+00001178= 00                        42              DC.B 0                  ; Los strings y chars acaban en 0
+0000117A                            43              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000117A                            44  t_38        DS.L 1                  ; INT
+0000117E                            45  t_39        DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001182                            46  t_8         DS.L 1                  ; INT
+00001186                            47  t_7         DS.L 1                  ; INT
+0000118A                            48  t_9         DS.L 1                  ; INT
+0000118E                            49  matrizcars  DS.B 240                ; ARRAY
+0000127E= 00                        50              DC.B 0                  ; Los strings y chars acaban en 0
+00001280                            51              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001280                            52  t_36        DS.L 1                  ; INT
+00001284                            53  t_37        DS.L 1                  ; INT
+00001288                            54  t_34        DS.L 1                  ; INT
+0000128C                            55  t_35        DS.L 1                  ; INT
+00001290                            56  t_32        DS.L 1                  ; INT
+00001294                            57  t_33        DS.L 1                  ; CHAR
+00001298                            58  t_31        DS.L 1                  ; INT
+0000129C                            59  t_29        DS.L 1                  ; INT
+000012A0                            60  t_27        DS.L 1                  ; INT
+000012A4                            61  t_28        DS.L 1                  ; INT
+000012A8                            62  d_matrizcars_2 DS.L 1               ; INT
+000012AC                            63  d_matrizcars_1 DS.L 1               ; INT
+000012B0                            64  t_25        DS.L 1                  ; INT
+000012B4                            65  t_24        DS.L 1                  ; INT
+000012B8                            66  i           DS.L 1                  ; INT
+000012BC                            67  j           DS.L 1                  ; INT
+000012C0                            68  k           DS.L 1                  ; INT
+000012C4                            69  t_10        DS.L 1                  ; INT
+000012C8                            70  t_11        DS.L 1                  ; INT
+000012CC                            71  
+000012CC                            72  ; --------- SUBROUTINES             
+000012CC  226F 0004                 73  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+000012D0  700D                      74              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+000012D2  4E4F                      75              TRAP        #15         ; Interruption generated
+000012D4  4E75                      76              RTS                     ; RETURN TO SUBROUTINE ...
+000012D6                            77  
+000012D6                            78  ; --------- INITIALIZATION          
+000012D6                            79  a                                   ; Etiqueta inicial (main)
+000012D6                            80  
+000012D6  7020                      81              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+000012D8  123C 0005                 82              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+000012DC  4E4F                      83              TRAP        #15         ; Interruption generated
+000012DE  4EB9 000012E8             84              JSR         e_inicio    ; Se ejecuta el main
+000012E4  FFFF FFFF                 85              SIMHALT                 ; Fin de la ejecucion
+000012E8                            86  
+000012E8                            87  ; --------- e_inicio: skip          
+000012E8                            88                                      
+000012E8                            89  ; --------- pmb e_inicio            
+000012E8                            90  ; --------- t = 3                   
+000012E8  7003                      91  e_inicio:   MOVE.L      #3, D0      ; D0 = #3
+000012EA  21C0 1000                 92              MOVE.L      D0, t       ; t = D0
+000012EE                            93  ; --------- d_matrizcars = t        
+000012EE  2038 1000                 94              MOVE.L      t, D0       ; D0 = t
+000012F2  21C0 1060                 95              MOVE.L      D0, d_matrizcars ; d_matrizcars = D0
+000012F6                            96  ; --------- t_1 = 4                 
+000012F6  7004                      97              MOVE.L      #4, D0      ; D0 = #4
+000012F8  21C0 1004                 98              MOVE.L      D0, t_1     ; t_1 = D0
+000012FC                            99  ; --------- d_matrizcars_1 = t_1    
+000012FC  2038 1004                100              MOVE.L      t_1, D0     ; D0 = t_1
+00001300  21C0 12AC                101              MOVE.L      D0, d_matrizcars_1 ; d_matrizcars_1 = D0
+00001304                           102  ; --------- t_2 = 5                 
+00001304  7005                     103              MOVE.L      #5, D0      ; D0 = #5
+00001306  21C0 1008                104              MOVE.L      D0, t_2     ; t_2 = D0
+0000130A                           105  ; --------- d_matrizcars_2 = t_2    
+0000130A  2038 1008                106              MOVE.L      t_2, D0     ; D0 = t_2
+0000130E  21C0 12A8                107              MOVE.L      D0, d_matrizcars_2 ; d_matrizcars_2 = D0
+00001312                           108  ; --------- t_3 = A                 
+00001312  7041                     109              MOVE.L      #'A', D0    ; D0 = #'A'
+00001314  21C0 100C                110              MOVE.L      D0, t_3     ; t_3 = D0
+00001318                           111  ; --------- t_4 = 2                 
+00001318  7002                     112              MOVE.L      #2, D0      ; D0 = #2
+0000131A  21C0 1010                113              MOVE.L      D0, t_4     ; t_4 = D0
+0000131E                           114  ; --------- t_5 = 3                 
+0000131E  7003                     115              MOVE.L      #3, D0      ; D0 = #3
+00001320  21C0 1014                116              MOVE.L      D0, t_5     ; t_5 = D0
+00001324                           117  ; --------- t_6 = 4                 
+00001324  7004                     118              MOVE.L      #4, D0      ; D0 = #4
+00001326  21C0 1018                119              MOVE.L      D0, t_6     ; t_6 = D0
+0000132A                           120  ; --------- t_7 = t_4 * d_matrizcars  
+0000132A                           121  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+0000132A  2038 1010                122              MOVE.L      t_4, D0     ; D0 = t_4
+0000132E  2238 1060                123              MOVE.L      d_matrizcars, D1 ; D1 = d_matrizcars
+00001332  3400                     124              MOVE.W      D0, D2      ; D2.L = D1.L
+00001334  3601                     125              MOVE.W      D1, D3      ; D1.L = D3.L
+00001336  E080                     126              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001338  E080                     127              ASR.L       #8, D0      ; D0.L = old D0.H
+0000133A  E081                     128              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+0000133C  E081                     129              ASR.L       #8, D1      ; D1.L = old D1.H
+0000133E  C1C1                     130              MULS.W      D1, D0      ; D0 = D0 * D1
+00001340  C7C2                     131              MULS.W      D2, D3      ; D3 = D2 * D3
+00001342  E180                     132              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+00001344  E180                     133              ASL.L       #8, D0      ; D0.H = old D0.L
+00001346  D083                     134              ADD.L       D3, D0      ; D0 = D0 + D3
+00001348  21C0 1186                135              MOVE.L      D0, t_7     ; t_7 = D0
+0000134C                           136  ; --------- t_8 = t_5 + t_7         
+0000134C  2038 1014                137              MOVE.L      t_5, D0     ; D0 = t_5
+00001350  2238 1186                138              MOVE.L      t_7, D1     ; D1 = t_7
+00001354  D280                     139              ADD.L       D0, D1      ; D1 = D1 + D0
+00001356  21C1 1182                140              MOVE.L      D1, t_8     ; t_8 = D1
+0000135A                           141  ; --------- t_9 = t_8 * d_matrizcars_1  
+0000135A                           142  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+0000135A  2038 1182                143              MOVE.L      t_8, D0     ; D0 = t_8
+0000135E  2238 12AC                144              MOVE.L      d_matrizcars_1, D1 ; D1 = d_matrizcars_1
+00001362  3400                     145              MOVE.W      D0, D2      ; D2.L = D1.L
+00001364  3601                     146              MOVE.W      D1, D3      ; D1.L = D3.L
+00001366  E080                     147              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001368  E080                     148              ASR.L       #8, D0      ; D0.L = old D0.H
+0000136A  E081                     149              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+0000136C  E081                     150              ASR.L       #8, D1      ; D1.L = old D1.H
+0000136E  C1C1                     151              MULS.W      D1, D0      ; D0 = D0 * D1
+00001370  C7C2                     152              MULS.W      D2, D3      ; D3 = D2 * D3
+00001372  E180                     153              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+00001374  E180                     154              ASL.L       #8, D0      ; D0.H = old D0.L
+00001376  D083                     155              ADD.L       D3, D0      ; D0 = D0 + D3
+00001378  21C0 118A                156              MOVE.L      D0, t_9     ; t_9 = D0
+0000137C                           157  ; --------- t_10 = t_6 + t_9        
+0000137C  2038 1018                158              MOVE.L      t_6, D0     ; D0 = t_6
+00001380  2238 118A                159              MOVE.L      t_9, D1     ; D1 = t_9
+00001384  D280                     160              ADD.L       D0, D1      ; D1 = D1 + D0
+00001386  21C1 12C4                161              MOVE.L      D1, t_10    ; t_10 = D1
+0000138A                           162  ; --------- t_11 = t_10 * 4         
+0000138A                           163  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+0000138A  2038 12C4                164              MOVE.L      t_10, D0    ; D0 = t_10
+0000138E  7204                     165              MOVE.L      #4, D1      ; D1 = #4
+00001390  3400                     166              MOVE.W      D0, D2      ; D2.L = D1.L
+00001392  3601                     167              MOVE.W      D1, D3      ; D1.L = D3.L
+00001394  E080                     168              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001396  E080                     169              ASR.L       #8, D0      ; D0.L = old D0.H
+00001398  E081                     170              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+0000139A  E081                     171              ASR.L       #8, D1      ; D1.L = old D1.H
+0000139C  C1C1                     172              MULS.W      D1, D0      ; D0 = D0 * D1
+0000139E  C7C2                     173              MULS.W      D2, D3      ; D3 = D2 * D3
+000013A0  E180                     174              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+000013A2  E180                     175              ASL.L       #8, D0      ; D0.H = old D0.L
+000013A4  D083                     176              ADD.L       D3, D0      ; D0 = D0 + D3
+000013A6  21C0 12C8                177              MOVE.L      D0, t_11    ; t_11 = D0
+000013AA                           178  ; --------- matrizcars[t_11] = t_3  
+000013AA  2038 100C                179              MOVE.L      t_3, D0     ; D0 = t_3
+000013AE  2238 12C8                180              MOVE.L      t_11, D1    ; D1 = t_11
+000013B2  41F8 118E                181              LEA.L       matrizcars, A0 ; A0 = matrizcars
+000013B6  D1C1                     182              ADDA.L      D1, A0      ; A0 = A0 + D1
+000013B8  2080                     183              MOVE.L      D0, (A0)    ; (A0) = D0
+000013BA                           184  ; --------- t_12 = 0                
+000013BA  7000                     185              MOVE.L      #0, D0      ; D0 = #0
+000013BC  21C0 101C                186              MOVE.L      D0, t_12    ; t_12 = D0
+000013C0                           187  ; --------- i = t_12                
+000013C0  2038 101C                188              MOVE.L      t_12, D0    ; D0 = t_12
+000013C4  21C0 12B8                189              MOVE.L      D0, i       ; i = D0
+000013C8                           190  ; --------- e: skip                 
+000013C8                           191                                      
+000013C8                           192  ; --------- t_13 = 3                
+000013C8  7003                     193  .e:         MOVE.L      #3, D0      ; D0 = #3
+000013CA  21C0 1020                194              MOVE.L      D0, t_13    ; t_13 = D0
+000013CE                           195  ; --------- if i < t_13 goto e_3    
+000013CE  2038 12B8                196              MOVE.L      i, D0       ; D0 = i
+000013D2  2238 1020                197              MOVE.L      t_13, D1    ; D1 = t_13
+000013D6  B081                     198              CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
+000013D8  6D00 000E                199              BLT         .e_3        ; IF (N XOR V) FLAGS = 1 GOTO .e_3
+000013DC                           200  ; --------- t_14 = 0                
+000013DC  7000                     201              MOVE.L      #0, D0      ; D0 = #0
+000013DE  21C0 1024                202              MOVE.L      D0, t_14    ; t_14 = D0
+000013E2                           203  ; --------- goto e_4                
+000013E2  4EF9 000013EE            204              JMP         .e_4        ; goto .e_4
+000013E8                           205  ; --------- e_3: skip               
+000013E8                           206                                      
+000013E8                           207  ; --------- t_14 = -1               
+000013E8  70FF                     208  .e_3:       MOVE.L      #-1, D0     ; D0 = #-1
+000013EA  21C0 1024                209              MOVE.L      D0, t_14    ; t_14 = D0
+000013EE                           210  ; --------- e_4: skip               
+000013EE                           211                                      
+000013EE                           212  ; --------- if t_14 == 0 goto e_1   
+000013EE  2038 1024                213  .e_4:       MOVE.L      t_14, D0    ; D0 = t_14
+000013F2  7200                     214              MOVE.L      #0, D1      ; D1 = #0
+000013F4  B081                     215              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000013F6  6700 027A                216              BEQ         .e_1        ; IF Z FLAG = 1 GOTO .e_1
+000013FA                           217  ; --------- t_15 = 0                
+000013FA  7000                     218              MOVE.L      #0, D0      ; D0 = #0
+000013FC  21C0 1028                219              MOVE.L      D0, t_15    ; t_15 = D0
+00001400                           220  ; --------- j = t_15                
+00001400  2038 1028                221              MOVE.L      t_15, D0    ; D0 = t_15
+00001404  21C0 12BC                222              MOVE.L      D0, j       ; j = D0
+00001408                           223  ; --------- e_5: skip               
+00001408                           224                                      
+00001408                           225  ; --------- t_16 = 4                
+00001408  7004                     226  .e_5:       MOVE.L      #4, D0      ; D0 = #4
+0000140A  21C0 102C                227              MOVE.L      D0, t_16    ; t_16 = D0
+0000140E                           228  ; --------- if j < t_16 goto e_8    
+0000140E  2038 12BC                229              MOVE.L      j, D0       ; D0 = j
+00001412  2238 102C                230              MOVE.L      t_16, D1    ; D1 = t_16
+00001416  B081                     231              CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
+00001418  6D00 000E                232              BLT         .e_8        ; IF (N XOR V) FLAGS = 1 GOTO .e_8
+0000141C                           233  ; --------- t_17 = 0                
+0000141C  7000                     234              MOVE.L      #0, D0      ; D0 = #0
+0000141E  21C0 1030                235              MOVE.L      D0, t_17    ; t_17 = D0
+00001422                           236  ; --------- goto e_9                
+00001422  4EF9 0000142E            237              JMP         .e_9        ; goto .e_9
+00001428                           238  ; --------- e_8: skip               
+00001428                           239                                      
+00001428                           240  ; --------- t_17 = -1               
+00001428  70FF                     241  .e_8:       MOVE.L      #-1, D0     ; D0 = #-1
+0000142A  21C0 1030                242              MOVE.L      D0, t_17    ; t_17 = D0
+0000142E                           243  ; --------- e_9: skip               
+0000142E                           244                                      
+0000142E                           245  ; --------- if t_17 == 0 goto e_6   
+0000142E  2038 1030                246  .e_9:       MOVE.L      t_17, D0    ; D0 = t_17
+00001432  7200                     247              MOVE.L      #0, D1      ; D1 = #0
+00001434  B081                     248              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001436  6700 021A                249              BEQ         .e_6        ; IF Z FLAG = 1 GOTO .e_6
+0000143A                           250  ; --------- t_18 = 0                
+0000143A  7000                     251              MOVE.L      #0, D0      ; D0 = #0
+0000143C  21C0 1034                252              MOVE.L      D0, t_18    ; t_18 = D0
+00001440                           253  ; --------- k = t_18                
+00001440  2038 1034                254              MOVE.L      t_18, D0    ; D0 = t_18
+00001444  21C0 12C0                255              MOVE.L      D0, k       ; k = D0
+00001448                           256  ; --------- e_10: skip              
+00001448                           257                                      
+00001448                           258  ; --------- t_19 = 5                
+00001448  7005                     259  .e_10:      MOVE.L      #5, D0      ; D0 = #5
+0000144A  21C0 1038                260              MOVE.L      D0, t_19    ; t_19 = D0
+0000144E                           261  ; --------- if k < t_19 goto e_13   
+0000144E  2038 12C0                262              MOVE.L      k, D0       ; D0 = k
+00001452  2238 1038                263              MOVE.L      t_19, D1    ; D1 = t_19
+00001456  B081                     264              CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
+00001458  6D00 000E                265              BLT         .e_13       ; IF (N XOR V) FLAGS = 1 GOTO .e_13
+0000145C                           266  ; --------- t_20 = 0                
+0000145C  7000                     267              MOVE.L      #0, D0      ; D0 = #0
+0000145E  21C0 103C                268              MOVE.L      D0, t_20    ; t_20 = D0
+00001462                           269  ; --------- goto e_14               
+00001462  4EF9 0000146E            270              JMP         .e_14       ; goto .e_14
+00001468                           271  ; --------- e_13: skip              
+00001468                           272                                      
+00001468                           273  ; --------- t_20 = -1               
+00001468  70FF                     274  .e_13:      MOVE.L      #-1, D0     ; D0 = #-1
+0000146A  21C0 103C                275              MOVE.L      D0, t_20    ; t_20 = D0
+0000146E                           276  ; --------- e_14: skip              
+0000146E                           277                                      
+0000146E                           278  ; --------- if t_20 == 0 goto e_11  
+0000146E  2038 103C                279  .e_14:      MOVE.L      t_20, D0    ; D0 = t_20
+00001472  7200                     280              MOVE.L      #0, D1      ; D1 = #0
+00001474  B081                     281              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001476  6700 01BA                282              BEQ         .e_11       ; IF Z FLAG = 1 GOTO .e_11
+0000147A                           283  ; --------- t_21 = A                
+0000147A  7041                     284              MOVE.L      #'A', D0    ; D0 = #'A'
+0000147C  21C0 1040                285              MOVE.L      D0, t_21    ; t_21 = D0
+00001480                           286  ; --------- t_22 = 4                
+00001480  7004                     287              MOVE.L      #4, D0      ; D0 = #4
+00001482  21C0 1044                288              MOVE.L      D0, t_22    ; t_22 = D0
+00001486                           289  ; --------- t_23 = 5                
+00001486  7005                     290              MOVE.L      #5, D0      ; D0 = #5
+00001488  21C0 1048                291              MOVE.L      D0, t_23    ; t_23 = D0
+0000148C                           292  ; --------- t_24 = t_22 * t_23      
+0000148C                           293  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+0000148C  2038 1044                294              MOVE.L      t_22, D0    ; D0 = t_22
+00001490  2238 1048                295              MOVE.L      t_23, D1    ; D1 = t_23
+00001494  3400                     296              MOVE.W      D0, D2      ; D2.L = D1.L
+00001496  3601                     297              MOVE.W      D1, D3      ; D1.L = D3.L
+00001498  E080                     298              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+0000149A  E080                     299              ASR.L       #8, D0      ; D0.L = old D0.H
+0000149C  E081                     300              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+0000149E  E081                     301              ASR.L       #8, D1      ; D1.L = old D1.H
+000014A0  C1C1                     302              MULS.W      D1, D0      ; D0 = D0 * D1
+000014A2  C7C2                     303              MULS.W      D2, D3      ; D3 = D2 * D3
+000014A4  E180                     304              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+000014A6  E180                     305              ASL.L       #8, D0      ; D0.H = old D0.L
+000014A8  D083                     306              ADD.L       D3, D0      ; D0 = D0 + D3
+000014AA  21C0 12B4                307              MOVE.L      D0, t_24    ; t_24 = D0
+000014AE                           308  ; --------- t_25 = i * t_24         
+000014AE                           309  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000014AE  2038 12B8                310              MOVE.L      i, D0       ; D0 = i
+000014B2  2238 12B4                311              MOVE.L      t_24, D1    ; D1 = t_24
+000014B6  3400                     312              MOVE.W      D0, D2      ; D2.L = D1.L
+000014B8  3601                     313              MOVE.W      D1, D3      ; D1.L = D3.L
+000014BA  E080                     314              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+000014BC  E080                     315              ASR.L       #8, D0      ; D0.L = old D0.H
+000014BE  E081                     316              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+000014C0  E081                     317              ASR.L       #8, D1      ; D1.L = old D1.H
+000014C2  C1C1                     318              MULS.W      D1, D0      ; D0 = D0 * D1
+000014C4  C7C2                     319              MULS.W      D2, D3      ; D3 = D2 * D3
+000014C6  E180                     320              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+000014C8  E180                     321              ASL.L       #8, D0      ; D0.H = old D0.L
+000014CA  D083                     322              ADD.L       D3, D0      ; D0 = D0 + D3
+000014CC  21C0 12B0                323              MOVE.L      D0, t_25    ; t_25 = D0
+000014D0                           324  ; --------- t_26 = 5                
+000014D0  7005                     325              MOVE.L      #5, D0      ; D0 = #5
+000014D2  21C0 104C                326              MOVE.L      D0, t_26    ; t_26 = D0
+000014D6                           327  ; --------- t_27 = j * t_26         
+000014D6                           328  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000014D6  2038 12BC                329              MOVE.L      j, D0       ; D0 = j
+000014DA  2238 104C                330              MOVE.L      t_26, D1    ; D1 = t_26
+000014DE  3400                     331              MOVE.W      D0, D2      ; D2.L = D1.L
+000014E0  3601                     332              MOVE.W      D1, D3      ; D1.L = D3.L
+000014E2  E080                     333              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+000014E4  E080                     334              ASR.L       #8, D0      ; D0.L = old D0.H
+000014E6  E081                     335              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+000014E8  E081                     336              ASR.L       #8, D1      ; D1.L = old D1.H
+000014EA  C1C1                     337              MULS.W      D1, D0      ; D0 = D0 * D1
+000014EC  C7C2                     338              MULS.W      D2, D3      ; D3 = D2 * D3
+000014EE  E180                     339              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+000014F0  E180                     340              ASL.L       #8, D0      ; D0.H = old D0.L
+000014F2  D083                     341              ADD.L       D3, D0      ; D0 = D0 + D3
+000014F4  21C0 12A0                342              MOVE.L      D0, t_27    ; t_27 = D0
+000014F8                           343  ; --------- t_28 = t_27 + k         
+000014F8  2038 12A0                344              MOVE.L      t_27, D0    ; D0 = t_27
+000014FC  2238 12C0                345              MOVE.L      k, D1       ; D1 = k
+00001500  D280                     346              ADD.L       D0, D1      ; D1 = D1 + D0
+00001502  21C1 12A4                347              MOVE.L      D1, t_28    ; t_28 = D1
+00001506                           348  ; --------- t_29 = t_25 + t_28      
+00001506  2038 12B0                349              MOVE.L      t_25, D0    ; D0 = t_25
+0000150A  2238 12A4                350              MOVE.L      t_28, D1    ; D1 = t_28
+0000150E  D280                     351              ADD.L       D0, D1      ; D1 = D1 + D0
+00001510  21C1 129C                352              MOVE.L      D1, t_29    ; t_29 = D1
+00001514                           353  ; --------- t_30 = 26               
+00001514  701A                     354              MOVE.L      #26, D0     ; D0 = #26
+00001516  21C0 1050                355              MOVE.L      D0, t_30    ; t_30 = D0
+0000151A                           356  ; --------- t_31 = t_29 mod t_30    
+0000151A  2038 129C                357              MOVE.L      t_29, D0    ; D0 = t_29
+0000151E  2238 1050                358              MOVE.L      t_30, D1    ; D1 = t_30
+00001522  81C1                     359              DIVS.W      D1, D0      ; D0.h = D0 % D1. D0.l = D0 / D1
+00001524  E088                     360              LSR.L       #8, D0      ; D0.l = D0.h
+00001526  E088                     361              LSR.L       #8, D0      ; D0.l = D0.h
+00001528  21C0 1298                362              MOVE.L      D0, t_31    ; t_31 = D0
+0000152C                           363  ; --------- t_32 = t_31             
+0000152C  2038 1298                364              MOVE.L      t_31, D0    ; D0 = t_31
+00001530  21C0 1290                365              MOVE.L      D0, t_32    ; t_32 = D0
+00001534                           366  ; --------- t_33 = t_21 + t_32      
+00001534  2038 1040                367              MOVE.L      t_21, D0    ; D0 = t_21
+00001538  2238 1290                368              MOVE.L      t_32, D1    ; D1 = t_32
+0000153C  D280                     369              ADD.L       D0, D1      ; D1 = D1 + D0
+0000153E  21C1 1294                370              MOVE.L      D1, t_33    ; t_33 = D1
+00001542                           371  ; --------- t_34 = i * d_matrizcars  
+00001542                           372  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+00001542  2038 12B8                373              MOVE.L      i, D0       ; D0 = i
+00001546  2238 1060                374              MOVE.L      d_matrizcars, D1 ; D1 = d_matrizcars
+0000154A  3400                     375              MOVE.W      D0, D2      ; D2.L = D1.L
+0000154C  3601                     376              MOVE.W      D1, D3      ; D1.L = D3.L
+0000154E  E080                     377              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001550  E080                     378              ASR.L       #8, D0      ; D0.L = old D0.H
+00001552  E081                     379              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+00001554  E081                     380              ASR.L       #8, D1      ; D1.L = old D1.H
+00001556  C1C1                     381              MULS.W      D1, D0      ; D0 = D0 * D1
+00001558  C7C2                     382              MULS.W      D2, D3      ; D3 = D2 * D3
+0000155A  E180                     383              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+0000155C  E180                     384              ASL.L       #8, D0      ; D0.H = old D0.L
+0000155E  D083                     385              ADD.L       D3, D0      ; D0 = D0 + D3
+00001560  21C0 1288                386              MOVE.L      D0, t_34    ; t_34 = D0
+00001564                           387  ; --------- t_35 = j + t_34         
+00001564  2038 12BC                388              MOVE.L      j, D0       ; D0 = j
+00001568  2238 1288                389              MOVE.L      t_34, D1    ; D1 = t_34
+0000156C  D280                     390              ADD.L       D0, D1      ; D1 = D1 + D0
+0000156E  21C1 128C                391              MOVE.L      D1, t_35    ; t_35 = D1
+00001572                           392  ; --------- t_36 = t_35 * d_matrizcars_1  
+00001572                           393  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+00001572  2038 128C                394              MOVE.L      t_35, D0    ; D0 = t_35
+00001576  2238 12AC                395              MOVE.L      d_matrizcars_1, D1 ; D1 = d_matrizcars_1
+0000157A  3400                     396              MOVE.W      D0, D2      ; D2.L = D1.L
+0000157C  3601                     397              MOVE.W      D1, D3      ; D1.L = D3.L
+0000157E  E080                     398              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001580  E080                     399              ASR.L       #8, D0      ; D0.L = old D0.H
+00001582  E081                     400              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+00001584  E081                     401              ASR.L       #8, D1      ; D1.L = old D1.H
+00001586  C1C1                     402              MULS.W      D1, D0      ; D0 = D0 * D1
+00001588  C7C2                     403              MULS.W      D2, D3      ; D3 = D2 * D3
+0000158A  E180                     404              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+0000158C  E180                     405              ASL.L       #8, D0      ; D0.H = old D0.L
+0000158E  D083                     406              ADD.L       D3, D0      ; D0 = D0 + D3
+00001590  21C0 1280                407              MOVE.L      D0, t_36    ; t_36 = D0
+00001594                           408  ; --------- t_37 = k + t_36         
+00001594  2038 12C0                409              MOVE.L      k, D0       ; D0 = k
+00001598  2238 1280                410              MOVE.L      t_36, D1    ; D1 = t_36
+0000159C  D280                     411              ADD.L       D0, D1      ; D1 = D1 + D0
+0000159E  21C1 1284                412              MOVE.L      D1, t_37    ; t_37 = D1
+000015A2                           413  ; --------- t_38 = t_37 * 4         
+000015A2                           414  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000015A2  2038 1284                415              MOVE.L      t_37, D0    ; D0 = t_37
+000015A6  7204                     416              MOVE.L      #4, D1      ; D1 = #4
+000015A8  3400                     417              MOVE.W      D0, D2      ; D2.L = D1.L
+000015AA  3601                     418              MOVE.W      D1, D3      ; D1.L = D3.L
+000015AC  E080                     419              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+000015AE  E080                     420              ASR.L       #8, D0      ; D0.L = old D0.H
+000015B0  E081                     421              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+000015B2  E081                     422              ASR.L       #8, D1      ; D1.L = old D1.H
+000015B4  C1C1                     423              MULS.W      D1, D0      ; D0 = D0 * D1
+000015B6  C7C2                     424              MULS.W      D2, D3      ; D3 = D2 * D3
+000015B8  E180                     425              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+000015BA  E180                     426              ASL.L       #8, D0      ; D0.H = old D0.L
+000015BC  D083                     427              ADD.L       D3, D0      ; D0 = D0 + D3
+000015BE  21C0 117A                428              MOVE.L      D0, t_38    ; t_38 = D0
+000015C2                           429  ; --------- matrizcars[t_38] = t_33  
+000015C2  2038 1294                430              MOVE.L      t_33, D0    ; D0 = t_33
+000015C6  2238 117A                431              MOVE.L      t_38, D1    ; D1 = t_38
+000015CA  41F8 118E                432              LEA.L       matrizcars, A0 ; A0 = matrizcars
+000015CE  D1C1                     433              ADDA.L      D1, A0      ; A0 = A0 + D1
+000015D0  2080                     434              MOVE.L      D0, (A0)    ; (A0) = D0
+000015D2                           435  ; --------- t_39 = matrizcars[i]    
+000015D2  41F8 118E                436              LEA.L       matrizcars, A0 ; A0 = matrizcars
+000015D6  2038 12B8                437              MOVE.L      i, D0       ; D0 = i
+000015DA  D1C0                     438              ADDA.L      D0, A0      ; A0 = A0 + D0
+000015DC  21D0 117E                439              MOVE.L      (A0), t_39  ; t_39 = (A0)
+000015E0                           440  ; --------- t_40 = t_39[j]          
+000015E0  2078 117E                441              MOVEA.L     t_39, A0    ; A0 = t_39
+000015E4  2038 12BC                442              MOVE.L      j, D0       ; D0 = j
+000015E8  D1C0                     443              ADDA.L      D0, A0      ; A0 = A0 + D0
+000015EA  21D0 1064                444              MOVE.L      (A0), t_40  ; t_40 = (A0)
+000015EE                           445  ; --------- t_41 = t_40[k]          
+000015EE  2078 1064                446              MOVEA.L     t_40, A0    ; A0 = t_40
+000015F2  2038 12C0                447              MOVE.L      k, D0       ; D0 = k
+000015F6  D1C0                     448              ADDA.L      D0, A0      ; A0 = A0 + D0
+000015F8  21D0 1074                449              MOVE.L      (A0), t_41  ; t_41 = (A0)
+000015FC                           450  ; --------- t_42 = t_41             
+000015FC  2038 1074                451              MOVE.L      t_41, D0    ; D0 = t_41
+00001600  E098                     452              ROR.L       #8, D0      ; move to the left so it is followed by 0's, since it is a casting from char to string
+00001602  21C0 1078                453              MOVE.L      D0, t_42    ; t_42 = D0
+00001606                           454  ; --------- param_s t_42            
+00001606  41F8 1078                455              LEA.L       t_42, A0    ; A0 = t_42
+0000160A  2F08                     456              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000160C                           457  ; --------- call e_show             
+0000160C  4EB8 12CC                458              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001610  588F                     459              ADDA.L      #4, SP      ; SP = SP + 4
+00001612                           460  ; --------- e_12: skip              
+00001612                           461                                      
+00001612                           462  ; --------- t_43 = 1                
+00001612  7001                     463  .e_12:      MOVE.L      #1, D0      ; D0 = #1
+00001614  21C0 1054                464              MOVE.L      D0, t_43    ; t_43 = D0
+00001618                           465  ; --------- t_44 = k + t_43         
+00001618  2038 12C0                466              MOVE.L      k, D0       ; D0 = k
+0000161C  2238 1054                467              MOVE.L      t_43, D1    ; D1 = t_43
+00001620  D280                     468              ADD.L       D0, D1      ; D1 = D1 + D0
+00001622  21C1 1070                469              MOVE.L      D1, t_44    ; t_44 = D1
+00001626                           470  ; --------- k = t_44                
+00001626  2038 1070                471              MOVE.L      t_44, D0    ; D0 = t_44
+0000162A  21C0 12C0                472              MOVE.L      D0, k       ; k = D0
+0000162E                           473  ; --------- goto e_10               
+0000162E  4EF8 1448                474              JMP         .e_10       ; goto .e_10
+00001632                           475  ; --------- e_11: skip              
+00001632                           476                                      
+00001632                           477  ; --------- e_7: skip               
+00001632                           478  .e_11:                              
+00001632                           479  ; --------- t_45 = 1                
+00001632  7001                     480  .e_7:       MOVE.L      #1, D0      ; D0 = #1
+00001634  21C0 1058                481              MOVE.L      D0, t_45    ; t_45 = D0
+00001638                           482  ; --------- t_46 = j + t_45         
+00001638  2038 12BC                483              MOVE.L      j, D0       ; D0 = j
+0000163C  2238 1058                484              MOVE.L      t_45, D1    ; D1 = t_45
+00001640  D280                     485              ADD.L       D0, D1      ; D1 = D1 + D0
+00001642  21C1 106C                486              MOVE.L      D1, t_46    ; t_46 = D1
+00001646                           487  ; --------- j = t_46                
+00001646  2038 106C                488              MOVE.L      t_46, D0    ; D0 = t_46
+0000164A  21C0 12BC                489              MOVE.L      D0, j       ; j = D0
+0000164E                           490  ; --------- goto e_5                
+0000164E  4EF8 1408                491              JMP         .e_5        ; goto .e_5
+00001652                           492  ; --------- e_6: skip               
+00001652                           493                                      
+00001652                           494  ; --------- e_2: skip               
+00001652                           495  .e_6:                               
+00001652                           496  ; --------- t_47 = 1                
+00001652  7001                     497  .e_2:       MOVE.L      #1, D0      ; D0 = #1
+00001654  21C0 105C                498              MOVE.L      D0, t_47    ; t_47 = D0
+00001658                           499  ; --------- t_48 = i + t_47         
+00001658  2038 12B8                500              MOVE.L      i, D0       ; D0 = i
+0000165C  2238 105C                501              MOVE.L      t_47, D1    ; D1 = t_47
+00001660  D280                     502              ADD.L       D0, D1      ; D1 = D1 + D0
+00001662  21C1 1068                503              MOVE.L      D1, t_48    ; t_48 = D1
+00001666                           504  ; --------- i = t_48                
+00001666  2038 1068                505              MOVE.L      t_48, D0    ; D0 = t_48
+0000166A  21C0 12B8                506              MOVE.L      D0, i       ; i = D0
+0000166E                           507  ; --------- goto e                  
+0000166E  4EF8 13C8                508              JMP         .e          ; goto .e
+00001672                           509  ; --------- e_1: skip               
+00001672                           510                                      
+00001672                           511  ; --------- rtn e_inicio            
+00001672  4E75                     512  .e_1:       RTS                     ; RETURN TO SUBROUTINE e_inicio
+00001674                           513  
+00001674                           514  
+00001674                           515  
+00001674                           516  
+00001674                           517              END a                   ; Fin del programa
 
 No errors detected
 No warnings generated
@@ -127,19 +527,77 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-A                   1076
-D_MATRIZCARS        101C
-D_MATRIZCARS_1      102C
-E_INICIO            1080
-MATRIZCARS          1030
+A                   12D6
+D_MATRIZCARS        1060
+D_MATRIZCARS_1      12AC
+D_MATRIZCARS_2      12A8
+E_INICIO            12E8
+E_INICIO:E          13C8
+E_INICIO:E_1        1672
+E_INICIO:E_10       1448
+E_INICIO:E_11       1632
+E_INICIO:E_12       1612
+E_INICIO:E_13       1468
+E_INICIO:E_14       146E
+E_INICIO:E_2        1652
+E_INICIO:E_3        13E8
+E_INICIO:E_4        13EE
+E_INICIO:E_5        1408
+E_INICIO:E_6        1652
+E_INICIO:E_7        1632
+E_INICIO:E_8        1428
+E_INICIO:E_9        142E
+E_SHOW              12CC
+I                   12B8
+J                   12BC
+K                   12C0
+MATRIZCARS          118E
 T                   1000
 T_1                 1004
-T_10                1072
+T_10                12C4
+T_11                12C8
+T_12                101C
+T_13                1020
+T_14                1024
+T_15                1028
+T_16                102C
+T_17                1030
+T_18                1034
+T_19                1038
 T_2                 1008
+T_20                103C
+T_21                1040
+T_22                1044
+T_23                1048
+T_24                12B4
+T_25                12B0
+T_26                104C
+T_27                12A0
+T_28                12A4
+T_29                129C
 T_3                 100C
-T_4                 1018
-T_5                 1020
-T_6                 1010
-T_7                 1014
-T_8                 1024
-T_9                 1028
+T_30                1050
+T_31                1298
+T_32                1290
+T_33                1294
+T_34                1288
+T_35                128C
+T_36                1280
+T_37                1284
+T_38                117A
+T_39                117E
+T_4                 1010
+T_40                1064
+T_41                1074
+T_42                1078
+T_43                1054
+T_44                1070
+T_45                1058
+T_46                106C
+T_47                105C
+T_48                1068
+T_5                 1014
+T_6                 1018
+T_7                 1186
+T_8                 1182
+T_9                 118A

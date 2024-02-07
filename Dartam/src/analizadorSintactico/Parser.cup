@@ -344,7 +344,7 @@ OPERAND ::= ATOMIC_EXPRESSION:et        {: RESULT = new SymbolOperand(et, etxlef
         | UNARY_EXPRESSION:et           {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
         | BINARY_EXPRESSION:et          {: RESULT = new SymbolOperand(et, etxleft, etxright); :} 
         | CONDITIONAL_EXPRESSION:et     {: RESULT = new SymbolOperand(et, etxleft, etxright); :}
-        | OPERAND:et1 LBRACKET:l OPERAND:et2 RBRACKET:r {: RESULT = new SymbolOperand(et1, l, et2, r, et1xleft, et1xright); :}
+        | OPERAND:et1 DIMENSIONES:dim {: RESULT = new SymbolOperand(et1, dim, et1xleft, et1xright); :}
         | OPERAND:et1 OP_MEMBER ID:et2                  {: RESULT = new SymbolOperand(et1, et2, et1xleft, et1xright); :}
         | LPAREN:et TIPO_PRIMITIVO:t RPAREN:et2 OPERAND:op  {: RESULT = new SymbolOperand(t, op, et, et2, etxleft, etxright); :} %prec CASTING
         | LPAREN:et KW_CHAR LBRACKET RBRACKET RPAREN:et2 OPERAND:op  {: RESULT = new SymbolOperand(null, op, et, et2, etxleft, etxright); :} %prec CASTING

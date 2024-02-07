@@ -6,17 +6,59 @@ scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parametros son 
 into: identificado por e_into, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] output
 
 Tabla de variables
-t_2: tipo CHAR inicializado a A almacenando una estructura de datos de 256 bytes
-t_1: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
-t_4: tipo INT
-t_3: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
 d_matrizcars: tipo INT
-t_6: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
-t_5: tipo CHAR
+t_40: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_47: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_48: tipo INT
+t_45: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_46: tipo INT
+t_43: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_44: tipo INT
+t_41: tipo CHAR
+t_42: tipo STRING
+t_2: tipo INT inicializado a 5 almacenando una estructura de datos de 256 bytes
+t_38: tipo INT
+t_1: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_39: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_4: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_3: tipo CHAR inicializado a A almacenando una estructura de datos de 256 bytes
+t_6: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_5: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
 t_8: tipo INT
-t_7: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_7: tipo INT
 t_9: tipo INT
+matrizcars: tipo ARRAY almacenando una estructura de datos de 240 bytes
+t_36: tipo INT
+t_37: tipo INT
+t_34: tipo INT
+t_35: tipo INT
+t_32: tipo INT
+t_33: tipo CHAR
+t_30: tipo INT inicializado a 26 almacenando una estructura de datos de 256 bytes
+t_31: tipo INT
+t_29: tipo INT
+t_27: tipo INT
+t_28: tipo INT
+d_matrizcars_2: tipo INT
 d_matrizcars_1: tipo INT
-t: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
-matrizcars: tipo ARRAY almacenando una estructura de datos de 64 bytes
+t_25: tipo INT
+t_26: tipo INT inicializado a 5 almacenando una estructura de datos de 256 bytes
+t_23: tipo INT inicializado a 5 almacenando una estructura de datos de 256 bytes
+t_24: tipo INT
+t_21: tipo CHAR inicializado a A almacenando una estructura de datos de 256 bytes
+t_22: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_20: tipo BOOLEAN inicializado a 0
+t_18: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_19: tipo INT inicializado a 5 almacenando una estructura de datos de 256 bytes
+t_16: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_17: tipo BOOLEAN inicializado a 0
+i: tipo INT
+j: tipo INT
+k: tipo INT
+t: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_14: tipo BOOLEAN inicializado a 0
+t_15: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_12: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_13: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
 t_10: tipo INT
+t_11: tipo INT

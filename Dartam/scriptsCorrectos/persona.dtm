@@ -19,10 +19,10 @@ f vacio inicio(){
 			continuar;
 		}
 		si p1.hambre > p1.maxHambre { // p1 tiene prioridad
-			str: (car[])p1.inicial;
+			str: (car[])(p1.inicial);
 			p1.hambre: 0;
 		} no {
-			str: (car[])p2.inicial;
+			str: (car[])(p2.inicial);
 			p2.hambre: 0;
 		}
 		imprimirTexto("La persona", str, "come");

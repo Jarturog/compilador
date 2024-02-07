@@ -3,7 +3,7 @@
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
-;               Marta González Juan
+;               Marta Gonzalez Juan
 ; ==============================================================================
 
             ORG         $1000       ; Origen
@@ -219,7 +219,7 @@ persona0                            ; Etiqueta inicial (main)
             ADDA.L      #4, SP      
 
             JSR         e_inicio    ; Se ejecuta el main
-            SIMHALT                 ; Fin de la ejecución
+            SIMHALT                 ; Fin de la ejecucion
 
 ; --------- e_inicio: skip          
                                     
@@ -302,7 +302,7 @@ e_inicio:   MOVE.L      #3, D0      ; D0 = #3
 ; --------- if i < turnos goto e_3  
 .e:         MOVE.L      i, D0       ; D0 = i
             MOVE.L      turnos, D1  ; D1 = turnos
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BLT         .e_3        ; IF (N XOR V) FLAGS = 1 GOTO .e_3
 ; --------- t_10 = 0                
             MOVE.L      #0, D0      ; D0 = #0
@@ -394,7 +394,7 @@ e_inicio:   MOVE.L      #3, D0      ; D0 = #3
 ; --------- if t_23 > t_25 goto e_5  
             MOVE.L      t_23, D0    ; D0 = t_23
             MOVE.L      t_25, D1    ; D1 = t_25
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_5        ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_5
 ; --------- t_26 = 0                
             MOVE.L      #0, D0      ; D0 = #0
@@ -427,7 +427,7 @@ e_inicio:   MOVE.L      #3, D0      ; D0 = #3
 ; --------- if t_28 > t_30 goto e_7  
             MOVE.L      t_28, D0    ; D0 = t_28
             MOVE.L      t_30, D1    ; D1 = t_30
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_7        ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_7
 ; --------- t_31 = 0                
             MOVE.L      #0, D0      ; D0 = #0
@@ -534,7 +534,7 @@ e_inicio:   MOVE.L      #3, D0      ; D0 = #3
 ; --------- if t_45 > t_47 goto e_11  
             MOVE.L      t_45, D0    ; D0 = t_45
             MOVE.L      t_47, D1    ; D1 = t_47
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_11       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_11
 ; --------- t_48 = 0                
             MOVE.L      #0, D0      ; D0 = #0
@@ -705,7 +705,7 @@ e_nuevapersona: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
 ; --------- if maxhambre > turnos goto e_15  
             MOVE.L      maxhambre, D0 ; D0 = maxhambre
             MOVE.L      turnos, D1  ; D1 = turnos
-            CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+            CMP.L       D1, D0      ; UPDATE FLAGS WITH D1 - D0
             BGT         .e_15       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_15
 ; --------- t_67 = 0                
             MOVE.L      #0, D0      ; D0 = #0
