@@ -1,10 +1,17 @@
 f vacio inicio(){
-	//tupla persona p1, p2;
-	//nuevaPersona(p1, 1, 'a');
+	tupla persona p1, p2;
+	nuevaPersona(p1, 1, 'a');
+	show((car[])(char)p1.let);
+	loop ent i:0; i < 3; i++ {
+		p1.let: p1.let + (car)1;
+		show((car[])(car)p1.let);
+	}
+	p2: p1;
+	show((car[])(car)p2.let);
 	//nuevaPersona(p2, 2, 'b');
-	car [] aux: "hola";
-	show(aux);
-	show("mundo");
+	//car [] aux: "hola";
+	//show(aux);
+	//show((car[])(car)61);
 	//car ox: p1.let;
 	//show((car[])ox);
 	//show((car[])p2.let);

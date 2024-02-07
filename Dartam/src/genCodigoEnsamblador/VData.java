@@ -61,6 +61,9 @@ public class VData {
     }
 
     public Integer getBytesEstructura() {
+        if(tipo.equals(TipoVariable.STRING)) {
+            return TipoVariable.STRING.bytes;
+        }
         return bytesEstructura;
     }
 

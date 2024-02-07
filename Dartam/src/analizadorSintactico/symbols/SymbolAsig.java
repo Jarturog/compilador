@@ -44,25 +44,25 @@ public class SymbolAsig extends SymbolBase {
     }
 
     // elemento array
-    public SymbolAsig(String id, SymbolDimensiones dimensiones, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
+    public SymbolAsig(String id, SymbolDimensiones dimensiones, Location lOp, Object o, Location rOp, SymbolOperand valor, Location l, Location r) {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
         this.dim = dimensiones;
         this.miembro = null;
-        operacion = op;
+        operacion = new SymbolAsigOp(ParserSym.AS_ASSIGN, o, lOp, rOp);
         this.isPost = null;
         this.isIncrement = null;
     }
 
     // miembro
-    public SymbolAsig(String id, String miembro, SymbolAsigOp op, SymbolOperand valor, Location l, Location r) {
+    public SymbolAsig(String id, String miembro, Location lOp, Object o, Location rOp, SymbolOperand valor, Location l, Location r) {
         super("asig", l, r);
         this.id = id;
         this.valor = valor;
         this.dim = null;
         this.miembro = miembro;
-        operacion = op;
+        operacion = new SymbolAsigOp(ParserSym.AS_ASSIGN, o, lOp, rOp);
         this.isPost = null;
         this.isIncrement = null;
     }

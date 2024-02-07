@@ -76,17 +76,17 @@ public class SymbolBinaryOperator extends SymbolBase {
                     || operador == ParserSym.OP_LEQ
                     || operador == ParserSym.OP_LT
                     || operador == ParserSym.OP_NEQ;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-            return operador == ParserSym.OP_ADD
-                    || operador == ParserSym.OP_SUB
-                    || operador == ParserSym.OP_MUL
-                    || operador == ParserSym.OP_DIV
-                    || operador == ParserSym.OP_EQ
-                    || operador == ParserSym.OP_BEQ
-                    || operador == ParserSym.OP_BT
-                    || operador == ParserSym.OP_LEQ
-                    || operador == ParserSym.OP_LT
-                    || operador == ParserSym.OP_NEQ;
+//        } else if (type.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+//            return operador == ParserSym.OP_ADD
+//                    || operador == ParserSym.OP_SUB
+//                    || operador == ParserSym.OP_MUL
+//                    || operador == ParserSym.OP_DIV
+//                    || operador == ParserSym.OP_EQ
+//                    || operador == ParserSym.OP_BEQ
+//                    || operador == ParserSym.OP_BT
+//                    || operador == ParserSym.OP_LEQ
+//                    || operador == ParserSym.OP_LT
+//                    || operador == ParserSym.OP_NEQ;
         } else if (type.equals(ParserSym.terminalNames[ParserSym.CAR])) {
             return operador == ParserSym.OP_ADD
                     || operador == ParserSym.OP_SUB

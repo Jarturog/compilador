@@ -8,7 +8,7 @@ public enum TipoVariable {
      * o no tener otras variables que apuntan a este string pero que son de tipo
      * puntero
      */
-    INT(4), CHAR(4), BOOL(4), DOUBLE(4), PUNTERO(4), STRING(256), ARRAY(-1), TUPLA(-1);
+    INT(4), CHAR(4), BOOL(4), /*DOUBLE(4),*/ PUNTERO(4), STRING(256), ARRAY(-1), TUPLA(-1);
     //INT(Integer.BYTES), CHAR(1 /* elegido por 68K */), BOOL(1), DOUBLE(Double.BYTES), PUNTERO(4), ESTRUCTURA(-1), STRING(256);
 
     public static final int FALSE = 0, TRUE = -1;
@@ -28,8 +28,8 @@ public enum TipoVariable {
             return CHAR;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
             return BOOL;
-        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-            return DOUBLE;
+//        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+//            return DOUBLE;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.CAR] + " []")) {
             return STRING;
         } else if (tipo.contains("[")) {
@@ -64,10 +64,10 @@ public enum TipoVariable {
                 ".W";
             case 4 ->
                 ".L";
-            case 256 ->
+            case 256 -> // pointer
                 ".L";
             case -1 ->
-                ".B"; // estructura
+                ".L"; // pointer
             default ->
                 null;
         };
@@ -86,8 +86,8 @@ public enum TipoVariable {
                 "CHAR";
             case BOOL ->
                 "BOOLEAN";
-            case DOUBLE ->
-                "REAL NUMBER";
+//            case DOUBLE ->
+//                "REAL NUMBER";
             case PUNTERO ->
                 "POINTER TO ARRAY, TUPLE OR STRING";
             case STRING ->
@@ -103,7 +103,7 @@ public enum TipoVariable {
 
     public TipoVariable getAssignedType() {
         return switch (this) {
-            case INT, CHAR, BOOL, DOUBLE, PUNTERO ->
+            case INT, CHAR, BOOL, /*DOUBLE,*/ PUNTERO ->
                 this;
             case STRING, ARRAY, TUPLA ->
                 PUNTERO;

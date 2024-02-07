@@ -64,8 +64,6 @@ import analizadorSintactico.ParserSym;
 sub_digit   = [0-9]
 sub_letra   = [A-Za-z] // no confundir con caracter
 sub_car     = {sub_digit}|{sub_letra}
-//sub_elem_string = "\r"|"\n"|"\t"|" "|"_"|"["|"]"|"^"|"ç"|"·"|"¬"|"¡"|"!" | "\"" | "#" | "$" | "%" | "&" | "'" | "(" | ")" | "*" | "+" | "," | "-" | "." | "/" | {sub_car} | ":" | ";" | "<" | "=" | ">" |"¿"| "?" | "@" | "{" | "|" | "}" | "~"
-//sub_signo   = [+|-]? 
 
 // simbolos
 sym_parenIzq	= \(
@@ -114,9 +112,8 @@ op_arrow    = \-\>
 
 // tipos (void es tipo de retorno pero no de variable)
 type_char      = "car"
-//type_string    = "string"
 type_int       = "ent"
-type_double    = "real"
+//type_double    = "real"
 type_bool      = "prop"
 type_void      = "vacio"
 
@@ -132,7 +129,6 @@ kw_switch    = "select"
 kw_case      = "caso"
 kw_default   = "_"
 kw_while     = "loop"
-//kw_doLoop    = "do"
 kw_continue  = "continuar"
 kw_break     = "parar"
 kw_return    = "pop" 
@@ -142,14 +138,14 @@ kw_in        = "enter"
 kw_out       = "show"
 kw_read      = "from"
 kw_write     = "into"
-TUPLE     = "tupla"
+kw_tuple     = "tupla"
 
 // valores
 val_decimal = {sub_digit}+
 val_binario = 0b[01]+
 val_octal   = 0o[0-7]+
 val_hex     = 0x[A-Fa-f0-9]+
-val_real    = {val_decimal}?\.{val_decimal}?([Ee]{val_decimal})?
+//val_real    = {val_decimal}?\.{val_decimal}?([Ee]{val_decimal})?
 val_prop    = {kw_true}|{kw_false}
 val_char    = "'"[^"'"]"'"
 char_vacio  = "''"
@@ -180,23 +176,7 @@ public String getErrores(){
 }
 
 private String errorToString(){
-  return "Error lexico: Token " + yytext() + " no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
-}
-
-private String errorComillaSimple(){
-  return "Error lexico: Token " + yytext() + " utilizado para abrir un carácter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
-}
-
-private String errorComillaDoble(){
-  return "Error lexico: Token " + yytext() + " utilizado para abrir un string pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
-}
-
-private String errorCharVacio() {
-  return "Error lexico: Token " + yytext() + " utilizado para crear un carácter vacío (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
-}
-
-private String errorCharComoString(){
-  return "Error lexico: Token " + yytext() + " utilizado para crear varios carácteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
+  return "Error lexico: Token '" + yytext() + "' no reconocido en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n";
 }
 
 /**
@@ -292,7 +272,7 @@ private Symbol procesarNumero() {
 {op_arrow}                  { tokens += "OP_ARROW: "+yytext()+"\n"; return symbol(ParserSym.ARROW, yytext()); }
 
 // tipos
-{type_double}           { tokens += "TYPE_DOUBLE: "+yytext()+"\n"; return symbol(ParserSym.KW_DOUBLE, yytext()); }
+//{type_double}           { tokens += "TYPE_DOUBLE: "+yytext()+"\n"; return symbol(ParserSym.KW_DOUBLE, yytext()); }
 {type_int}              { tokens += "TYPE_INT: "   +yytext()+"\n"; return symbol(ParserSym.KW_INT, yytext()); }
 {type_char}             { tokens += "TYPE_CHAR: "  +yytext()+"\n"; return symbol(ParserSym.KW_CHAR, yytext()); }
 {type_bool}             { tokens += "TYPE_BOOL: "  +yytext()+"\n"; return symbol(ParserSym.KW_BOOL, yytext()); }
@@ -319,7 +299,6 @@ private Symbol procesarNumero() {
 {kw_elif}               { tokens += "KW_ELIF: "   +yytext()+"\n"; return symbol(ParserSym.KW_ELIF, yytext()); }
 {kw_else}               { tokens += "KW_ELSE: "   +yytext()+"\n"; return symbol(ParserSym.KW_ELSE, yytext()); }
 {kw_while}              { tokens += "KW_WHILE: "  +yytext()+"\n"; return symbol(ParserSym.KW_LOOP, yytext()); }
-//{kw_doLoop}             { tokens += "KW_DO: "     +yytext()+"\n"; return symbol(ParserSym.KW_DO, yytext()); }
 {kw_switch}             { tokens += "KW_SWITCH: " +yytext()+"\n"; return symbol(ParserSym.KW_SWITCH, yytext()); }
 {kw_case}               { tokens += "KW_CASE: "   +yytext()+"\n"; return symbol(ParserSym.KW_CASE, yytext()); }
 {kw_default}            { tokens += "KW_DEFAULT: "+yytext()+"\n"; return symbol(ParserSym.KW_DEFAULT, yytext()); }
@@ -328,7 +307,7 @@ private Symbol procesarNumero() {
 {kw_out}                { tokens += "SHOW: "      +yytext()+"\n"; return symbol(ParserSym.SHOW, yytext()); }
 {kw_read}               { tokens += "FROM: "      +yytext()+"\n"; return symbol(ParserSym.FROM, yytext()); }
 {kw_write}              { tokens += "INTO: "      +yytext()+"\n"; return symbol(ParserSym.INTO, yytext()); }
-{TUPLE}              { tokens += "TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.TUPLE, yytext()); }
+{kw_tuple}              { tokens += "TUPLE: "  +yytext()+"\n"; return symbol(ParserSym.TUPLE, yytext()); }
 {kw_continue}           { tokens += "KW_CONTINUE: "+yytext()+"\n";return symbol(ParserSym.KW_CONTINUE, yytext()); }
 {kw_break}              { tokens += "KW_BREAK: "  +yytext()+"\n"; return symbol(ParserSym.KW_BREAK, yytext()); }
 
@@ -337,18 +316,18 @@ private Symbol procesarNumero() {
 {val_hex}           { tokens += "VAL_HEX: "+yytext()+"\n"; return procesarNumero(); }
 {val_octal}         { tokens += "VAL_OCTAL: "+yytext()+"\n"; return procesarNumero(); }
 {val_decimal}       { tokens += "VAL_DECIMAL: "+yytext()+"\n"; return procesarNumero(); }
-{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); } // posible control de errores?
+//{val_real}          { tokens += "VAL_REAL: "+yytext()+"\n"; return symbol(ParserSym.REAL, Double.parseDouble(yytext())); } // posible control de errores?
 {val_prop}          { tokens += "VAL_PROP: "+yytext()+"\n"; return symbol(ParserSym.PROP, "cierto".equals(yytext())); }
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
 
 // casos especiales
-{sym_comillaS}         { errores += errorComillaSimple(); return symbol(ParserSym.error); }//{ tokens += "SYM_SQUOTE: "+yytext()+"\n"; return symbol(ParserSym.SQUOTE, yytext()); }
-{sym_comillaD}         { errores += errorComillaDoble(); return symbol(ParserSym.error); }//{ tokens += "SYM_DQUOTE: "+yytext()+"\n"; return symbol(ParserSym.DQUOTE, yytext()); }
-{char_vacio}           { errores += errorCharVacio(); return symbol(ParserSym.error); }
-{char_string}          { errores += errorCharComoString(); return symbol(ParserSym.error); }
-{espacioBlanco}        { /* No fer res amb els espais */  }
-{comentario}           { /* No fer res amb els comentaris */  }
-{finLinea}             {}//{ tokens += "FIN_LINEA: \n"; return symbol(ParserSym.ENDLINE); }
-[^]				             { errores += errorToString(); return symbol(ParserSym.error); }
+{sym_comillaS}  { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un carácter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{sym_comillaD}  { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un string pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{char_vacio}    { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear un carácter vacío (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{char_string}   { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear varios carácteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{espacioBlanco} {}
+{comentario}    {}
+{finLinea}      {}
+[^]             { errores += errorToString(); return symbol(ParserSym.error); }
 
 /****************************************************************************/

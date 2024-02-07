@@ -92,8 +92,12 @@ public class GestorCodigoIntermedio {
         return idVar;
     }
     
-    public TipoVariable getTipoFromVar(String var) {
-        return tablaVariables.get(var).tipo();
+    public TipoVariable getTipoFromVar(String var) throws Exception {
+        VData v = tablaVariables.get(var);
+        if(v == null) {
+            throw new Exception("Se ha intentado acceder al tipo de una variable inexistente: "+var);
+        }
+        return v.tipo();
     }
 
     private String conseguirIdentificadorUnico(String id) {

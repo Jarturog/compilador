@@ -200,6 +200,17 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(dec);
                     error = true;
                 }
+            } else {
+                if (tipo.isArray() || tipo.isTupla()) {
+                    errores.add("El miembro " + id + " de la tupla " + tuplaActualmenteSiendoTratada.fst + " ha sido declarado como " + tipo.getTipo() + ". En las tuplas solo se permiten tipos primitivos");
+                    indicarLocalizacion(tipo);
+                    return;
+                }
+            }
+            if (tipo.isArray() && tipo.isTupla()) {
+                errores.add("La variable " + id + " se ha declarado de tipo " + tipo.getTipo() + ". No se permiten arrays de tuplas");
+                indicarLocalizacion(tipo);
+                return;
             }
             // si es array
             ArrayList<String> variablesDimension = null;
@@ -272,7 +283,9 @@ public class AnalizadorSemantico {
             // si es una variable tipo tupla: guarda aquí su definición
             DescripcionDefinicionTupla descTipoTupla = null;
             String tuplaName = null;
+            TipoVariable t = null;
             if (tipo.isTupla()) {
+                t = TipoVariable.getTipo(tipo.getTipo(), false);
                 tuplaName = tipo.getTipo();
                 tuplaName = tuplaName.substring(tuplaName.indexOf(" ") + 1);
                 if (tipo.isArray()) {
@@ -303,11 +316,20 @@ public class AnalizadorSemantico {
                 continue;
             }
             // no es un miembro de una tupla
-            TipoVariable t = g3d.getTipoFromVar(varActual);
+            if (t == null) {
+                if (varActual == null) {
+                    t = TipoVariable.getTipo(tipo.getTipo(), tipo.getTipo().contains("[") || tipo.getTipo().startsWith(ParserSym.terminalNames[ParserSym.TUPLE]));
+                } else {
+                    t = g3d.getTipoFromVar(varActual);
+                }
+            }
             TipoVariable tOther = t.getAssignedType();
-            String variableCodigoIntermedio = g3d.nuevaVariable(id, tOther);
+            String variableCodigoIntermedio;
             if (seHaAsignado && this.tuplaActualmenteSiendoTratada == null && !tipo.isTupla()) {
+                variableCodigoIntermedio = g3d.nuevaVariable(id, tOther);
                 g3d.generarInstr(TipoInstr.COPY, new Operador(t, variableQueSeAsigna), null, new Operador(tOther, variableCodigoIntermedio));
+            } else {
+                variableCodigoIntermedio = g3d.nuevaVariable(id, t);
             }
             DescripcionSimbolo descVar;
             if (tipo.isArray()) {
@@ -1006,16 +1028,13 @@ public class AnalizadorSemantico {
     }
 
     /**
-     * Devuelve el tipo, array o struct al que pertenece el operando. Null si no
+     * Devuelve el tipo, array o tupla al que pertenece el operando. Null si no
      * se respetan los tipos.
      *
      * @param op
      * @return
      */
     private String procesarOperando(SymbolOperand op) throws Exception {
-//        if (DEBUG) {
-//            System.out.println(op.toString());
-//        }
         switch (op.getTipo()) {
             case ATOMIC_EXPRESSION -> {
                 SymbolAtomicExpression literal = op.atomicExp;
@@ -1143,7 +1162,7 @@ public class AnalizadorSemantico {
                 }
                 // operador zurdo
                 if (exp.isLeftUnaryOperator()) {
-                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+                    if (!tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])){// && !tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
                         errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // error, no se puede operar si no es int ni bool
                         indicarLocalizacion(exp);
                         return null;
@@ -1151,10 +1170,10 @@ public class AnalizadorSemantico {
                         errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar booleano con inc/dec
                         indicarLocalizacion(exp);
                         return null;
-                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && (ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
-                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar booleano con signo +/-
-                        indicarLocalizacion(exp);
-                        return null;
+//                    } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && (ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
+//                        errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar booleano con signo +/-
+//                        indicarLocalizacion(exp);
+//                        return null;
                     } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) && (ParserSym.OP_ADD != operation && ParserSym.OP_SUB != operation)) {
                         errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar entero con not
                         indicarLocalizacion(exp);
@@ -1179,19 +1198,20 @@ public class AnalizadorSemantico {
                     return tipo;
                 }
                 // operador diestro
-                if (!tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
-                    errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
-                    indicarLocalizacion(exp);
-                    return null;
-                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && ParserSym.OP_PCT != operation) {
-                    errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar double con inc/dec
-                    indicarLocalizacion(exp);
-                    return null;
-                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+//                if (!tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && !tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
+//                    errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // error, no se puede operar si no es int ni double
+//                    indicarLocalizacion(exp);
+//                    return null;
+//                } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL]) && ParserSym.OP_PCT != operation) {
+//                    errores.add("Se ha intentado realizar una operacion " + exp + " no valida sobre un " + tipo); // no se puede operar double con inc/dec
+//                    indicarLocalizacion(exp);
+//                    return null;
+//                } else
+                if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])){ //|| tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
                     String nuevaVariable = g3d.nuevaVariable(t);
                     g3d.generarInstr(TipoInstr.DIV, new Operador(t, variableOperando), new Operador(TipoVariable.INT, 100), new Operador(t, nuevaVariable));
                     this.varActual = nuevaVariable;
-                    return ParserSym.terminalNames[ParserSym.REAL]; // !!! se puede operar entero con OP_PCT
+                    return ParserSym.terminalNames[ParserSym.ENT];//.REAL]; // !!! se puede operar entero con OP_PCT
                 }
                 return tipo; // pendiente ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             }
@@ -1201,15 +1221,15 @@ public class AnalizadorSemantico {
                 String variableOp1 = varActual;
                 boolean error = false;
                 if (tipo1 == null) {
-//                    errores.add("El primer operando de la expresion binaria realiza una operacion " + exp.op1 + " no valida");
-//                    indicarLocalizacion(exp);
+                    errores.add("El primer operando de la expresion binaria realiza una operacion " + exp.op1 + " no valida");
+                    indicarLocalizacion(exp);
                     error = true;
                 }
                 String tipo2 = procesarOperando(exp.op2);
                 String variableOp2 = varActual;
                 if (tipo2 == null) {
-//                    errores.add("El segundo operando de la expresion binaria realiza una operacion " + exp.op2 + " no valida");
-//                    indicarLocalizacion(exp);
+                    errores.add("El segundo operando de la expresion binaria realiza una operacion " + exp.op2 + " no valida");
+                    indicarLocalizacion(exp);
                     error = true;
                 }
                 if (error) {
@@ -1219,17 +1239,18 @@ public class AnalizadorSemantico {
                 TipoVariable t2 = g3d.getTipoFromVar(variableOp2);
                 SymbolBinaryOperator operator = exp.bop;
                 boolean concatenarStringConString = tipo1.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo2.equals(ParserSym.terminalNames[ParserSym.CAR] + " []");
-//                boolean concatenarStringConCaracter = tipo1.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo2.equals(ParserSym.terminalNames[ParserSym.CAR]);
-//                boolean concatenarCaracterConString = tipo2.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo1.equals(ParserSym.terminalNames[ParserSym.CAR]);
                 if (operator.isAdd() && (concatenarStringConString)) { //|| concatenarStringConCaracter || concatenarCaracterConString)) {
-                    String var = g3d.nuevaVariable(TipoVariable.STRING);
-                    g3d.generarInstr(TipoInstr.CONCAT, new Operador(t1, variableOp1), new Operador(t2, variableOp2), new Operador(TipoVariable.STRING, var));
-                    varActual = var;
-                    return ParserSym.terminalNames[ParserSym.CAR] + " []";
+                    errores.add("Se ha intentado concatenar dos strings en la expresion binaria " + exp + ", cuya operación no está permitida");
+                    indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
+                    return null;
+//                    String var = g3d.nuevaVariable(TipoVariable.STRING);
+//                    g3d.generarInstr(TipoInstr.CONCAT, new Operador(t1, variableOp1), new Operador(t2, variableOp2), new Operador(TipoVariable.STRING, var));
+//                    varActual = var;
+//                    return ParserSym.terminalNames[ParserSym.CAR] + " []";
                 }
-                boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
-                        || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
-                if (!tipo1.equals(tipo2) && !unoIntOtroDouble) {
+//                boolean unoIntOtroDouble = (tipo1.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo2.equals(ParserSym.terminalNames[ParserSym.ENT]))
+//                        || (tipo2.equals(ParserSym.terminalNames[ParserSym.REAL]) && tipo1.equals(ParserSym.terminalNames[ParserSym.ENT]));
+                if (!tipo1.equals(tipo2)){// && !unoIntOtroDouble) {
                     errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop.value + " entre " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
                     indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
                     error = true;
@@ -1244,17 +1265,18 @@ public class AnalizadorSemantico {
                 TipoInstr ti = operator.getTipoInstruccion();
                 // si llega aquí es porque ambos son del mismo tipo o uno es int y otro double
                 String tipoOperandos = tipo1, varOperandos = variableOp1; // si uno es int y otro double se considera que los dos son double
-                if (unoIntOtroDouble) {
-                    if (!operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
-                        errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " para los tipos " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
-                        indicarLocalizacion(exp);
-                        return null; // error, operandos no pueden operar con operador
-                    }
-                    tipoOperandos = ParserSym.terminalNames[ParserSym.REAL];
-                    if (!tipo1.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-                        varOperandos = variableOp2;
-                    }
-                } else if (!operator.isForOperandsOfType(tipo1)) {
+//                if (unoIntOtroDouble) {
+//                    if (!operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
+//                        errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " para los tipos " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
+//                        indicarLocalizacion(exp);
+//                        return null; // error, operandos no pueden operar con operador
+//                    }
+//                    tipoOperandos = ParserSym.terminalNames[ParserSym.REAL];
+//                    if (!tipo1.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+//                        varOperandos = variableOp2;
+//                    }
+//                } else 
+                if (!operator.isForOperandsOfType(tipo1)) {
                     errores.add("Se ha intentado realizar una operacion ilegal " + exp.bop + " para los tipos " + tipo1 + " y " + tipo2 + " en la expresion binaria " + exp);
                     indicarLocalizacion(exp);
                     return null; // error, operandos no pueden operar con operador
@@ -1314,8 +1336,8 @@ public class AnalizadorSemantico {
                 String varCond = varActual;
                 boolean error = false;
                 if (tipoCond == null) {
-//                    errores.add("La condicion " + exp.cond + " de la expresion ternaria " + exp + " realiza una operacion no valida");
-//                    indicarLocalizacion(exp.cond);
+                    errores.add("La condicion " + exp.cond + " de la expresion ternaria " + exp + " realiza una operacion no valida");
+                    indicarLocalizacion(exp.cond);
                     error = true;
                 } else if (!tipoCond.equals(ParserSym.terminalNames[ParserSym.PROP])) {
                     errores.add("La condicion " + exp.cond + " de la expresion ternaria " + exp + " no resulta en una proposicion evualable como verdadera o falsa, sino en " + tipoCond);
@@ -1325,15 +1347,15 @@ public class AnalizadorSemantico {
                 String tipo1 = procesarOperando(exp.caseTrue);
                 String varTrue = varActual;
                 if (tipo1 == null) {
-//                    errores.add("El operando a asignar en caso positivo " + exp.caseTrue + " de la expresion ternaria " + exp + " realiza operaciones no validas");
-//                    indicarLocalizacion(exp.caseTrue);
+                    errores.add("El operando a asignar en caso positivo " + exp.caseTrue + " de la expresion ternaria " + exp + " realiza operaciones no validas");
+                    indicarLocalizacion(exp.caseTrue);
                     error = true;
                 }
                 String tipo2 = procesarOperando(exp.caseFalse);
                 String varFalse = varActual;
                 if (tipo2 == null) {
-//                    errores.add("El operando a asignar en caso negativo " + exp.caseFalse + " de la expresion ternaria " + exp + " realiza operaciones no validas");
-//                    indicarLocalizacion(exp.caseFalse);
+                    errores.add("El operando a asignar en caso negativo " + exp.caseFalse + " de la expresion ternaria " + exp + " realiza operaciones no validas");
+                    indicarLocalizacion(exp.caseFalse);
                     error = true;
                 }
                 if (error) {
@@ -1362,8 +1384,8 @@ public class AnalizadorSemantico {
                 String varArray = varActual;
                 boolean error = false;
                 if (tipoArr == null) {
-//                    errores.add("Se realizan operaciones no validas en el array " + arr + " del cual se quiere coger un indice");
-//                    indicarLocalizacion(arr);
+                    errores.add("Se realizan operaciones no validas en el array " + arr + " del cual se quiere coger un indice");
+                    indicarLocalizacion(arr);
                     error = true;
                 }
                 String aux = tipoArr;
@@ -1408,8 +1430,8 @@ public class AnalizadorSemantico {
                 String tipoIdx = procesarOperando(idx);
                 String varIndex = varActual;
                 if (tipoIdx == null) {
-//                    errores.add("Se realizan operaciones no validas (" + idx + ") en el calculo del indice");
-//                    indicarLocalizacion(idx);
+                    errores.add("Se realizan operaciones no validas (" + idx + ") en el calculo del indice");
+                    indicarLocalizacion(idx);
                     return null;
                 } else if (!tipoIdx.equals(ParserSym.terminalNames[ParserSym.ENT])) {
                     errores.add("El operador que se quiere usar como indice (" + idx + ") no es un entero, es de tipo " + tipoIdx);
@@ -1432,8 +1454,8 @@ public class AnalizadorSemantico {
                 String tipoTupla = procesarOperando(tupla);
                 String varTupla = varActual;
                 if (tipoTupla == null) {
-//                    errores.add("Se realizan operaciones no validas (" + tupla + ") en la tupla de la cual se quiere coger un miembro");
-//                    indicarLocalizacion(tupla);
+                    errores.add("Se realizan operaciones no validas (" + tupla + ") en la tupla de la cual se quiere coger un miembro");
+                    indicarLocalizacion(tupla);
                     return null;
                 }
                 String nombre = tupla.value.toString();//tipoTupla.substring(tipoTupla.indexOf(" ") + 1);
@@ -1479,10 +1501,9 @@ public class AnalizadorSemantico {
                 SymbolOperand operando = op.op;
                 String casting = op.casting.getTipo();
                 String tipo = procesarOperando(operando);
-//                String variable = variableTratadaActualmente;
                 if (tipo == null) {
-//                    errores.add("Se realizan operaciones no validas (" + operando + ") en antes de aplicar el casting");
-//                    indicarLocalizacion(operando);
+                    errores.add("Se realizan operaciones no validas (" + operando + ") en antes de aplicar el casting");
+                    indicarLocalizacion(operando);
                     return null;
                 }
                 String varCasting = varActual;
@@ -1494,21 +1515,21 @@ public class AnalizadorSemantico {
                     casting = castingPreEspacios + " " + castingPostEspacios;
                     charAString = tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) && casting.equals(ParserSym.terminalNames[ParserSym.CAR] + " []");
                 }
-                boolean opEsIntCharDouble = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]) || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
-                boolean castingEsIntCharDouble = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]) || casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                boolean opEsIntChar = tipo.equals(ParserSym.terminalNames[ParserSym.ENT]) || tipo.equals(ParserSym.terminalNames[ParserSym.CAR]); //|| tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                boolean castingEsIntChar = casting.equals(ParserSym.terminalNames[ParserSym.ENT]) || casting.equals(ParserSym.terminalNames[ParserSym.CAR]);// || casting.equals(ParserSym.terminalNames[ParserSym.REAL]);
                 // casting posible entre int <-> char <-> double <-> int y se hace solo esto: char -> string
-                if (opEsIntCharDouble && castingEsIntCharDouble) {
+                if (opEsIntChar && castingEsIntChar) {
                     TipoVariable t = g3d.getTipoFromVar(varCasting);
                     TipoVariable t2 = TipoVariable.getTipo(tipo, tipo.contains("["));
                     String nuevaVar = g3d.nuevaVariable(t2);
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(t, varCasting), null, new Operador(t2, nuevaVar));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(t, varCasting, t2), null, new Operador(t2, nuevaVar));
                     varActual = nuevaVar;
                     return casting;
                 } else if (charAString) {
                     TipoVariable t = g3d.getTipoFromVar(varCasting);
                     TipoVariable t2 = TipoVariable.STRING;
                     String nuevaVar = g3d.nuevaVariable(t2);
-                    g3d.generarInstr(TipoInstr.COPY, new Operador(t, varCasting), null, new Operador(t2, nuevaVar));
+                    g3d.generarInstr(TipoInstr.COPY, new Operador(t, varCasting, t2), null, new Operador(t2, nuevaVar));
                     varActual = nuevaVar;
                     return casting;
                 }

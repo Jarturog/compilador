@@ -34,7 +34,7 @@ public class SymbolTipoPrimitivo extends SymbolTipoCasting {
     public static boolean isTipoPrimitivo(String t) {
         return t.equals(ParserSym.terminalNames[ParserSym.PROP])
                 || t.equals(ParserSym.terminalNames[ParserSym.ENT])
-                || t.equals(ParserSym.terminalNames[ParserSym.REAL])
+//                || t.equals(ParserSym.terminalNames[ParserSym.REAL])
                 || t.equals(ParserSym.terminalNames[ParserSym.CAR]);//|| t.equals(ParserSym.terminalNames[ParserSym.STRING]);
     }
 

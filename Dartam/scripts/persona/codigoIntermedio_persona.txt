@@ -1,20 +1,62 @@
 e_inicio: skip
 pmb e_inicio
-t = hola
-aux = t
-param_s aux
-call e_show
-t_1 = mundo
+param_s p1
+t = 1
+param_s t
+t_1 = a
 param_s t_1
+call e_nuevapersona
+t_2 = 4
+t_3 = p1[t_2]
+t_4 = t_3
+t_5 = t_4
+param_s t_5
+call e_show
+t_6 = 0
+i = t_6
+e: skip
+t_7 = 3
+if i < t_7 goto e_3
+t_8 = 0
+goto e_4
+e_3: skip
+t_8 = -1
+e_4: skip
+if t_8 == 0 goto e_1
+t_9 = 4
+t_10 = p1[t_9]
+t_11 = 1
+t_12 = t_11
+t_13 = t_10 + t_12
+t_14 = 4
+p1[t_14] = t_13
+t_15 = 4
+t_16 = p1[t_15]
+t_17 = t_16
+t_18 = t_17
+param_s t_18
+call e_show
+e_2: skip
+t_19 = 1
+t_20 = i + t_19
+i = t_20
+goto e
+e_1: skip
+p2 = p1
+t_21 = 4
+t_22 = p2[t_21]
+t_23 = t_22
+t_24 = t_23
+param_s t_24
 call e_show
 rtn e_inicio
 
 
 e_nuevapersona: skip
 pmb e_nuevapersona
-t_2 = 0
-p[t_2] = idpersona
-t_3 = 4
-p[t_3] = let
+t_25 = 0
+p[t_25] = idpersona
+t_26 = 4
+p[t_26] = let
 rtn e_nuevapersona
 

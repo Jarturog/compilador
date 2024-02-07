@@ -39,10 +39,10 @@ public class SymbolAtomicExpression extends SymbolBase {
         tipo = ParserSym.terminalNames[ParserSym.CAR];
     }
 
-    public SymbolAtomicExpression(Double et, Location l, Location r) {
-        super("literal", et, l, r);
-        tipo = ParserSym.terminalNames[ParserSym.REAL];
-    }
+//    public SymbolAtomicExpression(Double et, Location l, Location r) {
+//        super("literal", et, l, r);
+//        tipo = ParserSym.terminalNames[ParserSym.REAL];
+//    }
 
     public SymbolAtomicExpression(Integer et, Location l, Location r) {
         super("literal", et, l, r);
@@ -56,8 +56,8 @@ public class SymbolAtomicExpression extends SymbolBase {
 
     public boolean esNumerico() {
         return tipo.equals(ParserSym.terminalNames[ParserSym.CAR])
-                || tipo.equals(ParserSym.terminalNames[ParserSym.ENT])
-                || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
+                || tipo.equals(ParserSym.terminalNames[ParserSym.ENT]);
+//                || tipo.equals(ParserSym.terminalNames[ParserSym.REAL]);
     }
 
     public Object getValorCodigoIntermedio() {
@@ -65,8 +65,8 @@ public class SymbolAtomicExpression extends SymbolBase {
             return (Character)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ENT])) {
             return (Integer)value;
-        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
-            return (Double)value;
+//        } else if (tipo.equals(ParserSym.terminalNames[ParserSym.REAL])) {
+//            return (Double)value;
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP])) {
             return (Integer)((Boolean) value ? TipoVariable.TRUE : TipoVariable.FALSE);
         } else if (tipo.equals(ParserSym.terminalNames[ParserSym.ID])) {

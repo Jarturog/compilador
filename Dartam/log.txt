@@ -1,5 +1,6 @@
-java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "analizadorSemantico.DescripcionFuncion.getBytes()" is null
-	at analizadorSemantico.AnalizadorSemantico.procesarMetodo(AnalizadorSemantico.java:870)
-	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:162)
-	at dartam.Dartam.<init>(Dartam.java:110)
+java.lang.Exception: Instrucción t_17 = t_15 concat t_16 no se puede pasar a código ensamblador
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarInstruccion(GeneradorEnsamblador.java:447)
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:108)
+	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:60)
+	at dartam.Dartam.<init>(Dartam.java:124)
 	at dartam.Dartam.main(Dartam.java:58)

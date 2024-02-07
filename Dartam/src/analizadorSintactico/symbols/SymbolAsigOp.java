@@ -49,13 +49,13 @@ public class SymbolAsigOp extends SymbolBase {
                     operacion == ParserSym.AS_DIVA ||
                     operacion == ParserSym.AS_MODA ||
                     operacion == ParserSym.AS_POTA;
-        } else if (type.equals(ParserSym.terminalNames[ParserSym.REAL])){
-            return operacion == ParserSym.AS_ADDA ||
-                    operacion == ParserSym.AS_SUBA ||
-                    operacion == ParserSym.AS_MULA ||
-                    operacion == ParserSym.AS_DIVA;
-        //} else if (type.equals(ParserSym.terminalNames[ParserSym.STRING])){
-        //    return operacion == ParserSym.AS_ADDA;
+//        } else if (type.equals(ParserSym.terminalNames[ParserSym.REAL])){
+//            return operacion == ParserSym.AS_ADDA ||
+//                    operacion == ParserSym.AS_SUBA ||
+//                    operacion == ParserSym.AS_MULA ||
+//                    operacion == ParserSym.AS_DIVA;
+//        } else if (type.equals(ParserSym.terminalNames[ParserSym.STRING])){
+//            return operacion == ParserSym.AS_ADDA;
         }
         return false;
     }

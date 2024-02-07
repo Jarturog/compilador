@@ -7,17 +7,10 @@ import analizadorSemantico.genCodigoIntermedio.GestorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Operador;
 import analizadorSemantico.genCodigoIntermedio.TipoVariable;
-import static analizadorSemantico.genCodigoIntermedio.TipoVariable.BOOL;
-import static analizadorSemantico.genCodigoIntermedio.TipoVariable.CHAR;
-import static analizadorSemantico.genCodigoIntermedio.TipoVariable.DOUBLE;
-import static analizadorSemantico.genCodigoIntermedio.TipoVariable.INT;
-import static analizadorSemantico.genCodigoIntermedio.TipoVariable.PUNTERO;
-import static analizadorSemantico.genCodigoIntermedio.TipoVariable.STRING;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import jflex.base.Pair;
 
 public class GeneradorEnsamblador {
 
@@ -263,6 +256,9 @@ public class GeneradorEnsamblador {
         switch (instr.getTipo()) {
             case COPY -> { // op1 -> dst
                 String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                if(instr.op1() != null && instr.op1().getCasting() != null && instr.op1().getCasting().equals(TipoVariable.STRING)) {
+                    add("ROR.L", "#8, " + register, "move to the left so it is followed by 0's, since it is a casting from char to string");
+                }
                 store(register, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case NEG -> { // -op1 -> dst
@@ -623,9 +619,6 @@ public class GeneradorEnsamblador {
                 case CHAR -> {
                     return "DS" + ext + " " + 1;
                 }
-                case DOUBLE -> {
-                    return "DS.L " + 1;
-                }
                 case INT -> {
                     return "DS" + ext + " " + 1;
                 }
@@ -647,9 +640,6 @@ public class GeneradorEnsamblador {
                 case CHAR -> {
                     return "DC" + ext + " '" + inicializacion + "'";
                 }
-//            case DOUBLE -> {
-//                return "DC" + ext + " " + inicializacion;
-//            }
                 case INT -> {
                     return "DC" + ext + " " + inicializacion;
                 }

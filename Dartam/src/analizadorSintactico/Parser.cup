@@ -26,11 +26,21 @@ import java.util.HashMap;
 import java.util.List;
 import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
 import java_cup.runtime.ComplexSymbolFactory.Location;
+import java.util.ArrayList;
 
 class Parser;
 
+init with {: 
+    anterior = new ArrayList<>();
+    anterior.add(null);
+    anterior.add(null);
+    anterior.add(null);
+:};
+
 scan with {: 
     ComplexSymbol s = (ComplexSymbol) getScanner().next_token();
+    anterior.add(0, s);
+    anterior.remove(3);
     return s;
 :};
 
@@ -42,6 +52,7 @@ parser code {:
     *
     * Equipo: Arturo, Dani y Marta
     */
+    private ArrayList<ComplexSymbol> anterior;
     private String errores = "";
     public String getErrores() {
         return errores;
@@ -73,7 +84,23 @@ parser code {:
         if (cur_token.sym == ParserSym.EOF) {
             return;
         }
+        boolean englishChar = false, englishInt = false;
+        if (anterior.size() > 2 && anterior.get(2) != null) {
+            englishChar = anterior.get(2).value.toString().equals("char");
+            englishInt = anterior.get(2).value.toString().equals("int");
+        } else if (anterior.size() > 1 && anterior.get(1) != null) {
+            englishChar = anterior.get(1).value.toString().equals("char");
+            englishInt = anterior.get(1).value.toString().equals("int");
+        } else if (anterior.size() > 0 && anterior.get(0) != null) {
+            englishChar = anterior.get(0).value.toString().equals("char");
+            englishInt = anterior.get(0).value.toString().equals("int");
+        }
         String err = message + "No se esperaba este componente\n: " +cur_token.value+".";
+        if (englishChar) {
+            message += "\nSe ha encontrado 'char', puede que quisieras escribir 'car'?\n";
+        } else if (englishInt) {
+            message += "\nSe ha encontrado 'int', puede que quisieras escribir 'ent'?\n";
+        }
         if (info instanceof ComplexSymbol token) {
             List expected = expected_token_ids();
             String tokens = "";
@@ -107,7 +134,7 @@ terminal    AS_ASSIGN, AS_ADDA, AS_SUBA, AS_MULA, AS_DIVA, AS_POTA, AS_MODA, AS_
 terminal    OP_EQ, OP_BEQ, OP_BT, OP_LEQ, OP_LT, OP_NEQ;
 terminal    OP_AND, OP_OR, OP_NOT;
 terminal    OP_SWAP, OP_PCT, OP_POT, OP_COND, ARROW, OP_MEMBER;
-terminal    KW_BOOL, KW_INT, KW_DOUBLE, KW_CHAR, VOID;
+terminal    KW_BOOL, KW_INT, /*KW_DOUBLE,*/ KW_CHAR, VOID;
 terminal    LPAREN, RPAREN, LKEY, RKEY, LBRACKET, RBRACKET, ENDINSTR, COMMA;
 terminal    KW_MAIN, KW_METHOD, TUPLE, KW_CONST, KW_IF, KW_ELIF, KW_ELSE, KW_LOOP, KW_CONTINUE, KW_BREAK, KW_SWITCH, KW_RETURN, KW_CASE, KW_DEFAULT;
 terminal    ENTER, SHOW, FROM, INTO;
@@ -116,7 +143,7 @@ terminal    PREC_B_EXP, PREC_L_U_EXP, PREC_R_U_EXP, PREC_C_EXP, CASTING;
 terminal    String              ID, STRING;
 terminal    Boolean             PROP;
 terminal    Integer             ENT;
-terminal    Double              REAL;
+//terminal    Double              REAL;
 terminal    Character           CAR;
 
 non terminal SymbolBody BODY;
@@ -217,8 +244,10 @@ TIPO ::= TIPO_PRIMITIVO:t                       {: RESULT = new SymbolTipo(t, tx
 
 TIPO_PRIMITIVO ::= KW_BOOL:et              {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         | KW_INT:et                        {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
-        | KW_DOUBLE:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+//        | KW_DOUBLE:et                     {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
         | KW_CHAR:et                       {: RESULT = new SymbolTipoPrimitivo(et, etxleft, etxright); :}
+//        | WRONG_CHAR:et                    {: throw new ExceptionSymbol("Encontrado char, puede que quisieras escribir 'car'?", etxleft, etxright); :}
+//        | WRONG_INT:et                     {: throw new ExceptionSymbol("Encontrado int, puede que quisieras escribir 'ent'?", etxleft, etxright); :}
         ;
 
 PARAMS ::= PARAMSLISTA:et                             {: RESULT = new SymbolParams(et, etxleft, etxright); :}   
@@ -295,8 +324,8 @@ ASIGS ::= ASIG:et1 COMMA ASIGS:et2                              {: RESULT = new 
         ;
 
 ASIG ::= ID:et ASIG_OP:aop OPERAND:val                                  {: RESULT = new SymbolAsig(et, aop, val, etxleft, etxright); :}
-        | ID:et1 DIMENSIONES:dim ASIG_OP:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, dim, aop, val, et1xleft, et1xright); :}
-        | ID:et1 OP_MEMBER ID:et2 ASIG_OP:aop OPERAND:val               {: RESULT = new SymbolAsig(et1, et2, aop, val, et1xleft, et1xright); :}
+        | ID:et1 DIMENSIONES:dim AS_ASSIGN:aop OPERAND:val  {: RESULT = new SymbolAsig(et1, dim, aopxleft, aop, aopxright, val, et1xleft, et1xright); :}
+        | ID:et1 OP_MEMBER ID:et2 AS_ASSIGN:aop OPERAND:val               {: RESULT = new SymbolAsig(et1, et2, aopxleft, aop, aopxright, val, et1xleft, et1xright); :}
         | ID:et1 OP_INC:et2             {: RESULT = new SymbolAsig(true, ParserSym.OP_INC, et1, et2, et1xleft, et1xright); :}  %prec PREC_R_U_EXP
         | ID:et1 OP_DEC:et2             {: RESULT = new SymbolAsig(true, ParserSym.OP_DEC, et1, et2, et1xleft, et1xright); :}  %prec PREC_R_U_EXP
         | OP_INC:et1 ID:et2             {: RESULT = new SymbolAsig(false, ParserSym.OP_INC, et2, et1, et1xleft, et1xright); :} %prec PREC_L_U_EXP
@@ -352,7 +381,7 @@ ATOMIC_EXPRESSION ::= ID:et     {: RESULT = new SymbolAtomicExpression(true, et,
         | STRING:et             {: RESULT = new SymbolAtomicExpression(false, et, etxleft, etxright); :}
         | PROP:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         | ENT:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
-        | REAL:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
+//        | REAL:et               {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         | CAR:et                {: RESULT = new SymbolAtomicExpression(et, etxleft, etxright); :}
         ;
 
