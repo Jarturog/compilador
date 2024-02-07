@@ -1,0 +1,14 @@
+scan:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_scan con parametros CAR [] input
+show:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_show con parametros CAR [] output
+inicio:      Funcion tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parametros
+into:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_into con parametros CAR [] file, CAR [] output
+from:        Funcion tipo VOID declarada en el nivel 1 con etiqueta e_from con parametros CAR [] file, CAR [] input
+octal:       Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI octal ocupando 4 bytes
+a:           Variable tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI a ocupando 4 bytes
+b:           Variable tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI b ocupando 4 bytes
+dec:         Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI dec ocupando 4 bytes
+zero2:       Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI zero2 ocupando 4 bytes
+zero3:       Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI zero3 ocupando 4 bytes
+zero1:       Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI zero1 ocupando 4 bytes
+binario:     Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI binario ocupando 4 bytes
+hex:         Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI hex ocupando 4 bytes

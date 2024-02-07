@@ -1,0 +1,44 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] input
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parametros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parametros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parametros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] output
+
+Tabla de variables
+octal: tipo INT
+dec: tipo INT
+binario: tipo INT
+t_25: tipo STRING inicializado a b: almacenando una estructura de datos de 256 bytes
+t_26: tipo STRING
+hex: tipo INT
+t_23: tipo STRING inicializado a a: almacenando una estructura de datos de 256 bytes
+t_24: tipo STRING
+t_21: tipo CHAR inicializado a b almacenando una estructura de datos de 256 bytes
+t_22: tipo CHAR
+t_20: tipo CHAR inicializado a a almacenando una estructura de datos de 256 bytes
+a: tipo CHAR
+b: tipo CHAR
+t_18: tipo INT
+t_19: tipo STRING
+t_2: tipo INT inicializado a 49 almacenando una estructura de datos de 256 bytes
+t_16: tipo STRING
+t_1: tipo INT inicializado a 48 almacenando una estructura de datos de 256 bytes
+t_17: tipo STRING inicializado a Decimal: 51 almacenando una estructura de datos de 256 bytes
+t_4: tipo INT inicializado a 51 almacenando una estructura de datos de 256 bytes
+t_3: tipo INT inicializado a 50 almacenando una estructura de datos de 256 bytes
+t_6: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_5: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+zero2: tipo INT
+t_8: tipo STRING inicializado a Binario: 0b110000 almacenando una estructura de datos de 256 bytes
+t_7: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+zero3: tipo INT
+zero1: tipo INT
+t_9: tipo INT
+t: tipo STRING inicializado a Prueba de bases almacenando una estructura de datos de 256 bytes
+t_14: tipo STRING inicializado a Hexadecimal: 0x32 almacenando una estructura de datos de 256 bytes
+t_15: tipo INT
+t_12: tipo INT
+t_13: tipo STRING
+t_10: tipo STRING
+t_11: tipo STRING inicializado a Octal: 0o61 almacenando una estructura de datos de 256 bytes

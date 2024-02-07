@@ -1,81 +1,88 @@
 e_inicio: skip
 pmb e_inicio
-t = 3
-d_matrizcars = t
-t_1 = 3
-d_matrizcars_1 = t_1
-t_2 = a
-t_3 = 0
-t_4 = t_3
-t_5 = 0
-t_6 = t_5
-t_7 = t_4 * d_matrizcars_1
-t_8 = t_6 + t_7
-t_9 = t_8 * 4
-matrizcars[t_9] = t_2
-t_10 = b
-t_11 = 0
-t_12 = t_11
-t_13 = 1
-t_14 = t_13
-t_15 = t_12 * d_matrizcars_1
-t_16 = t_14 + t_15
-t_17 = t_16 * 4
-matrizcars[t_17] = t_10
-t_18 = d
-t_19 = 1
-t_20 = t_19
-t_21 = 0
-t_22 = t_21
-t_23 = t_20 * d_matrizcars_1
-t_24 = t_22 + t_23
-t_25 = t_24 * 4
-matrizcars[t_25] = t_18
-t_26 = 0
-i = t_26
+t = Impresion de las primeras 2*3*2=12 letras del abecedario
+param_s t
+call e_show
+t_1 = 2
+d_matrizcars = t_1
+t_2 = 3
+d_matrizcars_1 = t_2
+t_3 = 2
+d_matrizcars_2 = t_3
+t_4 = 0
+i = t_4
 e: skip
-t_27 = 3
-if i < t_27 goto e_3
-t_28 = 0
+t_5 = 2
+if i < t_5 goto e_3
+t_6 = 0
 goto e_4
 e_3: skip
-t_28 = -1
+t_6 = -1
 e_4: skip
-if t_28 == 0 goto e_1
-t_29 = 0
-j = t_29
+if t_6 == 0 goto e_1
+t_7 = 0
+j = t_7
 e_5: skip
-t_30 = 3
-if j < t_30 goto e_8
-t_31 = 0
+t_8 = 3
+if j < t_8 goto e_8
+t_9 = 0
 goto e_9
 e_8: skip
-t_31 = -1
+t_9 = -1
 e_9: skip
-if t_31 == 0 goto e_6
-t_32 = A
-t_33 = i + j
-t_34 = t_33
-t_35 = t_32 + t_34
-t_36 = i
-t_37 = j
-t_38 = t_36 * d_matrizcars_1
-t_39 = t_37 + t_38
-t_40 = t_39 * 4
-matrizcars[t_40] = t_35
-t_41 = matrizcars[i]
-t_42 = t_41[j]
-t_43 = t_42
-param_s t_43
+if t_9 == 0 goto e_6
+t_10 = 0
+k = t_10
+e_10: skip
+t_11 = 2
+if k < t_11 goto e_13
+t_12 = 0
+goto e_14
+e_13: skip
+t_12 = -1
+e_14: skip
+if t_12 == 0 goto e_11
+t_13 = A
+t_14 = 3
+t_15 = 2
+t_16 = t_14 * t_15
+t_17 = i * t_16
+t_18 = 2
+t_19 = j * t_18
+t_20 = t_19 + k
+t_21 = t_17 + t_20
+t_22 = 26
+t_23 = t_21 mod t_22
+t_24 = t_23
+t_25 = t_13 + t_24
+t_26 = i * d_matrizcars
+t_27 = j + t_26
+t_28 = t_27 * d_matrizcars_1
+t_29 = k + t_28
+t_30 = t_29 * 4
+matrizcars[t_30] = t_25
+t_31 = i * d_matrizcars
+t_32 = j + t_31
+t_33 = t_32 * d_matrizcars_1
+t_34 = k + t_33
+t_35 = t_34 * 4
+t_36 = matrizcars[t_35]
+t_37 = t_36
+param_s t_37
 call e_show
-t_44 = 1
-t_45 = j + t_44
-j = t_45
+t_38 = 1
+t_39 = k + t_38
+k = t_39
+goto e_10
+e_11: skip
+t_40 = 1
+t_41 = j + t_40
+j = t_41
 goto e_5
 e_6: skip
-t_46 = 1
-t_47 = i + t_46
-i = t_47
+t_42 = 1
+t_43 = i + t_42
+i = t_43
 goto e
 e_1: skip
 rtn e_inicio

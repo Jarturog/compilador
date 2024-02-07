@@ -1,0 +1,27 @@
+f vacio inicio(){
+	show("Prueba de bases");
+	ent binario: 0b110000; // 48 decimal
+	ent octal: 0o61; // 49 decimal
+	ent hex: 0x32; // 50 decimal
+	ent dec: 51;
+	ent zero1: 0;
+	ent zero2: 00;
+	ent zero3: 000;
+	
+	show("Binario: 0b110000");
+	show((car[])(car)binario);
+	show("Octal: 0o61");
+	show((car[])(car)octal);
+	show("Hexadecimal: 0x32");
+	show((car[])(car)hex);
+	show("Decimal: 51");
+	show((car[])(car)dec);
+	
+	car b: 'a';
+	car a: 'b';
+	a <> b; // swap
+	show("a:");
+	show((car[])a);
+	show("b:");
+	show((car[])b);
+}

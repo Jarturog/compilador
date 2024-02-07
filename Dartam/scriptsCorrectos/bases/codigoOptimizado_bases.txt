@@ -1,0 +1,69 @@
+e_inicio: skip
+pmb e_inicio
+t = Prueba de bases
+param_s t
+call e_show
+t_1 = 48
+binario = t_1
+t_2 = 49
+octal = t_2
+t_3 = 50
+hex = t_3
+t_4 = 51
+dec = t_4
+t_5 = 0
+zero1 = t_5
+t_6 = 0
+zero2 = t_6
+t_7 = 0
+zero3 = t_7
+t_8 = Binario: 0b110000
+param_s t_8
+call e_show
+t_9 = binario
+t_10 = t_9
+param_s t_10
+call e_show
+t_11 = Octal: 0o61
+param_s t_11
+call e_show
+t_12 = octal
+t_13 = t_12
+param_s t_13
+call e_show
+t_14 = Hexadecimal: 0x32
+param_s t_14
+call e_show
+t_15 = hex
+t_16 = t_15
+param_s t_16
+call e_show
+t_17 = Decimal: 51
+param_s t_17
+call e_show
+t_18 = dec
+t_19 = t_18
+param_s t_19
+call e_show
+t_20 = a
+b = t_20
+t_21 = b
+a = t_21
+t_22 = a
+a = b
+b = t_22
+t_23 = a:
+param_s t_23
+call e_show
+t_24 = a
+param_s t_24
+call e_show
+t_25 = b:
+param_s t_25
+call e_show
+t_26 = b
+param_s t_26
+call e_show
+rtn e_inicio
+
+
