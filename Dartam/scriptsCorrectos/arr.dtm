@@ -1,4 +1,5 @@
 f vacio inicio() {
+	ent[3][3][3] tensor;
 	car [3][4] arr;
 	arr[0][1]: ' ';
 	car[][] c;

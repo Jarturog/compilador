@@ -1,0 +1,193 @@
+00001090 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 07/02/2024 19:02:31
+
+00000000                             1  ; ==============================================================================
+00000000                             2  ; TITLE       : arr
+00000000                             3  ; COMPILED BY : jartu
+00000000                             4  ; COMPILER BY : Juan Arturo Abaurrea Calafell
+00000000                             5  ;               Dani Salanova Dmitriyev
+00000000                             6  ;               Marta González Juan
+00000000                             7  ; ==============================================================================
+00000000                             8  
+00001000                             9              ORG         $1000       ; Origen
+00001000                            10  
+00001000= 00000003                  11  t           DC.L 3                  ; INT
+00001004= 00000004                  12  t_1         DC.L 4                  ; INT
+00001008= 20000000                  13  t_2         DC.L ' '                ; CHAR
+0000100C= 00000000                  14  t_3         DC.L 0                  ; INT
+00001010= 00000001                  15  t_4         DC.L 1                  ; INT
+00001014= FFFFFFFF                  16  t_8         DC.L -1                 ; BOOLEAN
+00001018= 00000003                  17  t_9         DC.L 3                  ; INT
+0000101C= 00000004                  18  t_10        DC.L 4                  ; INT
+00001020= 00000002                  19  t_11        DC.L 2                  ; INT
+00001024                            20  arr         DS.B 28                 ; ARRAY
+00001040= 00                        21              DC.B 0                  ; Los strings y chars acaban en 0
+00001042                            22              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001042                            23  b           DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001046                            24  c           DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+0000104A                            25  d_c         DS.L 1                  ; INT
+0000104E                            26  t_6         DS.L 1                  ; INT
+00001052                            27  d_arr       DS.L 1                  ; INT
+00001056                            28  t_5         DS.L 1                  ; INT
+0000105A                            29  t_7         DS.L 1                  ; INT
+0000105E                            30  d_arr_1     DS.L 1                  ; INT
+00001062                            31  c_1         DS.B 36                 ; ARRAY
+00001086= 00                        32              DC.B 0                  ; Los strings y chars acaban en 0
+00001088                            33              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001088                            34  d_c_2       DS.L 1                  ; INT
+0000108C                            35  d_c_1       DS.L 1                  ; INT
+00001090                            36  
+00001090                            37  ; --------- INITIALIZATION          
+00001090                            38  arr0                                ; Etiqueta inicial (main)
+00001090  4EB9 0000109A             39              JSR         e_inicio    ; Se ejecuta el main
+00001096  FFFF FFFF                 40              SIMHALT                 ; Fin de la ejecución
+0000109A                            41  
+0000109A                            42  ; --------- e_inicio: skip          
+0000109A                            43                                      
+0000109A                            44  ; --------- pmb e_inicio            
+0000109A                            45  ; --------- t = 3                   
+0000109A  7003                      46  e_inicio:   MOVE.L      #3, D0      ; D0 = #3
+0000109C  21C0 1000                 47              MOVE.L      D0, t       ; t = D0
+000010A0                            48  ; --------- d_arr = t               
+000010A0  2038 1000                 49              MOVE.L      t, D0       ; D0 = t
+000010A4  21C0 1052                 50              MOVE.L      D0, d_arr   ; d_arr = D0
+000010A8                            51  ; --------- t_1 = 4                 
+000010A8  7004                      52              MOVE.L      #4, D0      ; D0 = #4
+000010AA  21C0 1004                 53              MOVE.L      D0, t_1     ; t_1 = D0
+000010AE                            54  ; --------- d_arr_1 = t_1           
+000010AE  2038 1004                 55              MOVE.L      t_1, D0     ; D0 = t_1
+000010B2  21C0 105E                 56              MOVE.L      D0, d_arr_1 ; d_arr_1 = D0
+000010B6                            57  ; --------- t_2 =                   
+000010B6  7020                      58              MOVE.L      #' ', D0    ; D0 = #' '
+000010B8  21C0 1008                 59              MOVE.L      D0, t_2     ; t_2 = D0
+000010BC                            60  ; --------- t_3 = 0                 
+000010BC  7000                      61              MOVE.L      #0, D0      ; D0 = #0
+000010BE  21C0 100C                 62              MOVE.L      D0, t_3     ; t_3 = D0
+000010C2                            63  ; --------- t_4 = 1                 
+000010C2  7001                      64              MOVE.L      #1, D0      ; D0 = #1
+000010C4  21C0 1010                 65              MOVE.L      D0, t_4     ; t_4 = D0
+000010C8                            66  ; --------- t_5 = t_3 * d_arr_1     
+000010C8                            67  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000010C8  2038 100C                 68              MOVE.L      t_3, D0     ; D0 = t_3
+000010CC  2238 105E                 69              MOVE.L      d_arr_1, D1 ; D1 = d_arr_1
+000010D0  3400                      70              MOVE.W      D0, D2      ; D2.L = D1.L
+000010D2  3601                      71              MOVE.W      D1, D3      ; D1.L = D3.L
+000010D4  E080                      72              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+000010D6  E080                      73              ASR.L       #8, D0      ; D0.L = old D0.H
+000010D8  E081                      74              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+000010DA  E081                      75              ASR.L       #8, D1      ; D1.L = old D1.H
+000010DC  C1C1                      76              MULS.W      D1, D0      ; D0 = D0 * D1
+000010DE  C7C2                      77              MULS.W      D2, D3      ; D3 = D2 * D3
+000010E0  E180                      78              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+000010E2  E180                      79              ASL.L       #8, D0      ; D0.H = old D0.L
+000010E4  D083                      80              ADD.L       D3, D0      ; D0 = D0 + D3
+000010E6  21C0 1056                 81              MOVE.L      D0, t_5     ; t_5 = D0
+000010EA                            82  ; --------- t_6 = t_4 + t_5         
+000010EA  2038 1010                 83              MOVE.L      t_4, D0     ; D0 = t_4
+000010EE  2238 1056                 84              MOVE.L      t_5, D1     ; D1 = t_5
+000010F2  D280                      85              ADD.L       D0, D1      ; D1 = D1 + D0
+000010F4  21C1 104E                 86              MOVE.L      D1, t_6     ; t_6 = D1
+000010F8                            87  ; --------- t_7 = t_6 * 4           
+000010F8                            88  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000010F8  2038 104E                 89              MOVE.L      t_6, D0     ; D0 = t_6
+000010FC  7204                      90              MOVE.L      #4, D1      ; D1 = #4
+000010FE  3400                      91              MOVE.W      D0, D2      ; D2.L = D1.L
+00001100  3601                      92              MOVE.W      D1, D3      ; D1.L = D3.L
+00001102  E080                      93              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001104  E080                      94              ASR.L       #8, D0      ; D0.L = old D0.H
+00001106  E081                      95              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+00001108  E081                      96              ASR.L       #8, D1      ; D1.L = old D1.H
+0000110A  C1C1                      97              MULS.W      D1, D0      ; D0 = D0 * D1
+0000110C  C7C2                      98              MULS.W      D2, D3      ; D3 = D2 * D3
+0000110E  E180                      99              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+00001110  E180                     100              ASL.L       #8, D0      ; D0.H = old D0.L
+00001112  D083                     101              ADD.L       D3, D0      ; D0 = D0 + D3
+00001114  21C0 105A                102              MOVE.L      D0, t_7     ; t_7 = D0
+00001118                           103  ; --------- arr[t_7] = t_2          
+00001118  2038 1008                104              MOVE.L      t_2, D0     ; D0 = t_2
+0000111C  2238 105A                105              MOVE.L      t_7, D1     ; D1 = t_7
+00001120  41F8 1024                106              LEA.L       arr, A0     ; A0 = arr
+00001124  D1C1                     107              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001126  2080                     108              MOVE.L      D0, (A0)    ; (A0) = D0
+00001128                           109  ; --------- c = arr                 
+00001128  41F8 1024                110              LEA.L       arr, A0     ; A0 = arr
+0000112C  21C8 1046                111              MOVE.L      A0, c       ; c = A0
+00001130                           112  ; --------- b = c                   
+00001130  2078 1046                113              MOVEA.L     c, A0       ; A0 = c
+00001134  21C8 1042                114              MOVE.L      A0, b       ; b = A0
+00001138                           115  ; --------- t_8 = -1                
+00001138  70FF                     116              MOVE.L      #-1, D0     ; D0 = #-1
+0000113A  21C0 1014                117              MOVE.L      D0, t_8     ; t_8 = D0
+0000113E                           118  ; --------- if t_8 == 0 goto e_1    
+0000113E  2038 1014                119              MOVE.L      t_8, D0     ; D0 = t_8
+00001142  7200                     120              MOVE.L      #0, D1      ; D1 = #0
+00001144  B081                     121              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001146  6700 003A                122              BEQ         .e_1        ; IF Z FLAG = 1 GOTO .e_1
+0000114A                           123  ; --------- c = arr                 
+0000114A  41F8 1024                124              LEA.L       arr, A0     ; A0 = arr
+0000114E  21C8 1046                125              MOVE.L      A0, c       ; c = A0
+00001152                           126  ; --------- t_9 = 3                 
+00001152  7003                     127              MOVE.L      #3, D0      ; D0 = #3
+00001154  21C0 1018                128              MOVE.L      D0, t_9     ; t_9 = D0
+00001158                           129  ; --------- d_c = t_9               
+00001158  2038 1018                130              MOVE.L      t_9, D0     ; D0 = t_9
+0000115C  21C0 104A                131              MOVE.L      D0, d_c     ; d_c = D0
+00001160                           132  ; --------- t_10 = 4                
+00001160  7004                     133              MOVE.L      #4, D0      ; D0 = #4
+00001162  21C0 101C                134              MOVE.L      D0, t_10    ; t_10 = D0
+00001166                           135  ; --------- d_c_1 = t_10            
+00001166  2038 101C                136              MOVE.L      t_10, D0    ; D0 = t_10
+0000116A  21C0 108C                137              MOVE.L      D0, d_c_1   ; d_c_1 = D0
+0000116E                           138  ; --------- t_11 = 2                
+0000116E  7002                     139              MOVE.L      #2, D0      ; D0 = #2
+00001170  21C0 1020                140              MOVE.L      D0, t_11    ; t_11 = D0
+00001174                           141  ; --------- d_c_2 = t_11            
+00001174  2038 1020                142              MOVE.L      t_11, D0    ; D0 = t_11
+00001178  21C0 1088                143              MOVE.L      D0, d_c_2   ; d_c_2 = D0
+0000117C                           144  ; --------- goto e                  
+0000117C  4EF9 00001182            145              JMP         .e          ; goto .e
+00001182                           146  ; --------- e_1: skip               
+00001182                           147                                      
+00001182                           148  ; --------- e: skip                 
+00001182                           149  .e_1:                               
+00001182                           150  ; --------- rtn e_inicio            
+00001182  4E75                     151  .e:         RTS                     ; RETURN TO SUBROUTINE e_inicio
+00001184                           152  
+00001184                           153  
+00001184                           154  
+00001184                           155  
+00001184                           156              END arr0                ; Fin del programa
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ARR                 1024
+ARR0                1090
+B                   1042
+C                   1046
+C_1                 1062
+D_ARR               1052
+D_ARR_1             105E
+D_C                 104A
+D_C_1               108C
+D_C_2               1088
+E_INICIO            109A
+E_INICIO:E          1182
+E_INICIO:E_1        1182
+T                   1000
+T_1                 1004
+T_10                101C
+T_11                1020
+T_2                 1008
+T_3                 100C
+T_4                 1010
+T_5                 1056
+T_6                 104E
+T_7                 105A
+T_8                 1014
+T_9                 1018

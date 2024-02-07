@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSintactico/symbols/SymbolAsigOp.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/DescripcionSimbolo.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/genCodigoEnsamblador/GeneradorEnsamblador.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSintactico/symbols/SymbolBinaryOperator.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/TablaSimbolos.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/genCodigoIntermedio/TipoVariable.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSintactico/symbols/SymbolAtomicExpression.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/genCodigoEnsamblador/ProcInfo.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/dartam/Dartam.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSintactico/Parser.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/genCodigoIntermedio/GestorCodigoIntermedio.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSintactico/symbols/SymbolTipoPrimitivo.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/optimizaciones/Optimizador.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/DescripcionArray.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/genCodigoIntermedio/Instruccion.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/AnalizadorSemantico.java</file>
+            <file>file:/C:/Users/jartu/Documents/GitHub/compilador/Dartam/src/analizadorSemantico/genCodigoIntermedio/Operador.java</file>
+        </group>
+    </open-files>
+</project-private>
