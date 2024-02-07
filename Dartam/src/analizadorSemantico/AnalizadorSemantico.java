@@ -193,7 +193,7 @@ public class AnalizadorSemantico {
 
             String id = dec.id; // nombre variable
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
-            if (valorAsignado != null && valorAsignado.atomicExp!= null) {
+            if (valorAsignado != null && valorAsignado.atomicExp != null) {
                 DescripcionSimbolo d = tablaSimbolos.consulta(valorAsignado.atomicExp.value.toString());
                 if (d != null && !d.tieneValorAsignado()) {
                     errores.add("No se puede asignar con la variable '" + valorAsignado.atomicExp.value.toString() + "' porque no ha sido inicializada con anterioridad");
@@ -568,7 +568,7 @@ public class AnalizadorSemantico {
                             errores.add("El miembro " + asig.miembro + " no ha sido encontrado en la tupla " + d.getNombreTupla());
                             indicarLocalizacion(asig);
                             error = true;
-                        } else if (!error){
+                        } else if (!error) {
                             miembro.asignarValor();
                             tipoVariable = miembro.tipo;
                             indexReal = g3d.nuevaVariable(TipoVariable.INT);
@@ -639,6 +639,11 @@ public class AnalizadorSemantico {
         DescripcionFuncion df = (DescripcionFuncion) ds;
         if (df.isMain()) {
             errores.add("No se puede llamar al método inicial explícitamente, llamada producida en " + this.metodoActualmenteSiendoTratado.fst);
+            indicarLocalizacion(fcall);
+            return;
+        }
+        if (nombre.equals(this.metodoActualmenteSiendoTratado.fst)) {
+            errores.add("No se puede llamar a un método (" + nombre + ") dentro de ese método");
             indicarLocalizacion(fcall);
             return;
         }

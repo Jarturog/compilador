@@ -2,8 +2,8 @@ package analizadorSemantico.genCodigoIntermedio;
 
 import analizadorSemantico.DescripcionDefinicionTupla;
 import analizadorSemantico.DescripcionFuncion.Parametro;
-import genCodigoEnsamblador.PData;
-import genCodigoEnsamblador.VData;
+import genCodigoEnsamblador.ProcInfo;
+import genCodigoEnsamblador.VarInfo;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,22 +12,22 @@ import java.util.Map;
 
 public class GestorCodigoIntermedio {
 
-    private final HashMap<String, VData> tablaVariables;
+    private final HashMap<String, VarInfo> tablaVariables;
     private final HashSet<String> tablaEtiquetas;
-    private final HashMap<String, PData> tablaProcedimientos;
+    private final HashMap<String, ProcInfo> tablaProcedimientos;
     private final HashMap<String, Integer> numEtiquetasOVariablesConId;
     private final HashMap<String, DescripcionDefinicionTupla> tablaTuplas;
     private final ArrayList<Instruccion> instrucciones;
-    private PData main = null;
+    private ProcInfo main = null;
 
     public GestorCodigoIntermedio(GestorCodigoIntermedio gen) throws Exception {
         this.tablaVariables = new HashMap<>();
-        for (Map.Entry<String, VData> p : gen.tablaVariables.entrySet()) {
-            tablaVariables.put(p.getKey(), new VData(p.getValue()));
+        for (Map.Entry<String, VarInfo> p : gen.tablaVariables.entrySet()) {
+            tablaVariables.put(p.getKey(), new VarInfo(p.getValue()));
         }
         this.tablaEtiquetas = new HashSet<>(gen.tablaEtiquetas);
         this.tablaProcedimientos = new HashMap<>();
-        for (Map.Entry<String, PData> p : gen.tablaProcedimientos.entrySet()) {
+        for (Map.Entry<String, ProcInfo> p : gen.tablaProcedimientos.entrySet()) {
             tablaProcedimientos.put(p.getKey(), p.getValue());
         }
         this.numEtiquetasOVariablesConId = new HashMap<>();
@@ -54,7 +54,7 @@ public class GestorCodigoIntermedio {
         tablaTuplas = new HashMap<>();
     }
 
-    public GestorCodigoIntermedio(HashMap<String, VData> tv, HashMap<String, PData> tp) {
+    public GestorCodigoIntermedio(HashMap<String, VarInfo> tv, HashMap<String, ProcInfo> tp) {
         this.tablaVariables = tv;
         this.tablaProcedimientos = tp;
         this.instrucciones = new ArrayList<>();
@@ -79,7 +79,7 @@ public class GestorCodigoIntermedio {
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
     public String nuevaVariable(TipoVariable t) throws Exception {
         String idVar = conseguirIdentificadorUnico("t");
-        VData data = new VData(t);
+        VarInfo data = new VarInfo(t);
         tablaVariables.put(idVar, data);
         return idVar;
     }
@@ -87,13 +87,13 @@ public class GestorCodigoIntermedio {
     //Le pasaremos si es una variable o un parametro, de que tipo, y si es un array o una tupla
     public String nuevaVariable(String id, TipoVariable t) throws Exception {
         String idVar = conseguirIdentificadorUnico(id);
-        VData data = new VData(t);
+        VarInfo data = new VarInfo(t);
         tablaVariables.put(idVar, data);
         return idVar;
     }
     
     public TipoVariable getTipoFromVar(String var) throws Exception {
-        VData v = tablaVariables.get(var);
+        VarInfo v = tablaVariables.get(var);
         if(v == null) {
             throw new Exception("Se ha intentado acceder al tipo de una variable inexistente: "+var);
         }
@@ -119,7 +119,7 @@ public class GestorCodigoIntermedio {
 
     public String nuevaDimension(String idArray, TipoVariable t) throws Exception {
         String idVar = conseguirIdentificadorUnico("d_" + idArray);
-        VData data = new VData(t); // es un entero
+        VarInfo data = new VarInfo(t); // es un entero
         tablaVariables.put(idVar, data);
         return idVar;
     }
@@ -143,28 +143,28 @@ public class GestorCodigoIntermedio {
     //Permite crear un nuevo procedimiento y añadirlo a la tabla
     public int nuevoProcedimiento(String id, String etiqueta, ArrayList<Parametro> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
-        PData data = new PData(id, etiqueta, params, bytesRetorno);
+        ProcInfo data = new ProcInfo(id, etiqueta, params, bytesRetorno);
         tablaProcedimientos.put(etiqueta, data);
         return contador;
     }
 
     public int nuevoProcedimientoMain(String id, String etiqueta, ArrayList<Parametro> params, int bytesRetorno) {
         int contador = tablaProcedimientos.size();
-        PData data = new PData(id, etiqueta, params, bytesRetorno);
+        ProcInfo data = new ProcInfo(id, etiqueta, params, bytesRetorno);
         main = data;
         tablaProcedimientos.put(etiqueta, data);
         return contador;
     }
 
     //Recibimos los datos de un procedimiento con el nombre pasado por parametro
-    public PData getProcedimeinto(String id) {
+    public ProcInfo getProcedimeinto(String id) {
         return this.tablaProcedimientos.get(id);
     }
 
     //Crearemos la instruccion de 3 direcciones y almacenaremos en el array list
     public void generarInstr(TipoInstr instruccion, Operador op1, Operador op2, Operador dst) throws Exception {
         if (dst != null) {
-            VData var = tablaVariables.get(dst.toString());
+            VarInfo var = tablaVariables.get(dst.toString());
             if (instruccion.isTipo(TipoInstr.COPY) && op1.isLiteral() && (var == null || !var.estaInicializadaEnCodigoIntermedio())) {
                 if (var == null) {
                     throw new Exception("Error, no se puede asignar a una variable inexistente");
@@ -189,15 +189,15 @@ public class GestorCodigoIntermedio {
         return s;
     }
 
-    public HashMap<String, VData> getTablaVariables() {
+    public HashMap<String, VarInfo> getTablaVariables() {
         return tablaVariables;
     }
 
-    public HashMap<String, PData> getTablaProcedimientos() {
+    public HashMap<String, ProcInfo> getTablaProcedimientos() {
         return tablaProcedimientos;
     }
 
-    public PData getMain() {
+    public ProcInfo getMain() {
         return main;
     }
 
@@ -207,11 +207,11 @@ public class GestorCodigoIntermedio {
     
     public String tablas() {
         String s = "Tabla de procedimientos\n";
-        for (Map.Entry<String, PData> entry : tablaProcedimientos.entrySet()) {
+        for (Map.Entry<String, ProcInfo> entry : tablaProcedimientos.entrySet()) {
             s += entry.getValue() + "\n";
         }
         s += "\nTabla de variables\n";
-        for (Map.Entry<String, VData> entry : tablaVariables.entrySet()) {
+        for (Map.Entry<String, VarInfo> entry : tablaVariables.entrySet()) {
             s += entry.getKey() + ": " + entry.getValue() + "\n";
         }
 //        s += "\nEtiquetas utilizadas en el programa\n";

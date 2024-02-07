@@ -4,14 +4,14 @@ import analizadorSemantico.genCodigoIntermedio.GestorCodigoIntermedio;
 import analizadorSemantico.genCodigoIntermedio.Instruccion;
 import analizadorSemantico.genCodigoIntermedio.Instruccion.TipoInstr;
 import analizadorSemantico.genCodigoIntermedio.Operador;
-import genCodigoEnsamblador.VData;
+import genCodigoEnsamblador.VarInfo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Optimizador {
 
     private final ArrayList<Instruccion> instrucciones;
-    private final HashMap<String, VData> variables;
+    private final HashMap<String, VarInfo> variables;
 
     public Optimizador(GestorCodigoIntermedio g3d) throws Exception {
         instrucciones = g3d.getInstrucciones();
@@ -54,8 +54,8 @@ public class Optimizador {
                     String nuevaVar = instrucciones.get(j).dst().getNombre();
                     instrucciones.get(j).setOp1(instrucciones.remove(i).op1());
                     i--; // resto 1 por la eliminación
-                    VData datosAntiguos = variables.remove(nombre);
-                    VData nuevosDatos = variables.get(nuevaVar);
+                    VarInfo datosAntiguos = variables.remove(nombre);
+                    VarInfo nuevosDatos = variables.get(nuevaVar);
                     nuevosDatos.sustituirPor(datosAntiguos);
                     cambio = true;
                     break;

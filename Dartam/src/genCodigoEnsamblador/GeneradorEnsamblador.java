@@ -25,11 +25,11 @@ public class GeneradorEnsamblador {
     private Instruccion instr = null;
     private boolean printUsado = false, scanUsado = false, readUsado = false, writeUsado = false, seConcatena = false;
 
-    private final HashMap<String, VData> variables;
+    private final HashMap<String, VarInfo> variables;
 //    private HashMap<String, String> variableDictionary;
-    private final HashMap<String, PData> procedureTable;
+    private final HashMap<String, ProcInfo> procedureTable;
     private final HashSet<String> etiquetas;
-    private final PData main;
+    private final ProcInfo main;
     private final String etConc;
     private int DnActual = 0, AnActual = 0;
     private final HashMap<String, DescripcionDefinicionTupla> tablaTuplas;
@@ -72,7 +72,7 @@ public class GeneradorEnsamblador {
             variables.get(tupla.variableAsociada).inicializar();
             for (DefinicionMiembro miembro : tupla.getMiembros()) {
                 if (miembro.tieneValorAsignado()) {
-                    String s = getDeclaracionEnsamblador(new VData(TipoVariable.getTipo(miembro.tipo, false)), miembro.varInit);
+                    String s = getDeclaracionEnsamblador(new VarInfo(TipoVariable.getTipo(miembro.tipo, false)), miembro.varInit);
                     //datos.add(margen(getEtiqueta(), "DC.B "+miembro.varInit, "", "Reservando memoria para el miembro " + miembro.nombre + " de la tupla "+id));
                     datos.add(margen(getEtiqueta(), s, "", "Inicializando el miembro " + miembro.nombre + " de la tupla " + id));
                 } else {
@@ -86,7 +86,7 @@ public class GeneradorEnsamblador {
         add("");
         for (int i = 0; i < instrucciones.size(); i++) {
             instr = instrucciones.get(i);
-            VData data = instr.dst() == null ? null : variables.get(instr.dst().toString());
+            VarInfo data = instr.dst() == null ? null : variables.get(instr.dst().toString());
             if (instr.dst() != null && data != null && data.estaInicializadaEnCodigoIntermedio() && !data.estaInicializadaEnCodigoEnsamblador()) {
                 data.inicializar();
                 declararVariable(instr.dst().toString(), data, instr.op1().getValor());
@@ -116,8 +116,8 @@ public class GeneradorEnsamblador {
             crearSubprogramaConcatenacion();
         }
         add("END " + etiqueta_main, "", "Fin del programa");
-        for (HashMap.Entry<String, VData> variable : variables.entrySet()) {
-            VData data = variable.getValue();
+        for (HashMap.Entry<String, VarInfo> variable : variables.entrySet()) {
+            VarInfo data = variable.getValue();
             if (!data.estaInicializadaEnCodigoEnsamblador()) {
                 declararVariable(variable.getKey(), data, null);
             }
@@ -167,9 +167,9 @@ public class GeneradorEnsamblador {
             subprogramas.add("");
             tupla.setEtInit(iniBucle);
         }
-        for (Map.Entry<String, VData> e : variables.entrySet()) {
+        for (Map.Entry<String, VarInfo> e : variables.entrySet()) {
             String id = e.getKey();
-            VData data = e.getValue();
+            VarInfo data = e.getValue();
             DescripcionDefinicionTupla tupla = data.getTupla();
             if (tupla == null) {
                 continue;
@@ -228,6 +228,9 @@ public class GeneradorEnsamblador {
             add(getEtiqueta(), "CLR.L ", register, "CLEAR " + register);
         }
         add(getEtiqueta(), operacion, sOp + ", " + register, register + " = " + sOp);
+        if (instr.op1() != null && instr.op1().getCasting() != null && instr.op1().getCasting().equals(TipoVariable.STRING)) {
+            add("ROR.L", "#8, " + register, "move to the left so it is followed by 0's, since it is a casting from char to string");
+        }
         return register;
     }
 
@@ -260,9 +263,6 @@ public class GeneradorEnsamblador {
         switch (instr.getTipo()) {
             case COPY -> { // op1 -> dst
                 String register = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                if (instr.op1() != null && instr.op1().getCasting() != null && instr.op1().getCasting().equals(TipoVariable.STRING)) {
-                    add("ROR.L", "#8, " + register, "move to the left so it is followed by 0's, since it is a casting from char to string");
-                }
                 store(register, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case NEG -> { // -op1 -> dst
@@ -346,32 +346,38 @@ public class GeneradorEnsamblador {
             }
             case IFEQ -> { // if op1 = op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + r2);
                 add("BEQ", dstConPunto, "IF Z FLAG = 1 GOTO " + dstConPunto);
             }
             case IFNE -> { // if op1 /= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + r2);
                 add("BNE", dstConPunto, "IF Z FLAG = 0 GOTO " + dstConPunto);
             }
             case IFGE -> { // if op1 >= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + r2);
                 add("BGE", dstConPunto, "IF (N XOR V) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFLT -> { // if op1 < op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + r2);
                 add("BLT", dstConPunto, "IF (N XOR V) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IFGT -> { // if op1 > op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + r2);
                 add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFLE -> { // if op1 <= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
-                add("CMP" + extOp1, instr.op2().toAssembly() + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + instr.op2().toAssembly());
+                String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r1 + " - " + r2);
                 add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IND_ASS -> { // dst[op2] = op1
@@ -392,7 +398,7 @@ public class GeneradorEnsamblador {
                 add(getEtiqueta(), "MOVE.L", r + ", -(SP)", "PUSH INTO STACK " + r);
             }
             case PMB -> { // pmb dst
-                PData func = procedureTable.get(instr.dst().toAssembly());
+                ProcInfo func = procedureTable.get(instr.dst().toAssembly());
                 int indice = (func.getBytesRetorno() > 0 ? 4 : 0); // 4 por @return
                 for (int i = func.getParametros().size() - 1; i >= 0; i--) {
                     Parametro param = func.getParametros().get(i);
@@ -402,7 +408,7 @@ public class GeneradorEnsamblador {
                 }
             }
             case RETURN -> { // rtn dst, ?
-                PData func = procedureTable.get(instr.dst().toAssembly());
+                ProcInfo func = procedureTable.get(instr.dst().toAssembly());
                 int bytes = 4; //func.getBytesRetorno();
                 if (func.getBytesRetorno() > 0) {
                     String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
@@ -411,11 +417,11 @@ public class GeneradorEnsamblador {
                 add(getEtiqueta(), "RTS", "", "RETURN TO SUBROUTINE " + dstConPunto);
             }
             case CALL -> { // call dst, ?
-                PData func = procedureTable.get(instr.dst().toAssembly());
+                ProcInfo func = procedureTable.get(instr.dst().toAssembly());
                 if (func == null) {
                     throw new Exception("Error, la función con etiqueta " + instr.dst().toAssembly() + " no existe");
                 }
-                PData.TipoMetodoEspecial tipo = PData.getEspecial(func.getNombre());
+                ProcInfo.TipoMetodoEspecial tipo = ProcInfo.getEspecial(func.getNombre());
                 boolean esMetodoEspecial = tipo != null;
                 if (func.getBytesRetorno() > 0) {
                     add("SUBA.L", "#" + 4 /*func.getBytesRetorno()*/ + ", SP", "SP = SP + " + 4);//func.getBytesRetorno());
@@ -430,8 +436,9 @@ public class GeneradorEnsamblador {
                     numBytes += 4;//Tipo.getBytes(param.tipo);
                 }
                 if (func.getBytesRetorno() > 0) {
-                    String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
+                    String r1 = "D"+DnActual++;
                     add(getEtiqueta(), "MOVE.L", "(SP)+, " + r1, r1 + " = POP FROM STACK");
+                    store(r1, instr.op1().toAssembly(), instr.op1().tipo());
                 }
                 if (numBytes > 0) {
                     add("ADDA.L", "#" + numBytes + ", SP", "SP = SP + " + numBytes);
@@ -454,7 +461,7 @@ public class GeneradorEnsamblador {
         DnActual = 0;
     }
 
-    private void procesarMetodoEspecial(PData f, PData.TipoMetodoEspecial tipo, String idMetodo) throws Exception {
+    private void procesarMetodoEspecial(ProcInfo f, ProcInfo.TipoMetodoEspecial tipo, String idMetodo) throws Exception {
         //idMetodo = crearEtiqueta(idMetodo); // no hace falta porque ya son reservadas por el semántico
         switch (tipo) {
             case PRINT -> { // print(dst)
@@ -599,7 +606,7 @@ public class GeneradorEnsamblador {
         return s;
     }
 
-    private void declararVariable(String id, VData data, Object inicializacion) throws Exception {
+    private void declararVariable(String id, VarInfo data, Object inicializacion) throws Exception {
         String s = getDeclaracionEnsamblador(data, inicializacion);
         datos.add(margen(id, s, "", data.tipo().toString()));
         if (s.startsWith("DC.B") || s.startsWith("DS.B")) {
@@ -656,7 +663,7 @@ public class GeneradorEnsamblador {
         return parteIzq + " ".repeat(margenDer) + (com.isEmpty() ? "" : "; ") + com;
     }
 
-    public static String getDeclaracionEnsamblador(VData data, Object inicializacion) throws Exception {
+    public static String getDeclaracionEnsamblador(VarInfo data, Object inicializacion) throws Exception {
         TipoVariable tipo = data.tipo();
         String ext = tipo.getExtension68K();
         if (inicializacion == null) {

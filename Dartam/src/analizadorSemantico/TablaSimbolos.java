@@ -34,14 +34,10 @@ public class TablaSimbolos {
          * Nombre
          */
         public final String id;
-
-        protected String idcamp; //Identificador
-
         /**
          * Descripción
          */
         private final DescripcionSimbolo d;
-        protected int dAntigua, next;
         /**
          * Nivel
          */

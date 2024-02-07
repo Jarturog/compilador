@@ -21,13 +21,13 @@ f vacio inicio(){
 	//show((car[])p2.let);
 }
 
-f vacio nuevaPersona(tupla persona p, ent idPersona, car let ) {//car[] nombrePersona) {
+f vacio nuevaPersona(tupla persona p, ent idPersona, car inicial) {//car[] nombrePersona) {
 	p.id: idPersona;
-	p.let: let; //p.nombre: nombrePersona;
+	p.inicial: inicial; //p.nombre: nombrePersona;
 }
 
 tupla persona {
 	inmut ent id;
-	car let;
-	//car[] nombre;
+	car inicial;
+	ent hambre: 0;
 }

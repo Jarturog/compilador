@@ -1,14 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package analizadorSemantico.genCodigoIntermedio;
 
-/**
- *Clase Operador, objecto referente a un operando de
- *  las 3 direcciones, ya sea op1 | op2 | 
- * 
- */
+
 public class Operador {
     private final String nombre; //Nombre de la variable / campo
     private final Object valor; //Valor

@@ -10,12 +10,12 @@ import analizadorSintactico.ParserSym;
 import java.util.ArrayList;
 import jflex.base.Pair;
 
-public class PData {
+public class ProcInfo {
     private final String nombre, etiqueta;
     private final ArrayList<Parametro> parametros; // id, bytes
     private final int bytesRetorno;
     
-    public PData(String nombre, String etiqueta, ArrayList<Parametro> params, int bytesValorRetorno) {
+    public ProcInfo(String nombre, String etiqueta, ArrayList<Parametro> params, int bytesValorRetorno) {
         this.nombre = nombre;
         this.etiqueta = etiqueta;
         this.parametros = params;

@@ -3,7 +3,7 @@ package genCodigoEnsamblador;
 import analizadorSemantico.DescripcionDefinicionTupla;
 import analizadorSemantico.genCodigoIntermedio.TipoVariable;
 
-public class VData {
+public class VarInfo {
 
     private TipoVariable tipo;
     private Object initCodigoIntermedio = null;
@@ -11,7 +11,7 @@ public class VData {
     private Integer bytesEstructura = null;
     private DescripcionDefinicionTupla tupla = null;
 
-    public VData(VData v) throws Exception {
+    public VarInfo(VarInfo v) throws Exception {
         tipo = v.tipo;
         initCodigoIntermedio = v.initCodigoIntermedio;
         initCodigoEnsamblador = v.initCodigoEnsamblador;
@@ -19,7 +19,7 @@ public class VData {
         tupla = v.tupla;
     }
 
-    public VData(TipoVariable t) throws Exception {
+    public VarInfo(TipoVariable t) throws Exception {
         tipo = t;
         if (t == null) {
             throw new Exception("No puede haber una variable sin tipo");
@@ -67,7 +67,7 @@ public class VData {
         return bytesEstructura;
     }
 
-    public void sustituirPor(VData d) {
+    public void sustituirPor(VarInfo d) {
         tipo = d.tipo;
         initCodigoIntermedio = d.initCodigoIntermedio;
         initCodigoEnsamblador = d.initCodigoEnsamblador;

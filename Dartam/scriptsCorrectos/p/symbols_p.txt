@@ -1,0 +1,10 @@
+into:        Función tipo VOID declarada en el nivel 1 con etiqueta e_into con parámetros CAR [] file, CAR [] output
+product:     Función tipo ENT declarada en el nivel 1 con etiqueta e_product con parámetros ENT x siendo su variable de CI x, ENT y siendo su variable de CI y
+scan:        Función tipo VOID declarada en el nivel 1 con etiqueta e_scan con parámetros CAR [] input
+show:        Función tipo VOID declarada en el nivel 1 con etiqueta e_show con parámetros CAR [] output
+inicio:      Función tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parámetros
+from:        Función tipo VOID declarada en el nivel 1 con etiqueta e_from con parámetros CAR [] file, CAR [] input
+a:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI a ocupando 4 bytes
+x:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI x ocupando 4 bytes
+y:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI y ocupando 4 bytes
+z:           Variable tipo ENT con valor asignado declarado en el nivel 2 siendo su variable de CI z ocupando 4 bytes

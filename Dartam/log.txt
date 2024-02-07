@@ -1,11 +1,7 @@
-java.lang.NullPointerException: Cannot invoke "analizadorSemantico.DescripcionSimbolo.tieneValorAsignado()" because "ds" is null
-	at analizadorSemantico.AnalizadorSemantico.procesarOperando(AnalizadorSemantico.java:1654)
-	at analizadorSemantico.AnalizadorSemantico.procesarReturn(AnalizadorSemantico.java:713)
-	at analizadorSemantico.AnalizadorSemantico.procesarInstruccion(AnalizadorSemantico.java:413)
-	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:385)
-	at analizadorSemantico.AnalizadorSemantico.procesarIf(AnalizadorSemantico.java:838)
-	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:387)
-	at analizadorSemantico.AnalizadorSemantico.procesarMetodo(AnalizadorSemantico.java:1004)
-	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:162)
-	at dartam.Dartam.<init>(Dartam.java:111)
+java.lang.NullPointerException: Cannot invoke "analizadorSemantico.genCodigoIntermedio.TipoVariable.getExtension68K()" because "t" is null
+	at genCodigoEnsamblador.GeneradorEnsamblador.store(GeneradorEnsamblador.java:235)
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarInstruccion(GeneradorEnsamblador.java:435)
+	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:108)
+	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:60)
+	at dartam.Dartam.<init>(Dartam.java:131)
 	at dartam.Dartam.main(Dartam.java:59)
