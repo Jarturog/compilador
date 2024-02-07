@@ -490,21 +490,28 @@ public class GeneradorEnsamblador {
                     return;
                 }
                 readUsado = true;
-                String etFin = crearEtiqueta("." + idMetodo), mnsjError = crearEtiqueta("errRead");
+                String etFin = crearEtiqueta(idMetodo), mnsjError = crearEtiqueta("errRead");
+                String ficheroVacio = crearEtiqueta("emptyFile");
                 datos.add(margen(mnsjError, "DC.B 'Error de lectura',0", "", "Mensaje de error"));
                 datos.add(margen("", "DS.W 0", "", "Para evitar imparidad"));
-
                 subprogramas.add(margen(idMetodo, "MOVEA.L", (2 * 4) + "(SP), A1", "Pre: (A1) null terminated file name"));
-                subprogramas.add(margen("", "MOVEA.L", 4 + "(SP), A2", "A2: pop"));
-                //MOVE.L      A1, (A2)      ; -//subprogramas.add(margen("", "MOVE.L", "A2, A1", ""));
+                subprogramas.add(margen("", "MOVEA.L", 4 + "(SP), A2", "File information -> A2"));
                 subprogramas.add(margen("", "MOVE.L", "#51, D0", "Task 51 of TRAP 15: Open existing file"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 subprogramas.add(margen("", "CMP.W", "#2, D0", "Si error"));
                 subprogramas.add(margen("", "BEQ", etFin, "Fin"));
-                subprogramas.add(margen("", "MOVEA.L", "A2, A1", ""));
                 subprogramas.add(margen("", "MOVE.L", "#" + TipoVariable.STRING.bytes + ", D2", ""));
                 subprogramas.add(margen("", "MOVE.L", "#53, D0", "Task 53 of TRAP 15: Read file"));
+                subprogramas.add(margen("", "MOVEA.L", "A2, A1", ""));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen("", "CMP.W", "#1, D0", "Si vacío"));
+                subprogramas.add(margen("", "BNE", ficheroVacio, "Fin"));
+                subprogramas.add(margen("", "CMP.W", "#"+TipoVariable.STRING.bytes+", D2", "Si vacío"));
+                subprogramas.add(margen("", "BNE", ficheroVacio, "Fin"));
+                subprogramas.add(margen("", "CLR.L", "D2", ""));
+                subprogramas.add(margen(ficheroVacio, "MOVEA.L", "A2, A1", ""));
+                subprogramas.add(margen("", "ADDA.L", "D2, A1", ""));
+                subprogramas.add(margen("", "MOVE.B", "#0, (A1)", "")); // poner al final del string un 0
                 subprogramas.add(margen("", "MOVE.L", "#56, D0", "Task 56 of TRAP 15: Close file"));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
                 subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
@@ -514,7 +521,46 @@ public class GeneradorEnsamblador {
                 subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
             case WRITE -> {
-                // ---
+                if (writeUsado) {
+                    return;
+                }
+                writeUsado = true;
+                String errWrite = crearEtiqueta(idMetodo), errReadOnly = crearEtiqueta(idMetodo);
+                String mnsjError = crearEtiqueta("errWrite"), mnsjReadOnly = crearEtiqueta("errReadOnly");
+                String bucle = crearEtiqueta(idMetodo), finBucle = crearEtiqueta(idMetodo);
+                datos.add(margen(mnsjError, "DC.B 'Error de escritura',0", "", "Mensaje de error"));
+                datos.add(margen("", "DS.W 0", "", "Para evitar imparidad"));
+                datos.add(margen(mnsjReadOnly, "DC.B 'El fichero solo permite lectura',0", "", "Mensaje de error"));
+                datos.add(margen("", "DS.W 0", "", "Para evitar imparidad"));
+                subprogramas.add(margen(idMetodo, "MOVEA.L", (2 * 4) + "(SP), A1", "Pre: (A1) null terminated file name"));
+                subprogramas.add(margen("", "MOVEA.L", 4 + "(SP), A2", "A2: pop"));
+                subprogramas.add(margen("", "MOVE.L", "#52, D0", "Task 51 of TRAP 15: Open existing file"));
+                subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen("", "CMP.W", "#2, D0", "Si error"));
+                subprogramas.add(margen("", "BEQ", errWrite, "Fin"));
+                subprogramas.add(margen("", "CMP.W", "#3, D0", "Si error"));
+                subprogramas.add(margen("", "BEQ", errReadOnly, "error, read only"));
+                subprogramas.add(margen("", "CLR.L", "D2", ""));
+                subprogramas.add(margen(bucle, "MOVEA.L", "A2, A1", ""));
+                subprogramas.add(margen("", "ADDA.L", "D2, A1", ""));
+                subprogramas.add(margen("", "CMP.B", "#0, (A1)", ""));
+                subprogramas.add(margen("", "BEQ", finBucle, ""));
+                subprogramas.add(margen("", "ADD.L", "#1, D2", ""));
+                subprogramas.add(margen("", "JMP", bucle, ""));
+                subprogramas.add(margen(finBucle, "MOVEA.L", "A2, A1", ""));
+                subprogramas.add(margen("", "MOVE.L", "#54, D0", "Task 54 of TRAP 15: Write file"));
+                subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen("", "MOVE.L", "#56, D0", "Task 56 of TRAP 15: Close file"));
+                subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
+                subprogramas.add(margen(errWrite + ":", "LEA.L", mnsjError + ", A1", "A1 = mnsj error"));
+                subprogramas.add(margen("", "MOVE.L", "#13, D0", "Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF"));
+                subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
+                subprogramas.add(margen(errReadOnly + ":", "LEA.L", mnsjReadOnly + ", A1", "A1 = mnsj error"));
+                subprogramas.add(margen("", "MOVE.L", "#13, D0", "Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF"));
+                subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
+                subprogramas.add(margen("", "RTS", "", "RETURN TO SUBROUTINE ..."));
             }
         }
     }

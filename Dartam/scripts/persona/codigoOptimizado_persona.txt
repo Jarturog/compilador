@@ -1,33 +1,36 @@
 e_inicio: skip
 pmb e_inicio
+d_str = 81
 i = 0
 e: skip
-t_1 = 3
-if i < t_1 goto e_3
-t_2 = 0
+t_2 = 1
+if i < t_2 goto e_3
+t_3 = 0
 goto e_4
 e_3: skip
-t_2 = -1
+t_3 = -1
 e_4: skip
-if t_2 == 0 goto e_1
-d_str = 81
-param_s str
-call e_scan
-param_s str
-call e_show
-t_4 = 1
-t_5 = i + t_4
-i = t_5
+if t_3 == 0 goto e_1
+d_str_1 = 81
+t_5 = 1
+t_6 = i + t_5
+i = t_6
 goto e
 e_1: skip
+t_7 = prueba.txt
+param_s t_7
+param_s str
+call e_from
+param_s str
+call e_show
 rtn e_inicio
 
 
 e_nuevapersona: skip
 pmb e_nuevapersona
-t_6 = 0
-p[t_6] = idpersona
-t_7 = 4
-p[t_7] = let
+t_8 = 0
+p[t_8] = idpersona
+t_9 = 4
+p[t_9] = let
 rtn e_nuevapersona
 
