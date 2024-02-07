@@ -1,0 +1,28 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
+nuevaPersona: identificado por e_nuevapersona, devuelve 0 bytes de retorno y sus parámetros son TUPLE persona p siendo su variable de CI p, ENT idPersona siendo su variable de CI idpersona, CAR inicial siendo su variable de CI inicial
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+
+Tabla de variables
+persona: tipo POINTER TO ARRAY, TUPLE OR STRING almacenando una estructura de datos de 12 bytes
+t_2: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+idpersona: tipo INT
+t_1: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_4: tipo INT inicializado a 81 almacenando una estructura de datos de 256 bytes
+str_1: tipo STRING almacenando una estructura de datos de 324 bytes
+i: tipo INT
+t_3: tipo BOOLEAN inicializado a 0
+t_6: tipo INT
+t_5: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+inicial: tipo CHAR
+t_8: tipo INT inicializado a 0
+t_7: tipo STRING inicializado a prueba.txt almacenando una estructura de datos de 256 bytes
+t_9: tipo INT inicializado a 4
+p: tipo POINTER TO ARRAY, TUPLE OR STRING
+str: tipo STRING almacenando una estructura de datos de 324 bytes
+t: tipo INT inicializado a 81 almacenando una estructura de datos de 256 bytes
+d_str: tipo INT
+d_str_1: tipo INT

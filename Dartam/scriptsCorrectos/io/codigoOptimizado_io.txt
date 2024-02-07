@@ -1,0 +1,36 @@
+e_inicio: skip
+pmb e_inicio
+t = Escribe el fichero a leer:
+param_s t
+call e_show
+d_file = 81
+d_content = 81
+param_s file
+call e_scan
+param_s file
+param_s content
+call e_from
+t_3 = El fichero contiene:
+param_s t_3
+call e_show
+param_s content
+call e_show
+t_4 = Ahora escribe en el fichero:
+param_s t_4
+call e_show
+param_s content
+call e_scan
+param_s file
+param_s content
+call e_into
+t_5 = Ahora el fichero contiene:
+param_s t_5
+call e_show
+param_s file
+param_s content
+call e_from
+param_s content
+call e_show
+rtn e_inicio
+
+

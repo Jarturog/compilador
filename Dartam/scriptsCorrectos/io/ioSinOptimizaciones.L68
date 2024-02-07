@@ -1,0 +1,264 @@
+00001480 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 07/02/2024 15:37:26
+
+00000000                             1  ; ==============================================================================
+00000000                             2  ; TITLE       : io
+00000000                             3  ; COMPILED BY : jartu
+00000000                             4  ; COMPILER BY : Juan Arturo Abaurrea Calafell
+00000000                             5  ;               Dani Salanova Dmitriyev
+00000000                             6  ;               Marta González Juan
+00000000                             7  ; ==============================================================================
+00000000                             8  
+00001000                             9              ORG         $1000       ; Origen
+00001000                            10  
+00001000= 45 73 63 72 69 62 ...     11  t           DC.B 'Escribe el fichero a leer:'  ; STRING
+0000101A= 00                        12              DC.B 0                  ; Los strings y chars acaban en 0
+0000101C                            13              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000101C= 00000051                  14  t_1         DC.L 81                 ; INT
+00001020= 00000051                  15  t_2         DC.L 81                 ; INT
+00001024= 45 72 72 6F 72 20 ...     16  errread     DC.B 'Error de lectura',0  ; Mensaje de error
+00001036                            17              DS.W 0                  ; Para evitar imparidad
+00001036= 45 6C 20 66 69 63 ...     18  t_3         DC.B 'El fichero contiene:'  ; STRING
+0000104A= 00                        19              DC.B 0                  ; Los strings y chars acaban en 0
+0000104C                            20              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000104C= 41 68 6F 72 61 20 ...     21  t_4         DC.B 'Ahora escribe en el fichero:'  ; STRING
+00001068= 00                        22              DC.B 0                  ; Los strings y chars acaban en 0
+0000106A                            23              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000106A= 45 72 72 6F 72 20 ...     24  errwrite    DC.B 'Error de escritura',0  ; Mensaje de error
+0000107E                            25              DS.W 0                  ; Para evitar imparidad
+0000107E= 45 6C 20 66 69 63 ...     26  errreadonly DC.B 'El fichero solo permite lectura',0  ; Mensaje de error
+0000109E                            27              DS.W 0                  ; Para evitar imparidad
+0000109E= 45 6E 20 65 6C 20 ...     28  t_5         DC.B 'En el fichero se ha escrito:'  ; STRING
+000010BA= 00                        29              DC.B 0                  ; Los strings y chars acaban en 0
+000010BC                            30              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010BC= 00000053                  31  t_6         DC.L 83                 ; INT
+000010C0                            32  content     DS.B 256                ; STRING
+000011C0= 00                        33              DC.B 0                  ; Los strings y chars acaban en 0
+000011C2                            34              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000011C2                            35  str         DS.B 256                ; STRING
+000012C2= 00                        36              DC.B 0                  ; Los strings y chars acaban en 0
+000012C4                            37              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000012C4                            38  file        DS.B 256                ; STRING
+000013C4= 00                        39              DC.B 0                  ; Los strings y chars acaban en 0
+000013C6                            40              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000013C6                            41  d_file      DS.L 1                  ; INT
+000013CA                            42  d_str       DS.L 1                  ; INT
+000013CE                            43  d_content   DS.L 1                  ; INT
+000013D2                            44  
+000013D2                            45  ; --------- SUBROUTINES             
+000013D2  226F 0004                 46  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+000013D6  700D                      47              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+000013D8  4E4F                      48              TRAP        #15         ; Interruption generated
+000013DA  4E75                      49              RTS                     ; RETURN TO SUBROUTINE ...
+000013DC  226F 0004                 50  e_scan      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+000013E0  7002                      51              MOVE.L      #2, D0      ; Read string from keyboard and store at (A1), NULL (0) terminated, length returned in D1.W (max 80)
+000013E2  4E4F                      52              TRAP        #15         ; Interruption generated
+000013E4  4E75                      53              RTS                     ; RETURN TO SUBROUTINE ...
+000013E6  226F 0008                 54  e_from      MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
+000013EA  246F 0004                 55              MOVEA.L     4(SP), A2   ; File information -> A2
+000013EE  7033                      56              MOVE.L      #51, D0     ; Task 51 of TRAP 15: Open existing file
+000013F0  4E4F                      57              TRAP        #15         ; Interruption generated
+000013F2  B07C 0002                 58              CMP.W       #2, D0      ; Si error
+000013F6  6700 002E                 59              BEQ         e_from0     ; Fin
+000013FA  243C 00000100             60              MOVE.L      #256, D2    
+00001400  7035                      61              MOVE.L      #53, D0     ; Task 53 of TRAP 15: Read file
+00001402  224A                      62              MOVEA.L     A2, A1      
+00001404  4E4F                      63              TRAP        #15         ; Interruption generated
+00001406  B07C 0001                 64              CMP.W       #1, D0      ; Si vacío
+0000140A  6600 000C                 65              BNE         emptyfile   ; Fin
+0000140E  B47C 0100                 66              CMP.W       #256, D2    ; Si vacío
+00001412  6600 0004                 67              BNE         emptyfile   ; Fin
+00001416  4282                      68              CLR.L       D2          
+00001418  224A                      69  emptyfile   MOVEA.L     A2, A1      
+0000141A  D3C2                      70              ADDA.L      D2, A1      
+0000141C  12BC 0000                 71              MOVE.B      #0, (A1)    
+00001420  7038                      72              MOVE.L      #56, D0     ; Task 56 of TRAP 15: Close file
+00001422  4E4F                      73              TRAP        #15         ; Interruption generated
+00001424  4E75                      74              RTS                     ; RETURN TO SUBROUTINE ...
+00001426  43F8 1024                 75  e_from0:    LEA.L       errread, A1 ; A1 = mnsj error
+0000142A  700D                      76              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+0000142C  4E4F                      77              TRAP        #15         ; Interruption generated
+0000142E  4E75                      78              RTS                     ; RETURN TO SUBROUTINE ...
+00001430  226F 0008                 79  e_into      MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
+00001434  246F 0004                 80              MOVEA.L     4(SP), A2   ; A2: pop
+00001438  7034                      81              MOVE.L      #52, D0     ; Task 51 of TRAP 15: Open existing file
+0000143A  4E4F                      82              TRAP        #15         ; Interruption generated
+0000143C  B07C 0002                 83              CMP.W       #2, D0      ; Si error
+00001440  6700 002A                 84              BEQ         e_into0     ; Fin
+00001444  B07C 0003                 85              CMP.W       #3, D0      ; Si error
+00001448  6700 002C                 86              BEQ         e_into1     ; error, read only
+0000144C  4282                      87              CLR.L       D2          
+0000144E  224A                      88  e_into2     MOVEA.L     A2, A1      
+00001450  D3C2                      89              ADDA.L      D2, A1      
+00001452  0C11 0000                 90              CMP.B       #0, (A1)    
+00001456  6700 0008                 91              BEQ         e_into3     
+0000145A  5282                      92              ADD.L       #1, D2      
+0000145C  4EF8 144E                 93              JMP         e_into2     
+00001460  224A                      94  e_into3     MOVEA.L     A2, A1      
+00001462  7036                      95              MOVE.L      #54, D0     ; Task 54 of TRAP 15: Write file
+00001464  4E4F                      96              TRAP        #15         ; Interruption generated
+00001466  7038                      97              MOVE.L      #56, D0     ; Task 56 of TRAP 15: Close file
+00001468  4E4F                      98              TRAP        #15         ; Interruption generated
+0000146A  4E75                      99              RTS                     ; RETURN TO SUBROUTINE ...
+0000146C  43F8 106A                100  e_into0:    LEA.L       errwrite, A1 ; A1 = mnsj error
+00001470  700D                     101              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+00001472  4E4F                     102              TRAP        #15         ; Interruption generated
+00001474  4E75                     103              RTS                     ; RETURN TO SUBROUTINE ...
+00001476  43F8 107E                104  e_into1:    LEA.L       errreadonly, A1 ; A1 = mnsj error
+0000147A  700D                     105              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+0000147C  4E4F                     106              TRAP        #15         ; Interruption generated
+0000147E  4E75                     107              RTS                     ; RETURN TO SUBROUTINE ...
+00001480                           108  
+00001480                           109  ; --------- INITIALIZATION          
+00001480                           110  io                                  ; Etiqueta inicial (main)
+00001480                           111  
+00001480  7020                     112              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+00001482  123C 0005                113              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+00001486  4E4F                     114              TRAP        #15         ; Interruption generated
+00001488  4EB9 00001492            115              JSR         e_inicio    ; Se ejecuta el main
+0000148E  FFFF FFFF                116              SIMHALT                 ; Fin de la ejecución
+00001492                           117  
+00001492                           118  ; --------- e_inicio: skip          
+00001492                           119                                      
+00001492                           120  ; --------- pmb e_inicio            
+00001492                           121  ; --------- t = Escribe el fichero a leer:  
+00001492                           122  ; --------- param_s t               
+00001492  41F8 1000                123  e_inicio:   LEA.L       t, A0       ; A0 = t
+00001496  2F08                     124              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001498                           125  ; --------- call e_show             
+00001498  4EB8 13D2                126              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000149C  588F                     127              ADDA.L      #4, SP      ; SP = SP + 4
+0000149E                           128  ; --------- t_1 = 81                
+0000149E  7051                     129              MOVE.L      #81, D0     ; D0 = #81
+000014A0  21C0 101C                130              MOVE.L      D0, t_1     ; t_1 = D0
+000014A4                           131  ; --------- d_file = t_1            
+000014A4  2038 101C                132              MOVE.L      t_1, D0     ; D0 = t_1
+000014A8  21C0 13C6                133              MOVE.L      D0, d_file  ; d_file = D0
+000014AC                           134  ; --------- t_2 = 81                
+000014AC  7051                     135              MOVE.L      #81, D0     ; D0 = #81
+000014AE  21C0 1020                136              MOVE.L      D0, t_2     ; t_2 = D0
+000014B2                           137  ; --------- d_content = t_2         
+000014B2  2038 1020                138              MOVE.L      t_2, D0     ; D0 = t_2
+000014B6  21C0 13CE                139              MOVE.L      D0, d_content ; d_content = D0
+000014BA                           140  ; --------- param_s file            
+000014BA  41F8 12C4                141              LEA.L       file, A0    ; A0 = file
+000014BE  2F08                     142              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014C0                           143  ; --------- call e_scan             
+000014C0  4EB8 13DC                144              JSR         e_scan      ; JUMP TO SUBROUTINE e_scan
+000014C4  588F                     145              ADDA.L      #4, SP      ; SP = SP + 4
+000014C6                           146  ; --------- param_s file            
+000014C6  41F8 12C4                147              LEA.L       file, A0    ; A0 = file
+000014CA  2F08                     148              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014CC                           149  ; --------- param_s content         
+000014CC  41F8 10C0                150              LEA.L       content, A0 ; A0 = content
+000014D0  2F08                     151              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014D2                           152  ; --------- call e_from             
+000014D2  4EB8 13E6                153              JSR         e_from      ; JUMP TO SUBROUTINE e_from
+000014D6  508F                     154              ADDA.L      #8, SP      ; SP = SP + 8
+000014D8                           155  ; --------- t_3 = El fichero contiene:  
+000014D8                           156  ; --------- param_s t_3             
+000014D8  41F8 1036                157              LEA.L       t_3, A0     ; A0 = t_3
+000014DC  2F08                     158              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014DE                           159  ; --------- call e_show             
+000014DE  4EB8 13D2                160              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000014E2  588F                     161              ADDA.L      #4, SP      ; SP = SP + 4
+000014E4                           162  ; --------- param_s content         
+000014E4  41F8 10C0                163              LEA.L       content, A0 ; A0 = content
+000014E8  2F08                     164              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014EA                           165  ; --------- call e_show             
+000014EA  4EB8 13D2                166              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000014EE  588F                     167              ADDA.L      #4, SP      ; SP = SP + 4
+000014F0                           168  ; --------- t_4 = Ahora escribe en el fichero:  
+000014F0                           169  ; --------- param_s t_4             
+000014F0  41F8 104C                170              LEA.L       t_4, A0     ; A0 = t_4
+000014F4  2F08                     171              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014F6                           172  ; --------- call e_show             
+000014F6  4EB8 13D2                173              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000014FA  588F                     174              ADDA.L      #4, SP      ; SP = SP + 4
+000014FC                           175  ; --------- param_s content         
+000014FC  41F8 10C0                176              LEA.L       content, A0 ; A0 = content
+00001500  2F08                     177              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001502                           178  ; --------- call e_scan             
+00001502  4EB8 13DC                179              JSR         e_scan      ; JUMP TO SUBROUTINE e_scan
+00001506  588F                     180              ADDA.L      #4, SP      ; SP = SP + 4
+00001508                           181  ; --------- param_s file            
+00001508  41F8 12C4                182              LEA.L       file, A0    ; A0 = file
+0000150C  2F08                     183              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000150E                           184  ; --------- param_s content         
+0000150E  41F8 10C0                185              LEA.L       content, A0 ; A0 = content
+00001512  2F08                     186              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001514                           187  ; --------- call e_into             
+00001514  4EB8 1430                188              JSR         e_into      ; JUMP TO SUBROUTINE e_into
+00001518  508F                     189              ADDA.L      #8, SP      ; SP = SP + 8
+0000151A                           190  ; --------- t_5 = En el fichero se ha escrito:  
+0000151A                           191  ; --------- param_s t_5             
+0000151A  41F8 109E                192              LEA.L       t_5, A0     ; A0 = t_5
+0000151E  2F08                     193              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001520                           194  ; --------- call e_show             
+00001520  4EB8 13D2                195              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001524  588F                     196              ADDA.L      #4, SP      ; SP = SP + 4
+00001526                           197  ; --------- t_6 = 83                
+00001526  7053                     198              MOVE.L      #83, D0     ; D0 = #83
+00001528  21C0 10BC                199              MOVE.L      D0, t_6     ; t_6 = D0
+0000152C                           200  ; --------- d_str = t_6             
+0000152C  2038 10BC                201              MOVE.L      t_6, D0     ; D0 = t_6
+00001530  21C0 13CA                202              MOVE.L      D0, d_str   ; d_str = D0
+00001534                           203  ; --------- param_s file            
+00001534  41F8 12C4                204              LEA.L       file, A0    ; A0 = file
+00001538  2F08                     205              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000153A                           206  ; --------- param_s str             
+0000153A  41F8 11C2                207              LEA.L       str, A0     ; A0 = str
+0000153E  2F08                     208              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001540                           209  ; --------- call e_from             
+00001540  4EB8 13E6                210              JSR         e_from      ; JUMP TO SUBROUTINE e_from
+00001544  508F                     211              ADDA.L      #8, SP      ; SP = SP + 8
+00001546                           212  ; --------- param_s str             
+00001546  41F8 11C2                213              LEA.L       str, A0     ; A0 = str
+0000154A  2F08                     214              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000154C                           215  ; --------- call e_show             
+0000154C  4EB8 13D2                216              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001550  588F                     217              ADDA.L      #4, SP      ; SP = SP + 4
+00001552                           218  ; --------- rtn e_inicio            
+00001552  4E75                     219              RTS                     ; RETURN TO SUBROUTINE e_inicio
+00001554                           220  
+00001554                           221  
+00001554                           222  
+00001554                           223  
+00001554                           224              END io                  ; Fin del programa
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CONTENT             10C0
+D_CONTENT           13CE
+D_FILE              13C6
+D_STR               13CA
+EMPTYFILE           1418
+ERRREAD             1024
+ERRREADONLY         107E
+ERRWRITE            106A
+E_FROM              13E6
+E_FROM0             1426
+E_INICIO            1492
+E_INTO              1430
+E_INTO0             146C
+E_INTO1             1476
+E_INTO2             144E
+E_INTO3             1460
+E_SCAN              13DC
+E_SHOW              13D2
+FILE                12C4
+IO                  1480
+STR                 11C2
+T                   1000
+T_1                 101C
+T_2                 1020
+T_3                 1036
+T_4                 104C
+T_5                 109E
+T_6                 10BC

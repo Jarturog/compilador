@@ -1,0 +1,40 @@
+e_inicio: skip
+pmb e_inicio
+t = 81
+d_str = t
+t_1 = 0
+i = t_1
+e: skip
+t_2 = 1
+if i < t_2 goto e_3
+t_3 = 0
+goto e_4
+e_3: skip
+t_3 = -1
+e_4: skip
+if t_3 == 0 goto e_1
+t_4 = 81
+d_str_1 = t_4
+e_2: skip
+t_5 = 1
+t_6 = i + t_5
+i = t_6
+goto e
+e_1: skip
+t_7 = prueba.txt
+param_s t_7
+param_s str
+call e_from
+param_s str
+call e_show
+rtn e_inicio
+
+
+e_nuevapersona: skip
+pmb e_nuevapersona
+t_8 = 0
+p[t_8] = idpersona
+t_9 = 4
+p[t_9] = inicial
+rtn e_nuevapersona
+

@@ -1,0 +1,18 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+
+Tabla de variables
+file: tipo STRING almacenando una estructura de datos de 324 bytes
+t: tipo STRING inicializado a Escribe el fichero a leer: almacenando una estructura de datos de 256 bytes
+t_2: tipo INT inicializado a 81 almacenando una estructura de datos de 256 bytes
+t_1: tipo INT inicializado a 81 almacenando una estructura de datos de 256 bytes
+d_file: tipo INT
+t_4: tipo STRING inicializado a Ahora escribe en el fichero: almacenando una estructura de datos de 256 bytes
+t_3: tipo STRING inicializado a El fichero contiene: almacenando una estructura de datos de 256 bytes
+t_5: tipo STRING inicializado a Ahora el fichero contiene: almacenando una estructura de datos de 256 bytes
+d_content: tipo INT
+content: tipo STRING almacenando una estructura de datos de 324 bytes

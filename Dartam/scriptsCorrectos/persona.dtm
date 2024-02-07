@@ -1,14 +1,10 @@
 f vacio inicio(){
-	#tupla persona p1, p2;
+	tupla persona p1;
 	nuevaPersona(p1, 1, 'a');
-	show((car[])(car)p1.let);#
-	car[81] str;
+	show((car[])(car)p1.let);
 	loop ent i:0; i < 1; i++ {
 		car[81] str;
-		//scan(str);
-		//into("prueba.txt", "");
 	}
-	from("prueba.txt", str);
 	show(str);
 	//p2: p1;
 	//show((car[])(car)p2.let);

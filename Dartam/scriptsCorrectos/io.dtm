@@ -1,0 +1,14 @@
+f vacio inicio(){ 
+	show("Escribe el fichero a leer:");
+	car[81] file, content;
+	scan(file);
+	from(file, content);
+	show("El fichero contiene:");
+	show(content);
+	show("Ahora escribe en el fichero:");
+	scan(content);
+	into(file, content);
+	show("Ahora el fichero contiene:");
+	from(file, content);
+	show(content);
+}
