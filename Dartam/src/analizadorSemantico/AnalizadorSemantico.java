@@ -34,7 +34,7 @@ public class AnalizadorSemantico {
     private Pair<String, DescripcionFuncion> metodoActualmenteSiendoTratado;
     private Pair<String, DescripcionDefinicionTupla> tuplaActualmenteSiendoTratada;
     private Stack<Pair<String, String>> pilaEtiquetasBucle = new Stack(); // 1o es inicio y 2o es final
-    private String etSwitch = null; // para controlar el break del switch
+    private Stack<String> pilaEtiquetasSwitch = new Stack();
 
     private List<String> errores;//, symbols;
 
@@ -910,7 +910,7 @@ public class AnalizadorSemantico {
 
     private void procesarSwitch(SymbolSwitch sw) throws Exception {
         String efi = g3d.nuevaEtiqueta();
-        etSwitch = efi;
+        pilaEtiquetasSwitch.push(efi);
         String tipo1 = procesarOperando(sw.cond);
         String varCondSwitch = this.varActual;
         if (tipo1 == null) {
@@ -927,10 +927,17 @@ public class AnalizadorSemantico {
             }
         }
         int n = 0;
+        TipoVariable t1 = g3d.getTipoFromVar(varCondSwitch);
+        ArrayList<SymbolBody> cuerposCasos = new ArrayList<>();
+        ArrayList<String> etiquetasCasos = new ArrayList<>();
+        ArrayList<String> variablesCasos = new ArrayList<>();
+        String etCondiciones = g3d.nuevaEtiqueta();
+        g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etCondiciones));
         for (SymbolCaso caso = sw.caso; caso != null; caso = caso.siguienteCaso) {
             n++;
             String tipo2 = procesarOperando(caso.cond);
             String varCondCaso = this.varActual;
+            String etCondActual = g3d.nuevaEtiqueta();
             if (tipo2 == null) {
                 errores.add("La operacion del 'caso' realiza una operacion no valida");
                 indicarLocalizacion(caso.cond);
@@ -948,22 +955,33 @@ public class AnalizadorSemantico {
                     return;
                 }
             }
-            String etSigCond = g3d.nuevaEtiqueta(); //Etiqueta para el siguiente caso
-            TipoVariable t1 = g3d.getTipoFromVar(varCondSwitch);
-            TipoVariable t2 = g3d.getTipoFromVar(varCondCaso);
-            g3d.generarInstr(TipoInstr.IFEQ, new Operador(t1, varCondSwitch), new Operador(t2, varCondCaso), new Operador(etSigCond));
+            cuerposCasos.add(caso.cuerpo);
+            etiquetasCasos.add(etCondActual);
+            variablesCasos.add(varCondCaso);
+        }
+        for (int i = etiquetasCasos.size() - 1; i >= 0; i--) {
+            SymbolBody caso = cuerposCasos.get(i);
+            String etCondActual = etiquetasCasos.get(i);
+            g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etCondActual));
             tablaSimbolos.entraBloque();
-            procesarBody(caso.cuerpo);
+            procesarBody(caso);
             tablaSimbolos.salirBloque();
-            g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etSigCond));
+
         }
         if (sw.pred != null) {
             tablaSimbolos.entraBloque();
             procesarBody(sw.pred.cuerpo);
             tablaSimbolos.salirBloque();
         }
+        g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(efi));
+        g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etCondiciones));
+        for (int i = etiquetasCasos.size() - 1; i >= 0; i--) {
+            String etCondActual = etiquetasCasos.get(i);
+            String varCondCaso = variablesCasos.get(i);
+            g3d.generarInstr(TipoInstr.IFEQ, new Operador(t1, varCondSwitch), new Operador(g3d.getTipoFromVar(varCondCaso), varCondCaso), new Operador(etCondActual));
+        }
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(efi));
-        etSwitch = null;
+        pilaEtiquetasSwitch.pop();
     }
 
     private void procesarMetodo(SymbolScriptElemento metodo) throws Exception {
@@ -1080,18 +1098,20 @@ public class AnalizadorSemantico {
 
     private void procesarBreak(SymbolInstr instr) throws Exception {
         // si está en un switch sale de él
-        if (etSwitch != null) {
-            g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etSwitch));
-        }
-        // si no está en un switch comprueba que esté en un bucle
-        if (pilaEtiquetasBucle.isEmpty()) {
-            errores.add("Se ha intentado salir de un bucle en un ámbito sin bucles");
-            indicarLocalizacion(instr);
+        if (!pilaEtiquetasSwitch.isEmpty()) {
+            String etfi = pilaEtiquetasSwitch.peek();
+            g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etfi));
             return;
         }
-        Pair<String, String> p = pilaEtiquetasBucle.peek();
-        String etfi = p.snd;
-        g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etfi));
+        // si no está en un switch comprueba que esté en un bucle
+        if (!pilaEtiquetasBucle.isEmpty()) {
+            Pair<String, String> p = pilaEtiquetasBucle.peek();
+            String etfi = p.snd;
+            g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etfi));
+            return;
+        }
+        errores.add("Se ha intentado salir de un bucle o un select en un ámbito sin bucles ni selects");
+        indicarLocalizacion(instr);
     }
 
     private void procesarMain(SymbolMain main) throws Exception {

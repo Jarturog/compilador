@@ -1,0 +1,115 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
+switchConBreak: identificado por e_switchconbreak, devuelve 0 bytes de retorno y sus parámetros son ENT v siendo su variable de CI v_1
+ifs: identificado por e_ifs, devuelve 0 bytes de retorno y sus parámetros son ENT v siendo su variable de CI v_2
+parte1: identificado por e_parte1, devuelve 0 bytes de retorno y no recibe parámetros
+parte3: identificado por e_parte3, devuelve 0 bytes de retorno y no recibe parámetros
+parte2: identificado por e_parte2, devuelve 0 bytes de retorno y no recibe parámetros
+switch: identificado por e_switch, devuelve 0 bytes de retorno y sus parámetros son ENT v siendo su variable de CI v
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+
+Tabla de variables
+t_49: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_40: tipo INT
+t_47: tipo STRING inicializado a Muestra de un buen uso de si, sino y no almacenando una estructura de datos de 256 bytes
+t_48: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_45: tipo STRING inicializado a  almacenando una estructura de datos de 256 bytes
+t_46: tipo STRING inicializado a PARTE 3 almacenando una estructura de datos de 256 bytes
+t_43: tipo BOOLEAN inicializado a 0
+t_44: tipo STRING inicializado a b: 8 almacenando una estructura de datos de 256 bytes
+t_41: tipo INT
+t_42: tipo INT inicializado a 8 almacenando una estructura de datos de 256 bytes
+t_2: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_38: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_1: tipo STRING inicializado a Muestra de un mal uso del switch (sin break) almacenando una estructura de datos de 256 bytes
+t_39: tipo INT inicializado a 1
+t_4: tipo BOOLEAN inicializado a 0
+t_3: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_6: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_5: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_8: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_7: tipo BOOLEAN
+t_9: tipo BOOLEAN inicializado a 0
+t_36: tipo STRING inicializado a a: 4 almacenando una estructura de datos de 256 bytes
+t_37: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_34: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_35: tipo BOOLEAN inicializado a 0
+t_32: tipo BOOLEAN inicializado a 0
+t_33: tipo STRING inicializado a a: 3 almacenando una estructura de datos de 256 bytes
+t_30: tipo BOOLEAN
+t_31: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_61: tipo BOOLEAN inicializado a 0
+t_62: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_60: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+num1: tipo INT
+t_69: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_67: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_68: tipo INT
+t_65: tipo STRING inicializado a num2: 0 (aux2: 1) almacenando una estructura de datos de 256 bytes
+t_66: tipo STRING inicializado a  almacenando una estructura de datos de 256 bytes
+t_63: tipo BOOLEAN inicializado a 0
+num2: tipo INT
+t_64: tipo BOOLEAN
+a: tipo BOOLEAN
+b: tipo INT
+t_50: tipo INT
+t_51: tipo INT
+t: tipo STRING inicializado a PARTE 1 almacenando una estructura de datos de 256 bytes
+v: tipo INT
+t_58: tipo BOOLEAN
+t_59: tipo STRING inicializado a num1: 0 (aux1: 0) almacenando una estructura de datos de 256 bytes
+t_56: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_57: tipo BOOLEAN inicializado a 0
+t_54: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_55: tipo BOOLEAN inicializado a 0
+t_52: tipo INT
+t_53: tipo STRING inicializado a num1:1    num2:1    aux1:--num1    aux2:num2-- almacenando una estructura de datos de 256 bytes
+t_83: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_84: tipo BOOLEAN inicializado a 0
+t_81: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_82: tipo INT
+b_1: tipo INT
+t_80: tipo STRING inicializado a Error, el numero no es par ni impar almacenando una estructura de datos de 256 bytes
+t_89: tipo STRING inicializado a Error, el numero no es par ni impar almacenando una estructura de datos de 256 bytes
+t_87: tipo BOOLEAN inicializado a 0
+t_88: tipo STRING inicializado a El numero introducido es impar almacenando una estructura de datos de 256 bytes
+t_85: tipo STRING inicializado a El numero introducido es par almacenando una estructura de datos de 256 bytes
+t_86: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+v_2: tipo INT
+v_1: tipo INT
+t_72: tipo STRING inicializado a El numero introducido es impar almacenando una estructura de datos de 256 bytes
+t_73: tipo STRING inicializado a Error, el numero no es par ni impar almacenando una estructura de datos de 256 bytes
+t_70: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_71: tipo STRING inicializado a El numero introducido es par almacenando una estructura de datos de 256 bytes
+t_78: tipo STRING inicializado a El numero introducido es par almacenando una estructura de datos de 256 bytes
+t_79: tipo STRING inicializado a El numero introducido es impar almacenando una estructura de datos de 256 bytes
+t_76: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_77: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_74: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_75: tipo INT
+aux1: tipo INT
+aux2: tipo INT
+t_29: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_27: tipo BOOLEAN inicializado a 0
+t_28: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+a_1: tipo BOOLEAN
+t_25: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_26: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_23: tipo STRING inicializado a PARTE 2 almacenando una estructura de datos de 256 bytes
+t_24: tipo STRING inicializado a Muestra de un buen uso del switch (con break) almacenando una estructura de datos de 256 bytes
+t_21: tipo STRING inicializado a b: 8 almacenando una estructura de datos de 256 bytes
+t_22: tipo STRING inicializado a  almacenando una estructura de datos de 256 bytes
+t_20: tipo BOOLEAN inicializado a 0
+t_18: tipo INT
+t_19: tipo INT inicializado a 8 almacenando una estructura de datos de 256 bytes
+t_16: tipo INT inicializado a 1
+t_17: tipo INT
+t_14: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_15: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_12: tipo BOOLEAN inicializado a 0
+t_13: tipo STRING inicializado a a: 4 almacenando una estructura de datos de 256 bytes
+t_10: tipo STRING inicializado a a: 3 almacenando una estructura de datos de 256 bytes
+t_11: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes

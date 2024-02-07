@@ -422,12 +422,13 @@ ELSE ::= KW_ELSE:pos LKEY BODY:et RKEY                  {: RESULT = new SymbolEl
         |                                           {: RESULT = new SymbolElse(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
-SWITCH ::= KW_SWITCH OPERAND:et1 RKEY CASO:et2 PRED:et3 LKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
+SWITCH ::= KW_SWITCH OPERAND:et1 LKEY CASO:et2 PRED:et3 RKEY {: RESULT = new SymbolSwitch(et1, et2, et3, et1xleft, et1xright); :}
         ;   
 
-CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW BODY:et3 {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft, et1xright); :}
+CASO ::= CASO:et1 KW_CASE OPERAND:et2 ARROW LKEY BODY:et3 RKEY {: RESULT = new SymbolCaso(et1, et2, et3, et1xleft, et1xright); :}
         |                                            {: RESULT = new SymbolCaso(((ComplexSymbol) cur_token).xleft, ((ComplexSymbol) cur_token).xright); :}
         ;
 
-PRED ::= KW_CASE KW_DEFAULT ARROW BODY:et            {: RESULT = new SymbolPred(et, etxleft, etxright); :}
+PRED ::= KW_CASE KW_DEFAULT ARROW LKEY BODY:et RKEY            {: RESULT = new SymbolPred(et, etxleft, etxright); :}
+        |
         ;

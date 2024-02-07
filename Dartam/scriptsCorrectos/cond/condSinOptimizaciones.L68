@@ -1,0 +1,1375 @@
+00001384 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 07/02/2024 18:34:42
+
+00000000                             1  ; ==============================================================================
+00000000                             2  ; TITLE       : cond
+00000000                             3  ; COMPILED BY : jartu
+00000000                             4  ; COMPILER BY : Juan Arturo Abaurrea Calafell
+00000000                             5  ;               Dani Salanova Dmitriyev
+00000000                             6  ;               Marta González Juan
+00000000                             7  ; ==============================================================================
+00000000                             8  
+00001000                             9              ORG         $1000       ; Origen
+00001000                            10  
+00001000= 50 41 52 54 45 20 31      11  t           DC.B 'PARTE 1'          ; STRING
+00001007= 00                        12              DC.B 0                  ; Los strings y chars acaban en 0
+00001008                            13              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001008= 4D 75 65 73 74 72 ...     14  t_1         DC.B 'Muestra de un mal uso del switch (sin break)'  ; STRING
+00001034= 00                        15              DC.B 0                  ; Los strings y chars acaban en 0
+00001036                            16              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001036= 00000003                  17  t_2         DC.L 3                  ; INT
+0000103A= 00000003                  18  t_3         DC.L 3                  ; INT
+0000103E= 00000000                  19  t_4         DC.L 0                  ; BOOLEAN
+00001042= 00000003                  20  t_5         DC.L 3                  ; INT
+00001046= 00000004                  21  t_6         DC.L 4                  ; INT
+0000104A= 00000003                  22  t_8         DC.L 3                  ; INT
+0000104E= 00000000                  23  t_9         DC.L 0                  ; BOOLEAN
+00001052= 61 3A 20 33               24  t_10        DC.B 'a: 3'             ; STRING
+00001056= 00                        25              DC.B 0                  ; Los strings y chars acaban en 0
+00001058                            26              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001058= 00000004                  27  t_11        DC.L 4                  ; INT
+0000105C= 00000000                  28  t_12        DC.L 0                  ; BOOLEAN
+00001060= 61 3A 20 34               29  t_13        DC.B 'a: 4'             ; STRING
+00001064= 00                        30              DC.B 0                  ; Los strings y chars acaban en 0
+00001066                            31              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001066= 00000002                  32  t_14        DC.L 2                  ; INT
+0000106A= 00000003                  33  t_15        DC.L 3                  ; INT
+0000106E= 00000001                  34  t_16        DC.L 1                  ; INT
+00001072= 00000008                  35  t_19        DC.L 8                  ; INT
+00001076= 00000000                  36  t_20        DC.L 0                  ; BOOLEAN
+0000107A= 62 3A 20 38               37  t_21        DC.B 'b: 8'             ; STRING
+0000107E= 00                        38              DC.B 0                  ; Los strings y chars acaban en 0
+00001080                            39              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001080=                           40  t_22        DC.B ''                 ; STRING
+00001080= 00                        41              DC.B 0                  ; Los strings y chars acaban en 0
+00001082                            42              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001082= 50 41 52 54 45 20 32      43  t_23        DC.B 'PARTE 2'          ; STRING
+00001089= 00                        44              DC.B 0                  ; Los strings y chars acaban en 0
+0000108A                            45              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000108A= 4D 75 65 73 74 72 ...     46  t_24        DC.B 'Muestra de un buen uso del switch (con break)'  ; STRING
+000010B7= 00                        47              DC.B 0                  ; Los strings y chars acaban en 0
+000010B8                            48              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010B8= 00000003                  49  t_25        DC.L 3                  ; INT
+000010BC= 00000003                  50  t_26        DC.L 3                  ; INT
+000010C0= 00000000                  51  t_27        DC.L 0                  ; BOOLEAN
+000010C4= 00000003                  52  t_28        DC.L 3                  ; INT
+000010C8= 00000004                  53  t_29        DC.L 4                  ; INT
+000010CC= 00000003                  54  t_31        DC.L 3                  ; INT
+000010D0= 00000000                  55  t_32        DC.L 0                  ; BOOLEAN
+000010D4= 61 3A 20 33               56  t_33        DC.B 'a: 3'             ; STRING
+000010D8= 00                        57              DC.B 0                  ; Los strings y chars acaban en 0
+000010DA                            58              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010DA= 00000004                  59  t_34        DC.L 4                  ; INT
+000010DE= 00000000                  60  t_35        DC.L 0                  ; BOOLEAN
+000010E2= 61 3A 20 34               61  t_36        DC.B 'a: 4'             ; STRING
+000010E6= 00                        62              DC.B 0                  ; Los strings y chars acaban en 0
+000010E8                            63              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010E8= 00000002                  64  t_37        DC.L 2                  ; INT
+000010EC= 00000003                  65  t_38        DC.L 3                  ; INT
+000010F0= 00000001                  66  t_39        DC.L 1                  ; INT
+000010F4= 00000008                  67  t_42        DC.L 8                  ; INT
+000010F8= 00000000                  68  t_43        DC.L 0                  ; BOOLEAN
+000010FC= 62 3A 20 38               69  t_44        DC.B 'b: 8'             ; STRING
+00001100= 00                        70              DC.B 0                  ; Los strings y chars acaban en 0
+00001102                            71              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001102=                           72  t_45        DC.B ''                 ; STRING
+00001102= 00                        73              DC.B 0                  ; Los strings y chars acaban en 0
+00001104                            74              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001104= 50 41 52 54 45 20 33      75  t_46        DC.B 'PARTE 3'          ; STRING
+0000110B= 00                        76              DC.B 0                  ; Los strings y chars acaban en 0
+0000110C                            77              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000110C= 4D 75 65 73 74 72 ...     78  t_47        DC.B 'Muestra de un buen uso de si, sino y no'  ; STRING
+00001133= 00                        79              DC.B 0                  ; Los strings y chars acaban en 0
+00001134                            80              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001134= 00000001                  81  t_48        DC.L 1                  ; INT
+00001138= 00000001                  82  t_49        DC.L 1                  ; INT
+0000113C= 6E 75 6D 31 3A 31 ...     83  t_53        DC.B 'num1:1    num2:1    aux1:--num1    aux2:num2--'  ; STRING
+0000116A= 00                        84              DC.B 0                  ; Los strings y chars acaban en 0
+0000116C                            85              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000116C= 00000000                  86  t_54        DC.L 0                  ; INT
+00001170= 00000000                  87  t_55        DC.L 0                  ; BOOLEAN
+00001174= 00000000                  88  t_56        DC.L 0                  ; INT
+00001178= 00000000                  89  t_57        DC.L 0                  ; BOOLEAN
+0000117C= 6E 75 6D 31 3A 20 ...     90  t_59        DC.B 'num1: 0 (aux1: 0)'  ; STRING
+0000118D= 00                        91              DC.B 0                  ; Los strings y chars acaban en 0
+0000118E                            92              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000118E= 00000001                  93  t_60        DC.L 1                  ; INT
+00001192= 00000000                  94  t_61        DC.L 0                  ; BOOLEAN
+00001196= 00000000                  95  t_62        DC.L 0                  ; INT
+0000119A= 00000000                  96  t_63        DC.L 0                  ; BOOLEAN
+0000119E= 6E 75 6D 32 3A 20 ...     97  t_65        DC.B 'num2: 0 (aux2: 1)'  ; STRING
+000011AF= 00                        98              DC.B 0                  ; Los strings y chars acaban en 0
+000011B0                            99              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000011B0=                          100  t_66        DC.B ''                 ; STRING
+000011B0= 00                       101              DC.B 0                  ; Los strings y chars acaban en 0
+000011B2                           102              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000011B2= 00000002                 103  t_67        DC.L 2                  ; INT
+000011B6= 00000001                 104  t_69        DC.L 1                  ; INT
+000011BA= 00000000                 105  t_70        DC.L 0                  ; INT
+000011BE= 45 6C 20 6E EF BF ...    106  t_71        DC.B 'El n�mero introducido es par'  ; STRING
+000011DC= 00                       107              DC.B 0                  ; Los strings y chars acaban en 0
+000011DE                           108              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000011DE= 45 6C 20 6E EF BF ...    109  t_72        DC.B 'El n�mero introducido es impar'  ; STRING
+000011FE= 00                       110              DC.B 0                  ; Los strings y chars acaban en 0
+00001200                           111              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001200= 45 72 72 6F 72 2C ...    112  t_73        DC.B 'Error, el n�mero no es par ni impar'  ; STRING
+00001225= 00                       113              DC.B 0                  ; Los strings y chars acaban en 0
+00001226                           114              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001226= 00000002                 115  t_74        DC.L 2                  ; INT
+0000122A= 00000001                 116  t_76        DC.L 1                  ; INT
+0000122E= 00000000                 117  t_77        DC.L 0                  ; INT
+00001232= 45 6C 20 6E EF BF ...    118  t_78        DC.B 'El n�mero introducido es par'  ; STRING
+00001250= 00                       119              DC.B 0                  ; Los strings y chars acaban en 0
+00001252                           120              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001252= 45 6C 20 6E EF BF ...    121  t_79        DC.B 'El n�mero introducido es impar'  ; STRING
+00001272= 00                       122              DC.B 0                  ; Los strings y chars acaban en 0
+00001274                           123              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001274= 45 72 72 6F 72 2C ...    124  t_80        DC.B 'Error, el n�mero no es par ni impar'  ; STRING
+00001299= 00                       125              DC.B 0                  ; Los strings y chars acaban en 0
+0000129A                           126              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000129A= 00000002                 127  t_81        DC.L 2                  ; INT
+0000129E= 00000000                 128  t_83        DC.L 0                  ; INT
+000012A2= 00000000                 129  t_84        DC.L 0                  ; BOOLEAN
+000012A6= 45 6C 20 6E EF BF ...    130  t_85        DC.B 'El n�mero introducido es par'  ; STRING
+000012C4= 00                       131              DC.B 0                  ; Los strings y chars acaban en 0
+000012C6                           132              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000012C6= 00000001                 133  t_86        DC.L 1                  ; INT
+000012CA= 00000000                 134  t_87        DC.L 0                  ; BOOLEAN
+000012CE= 45 6C 20 6E EF BF ...    135  t_88        DC.B 'El n�mero introducido es impar'  ; STRING
+000012EE= 00                       136              DC.B 0                  ; Los strings y chars acaban en 0
+000012F0                           137              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000012F0= 45 72 72 6F 72 2C ...    138  t_89        DC.B 'Error, el n�mero no es par ni impar'  ; STRING
+00001315= 00                       139              DC.B 0                  ; Los strings y chars acaban en 0
+00001316                           140              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001316                           141  t_40        DS.L 1                  ; INT
+0000131A                           142  t_41        DS.L 1                  ; INT
+0000131E                           143  t_7         DS.L 1                  ; BOOLEAN
+00001322                           144  t_30        DS.L 1                  ; BOOLEAN
+00001326                           145  num1        DS.L 1                  ; INT
+0000132A                           146  t_68        DS.L 1                  ; INT
+0000132E                           147  num2        DS.L 1                  ; INT
+00001332                           148  t_64        DS.L 1                  ; BOOLEAN
+00001336                           149  a           DS.L 1                  ; BOOLEAN
+0000133A                           150  b           DS.L 1                  ; INT
+0000133E                           151  t_50        DS.L 1                  ; INT
+00001342                           152  t_51        DS.L 1                  ; INT
+00001346                           153  v           DS.L 1                  ; INT
+0000134A                           154  t_58        DS.L 1                  ; BOOLEAN
+0000134E                           155  t_52        DS.L 1                  ; INT
+00001352                           156  t_82        DS.L 1                  ; INT
+00001356                           157  b_1         DS.L 1                  ; INT
+0000135A                           158  v_2         DS.L 1                  ; INT
+0000135E                           159  v_1         DS.L 1                  ; INT
+00001362                           160  t_75        DS.L 1                  ; INT
+00001366                           161  aux1        DS.L 1                  ; INT
+0000136A                           162  aux2        DS.L 1                  ; INT
+0000136E                           163  a_1         DS.L 1                  ; BOOLEAN
+00001372                           164  t_18        DS.L 1                  ; INT
+00001376                           165  t_17        DS.L 1                  ; INT
+0000137A                           166  
+0000137A                           167  ; --------- SUBROUTINES             
+0000137A  226F 0004                168  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+0000137E  700D                     169              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+00001380  4E4F                     170              TRAP        #15         ; Interruption generated
+00001382  4E75                     171              RTS                     ; RETURN TO SUBROUTINE ...
+00001384                           172  
+00001384                           173  ; --------- INITIALIZATION          
+00001384                           174  cond                                ; Etiqueta inicial (main)
+00001384                           175  
+00001384  7020                     176              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+00001386  123C 0005                177              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+0000138A  4E4F                     178              TRAP        #15         ; Interruption generated
+0000138C  4EB9 00001396            179              JSR         e_inicio    ; Se ejecuta el main
+00001392  FFFF FFFF                180              SIMHALT                 ; Fin de la ejecución
+00001396                           181  
+00001396                           182  ; --------- e_inicio: skip          
+00001396                           183                                      
+00001396                           184  ; --------- pmb e_inicio            
+00001396                           185  ; --------- call e_parte1           
+00001396  4EB9 000013AA            186  e_inicio:   JSR         e_parte1    ; JUMP TO SUBROUTINE e_parte1
+0000139C                           187  ; --------- call e_parte2           
+0000139C  4EB9 000015A4            188              JSR         e_parte2    ; JUMP TO SUBROUTINE e_parte2
+000013A2                           189  ; --------- call e_parte3           
+000013A2  4EB9 0000179E            190              JSR         e_parte3    ; JUMP TO SUBROUTINE e_parte3
+000013A8                           191  ; --------- rtn e_inicio            
+000013A8  4E75                     192              RTS                     ; RETURN TO SUBROUTINE e_inicio
+000013AA                           193  
+000013AA                           194  
+000013AA                           195  
+000013AA                           196  
+000013AA                           197  ; --------- e_parte1: skip          
+000013AA                           198                                      
+000013AA                           199  ; --------- pmb e_parte1            
+000013AA                           200  ; --------- t = PARTE 1             
+000013AA                           201  ; --------- param_s t               
+000013AA  41F8 1000                202  e_parte1:   LEA.L       t, A0       ; A0 = t
+000013AE  2F08                     203              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000013B0                           204  ; --------- call e_show             
+000013B0  4EB8 137A                205              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000013B4  588F                     206              ADDA.L      #4, SP      ; SP = SP + 4
+000013B6                           207  ; --------- t_1 = Muestra de un mal uso del switch (sin break)  
+000013B6                           208  ; --------- param_s t_1             
+000013B6  41F8 1008                209              LEA.L       t_1, A0     ; A0 = t_1
+000013BA  2F08                     210              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000013BC                           211  ; --------- call e_show             
+000013BC  4EB8 137A                212              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000013C0  588F                     213              ADDA.L      #4, SP      ; SP = SP + 4
+000013C2                           214  ; --------- t_2 = 3                 
+000013C2  7003                     215              MOVE.L      #3, D0      ; D0 = #3
+000013C4  21C0 1036                216              MOVE.L      D0, t_2     ; t_2 = D0
+000013C8                           217  ; --------- t_3 = 3                 
+000013C8  7003                     218              MOVE.L      #3, D0      ; D0 = #3
+000013CA  21C0 103A                219              MOVE.L      D0, t_3     ; t_3 = D0
+000013CE                           220  ; --------- if t_2 == t_3 goto e    
+000013CE  2038 1036                221              MOVE.L      t_2, D0     ; D0 = t_2
+000013D2  2238 103A                222              MOVE.L      t_3, D1     ; D1 = t_3
+000013D6  B081                     223              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000013D8  6700 000E                224              BEQ         .e          ; IF Z FLAG = 1 GOTO .e
+000013DC                           225  ; --------- t_4 = 0                 
+000013DC  7000                     226              MOVE.L      #0, D0      ; D0 = #0
+000013DE  21C0 103E                227              MOVE.L      D0, t_4     ; t_4 = D0
+000013E2                           228  ; --------- goto e_1                
+000013E2  4EF9 000013EE            229              JMP         .e_1        ; goto .e_1
+000013E8                           230  ; --------- e: skip                 
+000013E8                           231                                      
+000013E8                           232  ; --------- t_4 = -1                
+000013E8  70FF                     233  .e:         MOVE.L      #-1, D0     ; D0 = #-1
+000013EA  21C0 103E                234              MOVE.L      D0, t_4     ; t_4 = D0
+000013EE                           235  ; --------- e_1: skip               
+000013EE                           236                                      
+000013EE                           237  ; --------- t_5 = 3                 
+000013EE  7003                     238  .e_1:       MOVE.L      #3, D0      ; D0 = #3
+000013F0  21C0 1042                239              MOVE.L      D0, t_5     ; t_5 = D0
+000013F4                           240  ; --------- t_6 = 4                 
+000013F4  7004                     241              MOVE.L      #4, D0      ; D0 = #4
+000013F6  21C0 1046                242              MOVE.L      D0, t_6     ; t_6 = D0
+000013FA                           243  ; --------- if t_4 == 0 goto e_3    
+000013FA  2038 103E                244              MOVE.L      t_4, D0     ; D0 = t_4
+000013FE  7200                     245              MOVE.L      #0, D1      ; D1 = #0
+00001400  B081                     246              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001402  6700 0010                247              BEQ         .e_3        ; IF Z FLAG = 1 GOTO .e_3
+00001406                           248  ; --------- t_7 = t_5               
+00001406  2038 1042                249              MOVE.L      t_5, D0     ; D0 = t_5
+0000140A  21C0 131E                250              MOVE.L      D0, t_7     ; t_7 = D0
+0000140E                           251  ; --------- goto e_2                
+0000140E  4EF9 0000141C            252              JMP         .e_2        ; goto .e_2
+00001414                           253  ; --------- e_3: skip               
+00001414                           254                                      
+00001414                           255  ; --------- t_7 = t_6               
+00001414  2038 1046                256  .e_3:       MOVE.L      t_6, D0     ; D0 = t_6
+00001418  21C0 131E                257              MOVE.L      D0, t_7     ; t_7 = D0
+0000141C                           258  ; --------- e_2: skip               
+0000141C                           259                                      
+0000141C                           260  ; --------- a = t_7                 
+0000141C  2038 131E                261  .e_2:       MOVE.L      t_7, D0     ; D0 = t_7
+00001420  21C0 1336                262              MOVE.L      D0, a       ; a = D0
+00001424                           263  ; --------- t_8 = 3                 
+00001424  7003                     264              MOVE.L      #3, D0      ; D0 = #3
+00001426  21C0 104A                265              MOVE.L      D0, t_8     ; t_8 = D0
+0000142A                           266  ; --------- if a == t_8 goto e_4    
+0000142A  2038 1336                267              MOVE.L      a, D0       ; D0 = a
+0000142E  2238 104A                268              MOVE.L      t_8, D1     ; D1 = t_8
+00001432  B081                     269              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001434  6700 000E                270              BEQ         .e_4        ; IF Z FLAG = 1 GOTO .e_4
+00001438                           271  ; --------- t_9 = 0                 
+00001438  7000                     272              MOVE.L      #0, D0      ; D0 = #0
+0000143A  21C0 104E                273              MOVE.L      D0, t_9     ; t_9 = D0
+0000143E                           274  ; --------- goto e_5                
+0000143E  4EF9 0000144A            275              JMP         .e_5        ; goto .e_5
+00001444                           276  ; --------- e_4: skip               
+00001444                           277                                      
+00001444                           278  ; --------- t_9 = -1                
+00001444  70FF                     279  .e_4:       MOVE.L      #-1, D0     ; D0 = #-1
+00001446  21C0 104E                280              MOVE.L      D0, t_9     ; t_9 = D0
+0000144A                           281  ; --------- e_5: skip               
+0000144A                           282                                      
+0000144A                           283  ; --------- if t_9 == 0 goto e_7    
+0000144A  2038 104E                284  .e_5:       MOVE.L      t_9, D0     ; D0 = t_9
+0000144E  7200                     285              MOVE.L      #0, D1      ; D1 = #0
+00001450  B081                     286              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001452  6700 0014                287              BEQ         .e_7        ; IF Z FLAG = 1 GOTO .e_7
+00001456                           288  ; --------- t_10 = a: 3             
+00001456                           289  ; --------- param_s t_10            
+00001456  41F8 1052                290              LEA.L       t_10, A0    ; A0 = t_10
+0000145A  2F08                     291              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000145C                           292  ; --------- call e_show             
+0000145C  4EB8 137A                293              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001460  588F                     294              ADDA.L      #4, SP      ; SP = SP + 4
+00001462                           295  ; --------- goto e_6                
+00001462  4EF9 000014AC            296              JMP         .e_6        ; goto .e_6
+00001468                           297  ; --------- e_7: skip               
+00001468                           298                                      
+00001468                           299  ; --------- t_11 = 4                
+00001468  7004                     300  .e_7:       MOVE.L      #4, D0      ; D0 = #4
+0000146A  21C0 1058                301              MOVE.L      D0, t_11    ; t_11 = D0
+0000146E                           302  ; --------- if a == t_11 goto e_8   
+0000146E  2038 1336                303              MOVE.L      a, D0       ; D0 = a
+00001472  2238 1058                304              MOVE.L      t_11, D1    ; D1 = t_11
+00001476  B081                     305              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001478  6700 000E                306              BEQ         .e_8        ; IF Z FLAG = 1 GOTO .e_8
+0000147C                           307  ; --------- t_12 = 0                
+0000147C  7000                     308              MOVE.L      #0, D0      ; D0 = #0
+0000147E  21C0 105C                309              MOVE.L      D0, t_12    ; t_12 = D0
+00001482                           310  ; --------- goto e_9                
+00001482  4EF9 0000148E            311              JMP         .e_9        ; goto .e_9
+00001488                           312  ; --------- e_8: skip               
+00001488                           313                                      
+00001488                           314  ; --------- t_12 = -1               
+00001488  70FF                     315  .e_8:       MOVE.L      #-1, D0     ; D0 = #-1
+0000148A  21C0 105C                316              MOVE.L      D0, t_12    ; t_12 = D0
+0000148E                           317  ; --------- e_9: skip               
+0000148E                           318                                      
+0000148E                           319  ; --------- if t_12 == 0 goto e_10  
+0000148E  2038 105C                320  .e_9:       MOVE.L      t_12, D0    ; D0 = t_12
+00001492  7200                     321              MOVE.L      #0, D1      ; D1 = #0
+00001494  B081                     322              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001496  6700 0014                323              BEQ         .e_10       ; IF Z FLAG = 1 GOTO .e_10
+0000149A                           324  ; --------- t_13 = a: 4             
+0000149A                           325  ; --------- param_s t_13            
+0000149A  41F8 1060                326              LEA.L       t_13, A0    ; A0 = t_13
+0000149E  2F08                     327              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000014A0                           328  ; --------- call e_show             
+000014A0  4EB8 137A                329              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000014A4  588F                     330              ADDA.L      #4, SP      ; SP = SP + 4
+000014A6                           331  ; --------- goto e_6                
+000014A6  4EF9 000014AC            332              JMP         .e_6        ; goto .e_6
+000014AC                           333  ; --------- e_10: skip              
+000014AC                           334                                      
+000014AC                           335  ; --------- e_6: skip               
+000014AC                           336  .e_10:                              
+000014AC                           337  ; --------- param_s a               
+000014AC  2038 1336                338  .e_6:       MOVE.L      a, D0       ; D0 = a
+000014B0  2F00                     339              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+000014B2                           340  ; --------- call e_switch           
+000014B2  4EB9 00001938            341              JSR         e_switch    ; JUMP TO SUBROUTINE e_switch
+000014B8  588F                     342              ADDA.L      #4, SP      ; SP = SP + 4
+000014BA                           343  ; --------- t_14 = 2                
+000014BA  7002                     344              MOVE.L      #2, D0      ; D0 = #2
+000014BC  21C0 1066                345              MOVE.L      D0, t_14    ; t_14 = D0
+000014C0                           346  ; --------- t_15 = 3                
+000014C0  7003                     347              MOVE.L      #3, D0      ; D0 = #3
+000014C2  21C0 106A                348              MOVE.L      D0, t_15    ; t_15 = D0
+000014C6                           349  ; --------- if 0 >= t_15 goto e_11  
+000014C6  7000                     350              MOVE.L      #0, D0      ; D0 = #0
+000014C8  2238 106A                351              MOVE.L      t_15, D1    ; D1 = t_15
+000014CC  B280                     352              CMP.L       D0, D1      ; UPDATE FLAGS WITH D1 - D0
+000014CE  6C00 000E                353              BGE         .e_11       ; IF (N XOR V) FLAGS = 0 GOTO .e_11
+000014D2                           354  ; --------- t_16 = 1                
+000014D2  7001                     355              MOVE.L      #1, D0      ; D0 = #1
+000014D4  21C0 106E                356              MOVE.L      D0, t_16    ; t_16 = D0
+000014D8                           357  ; --------- goto e_13               
+000014D8  4EF9 0000153C            358              JMP         .e_13       ; goto .e_13
+000014DE                           359  ; --------- e_11: skip              
+000014DE                           360                                      
+000014DE                           361  ; --------- t_16 = t_14             
+000014DE  2038 1066                362  .e_11:      MOVE.L      t_14, D0    ; D0 = t_14
+000014E2  21C0 106E                363              MOVE.L      D0, t_16    ; t_16 = D0
+000014E6                           364  ; --------- t_17 = t_15             
+000014E6  2038 106A                365              MOVE.L      t_15, D0    ; D0 = t_15
+000014EA  21C0 1376                366              MOVE.L      D0, t_17    ; t_17 = D0
+000014EE                           367  ; --------- e_12: skip              
+000014EE                           368                                      
+000014EE                           369  ; --------- if 1 == t_17 goto e_13  
+000014EE  7001                     370  .e_12:      MOVE.L      #1, D0      ; D0 = #1
+000014F0  2238 1376                371              MOVE.L      t_17, D1    ; D1 = t_17
+000014F4  B081                     372              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000014F6  6700 0044                373              BEQ         .e_13       ; IF Z FLAG = 1 GOTO .e_13
+000014FA                           374  ; --------- t_18 = t_14 * t_16      
+000014FA                           375  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000014FA  2038 1066                376              MOVE.L      t_14, D0    ; D0 = t_14
+000014FE  2238 106E                377              MOVE.L      t_16, D1    ; D1 = t_16
+00001502  3400                     378              MOVE.W      D0, D2      ; D2.L = D1.L
+00001504  3601                     379              MOVE.W      D1, D3      ; D1.L = D3.L
+00001506  E080                     380              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001508  E080                     381              ASR.L       #8, D0      ; D0.L = old D0.H
+0000150A  E081                     382              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+0000150C  E081                     383              ASR.L       #8, D1      ; D1.L = old D1.H
+0000150E  C1C1                     384              MULS.W      D1, D0      ; D0 = D0 * D1
+00001510  C7C2                     385              MULS.W      D2, D3      ; D3 = D2 * D3
+00001512  E180                     386              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+00001514  E180                     387              ASL.L       #8, D0      ; D0.H = old D0.L
+00001516  D083                     388              ADD.L       D3, D0      ; D0 = D0 + D3
+00001518  21C0 1372                389              MOVE.L      D0, t_18    ; t_18 = D0
+0000151C                           390  ; --------- t_16 = t_18             
+0000151C  2038 1372                391              MOVE.L      t_18, D0    ; D0 = t_18
+00001520  21C0 106E                392              MOVE.L      D0, t_16    ; t_16 = D0
+00001524                           393  ; --------- t_18 = t_17 - 1         
+00001524  2038 1376                394              MOVE.L      t_17, D0    ; D0 = t_17
+00001528  7201                     395              MOVE.L      #1, D1      ; D1 = #1
+0000152A  9081                     396              SUB.L       D1, D0      ; D0 = D0 - D1
+0000152C  21C0 1372                397              MOVE.L      D0, t_18    ; t_18 = D0
+00001530                           398  ; --------- t_17 = t_18             
+00001530  2038 1372                399              MOVE.L      t_18, D0    ; D0 = t_18
+00001534  21C0 1376                400              MOVE.L      D0, t_17    ; t_17 = D0
+00001538                           401  ; --------- goto e_12               
+00001538  4EF8 14EE                402              JMP         .e_12       ; goto .e_12
+0000153C                           403  ; --------- e_13: skip              
+0000153C                           404                                      
+0000153C                           405  ; --------- b = t_16                
+0000153C  2038 106E                406  .e_13:      MOVE.L      t_16, D0    ; D0 = t_16
+00001540  21C0 133A                407              MOVE.L      D0, b       ; b = D0
+00001544                           408  ; --------- t_19 = 8                
+00001544  7008                     409              MOVE.L      #8, D0      ; D0 = #8
+00001546  21C0 1072                410              MOVE.L      D0, t_19    ; t_19 = D0
+0000154A                           411  ; --------- if b == t_19 goto e_14  
+0000154A  2038 133A                412              MOVE.L      b, D0       ; D0 = b
+0000154E  2238 1072                413              MOVE.L      t_19, D1    ; D1 = t_19
+00001552  B081                     414              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001554  6700 000E                415              BEQ         .e_14       ; IF Z FLAG = 1 GOTO .e_14
+00001558                           416  ; --------- t_20 = 0                
+00001558  7000                     417              MOVE.L      #0, D0      ; D0 = #0
+0000155A  21C0 1076                418              MOVE.L      D0, t_20    ; t_20 = D0
+0000155E                           419  ; --------- goto e_15               
+0000155E  4EF9 0000156A            420              JMP         .e_15       ; goto .e_15
+00001564                           421  ; --------- e_14: skip              
+00001564                           422                                      
+00001564                           423  ; --------- t_20 = -1               
+00001564  70FF                     424  .e_14:      MOVE.L      #-1, D0     ; D0 = #-1
+00001566  21C0 1076                425              MOVE.L      D0, t_20    ; t_20 = D0
+0000156A                           426  ; --------- e_15: skip              
+0000156A                           427                                      
+0000156A                           428  ; --------- if t_20 == 0 goto e_17  
+0000156A  2038 1076                429  .e_15:      MOVE.L      t_20, D0    ; D0 = t_20
+0000156E  7200                     430              MOVE.L      #0, D1      ; D1 = #0
+00001570  B081                     431              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001572  6700 0014                432              BEQ         .e_17       ; IF Z FLAG = 1 GOTO .e_17
+00001576                           433  ; --------- t_21 = b: 8             
+00001576                           434  ; --------- param_s t_21            
+00001576  41F8 107A                435              LEA.L       t_21, A0    ; A0 = t_21
+0000157A  2F08                     436              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000157C                           437  ; --------- call e_show             
+0000157C  4EB8 137A                438              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001580  588F                     439              ADDA.L      #4, SP      ; SP = SP + 4
+00001582                           440  ; --------- goto e_16               
+00001582  4EF9 00001588            441              JMP         .e_16       ; goto .e_16
+00001588                           442  ; --------- e_17: skip              
+00001588                           443                                      
+00001588                           444  ; --------- e_16: skip              
+00001588                           445  .e_17:                              
+00001588                           446  ; --------- param_s b               
+00001588  2038 133A                447  .e_16:      MOVE.L      b, D0       ; D0 = b
+0000158C  2F00                     448              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+0000158E                           449  ; --------- call e_switch           
+0000158E  4EB9 00001938            450              JSR         e_switch    ; JUMP TO SUBROUTINE e_switch
+00001594  588F                     451              ADDA.L      #4, SP      ; SP = SP + 4
+00001596                           452  ; --------- t_22 =                  
+00001596                           453  ; --------- param_s t_22            
+00001596  41F8 1080                454              LEA.L       t_22, A0    ; A0 = t_22
+0000159A  2F08                     455              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000159C                           456  ; --------- call e_show             
+0000159C  4EB8 137A                457              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000015A0  588F                     458              ADDA.L      #4, SP      ; SP = SP + 4
+000015A2                           459  ; --------- rtn e_parte1            
+000015A2  4E75                     460              RTS                     ; RETURN TO SUBROUTINE e_parte1
+000015A4                           461  
+000015A4                           462  
+000015A4                           463  ; --------- e_parte2: skip          
+000015A4                           464                                      
+000015A4                           465  ; --------- pmb e_parte2            
+000015A4                           466  ; --------- t_23 = PARTE 2          
+000015A4                           467  ; --------- param_s t_23            
+000015A4  41F8 1082                468  e_parte2:   LEA.L       t_23, A0    ; A0 = t_23
+000015A8  2F08                     469              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000015AA                           470  ; --------- call e_show             
+000015AA  4EB8 137A                471              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000015AE  588F                     472              ADDA.L      #4, SP      ; SP = SP + 4
+000015B0                           473  ; --------- t_24 = Muestra de un buen uso del switch (con break)  
+000015B0                           474  ; --------- param_s t_24            
+000015B0  41F8 108A                475              LEA.L       t_24, A0    ; A0 = t_24
+000015B4  2F08                     476              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000015B6                           477  ; --------- call e_show             
+000015B6  4EB8 137A                478              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000015BA  588F                     479              ADDA.L      #4, SP      ; SP = SP + 4
+000015BC                           480  ; --------- t_25 = 3                
+000015BC  7003                     481              MOVE.L      #3, D0      ; D0 = #3
+000015BE  21C0 10B8                482              MOVE.L      D0, t_25    ; t_25 = D0
+000015C2                           483  ; --------- t_26 = 3                
+000015C2  7003                     484              MOVE.L      #3, D0      ; D0 = #3
+000015C4  21C0 10BC                485              MOVE.L      D0, t_26    ; t_26 = D0
+000015C8                           486  ; --------- if t_25 == t_26 goto e_18  
+000015C8  2038 10B8                487              MOVE.L      t_25, D0    ; D0 = t_25
+000015CC  2238 10BC                488              MOVE.L      t_26, D1    ; D1 = t_26
+000015D0  B081                     489              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000015D2  6700 000E                490              BEQ         .e_18       ; IF Z FLAG = 1 GOTO .e_18
+000015D6                           491  ; --------- t_27 = 0                
+000015D6  7000                     492              MOVE.L      #0, D0      ; D0 = #0
+000015D8  21C0 10C0                493              MOVE.L      D0, t_27    ; t_27 = D0
+000015DC                           494  ; --------- goto e_19               
+000015DC  4EF9 000015E8            495              JMP         .e_19       ; goto .e_19
+000015E2                           496  ; --------- e_18: skip              
+000015E2                           497                                      
+000015E2                           498  ; --------- t_27 = -1               
+000015E2  70FF                     499  .e_18:      MOVE.L      #-1, D0     ; D0 = #-1
+000015E4  21C0 10C0                500              MOVE.L      D0, t_27    ; t_27 = D0
+000015E8                           501  ; --------- e_19: skip              
+000015E8                           502                                      
+000015E8                           503  ; --------- t_28 = 3                
+000015E8  7003                     504  .e_19:      MOVE.L      #3, D0      ; D0 = #3
+000015EA  21C0 10C4                505              MOVE.L      D0, t_28    ; t_28 = D0
+000015EE                           506  ; --------- t_29 = 4                
+000015EE  7004                     507              MOVE.L      #4, D0      ; D0 = #4
+000015F0  21C0 10C8                508              MOVE.L      D0, t_29    ; t_29 = D0
+000015F4                           509  ; --------- if t_27 == 0 goto e_21  
+000015F4  2038 10C0                510              MOVE.L      t_27, D0    ; D0 = t_27
+000015F8  7200                     511              MOVE.L      #0, D1      ; D1 = #0
+000015FA  B081                     512              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000015FC  6700 0010                513              BEQ         .e_21       ; IF Z FLAG = 1 GOTO .e_21
+00001600                           514  ; --------- t_30 = t_28             
+00001600  2038 10C4                515              MOVE.L      t_28, D0    ; D0 = t_28
+00001604  21C0 1322                516              MOVE.L      D0, t_30    ; t_30 = D0
+00001608                           517  ; --------- goto e_20               
+00001608  4EF9 00001616            518              JMP         .e_20       ; goto .e_20
+0000160E                           519  ; --------- e_21: skip              
+0000160E                           520                                      
+0000160E                           521  ; --------- t_30 = t_29             
+0000160E  2038 10C8                522  .e_21:      MOVE.L      t_29, D0    ; D0 = t_29
+00001612  21C0 1322                523              MOVE.L      D0, t_30    ; t_30 = D0
+00001616                           524  ; --------- e_20: skip              
+00001616                           525                                      
+00001616                           526  ; --------- a_1 = t_30              
+00001616  2038 1322                527  .e_20:      MOVE.L      t_30, D0    ; D0 = t_30
+0000161A  21C0 136E                528              MOVE.L      D0, a_1     ; a_1 = D0
+0000161E                           529  ; --------- t_31 = 3                
+0000161E  7003                     530              MOVE.L      #3, D0      ; D0 = #3
+00001620  21C0 10CC                531              MOVE.L      D0, t_31    ; t_31 = D0
+00001624                           532  ; --------- if a_1 == t_31 goto e_22  
+00001624  2038 136E                533              MOVE.L      a_1, D0     ; D0 = a_1
+00001628  2238 10CC                534              MOVE.L      t_31, D1    ; D1 = t_31
+0000162C  B081                     535              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+0000162E  6700 000E                536              BEQ         .e_22       ; IF Z FLAG = 1 GOTO .e_22
+00001632                           537  ; --------- t_32 = 0                
+00001632  7000                     538              MOVE.L      #0, D0      ; D0 = #0
+00001634  21C0 10D0                539              MOVE.L      D0, t_32    ; t_32 = D0
+00001638                           540  ; --------- goto e_23               
+00001638  4EF9 00001644            541              JMP         .e_23       ; goto .e_23
+0000163E                           542  ; --------- e_22: skip              
+0000163E                           543                                      
+0000163E                           544  ; --------- t_32 = -1               
+0000163E  70FF                     545  .e_22:      MOVE.L      #-1, D0     ; D0 = #-1
+00001640  21C0 10D0                546              MOVE.L      D0, t_32    ; t_32 = D0
+00001644                           547  ; --------- e_23: skip              
+00001644                           548                                      
+00001644                           549  ; --------- if t_32 == 0 goto e_25  
+00001644  2038 10D0                550  .e_23:      MOVE.L      t_32, D0    ; D0 = t_32
+00001648  7200                     551              MOVE.L      #0, D1      ; D1 = #0
+0000164A  B081                     552              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+0000164C  6700 0014                553              BEQ         .e_25       ; IF Z FLAG = 1 GOTO .e_25
+00001650                           554  ; --------- t_33 = a: 3             
+00001650                           555  ; --------- param_s t_33            
+00001650  41F8 10D4                556              LEA.L       t_33, A0    ; A0 = t_33
+00001654  2F08                     557              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001656                           558  ; --------- call e_show             
+00001656  4EB8 137A                559              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000165A  588F                     560              ADDA.L      #4, SP      ; SP = SP + 4
+0000165C                           561  ; --------- goto e_24               
+0000165C  4EF9 000016A6            562              JMP         .e_24       ; goto .e_24
+00001662                           563  ; --------- e_25: skip              
+00001662                           564                                      
+00001662                           565  ; --------- t_34 = 4                
+00001662  7004                     566  .e_25:      MOVE.L      #4, D0      ; D0 = #4
+00001664  21C0 10DA                567              MOVE.L      D0, t_34    ; t_34 = D0
+00001668                           568  ; --------- if a_1 == t_34 goto e_26  
+00001668  2038 136E                569              MOVE.L      a_1, D0     ; D0 = a_1
+0000166C  2238 10DA                570              MOVE.L      t_34, D1    ; D1 = t_34
+00001670  B081                     571              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001672  6700 000E                572              BEQ         .e_26       ; IF Z FLAG = 1 GOTO .e_26
+00001676                           573  ; --------- t_35 = 0                
+00001676  7000                     574              MOVE.L      #0, D0      ; D0 = #0
+00001678  21C0 10DE                575              MOVE.L      D0, t_35    ; t_35 = D0
+0000167C                           576  ; --------- goto e_27               
+0000167C  4EF9 00001688            577              JMP         .e_27       ; goto .e_27
+00001682                           578  ; --------- e_26: skip              
+00001682                           579                                      
+00001682                           580  ; --------- t_35 = -1               
+00001682  70FF                     581  .e_26:      MOVE.L      #-1, D0     ; D0 = #-1
+00001684  21C0 10DE                582              MOVE.L      D0, t_35    ; t_35 = D0
+00001688                           583  ; --------- e_27: skip              
+00001688                           584                                      
+00001688                           585  ; --------- if t_35 == 0 goto e_28  
+00001688  2038 10DE                586  .e_27:      MOVE.L      t_35, D0    ; D0 = t_35
+0000168C  7200                     587              MOVE.L      #0, D1      ; D1 = #0
+0000168E  B081                     588              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001690  6700 0014                589              BEQ         .e_28       ; IF Z FLAG = 1 GOTO .e_28
+00001694                           590  ; --------- t_36 = a: 4             
+00001694                           591  ; --------- param_s t_36            
+00001694  41F8 10E2                592              LEA.L       t_36, A0    ; A0 = t_36
+00001698  2F08                     593              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000169A                           594  ; --------- call e_show             
+0000169A  4EB8 137A                595              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000169E  588F                     596              ADDA.L      #4, SP      ; SP = SP + 4
+000016A0                           597  ; --------- goto e_24               
+000016A0  4EF9 000016A6            598              JMP         .e_24       ; goto .e_24
+000016A6                           599  ; --------- e_28: skip              
+000016A6                           600                                      
+000016A6                           601  ; --------- e_24: skip              
+000016A6                           602  .e_28:                              
+000016A6                           603  ; --------- param_s a_1             
+000016A6  2038 136E                604  .e_24:      MOVE.L      a_1, D0     ; D0 = a_1
+000016AA  2F00                     605              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+000016AC                           606  ; --------- call e_switchconbreak   
+000016AC  4EB9 000019B6            607              JSR         e_switchconbreak ; JUMP TO SUBROUTINE e_switchconbreak
+000016B2  588F                     608              ADDA.L      #4, SP      ; SP = SP + 4
+000016B4                           609  ; --------- t_37 = 2                
+000016B4  7002                     610              MOVE.L      #2, D0      ; D0 = #2
+000016B6  21C0 10E8                611              MOVE.L      D0, t_37    ; t_37 = D0
+000016BA                           612  ; --------- t_38 = 3                
+000016BA  7003                     613              MOVE.L      #3, D0      ; D0 = #3
+000016BC  21C0 10EC                614              MOVE.L      D0, t_38    ; t_38 = D0
+000016C0                           615  ; --------- if 0 >= t_38 goto e_29  
+000016C0  7000                     616              MOVE.L      #0, D0      ; D0 = #0
+000016C2  2238 10EC                617              MOVE.L      t_38, D1    ; D1 = t_38
+000016C6  B280                     618              CMP.L       D0, D1      ; UPDATE FLAGS WITH D1 - D0
+000016C8  6C00 000E                619              BGE         .e_29       ; IF (N XOR V) FLAGS = 0 GOTO .e_29
+000016CC                           620  ; --------- t_39 = 1                
+000016CC  7001                     621              MOVE.L      #1, D0      ; D0 = #1
+000016CE  21C0 10F0                622              MOVE.L      D0, t_39    ; t_39 = D0
+000016D2                           623  ; --------- goto e_31               
+000016D2  4EF9 00001736            624              JMP         .e_31       ; goto .e_31
+000016D8                           625  ; --------- e_29: skip              
+000016D8                           626                                      
+000016D8                           627  ; --------- t_39 = t_37             
+000016D8  2038 10E8                628  .e_29:      MOVE.L      t_37, D0    ; D0 = t_37
+000016DC  21C0 10F0                629              MOVE.L      D0, t_39    ; t_39 = D0
+000016E0                           630  ; --------- t_40 = t_38             
+000016E0  2038 10EC                631              MOVE.L      t_38, D0    ; D0 = t_38
+000016E4  21C0 1316                632              MOVE.L      D0, t_40    ; t_40 = D0
+000016E8                           633  ; --------- e_30: skip              
+000016E8                           634                                      
+000016E8                           635  ; --------- if 1 == t_40 goto e_31  
+000016E8  7001                     636  .e_30:      MOVE.L      #1, D0      ; D0 = #1
+000016EA  2238 1316                637              MOVE.L      t_40, D1    ; D1 = t_40
+000016EE  B081                     638              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000016F0  6700 0044                639              BEQ         .e_31       ; IF Z FLAG = 1 GOTO .e_31
+000016F4                           640  ; --------- t_41 = t_37 * t_39      
+000016F4                           641  ;           A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16  
+000016F4  2038 10E8                642              MOVE.L      t_37, D0    ; D0 = t_37
+000016F8  2238 10F0                643              MOVE.L      t_39, D1    ; D1 = t_39
+000016FC  3400                     644              MOVE.W      D0, D2      ; D2.L = D1.L
+000016FE  3601                     645              MOVE.W      D1, D3      ; D1.L = D3.L
+00001700  E080                     646              ASR.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED RIGHT
+00001702  E080                     647              ASR.L       #8, D0      ; D0.L = old D0.H
+00001704  E081                     648              ASR.L       #8, D1      ; FIRST 8 BITS OF D1 MOVED RIGHT
+00001706  E081                     649              ASR.L       #8, D1      ; D1.L = old D1.H
+00001708  C1C1                     650              MULS.W      D1, D0      ; D0 = D0 * D1
+0000170A  C7C2                     651              MULS.W      D2, D3      ; D3 = D2 * D3
+0000170C  E180                     652              ASL.L       #8, D0      ; FIRST 8 BITS OF D0 MOVED LEFT
+0000170E  E180                     653              ASL.L       #8, D0      ; D0.H = old D0.L
+00001710  D083                     654              ADD.L       D3, D0      ; D0 = D0 + D3
+00001712  21C0 131A                655              MOVE.L      D0, t_41    ; t_41 = D0
+00001716                           656  ; --------- t_39 = t_41             
+00001716  2038 131A                657              MOVE.L      t_41, D0    ; D0 = t_41
+0000171A  21C0 10F0                658              MOVE.L      D0, t_39    ; t_39 = D0
+0000171E                           659  ; --------- t_41 = t_40 - 1         
+0000171E  2038 1316                660              MOVE.L      t_40, D0    ; D0 = t_40
+00001722  7201                     661              MOVE.L      #1, D1      ; D1 = #1
+00001724  9081                     662              SUB.L       D1, D0      ; D0 = D0 - D1
+00001726  21C0 131A                663              MOVE.L      D0, t_41    ; t_41 = D0
+0000172A                           664  ; --------- t_40 = t_41             
+0000172A  2038 131A                665              MOVE.L      t_41, D0    ; D0 = t_41
+0000172E  21C0 1316                666              MOVE.L      D0, t_40    ; t_40 = D0
+00001732                           667  ; --------- goto e_30               
+00001732  4EF8 16E8                668              JMP         .e_30       ; goto .e_30
+00001736                           669  ; --------- e_31: skip              
+00001736                           670                                      
+00001736                           671  ; --------- b_1 = t_39              
+00001736  2038 10F0                672  .e_31:      MOVE.L      t_39, D0    ; D0 = t_39
+0000173A  21C0 1356                673              MOVE.L      D0, b_1     ; b_1 = D0
+0000173E                           674  ; --------- t_42 = 8                
+0000173E  7008                     675              MOVE.L      #8, D0      ; D0 = #8
+00001740  21C0 10F4                676              MOVE.L      D0, t_42    ; t_42 = D0
+00001744                           677  ; --------- if b_1 == t_42 goto e_32  
+00001744  2038 1356                678              MOVE.L      b_1, D0     ; D0 = b_1
+00001748  2238 10F4                679              MOVE.L      t_42, D1    ; D1 = t_42
+0000174C  B081                     680              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+0000174E  6700 000E                681              BEQ         .e_32       ; IF Z FLAG = 1 GOTO .e_32
+00001752                           682  ; --------- t_43 = 0                
+00001752  7000                     683              MOVE.L      #0, D0      ; D0 = #0
+00001754  21C0 10F8                684              MOVE.L      D0, t_43    ; t_43 = D0
+00001758                           685  ; --------- goto e_33               
+00001758  4EF9 00001764            686              JMP         .e_33       ; goto .e_33
+0000175E                           687  ; --------- e_32: skip              
+0000175E                           688                                      
+0000175E                           689  ; --------- t_43 = -1               
+0000175E  70FF                     690  .e_32:      MOVE.L      #-1, D0     ; D0 = #-1
+00001760  21C0 10F8                691              MOVE.L      D0, t_43    ; t_43 = D0
+00001764                           692  ; --------- e_33: skip              
+00001764                           693                                      
+00001764                           694  ; --------- if t_43 == 0 goto e_35  
+00001764  2038 10F8                695  .e_33:      MOVE.L      t_43, D0    ; D0 = t_43
+00001768  7200                     696              MOVE.L      #0, D1      ; D1 = #0
+0000176A  B081                     697              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+0000176C  6700 0014                698              BEQ         .e_35       ; IF Z FLAG = 1 GOTO .e_35
+00001770                           699  ; --------- t_44 = b: 8             
+00001770                           700  ; --------- param_s t_44            
+00001770  41F8 10FC                701              LEA.L       t_44, A0    ; A0 = t_44
+00001774  2F08                     702              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001776                           703  ; --------- call e_show             
+00001776  4EB8 137A                704              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000177A  588F                     705              ADDA.L      #4, SP      ; SP = SP + 4
+0000177C                           706  ; --------- goto e_34               
+0000177C  4EF9 00001782            707              JMP         .e_34       ; goto .e_34
+00001782                           708  ; --------- e_35: skip              
+00001782                           709                                      
+00001782                           710  ; --------- e_34: skip              
+00001782                           711  .e_35:                              
+00001782                           712  ; --------- param_s b_1             
+00001782  2038 1356                713  .e_34:      MOVE.L      b_1, D0     ; D0 = b_1
+00001786  2F00                     714              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+00001788                           715  ; --------- call e_switchconbreak   
+00001788  4EB9 000019B6            716              JSR         e_switchconbreak ; JUMP TO SUBROUTINE e_switchconbreak
+0000178E  588F                     717              ADDA.L      #4, SP      ; SP = SP + 4
+00001790                           718  ; --------- t_45 =                  
+00001790                           719  ; --------- param_s t_45            
+00001790  41F8 1102                720              LEA.L       t_45, A0    ; A0 = t_45
+00001794  2F08                     721              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001796                           722  ; --------- call e_show             
+00001796  4EB8 137A                723              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000179A  588F                     724              ADDA.L      #4, SP      ; SP = SP + 4
+0000179C                           725  ; --------- rtn e_parte2            
+0000179C  4E75                     726              RTS                     ; RETURN TO SUBROUTINE e_parte2
+0000179E                           727  
+0000179E                           728  
+0000179E                           729  ; --------- e_parte3: skip          
+0000179E                           730                                      
+0000179E                           731  ; --------- pmb e_parte3            
+0000179E                           732  ; --------- t_46 = PARTE 3          
+0000179E                           733  ; --------- param_s t_46            
+0000179E  41F8 1104                734  e_parte3:   LEA.L       t_46, A0    ; A0 = t_46
+000017A2  2F08                     735              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000017A4                           736  ; --------- call e_show             
+000017A4  4EB8 137A                737              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000017A8  588F                     738              ADDA.L      #4, SP      ; SP = SP + 4
+000017AA                           739  ; --------- t_47 = Muestra de un buen uso de si, sino y no  
+000017AA                           740  ; --------- param_s t_47            
+000017AA  41F8 110C                741              LEA.L       t_47, A0    ; A0 = t_47
+000017AE  2F08                     742              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000017B0                           743  ; --------- call e_show             
+000017B0  4EB8 137A                744              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000017B4  588F                     745              ADDA.L      #4, SP      ; SP = SP + 4
+000017B6                           746  ; --------- t_48 = 1                
+000017B6  7001                     747              MOVE.L      #1, D0      ; D0 = #1
+000017B8  21C0 1134                748              MOVE.L      D0, t_48    ; t_48 = D0
+000017BC                           749  ; --------- num1 = t_48             
+000017BC  2038 1134                750              MOVE.L      t_48, D0    ; D0 = t_48
+000017C0  21C0 1326                751              MOVE.L      D0, num1    ; num1 = D0
+000017C4                           752  ; --------- t_49 = 1                
+000017C4  7001                     753              MOVE.L      #1, D0      ; D0 = #1
+000017C6  21C0 1138                754              MOVE.L      D0, t_49    ; t_49 = D0
+000017CA                           755  ; --------- num2 = t_49             
+000017CA  2038 1138                756              MOVE.L      t_49, D0    ; D0 = t_49
+000017CE  21C0 132E                757              MOVE.L      D0, num2    ; num2 = D0
+000017D2                           758  ; --------- t_50 = num1 - 1         
+000017D2  2038 1326                759              MOVE.L      num1, D0    ; D0 = num1
+000017D6  7201                     760              MOVE.L      #1, D1      ; D1 = #1
+000017D8  9081                     761              SUB.L       D1, D0      ; D0 = D0 - D1
+000017DA  21C0 133E                762              MOVE.L      D0, t_50    ; t_50 = D0
+000017DE                           763  ; --------- num1 = t_50             
+000017DE  2038 133E                764              MOVE.L      t_50, D0    ; D0 = t_50
+000017E2  21C0 1326                765              MOVE.L      D0, num1    ; num1 = D0
+000017E6                           766  ; --------- aux1 = num1             
+000017E6  2038 1326                767              MOVE.L      num1, D0    ; D0 = num1
+000017EA  21C0 1366                768              MOVE.L      D0, aux1    ; aux1 = D0
+000017EE                           769  ; --------- t_51 = num2 - 1         
+000017EE  2038 132E                770              MOVE.L      num2, D0    ; D0 = num2
+000017F2  7201                     771              MOVE.L      #1, D1      ; D1 = #1
+000017F4  9081                     772              SUB.L       D1, D0      ; D0 = D0 - D1
+000017F6  21C0 1342                773              MOVE.L      D0, t_51    ; t_51 = D0
+000017FA                           774  ; --------- t_52 = num2             
+000017FA  2038 132E                775              MOVE.L      num2, D0    ; D0 = num2
+000017FE  21C0 134E                776              MOVE.L      D0, t_52    ; t_52 = D0
+00001802                           777  ; --------- num2 = t_51             
+00001802  2038 1342                778              MOVE.L      t_51, D0    ; D0 = t_51
+00001806  21C0 132E                779              MOVE.L      D0, num2    ; num2 = D0
+0000180A                           780  ; --------- aux2 = t_52             
+0000180A  2038 134E                781              MOVE.L      t_52, D0    ; D0 = t_52
+0000180E  21C0 136A                782              MOVE.L      D0, aux2    ; aux2 = D0
+00001812                           783  ; --------- t_53 = num1:1    num2:1    aux1:--num1    aux2:num2--  
+00001812                           784  ; --------- param_s t_53            
+00001812  41F8 113C                785              LEA.L       t_53, A0    ; A0 = t_53
+00001816  2F08                     786              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001818                           787  ; --------- call e_show             
+00001818  4EB8 137A                788              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000181C  588F                     789              ADDA.L      #4, SP      ; SP = SP + 4
+0000181E                           790  ; --------- t_54 = 0                
+0000181E  7000                     791              MOVE.L      #0, D0      ; D0 = #0
+00001820  21C0 116C                792              MOVE.L      D0, t_54    ; t_54 = D0
+00001824                           793  ; --------- if aux1 == t_54 goto e_36  
+00001824  2038 1366                794              MOVE.L      aux1, D0    ; D0 = aux1
+00001828  2238 116C                795              MOVE.L      t_54, D1    ; D1 = t_54
+0000182C  B081                     796              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+0000182E  6700 000E                797              BEQ         .e_36       ; IF Z FLAG = 1 GOTO .e_36
+00001832                           798  ; --------- t_55 = 0                
+00001832  7000                     799              MOVE.L      #0, D0      ; D0 = #0
+00001834  21C0 1170                800              MOVE.L      D0, t_55    ; t_55 = D0
+00001838                           801  ; --------- goto e_37               
+00001838  4EF9 00001844            802              JMP         .e_37       ; goto .e_37
+0000183E                           803  ; --------- e_36: skip              
+0000183E                           804                                      
+0000183E                           805  ; --------- t_55 = -1               
+0000183E  70FF                     806  .e_36:      MOVE.L      #-1, D0     ; D0 = #-1
+00001840  21C0 1170                807              MOVE.L      D0, t_55    ; t_55 = D0
+00001844                           808  ; --------- e_37: skip              
+00001844                           809                                      
+00001844                           810  ; --------- t_56 = 0                
+00001844  7000                     811  .e_37:      MOVE.L      #0, D0      ; D0 = #0
+00001846  21C0 1174                812              MOVE.L      D0, t_56    ; t_56 = D0
+0000184A                           813  ; --------- if num1 == t_56 goto e_38  
+0000184A  2038 1326                814              MOVE.L      num1, D0    ; D0 = num1
+0000184E  2238 1174                815              MOVE.L      t_56, D1    ; D1 = t_56
+00001852  B081                     816              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001854  6700 000E                817              BEQ         .e_38       ; IF Z FLAG = 1 GOTO .e_38
+00001858                           818  ; --------- t_57 = 0                
+00001858  7000                     819              MOVE.L      #0, D0      ; D0 = #0
+0000185A  21C0 1178                820              MOVE.L      D0, t_57    ; t_57 = D0
+0000185E                           821  ; --------- goto e_39               
+0000185E  4EF9 0000186A            822              JMP         .e_39       ; goto .e_39
+00001864                           823  ; --------- e_38: skip              
+00001864                           824                                      
+00001864                           825  ; --------- t_57 = -1               
+00001864  70FF                     826  .e_38:      MOVE.L      #-1, D0     ; D0 = #-1
+00001866  21C0 1178                827              MOVE.L      D0, t_57    ; t_57 = D0
+0000186A                           828  ; --------- e_39: skip              
+0000186A                           829                                      
+0000186A                           830  ; --------- t_58 = t_55 and t_57    
+0000186A  2038 1170                831  .e_39:      MOVE.L      t_55, D0    ; D0 = t_55
+0000186E  2238 1178                832              MOVE.L      t_57, D1    ; D1 = t_57
+00001872  C280                     833              AND.L       D0, D1      ; D1 = D1 and D0
+00001874  21C1 134A                834              MOVE.L      D1, t_58    ; t_58 = D1
+00001878                           835  ; --------- if t_58 == 0 goto e_41  
+00001878  2038 134A                836              MOVE.L      t_58, D0    ; D0 = t_58
+0000187C  7200                     837              MOVE.L      #0, D1      ; D1 = #0
+0000187E  B081                     838              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001880  6700 0014                839              BEQ         .e_41       ; IF Z FLAG = 1 GOTO .e_41
+00001884                           840  ; --------- t_59 = num1: 0 (aux1: 0)  
+00001884                           841  ; --------- param_s t_59            
+00001884  41F8 117C                842              LEA.L       t_59, A0    ; A0 = t_59
+00001888  2F08                     843              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+0000188A                           844  ; --------- call e_show             
+0000188A  4EB8 137A                845              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000188E  588F                     846              ADDA.L      #4, SP      ; SP = SP + 4
+00001890                           847  ; --------- goto e_40               
+00001890  4EF9 00001896            848              JMP         .e_40       ; goto .e_40
+00001896                           849  ; --------- e_41: skip              
+00001896                           850                                      
+00001896                           851  ; --------- e_40: skip              
+00001896                           852  .e_41:                              
+00001896                           853  ; --------- t_60 = 1                
+00001896  7001                     854  .e_40:      MOVE.L      #1, D0      ; D0 = #1
+00001898  21C0 118E                855              MOVE.L      D0, t_60    ; t_60 = D0
+0000189C                           856  ; --------- if aux2 == t_60 goto e_42  
+0000189C  2038 136A                857              MOVE.L      aux2, D0    ; D0 = aux2
+000018A0  2238 118E                858              MOVE.L      t_60, D1    ; D1 = t_60
+000018A4  B081                     859              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000018A6  6700 000E                860              BEQ         .e_42       ; IF Z FLAG = 1 GOTO .e_42
+000018AA                           861  ; --------- t_61 = 0                
+000018AA  7000                     862              MOVE.L      #0, D0      ; D0 = #0
+000018AC  21C0 1192                863              MOVE.L      D0, t_61    ; t_61 = D0
+000018B0                           864  ; --------- goto e_43               
+000018B0  4EF9 000018BC            865              JMP         .e_43       ; goto .e_43
+000018B6                           866  ; --------- e_42: skip              
+000018B6                           867                                      
+000018B6                           868  ; --------- t_61 = -1               
+000018B6  70FF                     869  .e_42:      MOVE.L      #-1, D0     ; D0 = #-1
+000018B8  21C0 1192                870              MOVE.L      D0, t_61    ; t_61 = D0
+000018BC                           871  ; --------- e_43: skip              
+000018BC                           872                                      
+000018BC                           873  ; --------- t_62 = 0                
+000018BC  7000                     874  .e_43:      MOVE.L      #0, D0      ; D0 = #0
+000018BE  21C0 1196                875              MOVE.L      D0, t_62    ; t_62 = D0
+000018C2                           876  ; --------- if num1 == t_62 goto e_44  
+000018C2  2038 1326                877              MOVE.L      num1, D0    ; D0 = num1
+000018C6  2238 1196                878              MOVE.L      t_62, D1    ; D1 = t_62
+000018CA  B081                     879              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000018CC  6700 000E                880              BEQ         .e_44       ; IF Z FLAG = 1 GOTO .e_44
+000018D0                           881  ; --------- t_63 = 0                
+000018D0  7000                     882              MOVE.L      #0, D0      ; D0 = #0
+000018D2  21C0 119A                883              MOVE.L      D0, t_63    ; t_63 = D0
+000018D6                           884  ; --------- goto e_45               
+000018D6  4EF9 000018E2            885              JMP         .e_45       ; goto .e_45
+000018DC                           886  ; --------- e_44: skip              
+000018DC                           887                                      
+000018DC                           888  ; --------- t_63 = -1               
+000018DC  70FF                     889  .e_44:      MOVE.L      #-1, D0     ; D0 = #-1
+000018DE  21C0 119A                890              MOVE.L      D0, t_63    ; t_63 = D0
+000018E2                           891  ; --------- e_45: skip              
+000018E2                           892                                      
+000018E2                           893  ; --------- t_64 = t_61 and t_63    
+000018E2  2038 1192                894  .e_45:      MOVE.L      t_61, D0    ; D0 = t_61
+000018E6  2238 119A                895              MOVE.L      t_63, D1    ; D1 = t_63
+000018EA  C280                     896              AND.L       D0, D1      ; D1 = D1 and D0
+000018EC  21C1 1332                897              MOVE.L      D1, t_64    ; t_64 = D1
+000018F0                           898  ; --------- if t_64 == 0 goto e_47  
+000018F0  2038 1332                899              MOVE.L      t_64, D0    ; D0 = t_64
+000018F4  7200                     900              MOVE.L      #0, D1      ; D1 = #0
+000018F6  B081                     901              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000018F8  6700 0014                902              BEQ         .e_47       ; IF Z FLAG = 1 GOTO .e_47
+000018FC                           903  ; --------- t_65 = num2: 0 (aux2: 1)  
+000018FC                           904  ; --------- param_s t_65            
+000018FC  41F8 119E                905              LEA.L       t_65, A0    ; A0 = t_65
+00001900  2F08                     906              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001902                           907  ; --------- call e_show             
+00001902  4EB8 137A                908              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001906  588F                     909              ADDA.L      #4, SP      ; SP = SP + 4
+00001908                           910  ; --------- goto e_46               
+00001908  4EF9 0000190E            911              JMP         .e_46       ; goto .e_46
+0000190E                           912  ; --------- e_47: skip              
+0000190E                           913                                      
+0000190E                           914  ; --------- e_46: skip              
+0000190E                           915  .e_47:                              
+0000190E                           916  ; --------- param_s aux1            
+0000190E  2038 1366                917  .e_46:      MOVE.L      aux1, D0    ; D0 = aux1
+00001912  2F00                     918              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+00001914                           919  ; --------- call e_ifs              
+00001914  4EB9 00001A46            920              JSR         e_ifs       ; JUMP TO SUBROUTINE e_ifs
+0000191A  588F                     921              ADDA.L      #4, SP      ; SP = SP + 4
+0000191C                           922  ; --------- param_s aux2            
+0000191C  2038 136A                923              MOVE.L      aux2, D0    ; D0 = aux2
+00001920  2F00                     924              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+00001922                           925  ; --------- call e_ifs              
+00001922  4EB9 00001A46            926              JSR         e_ifs       ; JUMP TO SUBROUTINE e_ifs
+00001928  588F                     927              ADDA.L      #4, SP      ; SP = SP + 4
+0000192A                           928  ; --------- t_66 =                  
+0000192A                           929  ; --------- param_s t_66            
+0000192A  41F8 11B0                930              LEA.L       t_66, A0    ; A0 = t_66
+0000192E  2F08                     931              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001930                           932  ; --------- call e_show             
+00001930  4EB8 137A                933              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001934  588F                     934              ADDA.L      #4, SP      ; SP = SP + 4
+00001936                           935  ; --------- rtn e_parte3            
+00001936  4E75                     936              RTS                     ; RETURN TO SUBROUTINE e_parte3
+00001938                           937  
+00001938                           938  
+00001938                           939  ; --------- e_switch: skip          
+00001938                           940                                      
+00001938                           941  ; --------- pmb e_switch            
+00001938  202F 0004                942  e_switch:   MOVE.L      4(SP), D0   ; D0 = POP FROM STACK
+0000193C  21C0 1346                943              MOVE.L      D0, v       ; v = D0
+00001940                           944  ; --------- t_67 = 2                
+00001940  7002                     945              MOVE.L      #2, D0      ; D0 = #2
+00001942  21C0 11B2                946              MOVE.L      D0, t_67    ; t_67 = D0
+00001946                           947  ; --------- t_68 = v mod t_67       
+00001946  2038 1346                948              MOVE.L      v, D0       ; D0 = v
+0000194A  2238 11B2                949              MOVE.L      t_67, D1    ; D1 = t_67
+0000194E  81C1                     950              DIVS.W      D1, D0      ; D0.h = D0 % D1. D0.l = D0 / D1
+00001950  E088                     951              LSR.L       #8, D0      ; D0.l = D0.h
+00001952  E088                     952              LSR.L       #8, D0      ; D0.l = D0.h
+00001954  21C0 132A                953              MOVE.L      D0, t_68    ; t_68 = D0
+00001958                           954  ; --------- v = t_68                
+00001958  2038 132A                955              MOVE.L      t_68, D0    ; D0 = t_68
+0000195C  21C0 1346                956              MOVE.L      D0, v       ; v = D0
+00001960                           957  ; --------- goto e_49               
+00001960  4EF9 0000199C            958              JMP         .e_49       ; goto .e_49
+00001966                           959  ; --------- t_69 = 1                
+00001966  7001                     960              MOVE.L      #1, D0      ; D0 = #1
+00001968  21C0 11B6                961              MOVE.L      D0, t_69    ; t_69 = D0
+0000196C                           962  ; --------- t_70 = 0                
+0000196C  7000                     963              MOVE.L      #0, D0      ; D0 = #0
+0000196E  21C0 11BA                964              MOVE.L      D0, t_70    ; t_70 = D0
+00001972                           965  ; --------- e_51: skip              
+00001972                           966                                      
+00001972                           967  ; --------- t_71 = El n�mero introducido es par  
+00001972                           968  ; --------- param_s t_71            
+00001972  41F8 11BE                969  .e_51:      LEA.L       t_71, A0    ; A0 = t_71
+00001976  2F08                     970              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001978                           971  ; --------- call e_show             
+00001978  4EB8 137A                972              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+0000197C  588F                     973              ADDA.L      #4, SP      ; SP = SP + 4
+0000197E                           974  ; --------- e_50: skip              
+0000197E                           975                                      
+0000197E                           976  ; --------- t_72 = El n�mero introducido es impar  
+0000197E                           977  ; --------- param_s t_72            
+0000197E  41F8 11DE                978  .e_50:      LEA.L       t_72, A0    ; A0 = t_72
+00001982  2F08                     979              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001984                           980  ; --------- call e_show             
+00001984  4EB8 137A                981              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001988  588F                     982              ADDA.L      #4, SP      ; SP = SP + 4
+0000198A                           983  ; --------- t_73 = Error, el n�mero no es par ni impar  
+0000198A                           984  ; --------- param_s t_73            
+0000198A  41F8 1200                985              LEA.L       t_73, A0    ; A0 = t_73
+0000198E  2F08                     986              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001990                           987  ; --------- call e_show             
+00001990  4EB8 137A                988              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001994  588F                     989              ADDA.L      #4, SP      ; SP = SP + 4
+00001996                           990  ; --------- goto e_48               
+00001996  4EF9 000019B4            991              JMP         .e_48       ; goto .e_48
+0000199C                           992  ; --------- e_49: skip              
+0000199C                           993                                      
+0000199C                           994  ; --------- if v == t_70 goto e_51  
+0000199C  2038 1346                995  .e_49:      MOVE.L      v, D0       ; D0 = v
+000019A0  2238 11BA                996              MOVE.L      t_70, D1    ; D1 = t_70
+000019A4  B081                     997              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000019A6  67CA                     998              BEQ         .e_51       ; IF Z FLAG = 1 GOTO .e_51
+000019A8                           999  ; --------- if v == t_69 goto e_50  
+000019A8  2038 1346               1000              MOVE.L      v, D0       ; D0 = v
+000019AC  2238 11B6               1001              MOVE.L      t_69, D1    ; D1 = t_69
+000019B0  B081                    1002              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000019B2  67CA                    1003              BEQ         .e_50       ; IF Z FLAG = 1 GOTO .e_50
+000019B4                          1004  ; --------- e_48: skip              
+000019B4                          1005                                      
+000019B4                          1006  ; --------- rtn e_switch            
+000019B4  4E75                    1007  .e_48:      RTS                     ; RETURN TO SUBROUTINE e_switch
+000019B6                          1008  
+000019B6                          1009  
+000019B6                          1010  ; --------- e_switchconbreak: skip  
+000019B6                          1011                                      
+000019B6                          1012  ; --------- pmb e_switchconbreak    
+000019B6  202F 0004               1013  e_switchconbreak: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
+000019BA  21C0 135E               1014              MOVE.L      D0, v_1     ; v_1 = D0
+000019BE                          1015  ; --------- t_74 = 2                
+000019BE  7002                    1016              MOVE.L      #2, D0      ; D0 = #2
+000019C0  21C0 1226               1017              MOVE.L      D0, t_74    ; t_74 = D0
+000019C4                          1018  ; --------- t_75 = v_1 mod t_74     
+000019C4  2038 135E               1019              MOVE.L      v_1, D0     ; D0 = v_1
+000019C8  2238 1226               1020              MOVE.L      t_74, D1    ; D1 = t_74
+000019CC  81C1                    1021              DIVS.W      D1, D0      ; D0.h = D0 % D1. D0.l = D0 / D1
+000019CE  E088                    1022              LSR.L       #8, D0      ; D0.l = D0.h
+000019D0  E088                    1023              LSR.L       #8, D0      ; D0.l = D0.h
+000019D2  21C0 1362               1024              MOVE.L      D0, t_75    ; t_75 = D0
+000019D6                          1025  ; --------- v_1 = t_75              
+000019D6  2038 1362               1026              MOVE.L      t_75, D0    ; D0 = t_75
+000019DA  21C0 135E               1027              MOVE.L      D0, v_1     ; v_1 = D0
+000019DE                          1028  ; --------- goto e_53               
+000019DE  4EF9 00001A2C           1029              JMP         .e_53       ; goto .e_53
+000019E4                          1030  ; --------- t_76 = 1                
+000019E4  7001                    1031              MOVE.L      #1, D0      ; D0 = #1
+000019E6  21C0 122A               1032              MOVE.L      D0, t_76    ; t_76 = D0
+000019EA                          1033  ; --------- t_77 = 0                
+000019EA  7000                    1034              MOVE.L      #0, D0      ; D0 = #0
+000019EC  21C0 122E               1035              MOVE.L      D0, t_77    ; t_77 = D0
+000019F0                          1036  ; --------- e_55: skip              
+000019F0                          1037                                      
+000019F0                          1038  ; --------- t_78 = El n�mero introducido es par  
+000019F0                          1039  ; --------- param_s t_78            
+000019F0  41F8 1232               1040  .e_55:      LEA.L       t_78, A0    ; A0 = t_78
+000019F4  2F08                    1041              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000019F6                          1042  ; --------- call e_show             
+000019F6  4EB8 137A               1043              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000019FA  588F                    1044              ADDA.L      #4, SP      ; SP = SP + 4
+000019FC                          1045  ; --------- goto e_52               
+000019FC  4EF9 00001A44           1046              JMP         .e_52       ; goto .e_52
+00001A02                          1047  ; --------- e_54: skip              
+00001A02                          1048                                      
+00001A02                          1049  ; --------- t_79 = El n�mero introducido es impar  
+00001A02                          1050  ; --------- param_s t_79            
+00001A02  41F8 1252               1051  .e_54:      LEA.L       t_79, A0    ; A0 = t_79
+00001A06  2F08                    1052              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001A08                          1053  ; --------- call e_show             
+00001A08  4EB8 137A               1054              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001A0C  588F                    1055              ADDA.L      #4, SP      ; SP = SP + 4
+00001A0E                          1056  ; --------- goto e_52               
+00001A0E  4EF9 00001A44           1057              JMP         .e_52       ; goto .e_52
+00001A14                          1058  ; --------- t_80 = Error, el n�mero no es par ni impar  
+00001A14                          1059  ; --------- param_s t_80            
+00001A14  41F8 1274               1060              LEA.L       t_80, A0    ; A0 = t_80
+00001A18  2F08                    1061              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001A1A                          1062  ; --------- call e_show             
+00001A1A  4EB8 137A               1063              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001A1E  588F                    1064              ADDA.L      #4, SP      ; SP = SP + 4
+00001A20                          1065  ; --------- goto e_52               
+00001A20  4EF9 00001A44           1066              JMP         .e_52       ; goto .e_52
+00001A26                          1067  ; --------- goto e_52               
+00001A26  4EF9 00001A44           1068              JMP         .e_52       ; goto .e_52
+00001A2C                          1069  ; --------- e_53: skip              
+00001A2C                          1070                                      
+00001A2C                          1071  ; --------- if v_1 == t_77 goto e_55  
+00001A2C  2038 135E               1072  .e_53:      MOVE.L      v_1, D0     ; D0 = v_1
+00001A30  2238 122E               1073              MOVE.L      t_77, D1    ; D1 = t_77
+00001A34  B081                    1074              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001A36  67B8                    1075              BEQ         .e_55       ; IF Z FLAG = 1 GOTO .e_55
+00001A38                          1076  ; --------- if v_1 == t_76 goto e_54  
+00001A38  2038 135E               1077              MOVE.L      v_1, D0     ; D0 = v_1
+00001A3C  2238 122A               1078              MOVE.L      t_76, D1    ; D1 = t_76
+00001A40  B081                    1079              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001A42  67BE                    1080              BEQ         .e_54       ; IF Z FLAG = 1 GOTO .e_54
+00001A44                          1081  ; --------- e_52: skip              
+00001A44                          1082                                      
+00001A44                          1083  ; --------- rtn e_switchconbreak    
+00001A44  4E75                    1084  .e_52:      RTS                     ; RETURN TO SUBROUTINE e_switchconbreak
+00001A46                          1085  
+00001A46                          1086  
+00001A46                          1087  ; --------- e_ifs: skip             
+00001A46                          1088                                      
+00001A46                          1089  ; --------- pmb e_ifs               
+00001A46  202F 0004               1090  e_ifs:      MOVE.L      4(SP), D0   ; D0 = POP FROM STACK
+00001A4A  21C0 135A               1091              MOVE.L      D0, v_2     ; v_2 = D0
+00001A4E                          1092  ; --------- t_81 = 2                
+00001A4E  7002                    1093              MOVE.L      #2, D0      ; D0 = #2
+00001A50  21C0 129A               1094              MOVE.L      D0, t_81    ; t_81 = D0
+00001A54                          1095  ; --------- t_82 = v_2 mod t_81     
+00001A54  2038 135A               1096              MOVE.L      v_2, D0     ; D0 = v_2
+00001A58  2238 129A               1097              MOVE.L      t_81, D1    ; D1 = t_81
+00001A5C  81C1                    1098              DIVS.W      D1, D0      ; D0.h = D0 % D1. D0.l = D0 / D1
+00001A5E  E088                    1099              LSR.L       #8, D0      ; D0.l = D0.h
+00001A60  E088                    1100              LSR.L       #8, D0      ; D0.l = D0.h
+00001A62  21C0 1352               1101              MOVE.L      D0, t_82    ; t_82 = D0
+00001A66                          1102  ; --------- v_2 = t_82              
+00001A66  2038 1352               1103              MOVE.L      t_82, D0    ; D0 = t_82
+00001A6A  21C0 135A               1104              MOVE.L      D0, v_2     ; v_2 = D0
+00001A6E                          1105  ; --------- t_83 = 0                
+00001A6E  7000                    1106              MOVE.L      #0, D0      ; D0 = #0
+00001A70  21C0 129E               1107              MOVE.L      D0, t_83    ; t_83 = D0
+00001A74                          1108  ; --------- if v_2 == t_83 goto e_56  
+00001A74  2038 135A               1109              MOVE.L      v_2, D0     ; D0 = v_2
+00001A78  2238 129E               1110              MOVE.L      t_83, D1    ; D1 = t_83
+00001A7C  B081                    1111              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001A7E  6700 000E               1112              BEQ         .e_56       ; IF Z FLAG = 1 GOTO .e_56
+00001A82                          1113  ; --------- t_84 = 0                
+00001A82  7000                    1114              MOVE.L      #0, D0      ; D0 = #0
+00001A84  21C0 12A2               1115              MOVE.L      D0, t_84    ; t_84 = D0
+00001A88                          1116  ; --------- goto e_57               
+00001A88  4EF9 00001A94           1117              JMP         .e_57       ; goto .e_57
+00001A8E                          1118  ; --------- e_56: skip              
+00001A8E                          1119                                      
+00001A8E                          1120  ; --------- t_84 = -1               
+00001A8E  70FF                    1121  .e_56:      MOVE.L      #-1, D0     ; D0 = #-1
+00001A90  21C0 12A2               1122              MOVE.L      D0, t_84    ; t_84 = D0
+00001A94                          1123  ; --------- e_57: skip              
+00001A94                          1124                                      
+00001A94                          1125  ; --------- if t_84 == 0 goto e_59  
+00001A94  2038 12A2               1126  .e_57:      MOVE.L      t_84, D0    ; D0 = t_84
+00001A98  7200                    1127              MOVE.L      #0, D1      ; D1 = #0
+00001A9A  B081                    1128              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001A9C  6700 0014               1129              BEQ         .e_59       ; IF Z FLAG = 1 GOTO .e_59
+00001AA0                          1130  ; --------- t_85 = El n�mero introducido es par  
+00001AA0                          1131  ; --------- param_s t_85            
+00001AA0  41F8 12A6               1132              LEA.L       t_85, A0    ; A0 = t_85
+00001AA4  2F08                    1133              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001AA6                          1134  ; --------- call e_show             
+00001AA6  4EB8 137A               1135              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001AAA  588F                    1136              ADDA.L      #4, SP      ; SP = SP + 4
+00001AAC                          1137  ; --------- goto e_58               
+00001AAC  4EF9 00001B02           1138              JMP         .e_58       ; goto .e_58
+00001AB2                          1139  ; --------- e_59: skip              
+00001AB2                          1140                                      
+00001AB2                          1141  ; --------- t_86 = 1                
+00001AB2  7001                    1142  .e_59:      MOVE.L      #1, D0      ; D0 = #1
+00001AB4  21C0 12C6               1143              MOVE.L      D0, t_86    ; t_86 = D0
+00001AB8                          1144  ; --------- if v_2 == t_86 goto e_60  
+00001AB8  2038 135A               1145              MOVE.L      v_2, D0     ; D0 = v_2
+00001ABC  2238 12C6               1146              MOVE.L      t_86, D1    ; D1 = t_86
+00001AC0  B081                    1147              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001AC2  6700 000E               1148              BEQ         .e_60       ; IF Z FLAG = 1 GOTO .e_60
+00001AC6                          1149  ; --------- t_87 = 0                
+00001AC6  7000                    1150              MOVE.L      #0, D0      ; D0 = #0
+00001AC8  21C0 12CA               1151              MOVE.L      D0, t_87    ; t_87 = D0
+00001ACC                          1152  ; --------- goto e_61               
+00001ACC  4EF9 00001AD8           1153              JMP         .e_61       ; goto .e_61
+00001AD2                          1154  ; --------- e_60: skip              
+00001AD2                          1155                                      
+00001AD2                          1156  ; --------- t_87 = -1               
+00001AD2  70FF                    1157  .e_60:      MOVE.L      #-1, D0     ; D0 = #-1
+00001AD4  21C0 12CA               1158              MOVE.L      D0, t_87    ; t_87 = D0
+00001AD8                          1159  ; --------- e_61: skip              
+00001AD8                          1160                                      
+00001AD8                          1161  ; --------- if t_87 == 0 goto e_62  
+00001AD8  2038 12CA               1162  .e_61:      MOVE.L      t_87, D0    ; D0 = t_87
+00001ADC  7200                    1163              MOVE.L      #0, D1      ; D1 = #0
+00001ADE  B081                    1164              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001AE0  6700 0014               1165              BEQ         .e_62       ; IF Z FLAG = 1 GOTO .e_62
+00001AE4                          1166  ; --------- t_88 = El n�mero introducido es impar  
+00001AE4                          1167  ; --------- param_s t_88            
+00001AE4  41F8 12CE               1168              LEA.L       t_88, A0    ; A0 = t_88
+00001AE8  2F08                    1169              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001AEA                          1170  ; --------- call e_show             
+00001AEA  4EB8 137A               1171              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001AEE  588F                    1172              ADDA.L      #4, SP      ; SP = SP + 4
+00001AF0                          1173  ; --------- goto e_58               
+00001AF0  4EF9 00001B02           1174              JMP         .e_58       ; goto .e_58
+00001AF6                          1175  ; --------- e_62: skip              
+00001AF6                          1176                                      
+00001AF6                          1177  ; --------- t_89 = Error, el n�mero no es par ni impar  
+00001AF6                          1178  ; --------- param_s t_89            
+00001AF6  41F8 12F0               1179  .e_62:      LEA.L       t_89, A0    ; A0 = t_89
+00001AFA  2F08                    1180              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001AFC                          1181  ; --------- call e_show             
+00001AFC  4EB8 137A               1182              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001B00  588F                    1183              ADDA.L      #4, SP      ; SP = SP + 4
+00001B02                          1184  ; --------- e_58: skip              
+00001B02                          1185                                      
+00001B02                          1186  ; --------- rtn e_ifs               
+00001B02  4E75                    1187  .e_58:      RTS                     ; RETURN TO SUBROUTINE e_ifs
+00001B04                          1188  
+00001B04                          1189  
+00001B04                          1190              END cond                ; Fin del programa
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+A                   1336
+AUX1                1366
+AUX2                136A
+A_1                 136E
+B                   133A
+B_1                 1356
+COND                1384
+E_IFS               1A46
+E_IFS:E_56          1A8E
+E_IFS:E_57          1A94
+E_IFS:E_58          1B02
+E_IFS:E_59          1AB2
+E_IFS:E_60          1AD2
+E_IFS:E_61          1AD8
+E_IFS:E_62          1AF6
+E_INICIO            1396
+E_PARTE1            13AA
+E_PARTE1:E          13E8
+E_PARTE1:E_1        13EE
+E_PARTE1:E_10       14AC
+E_PARTE1:E_11       14DE
+E_PARTE1:E_12       14EE
+E_PARTE1:E_13       153C
+E_PARTE1:E_14       1564
+E_PARTE1:E_15       156A
+E_PARTE1:E_16       1588
+E_PARTE1:E_17       1588
+E_PARTE1:E_2        141C
+E_PARTE1:E_3        1414
+E_PARTE1:E_4        1444
+E_PARTE1:E_5        144A
+E_PARTE1:E_6        14AC
+E_PARTE1:E_7        1468
+E_PARTE1:E_8        1488
+E_PARTE1:E_9        148E
+E_PARTE2            15A4
+E_PARTE2:E_18       15E2
+E_PARTE2:E_19       15E8
+E_PARTE2:E_20       1616
+E_PARTE2:E_21       160E
+E_PARTE2:E_22       163E
+E_PARTE2:E_23       1644
+E_PARTE2:E_24       16A6
+E_PARTE2:E_25       1662
+E_PARTE2:E_26       1682
+E_PARTE2:E_27       1688
+E_PARTE2:E_28       16A6
+E_PARTE2:E_29       16D8
+E_PARTE2:E_30       16E8
+E_PARTE2:E_31       1736
+E_PARTE2:E_32       175E
+E_PARTE2:E_33       1764
+E_PARTE2:E_34       1782
+E_PARTE2:E_35       1782
+E_PARTE3            179E
+E_PARTE3:E_36       183E
+E_PARTE3:E_37       1844
+E_PARTE3:E_38       1864
+E_PARTE3:E_39       186A
+E_PARTE3:E_40       1896
+E_PARTE3:E_41       1896
+E_PARTE3:E_42       18B6
+E_PARTE3:E_43       18BC
+E_PARTE3:E_44       18DC
+E_PARTE3:E_45       18E2
+E_PARTE3:E_46       190E
+E_PARTE3:E_47       190E
+E_SHOW              137A
+E_SWITCH            1938
+E_SWITCH:E_48       19B4
+E_SWITCH:E_49       199C
+E_SWITCH:E_50       197E
+E_SWITCH:E_51       1972
+E_SWITCHCONBREAK    19B6
+E_SWITCHCONBREAK:E_52  1A44
+E_SWITCHCONBREAK:E_53  1A2C
+E_SWITCHCONBREAK:E_54  1A02
+E_SWITCHCONBREAK:E_55  19F0
+NUM1                1326
+NUM2                132E
+T                   1000
+T_1                 1008
+T_10                1052
+T_11                1058
+T_12                105C
+T_13                1060
+T_14                1066
+T_15                106A
+T_16                106E
+T_17                1376
+T_18                1372
+T_19                1072
+T_2                 1036
+T_20                1076
+T_21                107A
+T_22                1080
+T_23                1082
+T_24                108A
+T_25                10B8
+T_26                10BC
+T_27                10C0
+T_28                10C4
+T_29                10C8
+T_3                 103A
+T_30                1322
+T_31                10CC
+T_32                10D0
+T_33                10D4
+T_34                10DA
+T_35                10DE
+T_36                10E2
+T_37                10E8
+T_38                10EC
+T_39                10F0
+T_4                 103E
+T_40                1316
+T_41                131A
+T_42                10F4
+T_43                10F8
+T_44                10FC
+T_45                1102
+T_46                1104
+T_47                110C
+T_48                1134
+T_49                1138
+T_5                 1042
+T_50                133E
+T_51                1342
+T_52                134E
+T_53                113C
+T_54                116C
+T_55                1170
+T_56                1174
+T_57                1178
+T_58                134A
+T_59                117C
+T_6                 1046
+T_60                118E
+T_61                1192
+T_62                1196
+T_63                119A
+T_64                1332
+T_65                119E
+T_66                11B0
+T_67                11B2
+T_68                132A
+T_69                11B6
+T_7                 131E
+T_70                11BA
+T_71                11BE
+T_72                11DE
+T_73                1200
+T_74                1226
+T_75                1362
+T_76                122A
+T_77                122E
+T_78                1232
+T_79                1252
+T_8                 104A
+T_80                1274
+T_81                129A
+T_82                1352
+T_83                129E
+T_84                12A2
+T_85                12A6
+T_86                12C6
+T_87                12CA
+T_88                12CE
+T_89                12F0
+T_9                 104E
+V                   1346
+V_1                 135E
+V_2                 135A

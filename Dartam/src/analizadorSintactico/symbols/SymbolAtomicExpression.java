@@ -32,6 +32,9 @@ public class SymbolAtomicExpression extends SymbolBase {
         } else {
             tipo = ParserSym.terminalNames[ParserSym.CAR] + " []";
         }
+        if(value.toString().equals("b: 8")) {
+            System.out.println("");
+        }
     }
 
     public SymbolAtomicExpression(Character et, Location l, Location r) {

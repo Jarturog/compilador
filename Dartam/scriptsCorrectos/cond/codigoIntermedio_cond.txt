@@ -1,0 +1,359 @@
+e_inicio: skip
+pmb e_inicio
+call e_parte1
+call e_parte2
+call e_parte3
+rtn e_inicio
+
+
+e_parte1: skip
+pmb e_parte1
+t = PARTE 1
+param_s t
+call e_show
+t_1 = Muestra de un mal uso del switch (sin break)
+param_s t_1
+call e_show
+t_2 = 3
+t_3 = 3
+if t_2 == t_3 goto e
+t_4 = 0
+goto e_1
+e: skip
+t_4 = -1
+e_1: skip
+t_5 = 3
+t_6 = 4
+if t_4 == 0 goto e_3
+t_7 = t_5
+goto e_2
+e_3: skip
+t_7 = t_6
+e_2: skip
+a = t_7
+t_8 = 3
+if a == t_8 goto e_4
+t_9 = 0
+goto e_5
+e_4: skip
+t_9 = -1
+e_5: skip
+if t_9 == 0 goto e_7
+t_10 = a: 3
+param_s t_10
+call e_show
+goto e_6
+e_7: skip
+t_11 = 4
+if a == t_11 goto e_8
+t_12 = 0
+goto e_9
+e_8: skip
+t_12 = -1
+e_9: skip
+if t_12 == 0 goto e_10
+t_13 = a: 4
+param_s t_13
+call e_show
+goto e_6
+e_10: skip
+e_6: skip
+param_s a
+call e_switch
+t_14 = 2
+t_15 = 3
+if 0 >= t_15 goto e_11
+t_16 = 1
+goto e_13
+e_11: skip
+t_16 = t_14
+t_17 = t_15
+e_12: skip
+if 1 == t_17 goto e_13
+t_18 = t_14 * t_16
+t_16 = t_18
+t_18 = t_17 - 1
+t_17 = t_18
+goto e_12
+e_13: skip
+b = t_16
+t_19 = 8
+if b == t_19 goto e_14
+t_20 = 0
+goto e_15
+e_14: skip
+t_20 = -1
+e_15: skip
+if t_20 == 0 goto e_17
+t_21 = b: 8
+param_s t_21
+call e_show
+goto e_16
+e_17: skip
+e_16: skip
+param_s b
+call e_switch
+t_22 = 
+param_s t_22
+call e_show
+rtn e_parte1
+
+e_parte2: skip
+pmb e_parte2
+t_23 = PARTE 2
+param_s t_23
+call e_show
+t_24 = Muestra de un buen uso del switch (con break)
+param_s t_24
+call e_show
+t_25 = 3
+t_26 = 3
+if t_25 == t_26 goto e_18
+t_27 = 0
+goto e_19
+e_18: skip
+t_27 = -1
+e_19: skip
+t_28 = 3
+t_29 = 4
+if t_27 == 0 goto e_21
+t_30 = t_28
+goto e_20
+e_21: skip
+t_30 = t_29
+e_20: skip
+a_1 = t_30
+t_31 = 3
+if a_1 == t_31 goto e_22
+t_32 = 0
+goto e_23
+e_22: skip
+t_32 = -1
+e_23: skip
+if t_32 == 0 goto e_25
+t_33 = a: 3
+param_s t_33
+call e_show
+goto e_24
+e_25: skip
+t_34 = 4
+if a_1 == t_34 goto e_26
+t_35 = 0
+goto e_27
+e_26: skip
+t_35 = -1
+e_27: skip
+if t_35 == 0 goto e_28
+t_36 = a: 4
+param_s t_36
+call e_show
+goto e_24
+e_28: skip
+e_24: skip
+param_s a_1
+call e_switchconbreak
+t_37 = 2
+t_38 = 3
+if 0 >= t_38 goto e_29
+t_39 = 1
+goto e_31
+e_29: skip
+t_39 = t_37
+t_40 = t_38
+e_30: skip
+if 1 == t_40 goto e_31
+t_41 = t_37 * t_39
+t_39 = t_41
+t_41 = t_40 - 1
+t_40 = t_41
+goto e_30
+e_31: skip
+b_1 = t_39
+t_42 = 8
+if b_1 == t_42 goto e_32
+t_43 = 0
+goto e_33
+e_32: skip
+t_43 = -1
+e_33: skip
+if t_43 == 0 goto e_35
+t_44 = b: 8
+param_s t_44
+call e_show
+goto e_34
+e_35: skip
+e_34: skip
+param_s b_1
+call e_switchconbreak
+t_45 = 
+param_s t_45
+call e_show
+rtn e_parte2
+
+e_parte3: skip
+pmb e_parte3
+t_46 = PARTE 3
+param_s t_46
+call e_show
+t_47 = Muestra de un buen uso de si, sino y no
+param_s t_47
+call e_show
+t_48 = 1
+num1 = t_48
+t_49 = 1
+num2 = t_49
+t_50 = num1 - 1
+num1 = t_50
+aux1 = num1
+t_51 = num2 - 1
+t_52 = num2
+num2 = t_51
+aux2 = t_52
+t_53 = num1:1    num2:1    aux1:--num1    aux2:num2--
+param_s t_53
+call e_show
+t_54 = 0
+if aux1 == t_54 goto e_36
+t_55 = 0
+goto e_37
+e_36: skip
+t_55 = -1
+e_37: skip
+t_56 = 0
+if num1 == t_56 goto e_38
+t_57 = 0
+goto e_39
+e_38: skip
+t_57 = -1
+e_39: skip
+t_58 = t_55 and t_57
+if t_58 == 0 goto e_41
+t_59 = num1: 0 (aux1: 0)
+param_s t_59
+call e_show
+goto e_40
+e_41: skip
+e_40: skip
+t_60 = 1
+if aux2 == t_60 goto e_42
+t_61 = 0
+goto e_43
+e_42: skip
+t_61 = -1
+e_43: skip
+t_62 = 0
+if num1 == t_62 goto e_44
+t_63 = 0
+goto e_45
+e_44: skip
+t_63 = -1
+e_45: skip
+t_64 = t_61 and t_63
+if t_64 == 0 goto e_47
+t_65 = num2: 0 (aux2: 1)
+param_s t_65
+call e_show
+goto e_46
+e_47: skip
+e_46: skip
+param_s aux1
+call e_ifs
+param_s aux2
+call e_ifs
+t_66 = 
+param_s t_66
+call e_show
+rtn e_parte3
+
+e_switch: skip
+pmb e_switch
+t_67 = 2
+t_68 = v mod t_67
+v = t_68
+goto e_49
+t_69 = 1
+t_70 = 0
+e_51: skip
+t_71 = El numero introducido es par
+param_s t_71
+call e_show
+e_50: skip
+t_72 = El numero introducido es impar
+param_s t_72
+call e_show
+t_73 = Error, el numero no es par ni impar
+param_s t_73
+call e_show
+goto e_48
+e_49: skip
+if v == t_70 goto e_51
+if v == t_69 goto e_50
+e_48: skip
+rtn e_switch
+
+e_switchconbreak: skip
+pmb e_switchconbreak
+t_74 = 2
+t_75 = v_1 mod t_74
+v_1 = t_75
+goto e_53
+t_76 = 1
+t_77 = 0
+e_55: skip
+t_78 = El numero introducido es par
+param_s t_78
+call e_show
+goto e_52
+e_54: skip
+t_79 = El numero introducido es impar
+param_s t_79
+call e_show
+goto e_52
+t_80 = Error, el numero no es par ni impar
+param_s t_80
+call e_show
+goto e_52
+goto e_52
+e_53: skip
+if v_1 == t_77 goto e_55
+if v_1 == t_76 goto e_54
+e_52: skip
+rtn e_switchconbreak
+
+e_ifs: skip
+pmb e_ifs
+t_81 = 2
+t_82 = v_2 mod t_81
+v_2 = t_82
+t_83 = 0
+if v_2 == t_83 goto e_56
+t_84 = 0
+goto e_57
+e_56: skip
+t_84 = -1
+e_57: skip
+if t_84 == 0 goto e_59
+t_85 = El numero introducido es par
+param_s t_85
+call e_show
+goto e_58
+e_59: skip
+t_86 = 1
+if v_2 == t_86 goto e_60
+t_87 = 0
+goto e_61
+e_60: skip
+t_87 = -1
+e_61: skip
+if t_87 == 0 goto e_62
+t_88 = El numero introducido es impar
+param_s t_88
+call e_show
+goto e_58
+e_62: skip
+t_89 = Error, el numero no es par ni impar
+param_s t_89
+call e_show
+e_58: skip
+rtn e_ifs
+
