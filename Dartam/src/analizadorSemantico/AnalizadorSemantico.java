@@ -193,6 +193,14 @@ public class AnalizadorSemantico {
 
             String id = dec.id; // nombre variable
             SymbolOperand valorAsignado = (dec.asignacion == null) ? null : dec.asignacion.operando;
+            if (valorAsignado != null && valorAsignado.atomicExp!= null) {
+                DescripcionSimbolo d = tablaSimbolos.consulta(valorAsignado.atomicExp.value.toString());
+                if (d != null && !d.tieneValorAsignado()) {
+                    errores.add("No se puede asignar con la variable '" + valorAsignado.atomicExp.value.toString() + "' porque no ha sido inicializada con anterioridad");
+                    indicarLocalizacion(tipo);
+                    error = true;
+                }
+            }
             if (tuplaActualmenteSiendoTratada == null) { // si forma parte de una tupla sí se puede declarar  ---------------------------------------------------------------------
                 String errMsg = tablaSimbolos.sePuedeDeclarar(id);
                 if (!errMsg.isEmpty()) {
@@ -202,13 +210,13 @@ public class AnalizadorSemantico {
                 }
             } else {
                 if (tipo.isArray() || tipo.isTupla()) {
-                    errores.add("El miembro " + id + " de la tupla " + tuplaActualmenteSiendoTratada.fst + " ha sido declarado como " + tipo.getTipo() + ". En las tuplas solo se permiten tipos primitivos");
+                    errores.add("El miembro '" + id + "' de la tupla " + tuplaActualmenteSiendoTratada.fst + " ha sido declarado como " + tipo.getTipo() + ". En las tuplas solo se permiten tipos primitivos");
                     indicarLocalizacion(tipo);
                     return;
                 }
             }
             if (tipo.isArray() && tipo.isTupla()) {
-                errores.add("La variable " + id + " se ha declarado de tipo " + tipo.getTipo() + ". No se permiten arrays de tuplas");
+                errores.add("La variable '" + id + "' se ha declarado de tipo " + tipo.getTipo() + ". No se permiten arrays de tuplas");
                 indicarLocalizacion(tipo);
                 return;
             }
@@ -274,7 +282,7 @@ public class AnalizadorSemantico {
                 if (!error) {
                     int numDimAsignadas = tipoValor.length() - tipoValor.replace("[", "").length();
                     if (tipo.isArray() && variablesDimension.size() != numDimAsignadas) {
-                        errores.add("Se ha intentado asignar a " + id + " de tipo " + tipo.getTipo() + " un valor de tipo " + tipoValor);
+                        errores.add("Se ha intentado asignar a '" + id + "' de tipo " + tipo.getTipo() + " un valor de tipo " + tipoValor);
                         indicarLocalizacion(valorAsignado);
                         error = true;
                     }
@@ -546,7 +554,11 @@ public class AnalizadorSemantico {
                     } else {
                         DescripcionDefinicionTupla dt = (DescripcionDefinicionTupla) tablaSimbolos.consulta(d.getNombreTupla());
                         DefinicionMiembro miembro = d.getMember(asig.miembro);
-                        if (miembro.tieneValorAsignado() && miembro.isConst) {
+                        if (miembro == null) {
+                            errores.add("Se esta intentado acceder al miembro" + asig.miembro + " pero no existe");
+                            indicarLocalizacion(asig);
+                            error = true;
+                        } else if (miembro.tieneValorAsignado() && miembro.isConst) {
                             errores.add("Se esta intentado asignar un valor al miembro constante '" + asig.miembro + "' de la variable '" + asig.id + "' de la tupla '" + d.getNombreTupla() + "', el cual ya tenia un valor asignado");
                             indicarLocalizacion(asig);
                             error = true;
@@ -556,7 +568,7 @@ public class AnalizadorSemantico {
                             errores.add("El miembro " + asig.miembro + " no ha sido encontrado en la tupla " + d.getNombreTupla());
                             indicarLocalizacion(asig);
                             error = true;
-                        } else {
+                        } else if (!error){
                             miembro.asignarValor();
                             tipoVariable = miembro.tipo;
                             indexReal = g3d.nuevaVariable(TipoVariable.INT);
@@ -1559,7 +1571,7 @@ public class AnalizadorSemantico {
                     return null;
                 }
                 DescripcionArray da = (DescripcionArray) tablaSimbolos.consulta(arr.atomicExp.value.toString());
-                if (!da.tieneValorAsignado()) {
+                if (da != null && !da.tieneValorAsignado()) {
                     errores.add("No se puede acceder a un elemento del array " + arr.atomicExp.value.toString() + " porque éste no ha sido inicializado con anterioridad");
                     indicarLocalizacion(arr);
                     return null;
@@ -1643,7 +1655,7 @@ public class AnalizadorSemantico {
                 }
                 if (operando.atomicExp != null) {
                     DescripcionSimbolo ds = tablaSimbolos.consulta(operando.atomicExp.value.toString());
-                    if (!ds.tieneValorAsignado()) {
+                    if (ds != null && !ds.tieneValorAsignado()) {
                         errores.add("No se puede realizar casting a la variable " + operando.atomicExp.value.toString() + " porque ésta no ha sido incializada anteriormente");
                         indicarLocalizacion(operando.atomicExp);
                         return null;

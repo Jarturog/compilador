@@ -1,0 +1,8 @@
+f vacio inicio() {
+	prop c: (¬falso | cierto) & (('2'<='2') | (+5/=-5) | ((3)=3));
+	si c {
+		show("verdadero");
+	} no {
+		show("falso");
+	}
+}

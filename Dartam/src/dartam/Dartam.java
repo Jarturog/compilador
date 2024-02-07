@@ -19,6 +19,7 @@ import analizadorSemantico.genCodigoIntermedio.GestorCodigoIntermedio;
 import genCodigoEnsamblador.GeneradorEnsamblador;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 //import optimizaciones.Optimizador;
 import java.io.FileWriter;
@@ -42,13 +43,13 @@ public class Dartam {
 
     private boolean error = false;
     public static final boolean DEBUG = true;
-    private static final String RUTA = "scripts/", LOG = "log.txt", EXTENSION = ".dtm";
+    private static final String RUTA = "scriptsCorrectos/", RUTA_ERRORES = "scriptsErroneos/", LOG = "log.txt", EXTENSION = ".dtm";
     private final String nombreFichero;
 
     public static void main(String[] args) {
         String nombreArchivo;
         if (args.length > 0) {
-            nombreArchivo = args[0];
+            nombreArchivo = args[0]; // por si es ejecutado mediante la terminal
         } else {
             // Mostrar los nombres de los archivos en la ruta
             mostrarArchivos();
@@ -61,6 +62,10 @@ public class Dartam {
                 System.out.println("Compilacion finalizada");
             }
         } catch (Exception e) {
+            if (e instanceof FileNotFoundException) {
+                System.err.println("Fichero " + nombreArchivo + " no encontrado en " + RUTA + " ni en " + RUTA_ERRORES);
+                return;
+            }
             e.printStackTrace();
             System.err.println("Error inesperado de compilacion: " + e.getMessage());
             //System.err.println("Error inesperado de compilacion, error detallado en "+LOG);
@@ -80,21 +85,18 @@ public class Dartam {
     }
 
     public Dartam(String nombreArchivo) throws Exception {
-        Reader ficheroIn = new FileReader(RUTA + nombreArchivo);
-        nombreFichero = nombreArchivo.replace(EXTENSION, "");
-        // Create the directory if it doesn't exist
-        File directory = new File(RUTA + nombreFichero);
-        if (!directory.exists()) {
-            directory.mkdirs(); // creates parent directories as needed
+        Reader ficheroIn;
+        try {
+            ficheroIn = new FileReader(RUTA + nombreArchivo);
+        } catch(FileNotFoundException e) {
+            ficheroIn = new FileReader(RUTA_ERRORES + nombreArchivo);
         }
+        nombreFichero = nombreArchivo.replace(EXTENSION, "");
         // Análisis léxico
-        //String [] a = {(String)(RUTA + nombreArchivo)};
-        //visualizarArbol(a);
         Scanner scanner = new Scanner(ficheroIn);
         // Análisis sintáctico
         Parser parser = new Parser(scanner, new ComplexSymbolFactory());
         Symbol resultado = parser.parse();
-        escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens());
         if (!scanner.getErrores().isEmpty()) {
             System.err.println(scanner.getErrores());
             error = true;
@@ -104,16 +106,21 @@ public class Dartam {
             error = true;
             return;
         }
-        //System.out.println(scanner.getTokens());
         SymbolScript script = (SymbolScript) resultado.value;
         // Análisis semántico
         AnalizadorSemantico sem = new AnalizadorSemantico(script);
-        escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols());
         if (!sem.getErrores().isEmpty()) {
             System.err.println(sem.getErrores());
             error = true;
             return;
         }
+        File directory = new File(RUTA + nombreFichero);
+        if (!directory.exists()) {
+            directory.mkdirs(); // creates parent directories as needed
+        }
+        // si no ha habido errores empieza a escribir en los ficheros
+        escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens());
+        escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols());
         // Generación de código intermedio realizada durante el análisis semántico
         GestorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
         GestorCodigoIntermedio generadorParaOptimizar = new GestorCodigoIntermedio(generadorCodigoIntermedio); // se copia
@@ -140,7 +147,7 @@ public class Dartam {
 
     private static String elegirArchivo() {
         String nombreArchivo = "¡ningún archivo seleccionado!";
-        System.out.println("Indica el fichero a compilar: ");
+        System.out.println("Indica el fichero a compilar (sin indicar la ruta): ");
         try {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
                 nombreArchivo = br.readLine();
@@ -155,53 +162,36 @@ public class Dartam {
     }
 
     private static void mostrarArchivos() {
-        File dir = new File(RUTA);
-        File[] archivos = dir.listFiles();
+        File dir1 = new File(RUTA);
+        File dir2 = new File(RUTA_ERRORES);
+        File[] archivos1 = dir1.listFiles();
+        File[] archivos2 = dir2.listFiles();
 
-        if (archivos == null) {
-            System.err.println("Error al listar archivos en la ruta " + dir.getAbsolutePath());
+        if (archivos1 == null) {
+            System.err.println("Error al listar archivos en la ruta " + dir1.getAbsolutePath());
+            return;
+        }
+        if (archivos2 == null) {
+            System.err.println("Error al listar archivos en la ruta " + dir2.getAbsolutePath());
             return;
         }
 
-        String strArchvios = "";
-        for (File archivo : archivos) {
+        String strArchvios1 = "";
+        for (File archivo : archivos1) {
             if (archivo.isFile() && archivo.toString().endsWith(EXTENSION)) {
-                strArchvios += archivo.getName() + ", ";
+                strArchvios1 += archivo.getName() + ", ";
             }
         }
-        System.out.println("Archivos en la ruta " + dir.getAbsolutePath()
-                + ": \n" + strArchvios.substring(0, strArchvios.length() - 2) + "\n");
-    }
-
-    /**
-     * Código sacado de https://www2.cs.tum.edu/projects/cup/examples.php#gast
-     * Ahora mismo no funciona. Otra fuente para visualizar el árbol:
-     * https://www.skenz.it/compilers y
-     * https://www.skenz.it/compilers/install_windows
-     */
-    private static void visualizarArbol(String[] args) throws Exception {
-        // initialize the symbol factory
-        ComplexSymbolFactory csf = new ComplexSymbolFactory();
-        // create a buffering scanner wrapper
-        //ScannerBuffer lexer = new ScannerBuffer(new Lexer(new BufferedReader(new FileReader(args[0]))));
-        ScannerBuffer lexer = new ScannerBuffer(new Lexer(csf));
-        // start parsing
-        Parser p = new Parser(lexer, csf);
-        XMLElement e = (XMLElement) p.parse().value;
-        // create XML output file 
-        XMLOutputFactory outFactory = XMLOutputFactory.newInstance();
-        XMLStreamWriter sw = outFactory.createXMLStreamWriter(new FileOutputStream(args[1]));
-        // dump XML output to the file
-        XMLElement.dump(lexer, sw, e, "expr", "stmt");
-
-        // transform the parse tree into an AST and a rendered HTML version
-        Transformer transformer = TransformerFactory.newInstance()
-                .newTransformer(new StreamSource(new File("tree.xsl")));
-        Source text = new StreamSource(new File(args[1]));
-        transformer.transform(text, new StreamResult(new File("output.xml")));
-        transformer = TransformerFactory.newInstance()
-                .newTransformer(new StreamSource(new File("tree-view.xsl")));
-        text = new StreamSource(new File("output.xml"));
-        transformer.transform(text, new StreamResult(new File("ast.html")));
+        System.out.println("Ficheros correctos en la ruta " + dir1.getAbsolutePath()
+                + ": \n" + strArchvios1.substring(0, strArchvios1.length() - 2) + "\n");
+        
+        String strArchvios2 = "";
+        for (File archivo : archivos2) {
+            if (archivo.isFile() && archivo.toString().endsWith(EXTENSION)) {
+                strArchvios2 += archivo.getName() + ", ";
+            }
+        }
+        System.out.println("Ficheros erróneos en la ruta " + dir2.getAbsolutePath()
+                + ": \n" + strArchvios2.substring(0, strArchvios2.length() - 2) + "\n");
     }
 }

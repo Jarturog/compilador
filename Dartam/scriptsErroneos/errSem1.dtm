@@ -1,0 +1,6 @@
+f vacio inicio(){
+	inmut ent a, b:20;
+	b: 10; // asignando a constante ya asignada un valor
+	ent c: a; // asignando a variable una constante sin valor
+	car d: b; // asignando a variable una constante de diferente tipo
+}

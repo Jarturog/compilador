@@ -1,0 +1,22 @@
+tupla matriz3 A, B, resultado; // Definir matrices
+
+tupla matriz3 {
+	inmut ent filas: 3, columnas: 3;
+	ent [filas]['1'] datos;
+}
+
+f vacio inicio() {
+	tupla matriz3 [][] matrizDeMatrices;
+	tupla matriz3 A;
+
+    inicializarMatriz(A);
+    
+}
+
+f ent mostrarMatriz(tupla matriz3 m) {
+    si cierto {
+		pop;
+	} no {
+		pop (ent)falso;
+	}
+}

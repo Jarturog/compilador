@@ -1,7 +1,11 @@
-java.lang.Exception: Error, no se ha implementao el scan para tratar con 1 parámetros, sino con 2
-	at genCodigoEnsamblador.GeneradorEnsamblador.procesarMetodoEspecial(GeneradorEnsamblador.java:476)
-	at genCodigoEnsamblador.GeneradorEnsamblador.procesarInstruccion(GeneradorEnsamblador.java:423)
-	at genCodigoEnsamblador.GeneradorEnsamblador.procesarCodigo(GeneradorEnsamblador.java:108)
-	at genCodigoEnsamblador.GeneradorEnsamblador.<init>(GeneradorEnsamblador.java:60)
-	at dartam.Dartam.<init>(Dartam.java:124)
-	at dartam.Dartam.main(Dartam.java:58)
+java.lang.NullPointerException: Cannot invoke "analizadorSemantico.DescripcionSimbolo.tieneValorAsignado()" because "ds" is null
+	at analizadorSemantico.AnalizadorSemantico.procesarOperando(AnalizadorSemantico.java:1654)
+	at analizadorSemantico.AnalizadorSemantico.procesarReturn(AnalizadorSemantico.java:713)
+	at analizadorSemantico.AnalizadorSemantico.procesarInstruccion(AnalizadorSemantico.java:413)
+	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:385)
+	at analizadorSemantico.AnalizadorSemantico.procesarIf(AnalizadorSemantico.java:838)
+	at analizadorSemantico.AnalizadorSemantico.procesarBody(AnalizadorSemantico.java:387)
+	at analizadorSemantico.AnalizadorSemantico.procesarMetodo(AnalizadorSemantico.java:1004)
+	at analizadorSemantico.AnalizadorSemantico.<init>(AnalizadorSemantico.java:162)
+	at dartam.Dartam.<init>(Dartam.java:111)
+	at dartam.Dartam.main(Dartam.java:59)

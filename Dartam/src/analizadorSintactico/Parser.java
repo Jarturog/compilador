@@ -853,10 +853,12 @@ public class Parser extends java_cup.runtime.lr_parser {
         if (anterior.size() > 2 && anterior.get(2) != null) {
             englishChar = anterior.get(2).value.toString().equals("char");
             englishInt = anterior.get(2).value.toString().equals("int");
-        } else if (anterior.size() > 1 && anterior.get(1) != null) {
+        } 
+        if (!englishChar && !englishInt && anterior.size() > 1 && anterior.get(1) != null) {
             englishChar = anterior.get(1).value.toString().equals("char");
             englishInt = anterior.get(1).value.toString().equals("int");
-        } else if (anterior.size() > 0 && anterior.get(0) != null) {
+        } 
+        if (!englishChar && !englishInt && anterior.size() > 0 && anterior.get(0) != null) {
             englishChar = anterior.get(0).value.toString().equals("char");
             englishInt = anterior.get(0).value.toString().equals("int");
         }

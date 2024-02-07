@@ -1,4 +1,0 @@
-f vacio inicio(){
-	inmut ent a, b:20;
-	b: 40;
-}

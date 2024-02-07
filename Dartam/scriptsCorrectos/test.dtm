@@ -1,0 +1,26 @@
+f vacio inicio(){
+	ent[4] v;
+	v[0] : 1;
+	v[1] : 2;
+	v[2] : 3;
+	v[3] : 4;
+	invertir(v);
+}
+
+f vacio invertir(ent[] v){
+	ent i;
+	ent j;
+	ent aux;
+	i : 0;
+	j : 3;
+	loop i < j {
+		aux: v[i];	
+		v[i]: v[j];
+		v[j]: aux;
+
+		i: i + 1;
+		j: j - 1;
+		
+	}
+
+}

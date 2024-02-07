@@ -1,0 +1,12 @@
+f vacio inicio() {
+	func();
+	func(cierto, 3);
+}
+
+f vacio func(ent a) {
+	show(a);
+}
+
+f vacio fvacia() {
+	pop 3;
+}

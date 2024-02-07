@@ -1,0 +1,3 @@
+f vacio inicio(){
+	car[] string: 'hola'; // ' es para cars, " para strings
+}
