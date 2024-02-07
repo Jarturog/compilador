@@ -16,7 +16,7 @@ public class Optimizador {
     public Optimizador(GestorCodigoIntermedio g3d) throws Exception {
         instrucciones = g3d.getInstrucciones();
         variables = g3d.getTablaVariables();
-        while (saltosAdyacentes() || saltoSobreSalto() /*|| asignacionesDiferidas()*/ || etiquetasSinUsarse()); // se realiza la optimización hasta que no hayan cambios
+        while (saltosAdyacentes() || saltoSobreSalto() /*|| asignacionesDiferidas()*/ || etiquetasSinUsarse()); // se realiza la optimizacion hasta que no hayan cambios
     }
 
     /**
@@ -26,7 +26,7 @@ public class Optimizador {
         boolean cambio = false;
         for (int i = 0; i < instrucciones.size(); i++) {
             TipoInstr t1 = instrucciones.get(i).getTipo();
-            if (!t1.isTipo(TipoInstr.COPY)) { // añado la opción de IND_ASS?
+            if (!t1.isTipo(TipoInstr.COPY)) { // añado la opcion de IND_ASS?
                 continue;
             }
             Operador var = instrucciones.get(i).dst();
@@ -56,7 +56,7 @@ public class Optimizador {
                 if (!seRepite) {
                     String nuevaVar = instrucciones.get(j).dst().getNombre();
                     instrucciones.get(j).setOp1(instrucciones.remove(i).op1());
-                    i--; // resto 1 por la eliminación
+                    i--; // resto 1 por la eliminacion
                     VarInfo datosAntiguos = variables.remove(nombre);
                     VarInfo nuevosDatos = variables.get(nuevaVar);
                     nuevosDatos.sustituirPor(datosAntiguos);
@@ -139,7 +139,7 @@ public class Optimizador {
             }
             if (!seUsa) {
                 instrucciones.remove(i);
-                i--; // resto uno porque todos se han movido hacia la izquierda y en la siguiente iteración volverá a sumar 1
+                i--; // resto uno porque todos se han movido hacia la izquierda y en la siguiente iteracion volvera a sumar 1
                 cambio = true;
             }
         }

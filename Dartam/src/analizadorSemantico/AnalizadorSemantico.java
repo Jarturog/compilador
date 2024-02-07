@@ -143,7 +143,7 @@ public class AnalizadorSemantico {
         for (SymbolScriptElemento metodo : metodos) {
             DescripcionSimbolo d = tablaSimbolos.consulta(metodo.id);
             if (d != null) {
-                errores.add("Se ha intentado nombrar el método " + metodo.id + " pero este identificador ya está en uso");
+                errores.add("Se ha intentado nombrar el metodo " + metodo.id + " pero este identificador ya esta en uso");
                 indicarLocalizacion(metodo);
                 continue;
             }
@@ -157,7 +157,7 @@ public class AnalizadorSemantico {
         DescripcionFuncion d = new DescripcionFuncion(ParserSym.terminalNames[ParserSym.VOID], g3d.nuevaEtiqueta(scriptMainYElementos.nombreMain), true);
         tablaSimbolos.poner(scriptMainYElementos.nombreMain, d);
         procesarMain(scriptMainYElementos);
-        // interior de los métodos
+        // interior de los metodos
         for (SymbolScriptElemento metodo : metodos) {
             procesarMetodo(metodo);
         }
@@ -201,7 +201,7 @@ public class AnalizadorSemantico {
                     error = true;
                 }
             }
-            if (tuplaActualmenteSiendoTratada == null) { // si forma parte de una tupla sí se puede declarar  ---------------------------------------------------------------------
+            if (tuplaActualmenteSiendoTratada == null) { // si forma parte de una tupla si se puede declarar  ---------------------------------------------------------------------
                 String errMsg = tablaSimbolos.sePuedeDeclarar(id);
                 if (!errMsg.isEmpty()) {
                     errores.add(errMsg);
@@ -264,7 +264,7 @@ public class AnalizadorSemantico {
             boolean seHaAsignado = valorAsignado != null;
             if (seHaAsignado) {
                 if (arrayInicializado) {
-                    errores.add("No está permitido definir las dimensiones " + tipo.dimArray + " del array '" + id + "' cuando está siendo asignado un valor " + valorAsignado);
+                    errores.add("No esta permitido definir las dimensiones " + tipo.dimArray + " del array '" + id + "' cuando esta siendo asignado un valor " + valorAsignado);
                     indicarLocalizacion(valorAsignado);
                     error = true;
                 }
@@ -288,7 +288,7 @@ public class AnalizadorSemantico {
                     }
                 }
             }
-            // si es una variable tipo tupla: guarda aquí su definición
+            // si es una variable tipo tupla: guarda aqui su definicion
             DescripcionDefinicionTupla descTipoTupla = null;
             String tuplaName = null;
             TipoVariable t = null;
@@ -311,7 +311,7 @@ public class AnalizadorSemantico {
             if (error) {
                 continue;
             }
-            if (tuplaActualmenteSiendoTratada != null) { // declaración de un miembro de una definición de una tupla
+            if (tuplaActualmenteSiendoTratada != null) { // declaracion de un miembro de una definicion de una tupla
                 if (tuplaActualmenteSiendoTratada.snd.tieneMiembro(id)) {
                     errores.add("Se ha intentado añadir el miembro repetido " + id + " a la tupla " + tuplaName);
                     indicarLocalizacion(dec);
@@ -520,7 +520,7 @@ public class AnalizadorSemantico {
                         dim = dim.siguienteDimension;
                     }
                     if (ind < 0) {
-                        errores.add("Se ha intentado acceder a más dimensiones de las definidas en el array " + asig.id);
+                        errores.add("Se ha intentado acceder a mas dimensiones de las definidas en el array " + asig.id);
                         indicarLocalizacion(dim);
                         error = true;
                     }
@@ -586,7 +586,7 @@ public class AnalizadorSemantico {
                 indicarLocalizacion(asig.valor);
                 error = true;
             }
-            // si operación convierte a booleano y es un entero -> error
+            // si operacion convierte a booleano y es un entero -> error
             if (!error && !asig.operacion.doesOperationResultInSameType(tipoValor)) {
                 errores.add("Se esta intentado aplicar una operacion no valida entre los tipos " + tipoVariable + " y " + tipoValor);
                 indicarLocalizacion(asig);
@@ -638,12 +638,12 @@ public class AnalizadorSemantico {
         }
         DescripcionFuncion df = (DescripcionFuncion) ds;
         if (df.isMain()) {
-            errores.add("No se puede llamar al método inicial explícitamente, llamada producida en " + this.metodoActualmenteSiendoTratado.fst);
+            errores.add("No se puede llamar al metodo inicial explicitamente, llamada producida en " + this.metodoActualmenteSiendoTratado.fst);
             indicarLocalizacion(fcall);
             return;
         }
         if (nombre.equals(this.metodoActualmenteSiendoTratado.fst)) {
-            errores.add("No se puede llamar a un método (" + nombre + ") dentro de ese método");
+            errores.add("No se puede llamar a un metodo (" + nombre + ") dentro de ese metodo");
             indicarLocalizacion(fcall);
             return;
         }
@@ -677,7 +677,7 @@ public class AnalizadorSemantico {
             }
             DescripcionSimbolo d = tablaSimbolos.consulta(param.id);
             if (d != null && !d.tieneValorAsignado()) {
-                errores.add("No se puede pasar por parámetro la variable " + param.id + " porque no ha sido inicializada");
+                errores.add("No se puede pasar por parametro la variable " + param.id + " porque no ha sido inicializada");
                 indicarLocalizacion(op);
                 opLista = opLista.siguienteOperando;
                 error = true;
@@ -688,7 +688,7 @@ public class AnalizadorSemantico {
             opLista = opLista.siguienteOperando;
         }
         if (opLista != null) {
-            errores.add("La funcion " + nombre + " recibe " + params.size() + " parametros, pero se han pasado más");
+            errores.add("La funcion " + nombre + " recibe " + params.size() + " parametros, pero se han pasado mas");
             indicarLocalizacion(fcall);
             error = true;
         }
@@ -791,7 +791,7 @@ public class AnalizadorSemantico {
         if (cond.cond.atomicExp != null) {
             DescripcionSimbolo d = tablaSimbolos.consulta(cond.cond.atomicExp.value.toString());
             if (d != null && !d.tieneValorAsignado()) {
-                errores.add("No se puede hacer comprobación de la variable " + cond.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
+                errores.add("No se puede hacer comprobacion de la variable " + cond.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
                 indicarLocalizacion(cond.cond);
                 return;
             }
@@ -800,7 +800,7 @@ public class AnalizadorSemantico {
         String efi = g3d.nuevaEtiqueta(); //Nueva etiqueta para el if
         String etSigCond = g3d.nuevaEtiqueta();
         //String eElse = g3d.nuevaEtiqueta();
-        //Llegados aquí si la condicion es falsa salta, sino ejecuta
+        //Llegados aqui si la condicion es falsa salta, sino ejecuta
         TipoVariable t = g3d.getTipoFromVar(varCond);
         g3d.generarInstr(TipoInstr.IFEQ, new Operador(t, varCond), new Operador(TipoVariable.BOOL, TipoVariable.FALSE), new Operador(etSigCond)); //Si es falso saltaremos
 
@@ -827,7 +827,7 @@ public class AnalizadorSemantico {
             if (elif.cond.atomicExp != null) {
                 DescripcionSimbolo d = tablaSimbolos.consulta(elif.cond.atomicExp.value.toString());
                 if (d != null && !d.tieneValorAsignado()) {
-                    errores.add("No se puede hacer comprobación de la variable " + elif.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
+                    errores.add("No se puede hacer comprobacion de la variable " + elif.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
                     indicarLocalizacion(elif.cond);
                     return;
                 }
@@ -859,7 +859,7 @@ public class AnalizadorSemantico {
         String inicioLoop = g3d.nuevaEtiqueta(), salirLoop = g3d.nuevaEtiqueta(), etContinue = g3d.nuevaEtiqueta();
         g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(inicioLoop));
         pilaEtiquetasBucle.push(new Pair(etContinue, salirLoop));
-        if (loop.isDoWhile()) { // si es do while primero se ejecuta y luego se comprueba la condición
+        if (loop.isDoWhile()) { // si es do while primero se ejecuta y luego se comprueba la condicion
             procesarBody(loop.cuerpo);
             g3d.generarInstr(TipoInstr.SKIP, null, null, new Operador(etContinue)); //Etiqueta para continuar en el bucle
             if (loopCond.asig != null) {
@@ -882,7 +882,7 @@ public class AnalizadorSemantico {
         if (loopCond.cond.atomicExp != null) {
             DescripcionSimbolo d = tablaSimbolos.consulta(loopCond.cond.atomicExp.value.toString());
             if (d != null && !d.tieneValorAsignado()) {
-                errores.add("No se puede hacer comprobación de la variable " + loopCond.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
+                errores.add("No se puede hacer comprobacion de la variable " + loopCond.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
                 indicarLocalizacion(loopCond.cond);
                 return;
             }
@@ -921,7 +921,7 @@ public class AnalizadorSemantico {
         if (sw.cond.atomicExp != null) {
             DescripcionSimbolo d = tablaSimbolos.consulta(sw.cond.atomicExp.value.toString());
             if (d != null && !d.tieneValorAsignado()) {
-                errores.add("No se puede hacer comprobación de la variable " + sw.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
+                errores.add("No se puede hacer comprobacion de la variable " + sw.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
                 indicarLocalizacion(sw.cond);
                 return;
             }
@@ -950,7 +950,7 @@ public class AnalizadorSemantico {
             if (caso.cond.atomicExp != null) {
                 DescripcionSimbolo d = tablaSimbolos.consulta(caso.cond.atomicExp.value.toString());
                 if (d != null && !d.tieneValorAsignado()) {
-                    errores.add("No se puede hacer comprobación de la variable " + caso.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
+                    errores.add("No se puede hacer comprobacion de la variable " + caso.cond.atomicExp.value.toString() + " porque no ha sido inicializada");
                     indicarLocalizacion(caso.cond);
                     return;
                 }
@@ -1032,7 +1032,7 @@ public class AnalizadorSemantico {
 //        g3d.eliminarFuncion();
 
         if (df.necesitaReturnStatement() && !df.tieneReturnStatement()) {
-            errores.add("No se ha puesto una instrucción para salir del método " + metodo.id + " en el mismo ámbito de su cuerpo (si x es el nivel donde está declarado el método, x + 1 es el nivel donde debe de estar la instrucción para salir de él)");
+            errores.add("No se ha puesto una instruccion para salir del metodo " + metodo.id + " en el mismo ambito de su cuerpo (si x es el nivel donde esta declarado el metodo, x + 1 es el nivel donde debe de estar la instruccion para salir de el)");
             indicarLocalizacion(metodo);
             tablaSimbolos.salirBloque();
             return;
@@ -1087,7 +1087,7 @@ public class AnalizadorSemantico {
 
     private void procesarContinue(SymbolInstr instr) throws Exception { // ------------------------------------------------------------------------------------------------------------
         if (pilaEtiquetasBucle.isEmpty()) {
-            errores.add("Se ha intentado continuar en un bucle en un ámbito sin bucles");
+            errores.add("Se ha intentado continuar en un bucle en un ambito sin bucles");
             indicarLocalizacion(instr);
             return;
         }
@@ -1097,20 +1097,20 @@ public class AnalizadorSemantico {
     }
 
     private void procesarBreak(SymbolInstr instr) throws Exception {
-        // si está en un switch sale de él
+        // si esta en un switch sale de el
         if (!pilaEtiquetasSwitch.isEmpty()) {
             String etfi = pilaEtiquetasSwitch.peek();
             g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etfi));
             return;
         }
-        // si no está en un switch comprueba que esté en un bucle
+        // si no esta en un switch comprueba que este en un bucle
         if (!pilaEtiquetasBucle.isEmpty()) {
             Pair<String, String> p = pilaEtiquetasBucle.peek();
             String etfi = p.snd;
             g3d.generarInstr(TipoInstr.GOTO, null, null, new Operador(etfi));
             return;
         }
-        errores.add("Se ha intentado salir de un bucle o un select en un ámbito sin bucles ni selects");
+        errores.add("Se ha intentado salir de un bucle o un select en un ambito sin bucles ni selects");
         indicarLocalizacion(instr);
     }
 
@@ -1185,7 +1185,7 @@ public class AnalizadorSemantico {
                 String nombre = (String) fcall.methodName.value;
                 DescripcionFuncion df = (DescripcionFuncion) tablaSimbolos.consulta(nombre);
                 if (!df.devuelveValor()) {
-                    errores.add("No se puede operar llamando a una función que no devuelve valor: " + nombre);
+                    errores.add("No se puede operar llamando a una funcion que no devuelve valor: " + nombre);
                     indicarLocalizacion(fcall);
                     return null;
                 }
@@ -1295,7 +1295,7 @@ public class AnalizadorSemantico {
                     if (operation == ParserSym.OP_ADD) {
                         return tipo;
                     }
-                    // si llega aquí es porque cumple algunas de las siguientes: NOT boolean, +num o -num
+                    // si llega aqui es porque cumple algunas de las siguientes: NOT boolean, +num o -num
                     String variable = g3d.nuevaVariable(t);
                     if (tipo.equals(ParserSym.terminalNames[ParserSym.PROP]) && ParserSym.OP_NOT == operation) {
                         g3d.generarInstr(TipoInstr.NOT, new Operador(t, variableOperando), null, new Operador(t, variable));
@@ -1369,7 +1369,7 @@ public class AnalizadorSemantico {
                 SymbolBinaryOperator operator = exp.bop;
                 boolean concatenarStringConString = tipo1.equals(ParserSym.terminalNames[ParserSym.CAR] + " []") && tipo2.equals(ParserSym.terminalNames[ParserSym.CAR] + " []");
                 if (operator.isAdd() && (concatenarStringConString)) { //|| concatenarStringConCaracter || concatenarCaracterConString)) {
-                    errores.add("Se ha intentado concatenar dos strings en la expresion binaria " + exp + ", cuya operación no está permitida");
+                    errores.add("Se ha intentado concatenar dos strings en la expresion binaria " + exp + ", cuya operacion no esta permitida");
                     indicarLocalizacion(exp);// error, no se puede operar con tipos diferentes (excepto int y double)
                     return null;
 //                    String var = g3d.nuevaVariable(TipoVariable.STRING);
@@ -1392,7 +1392,7 @@ public class AnalizadorSemantico {
                     return null;
                 }
                 TipoInstr ti = operator.getTipoInstruccion();
-                // si llega aquí es porque ambos son del mismo tipo o uno es int y otro double
+                // si llega aqui es porque ambos son del mismo tipo o uno es int y otro double
                 String tipoOperandos = tipo1, varOperandos = variableOp1; // si uno es int y otro double se considera que los dos son double
 //                if (unoIntOtroDouble) {
 //                    if (!operator.isForOperandsOfType(ParserSym.terminalNames[ParserSym.REAL])) {
@@ -1597,7 +1597,7 @@ public class AnalizadorSemantico {
                 }
                 DescripcionArray da = (DescripcionArray) tablaSimbolos.consulta(arr.atomicExp.value.toString());
                 if (da != null && !da.tieneValorAsignado()) {
-                    errores.add("No se puede acceder a un elemento del array " + arr.atomicExp.value.toString() + " porque éste no ha sido inicializado con anterioridad");
+                    errores.add("No se puede acceder a un elemento del array " + arr.atomicExp.value.toString() + " porque este no ha sido inicializado con anterioridad");
                     indicarLocalizacion(arr);
                     return null;
                 }
@@ -1642,7 +1642,7 @@ public class AnalizadorSemantico {
                     return null;
                 }
                 if (!ds.tieneValorAsignado()) {
-                    errores.add("No se puede acceder a un miembro de la tupla " + nombre + " porque ésta no ha sido inicializado con anterioridad");
+                    errores.add("No se puede acceder a un miembro de la tupla " + nombre + " porque esta no ha sido inicializado con anterioridad");
                     indicarLocalizacion(tupla);
                     return null;
                 }
@@ -1681,7 +1681,7 @@ public class AnalizadorSemantico {
                 if (operando.atomicExp != null) {
                     DescripcionSimbolo ds = tablaSimbolos.consulta(operando.atomicExp.value.toString());
                     if (ds != null && !ds.tieneValorAsignado()) {
-                        errores.add("No se puede realizar casting a la variable " + operando.atomicExp.value.toString() + " porque ésta no ha sido incializada anteriormente");
+                        errores.add("No se puede realizar casting a la variable " + operando.atomicExp.value.toString() + " porque esta no ha sido incializada anteriormente");
                         indicarLocalizacion(operando.atomicExp);
                         return null;
                     }

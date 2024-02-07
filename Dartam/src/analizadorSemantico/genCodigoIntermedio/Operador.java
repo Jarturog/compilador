@@ -5,7 +5,7 @@ public class Operador {
     private final String nombre; //Nombre de la variable / campo
     private final Object valor; //Valor
     private final TipoVariable tipoValor; //Que tipo de dato es: BOOLEAN, STRING...
-    private final TipoVariable casting; // si hace casting, hacia qué tipo lo hace
+    private final TipoVariable casting; // si hace casting, hacia que tipo lo hace
 
     public Operador(Operador o){
         nombre = o.nombre;

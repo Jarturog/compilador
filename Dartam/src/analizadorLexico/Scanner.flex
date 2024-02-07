@@ -158,7 +158,7 @@ espacioBlanco = [ \t]+
 finLinea = [\r\n]+
 comentario = ("\/\/".*)|("#"[^"#"]*"#")
 
-// El següent codi es copiarà tambe, dins de la classe. És a dir, si es posa res
+// El següent codi es copiarà tambe, dins de la classe. Es a dir, si es posa res
 // ha de ser en el format adient: mètodes, atributs, etc. 
 %{
 /***
@@ -223,7 +223,7 @@ private Symbol procesarNumero() {
     return symbol(ParserSym.ENT, numero);
   } catch (Exception e) { /* Error inesperado */
     errores += errorToString();
-    errores += "No se permiten números fuera del rango " + Integer.MIN_VALUE + "..." +Integer.MAX_VALUE+"\n";
+    errores += "No se permiten numeros fuera del rango " + Integer.MIN_VALUE + "..." +Integer.MAX_VALUE+"\n";
     return symbol(ParserSym.error);
   }
 }
@@ -233,7 +233,7 @@ private Symbol procesarNumero() {
 %%
 
 // Regles/accions
-// És molt important l'ordre de les regles!!!
+// Es molt important l'ordre de les regles!!!
 
 // valores chars y strings
 {val_char}                  { tokens += "VAL_CHAR: "+yytext()+"\n"; return symbol(ParserSym.CAR, yytext().charAt(1)); } // 1 porque 0 es la comilla simple '
@@ -321,10 +321,10 @@ private Symbol procesarNumero() {
 {id}                { tokens += "ID: "+yytext()+"\n"; return symbol(ParserSym.ID, yytext()); }
 
 // casos especiales
-{sym_comillaS}  { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un carácter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{sym_comillaS}  { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un caracter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
 {sym_comillaD}  { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un string pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
-{char_vacio}    { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear un carácter vacío (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
-{char_string}   { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear varios carácteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{char_vacio}    { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear un caracter vacio (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
+{char_string}   { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear varios caracteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error); }
 {espacioBlanco} {}
 {comentario}    {}
 {finLinea}      {}

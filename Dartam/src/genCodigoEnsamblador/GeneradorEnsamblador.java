@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class GeneradorEnsamblador {
 
-    private static final int MARGEN = 12; // número de espacios en blanco hasta el código
+    private static final int MARGEN = 12; // numero de espacios en blanco hasta el codigo
     private static final int ANCHURA_INSTR = 8;
-    private static final int ORIGEN_MEM = 1000; // dirección de memoria desde la que empieza el programa
+    private static final int ORIGEN_MEM = 1000; // direccion de memoria desde la que empieza el programa
     private String etiquetaActual = "";
     private final String nombreFichero;
     //public ArrayList<String> data, text;
@@ -91,7 +91,7 @@ public class GeneradorEnsamblador {
                 ProcInfo p = procedureTable.get(instr.dst().toAssembly());
                 if (p!= null && p.equals(main)){
                     add("JSR", main.getEtiqueta(), "Se ejecuta el main");
-                    add("SIMHALT", "", "Fin de la ejecución");
+                    add("SIMHALT", "", "Fin de la ejecucion");
                     add("");
                 }
             }
@@ -102,7 +102,7 @@ public class GeneradorEnsamblador {
                 add("; " + "-".repeat(MARGEN - 3), instr.toString(), "", "");
             }
             String et = instr.dst() == null ? null : instr.dst().toAssembly();
-            // si es goto, ifxx, skip, pmb, call, etc... y no es una función añade . para indicar que es local
+            // si es goto, ifxx, skip, pmb, call, etc... y no es una funcion añade . para indicar que es local
             if (et != null && instr.getTipo().tieneEtiqueta() && !procedureTable.containsKey(et)) {
                 et = "." + et;
             }
@@ -134,7 +134,7 @@ public class GeneradorEnsamblador {
             preMain.add(margen("", "MOVE.B", "#5, D1", "Enable exception processing (for input/output)"));
             preMain.add(margen("", "TRAP", "#15", "Interruption generated"));
         }
-        // HACE QUE EL TECLADO NO FUNCIONE, DESPUÉS DEL TRAP 15 DE LECTURA DE TECLADO DA BUS ERROR
+        // HACE QUE EL TECLADO NO FUNCIONE, DESPUES DEL TRAP 15 DE LECTURA DE TECLADO DA BUS ERROR
 //        if (scanUsado) {
 //            preMain.add("");
 //            preMain.add(margen("", "MOVE.L", "#62, D0", "Task 62 of TRAP 15: Enable/Disable keyboard IRQ"));
@@ -291,7 +291,7 @@ public class GeneradorEnsamblador {
                 store(r1, instr.dst().toAssembly(), instr.dst().tipo());
             }
             case MUL -> { // op1*op2 -> dst
-                // EASy68K no permite MULS.L, por lo que se ha de operar así:
+                // EASy68K no permite MULS.L, por lo que se ha de operar asi:
                 // A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16
                 add("; " + " ".repeat(MARGEN - 3), "A*B = A1A0*B1B0 = A0*B0 + A1*B1 * 2^16", "", "");
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
@@ -427,7 +427,7 @@ public class GeneradorEnsamblador {
             case CALL -> { // call dst, ?
                 ProcInfo func = procedureTable.get(instr.dst().toAssembly());
                 if (func == null) {
-                    throw new Exception("Error, la función con etiqueta " + instr.dst().toAssembly() + " no existe");
+                    throw new Exception("Error, la funcion con etiqueta " + instr.dst().toAssembly() + " no existe");
                 }
                 ProcInfo.TipoMetodoEspecial tipo = ProcInfo.getEspecial(func.getNombre());
                 boolean esMetodoEspecial = tipo != null;
@@ -459,22 +459,22 @@ public class GeneradorEnsamblador {
                 }
                 setEtiqueta(dstConPunto); // para etiquetas locales ponemos .
             }
-            case SEPARADOR -> { // no hace nada pero resulta en mayor legibilidad del código ensamblador
+            case SEPARADOR -> { // no hace nada pero resulta en mayor legibilidad del codigo ensamblador
                 codigo.add("");
             }
             default ->
-                throw new Exception("Instrucción " + instr + " no se puede pasar a código ensamblador");
+                throw new Exception("Instruccion " + instr + " no se puede pasar a codigo ensamblador");
         }
         AnActual = 0;
         DnActual = 0;
     }
 
     private void procesarMetodoEspecial(ProcInfo f, ProcInfo.TipoMetodoEspecial tipo, String idMetodo) throws Exception {
-        //idMetodo = crearEtiqueta(idMetodo); // no hace falta porque ya son reservadas por el semántico
+        //idMetodo = crearEtiqueta(idMetodo); // no hace falta porque ya son reservadas por el semantico
         switch (tipo) {
             case PRINT -> { // print(dst)
                 if (f.getParametros().size() != 1) {
-                    throw new Exception("Error, no se ha implementao el print para tratar con " + f.getParametros().size() + " parámetros, sino con 1");
+                    throw new Exception("Error, no se ha implementao el print para tratar con " + f.getParametros().size() + " parametros, sino con 1");
                 }
                 if (printUsado) {
                     return;
@@ -489,7 +489,7 @@ public class GeneradorEnsamblador {
             }
             case SCAN -> { // scan(dst)
                 if (f.getParametros().size() != 1) {
-                    throw new Exception("Error, no se ha implementado el scan para tratar con " + f.getParametros().size() + " parámetros, sino con 1");
+                    throw new Exception("Error, no se ha implementado el scan para tratar con " + f.getParametros().size() + " parametros, sino con 1");
                 }
                 if (scanUsado) {
                     return;
@@ -519,9 +519,9 @@ public class GeneradorEnsamblador {
                 subprogramas.add(margen("", "MOVE.L", "#53, D0", "Task 53 of TRAP 15: Read file"));
                 subprogramas.add(margen("", "MOVEA.L", "A2, A1", ""));
                 subprogramas.add(margen("", "TRAP", "#15", "Interruption generated"));
-                subprogramas.add(margen("", "CMP.W", "#1, D0", "Si vacío"));
+                subprogramas.add(margen("", "CMP.W", "#1, D0", "Si vacio"));
                 subprogramas.add(margen("", "BNE", ficheroVacio, "Fin"));
-                subprogramas.add(margen("", "CMP.W", "#"+TipoVariable.STRING.bytes+", D2", "Si vacío"));
+                subprogramas.add(margen("", "CMP.W", "#"+TipoVariable.STRING.bytes+", D2", "Si vacio"));
                 subprogramas.add(margen("", "BNE", ficheroVacio, "Fin"));
                 subprogramas.add(margen("", "CLR.L", "D2", ""));
                 subprogramas.add(margen(ficheroVacio, "MOVEA.L", "A2, A1", ""));
@@ -631,7 +631,7 @@ public class GeneradorEnsamblador {
                 + "; COMPILED BY : " + System.getProperty("user.name") + "\n"
                 + "; COMPILER BY : Juan Arturo Abaurrea Calafell\n"
                 + ";               Dani Salanova Dmitriyev\n"
-                + ";               Marta González Juan\n"
+                + ";               Marta Gonzalez Juan\n"
                 + "; ==============================================================================\n"
                 + "\n"
                 + margen("", "ORG", "$" + ORIGEN_MEM, "Origen") + "\n"
@@ -661,7 +661,7 @@ public class GeneradorEnsamblador {
     private static String margen(String et, String i1, String i2, String com) {
         int margenIzq = MARGEN - et.length();
         if (margenIzq < 1) {
-            margenIzq = 1; // mínimo un espacio
+            margenIzq = 1; // minimo un espacio
         }
         String parteIzq = et + " ".repeat(margenIzq) + mCol(i1) + i2;
         int margenDer = 3 * MARGEN - (parteIzq.length());
@@ -692,7 +692,7 @@ public class GeneradorEnsamblador {
                     return "DS.L 1"; // puntero a algo (a un string, a un array, a una tupla)
                 }
                 default -> {
-                    throw new Exception("Declarando tipo inválido: " + tipo);
+                    throw new Exception("Declarando tipo invalido: " + tipo);
                 }
             }
         } else {
@@ -713,7 +713,7 @@ public class GeneradorEnsamblador {
                     return "DC.L " + inicializacion;
                 }
                 default -> {
-                    throw new Exception("Valor de inicialización " + inicializacion.toString() + " inválido");
+                    throw new Exception("Valor de inicializacion " + inicializacion.toString() + " invalido");
                 }
             }
         }

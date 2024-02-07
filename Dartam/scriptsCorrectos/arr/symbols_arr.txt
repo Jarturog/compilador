@@ -1,0 +1,8 @@
+into:        Función tipo VOID declarada en el nivel 1 con etiqueta e_into con parámetros CAR [] file, CAR [] output
+scan:        Función tipo VOID declarada en el nivel 1 con etiqueta e_scan con parámetros CAR [] input
+show:        Función tipo VOID declarada en el nivel 1 con etiqueta e_show con parámetros CAR [] output
+inicio:      Función tipo VOID declarada en el nivel 1 con etiqueta e_inicio sin parámetros
+from:        Función tipo VOID declarada en el nivel 1 con etiqueta e_from con parámetros CAR [] file, CAR [] input
+arr:         Array tipo CAR con valor asignado declarado en el nivel 3 siendo su variable de CI arr con dimensiones 3 4
+b:           Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI b con dimensiones [] []
+c:           Array tipo CAR con valor asignado declarado en el nivel 2 siendo su variable de CI c con dimensiones [] []

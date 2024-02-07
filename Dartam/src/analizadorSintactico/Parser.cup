@@ -190,12 +190,12 @@ non terminal SymbolScriptElemento SCRIPT_ELEMENTO;
 non terminal SymbolDimensiones DIMENSIONES, DIMENSIONES_VACIAS;
 non terminal SymbolMiembrosTupla MIEMBROS_TUPLA;
 
-// cuanto más abajo más prioridad i.e. más pequeño el conjunto de operandos cogidos
-// right: productions from right to left -> van acumulando símbolos por la derecha
-// left o nada: production from left to right -> van acumulando símbolos por la izquierda
+// cuanto mas abajo mas prioridad i.e. mas pequeño el conjunto de operandos cogidos
+// right: productions from right to left -> van acumulando simbolos por la derecha
+// left o nada: production from left to right -> van acumulando simbolos por la izquierda
 
 precedence left PREC_B_EXP;
-// precedencias aritméticas binarias
+// precedencias aritmeticas binarias
 precedence left OP_ADD, OP_SUB;
 precedence left OP_MUL, OP_DIV, OP_MOD;
 precedence right OP_POT;

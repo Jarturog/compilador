@@ -43,7 +43,7 @@ public class VarInfo {
     }
 
     /**
-     * Inicializar en código intermedio
+     * Inicializar en codigo intermedio
      */
     public void inicializar(Object o) {
         initCodigoIntermedio = o;

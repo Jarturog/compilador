@@ -469,7 +469,7 @@ private Symbol procesarNumero() {
     return symbol(ParserSym.ENT, numero);
   } catch (Exception e) { /* Error inesperado */
     errores += errorToString();
-    errores += "No se permiten números fuera del rango " + Integer.MIN_VALUE + "..." +Integer.MAX_VALUE+"\n";
+    errores += "No se permiten numeros fuera del rango " + Integer.MIN_VALUE + "..." +Integer.MAX_VALUE+"\n";
     return symbol(ParserSym.error);
   }
 }
@@ -927,7 +927,7 @@ private Symbol procesarNumero() {
           // fall through
           case 80: break;
           case 6:
-            { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un carácter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error);
+            { errores += "Error lexico: Token '" + yytext() + "' utilizado para abrir un caracter pero no se ha cerrado con otro "+yytext()+" en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error);
             }
           // fall through
           case 81: break;
@@ -1067,7 +1067,7 @@ private Symbol procesarNumero() {
           // fall through
           case 108: break;
           case 34:
-            { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear un carácter vacío (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error);
+            { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear un caracter vacio (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error);
             }
           // fall through
           case 109: break;
@@ -1192,7 +1192,7 @@ private Symbol procesarNumero() {
           // fall through
           case 133: break;
           case 59:
-            { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear varios carácteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error);
+            { errores += "Error lexico: Token '" + yytext() + "' utilizado para crear varios caracteres (se crean strings con \") en la posicion [linea: " + (yyline+1) + ", columna: " + (yycolumn+1) + "]\n"; return symbol(ParserSym.error);
             }
           // fall through
           case 134: break;

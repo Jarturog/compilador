@@ -7,7 +7,7 @@ import jflex.base.Pair;
 
 public class DescripcionArray extends DescripcionSimbolo {
 
-    // o tiene dimensiones llenas o vacías, no las dos 
+    // o tiene dimensiones llenas o vacias, no las dos 
     private ArrayList<SymbolOperand> dimensiones;
     private Integer numDimensionesVacias;
     //

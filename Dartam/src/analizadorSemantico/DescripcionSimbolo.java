@@ -21,7 +21,7 @@ import jflex.base.Pair;
 public class DescripcionSimbolo {
 
     public final String tipo, variableAsociada;
-    private Integer nBytes = null; // null si es un método, constantes si son primitivos y variables si son estructuras
+    private Integer nBytes = null; // null si es un metodo, constantes si son primitivos y variables si son estructuras
     private int nivel;
     private boolean isConstante = false, valorAsignado = false;
     private final ArrayList<DefinicionMiembro> miembros; // por si su tipo es de tupla, pero no DescripcionDefinicionTupla

@@ -149,7 +149,7 @@ public class Instruccion {
                 return dst + " = " + (op1.isLiteral() ? "\"" + op1 + "\"" : op1) + " concat " + (op2.isLiteral() ? "\"" + op2 + "\"" : op2);
             }
             case SEPARADOR -> {
-                return ""; // para legibilidad separamos los métodos con una instrucción que no hace nada
+                return ""; // para legibilidad separamos los metodos con una instruccion que no hace nada
             }
             default -> {
                 return null;
@@ -183,7 +183,7 @@ public class Instruccion {
         IND_ASS("ind_ass"),
         IND_VAL("ind_val"),
         PARAM_S("param_s"),
-        SEPARADOR(""); // para legibilidad separamos los métodos con una instrucción que no hace nada
+        SEPARADOR(""); // para legibilidad separamos los metodos con una instruccion que no hace nada
 
         public final String tipo;
 
@@ -207,7 +207,7 @@ public class Instruccion {
         
         public TipoInstr getContrario() throws Exception{
             if(!isCondGOTO()){
-                throw new Exception("Solo se pueden pasar condicionales a este método");
+                throw new Exception("Solo se pueden pasar condicionales a este metodo");
             }
             return switch (this) {
                 case IFEQ -> TipoInstr.IFNE;

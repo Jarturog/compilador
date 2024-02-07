@@ -1,0 +1,30 @@
+e_inicio: skip
+pmb e_inicio
+t = 3
+d_arr = t
+t_1 = 4
+d_arr_1 = t_1
+t_2 =  
+t_3 = 0
+t_4 = 1
+t_5 = t_3 * d_arr_1
+t_6 = t_4 + t_5
+t_7 = t_6 * 4
+arr[t_7] = t_2
+c = arr
+b = c
+t_8 = -1
+if t_8 == 0 goto e_1
+c = arr
+t_9 = 3
+d_c = t_9
+t_10 = 4
+d_c_1 = t_10
+t_11 = 2
+d_c_2 = t_11
+goto e
+e_1: skip
+e: skip
+rtn e_inicio
+
+

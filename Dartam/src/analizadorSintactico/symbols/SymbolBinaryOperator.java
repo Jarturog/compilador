@@ -138,9 +138,9 @@ public class SymbolBinaryOperator extends SymbolBase {
             case ParserSym.OP_BEQ -> TipoInstr.IFGE;
             case ParserSym.OP_EQ -> TipoInstr.IFEQ;
             case ParserSym.OP_NEQ -> TipoInstr.IFNE;
-            default -> throw new Exception("Error adquiriendo el tipo de instrucción");
+            default -> throw new Exception("Error adquiriendo el tipo de instruccion");
         }; // En caso de que el operador no coincida con ninguno de los casos anteriores
-        // O algún valor predeterminado según tu lógica
+        // O algun valor predeterminado segun tu logica
     }
     
     /**
@@ -166,9 +166,9 @@ public class SymbolBinaryOperator extends SymbolBase {
             case ParserSym.OP_BEQ -> TipoInstr.IFGE;
             case ParserSym.OP_EQ -> TipoInstr.IFEQ;
             case ParserSym.OP_NEQ -> TipoInstr.IFNE;
-            default -> throw new Exception("Error adquiriendo el tipo de instrucción");
+            default -> throw new Exception("Error adquiriendo el tipo de instruccion");
         }; // En caso de que el operador no coincida con ninguno de los casos anteriores
-        // O algún valor predeterminado según tu lógica
+        // O algun valor predeterminado segun tu logica
     }
 
     @Override

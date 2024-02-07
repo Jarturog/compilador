@@ -11,7 +11,7 @@ import analizadorSintactico.ParserSym;
 import java_cup.runtime.ComplexSymbolFactory;
 
 /**
- * Clase símbolo de mentira, para englobar TipoPrimitivo y StringCasting
+ * Clase simbolo de mentira, para englobar TipoPrimitivo y StringCasting
  * @author jartu
  */
 public abstract class SymbolTipoCasting extends SymbolBase {

@@ -92,9 +92,9 @@ public class Dartam {
             ficheroIn = new FileReader(RUTA_ERRORES + nombreArchivo);
         }
         nombreFichero = nombreArchivo.replace(EXTENSION, "");
-        // Análisis léxico
+        // Analisis lexico
         Scanner scanner = new Scanner(ficheroIn);
-        // Análisis sintáctico
+        // Analisis sintactico
         Parser parser = new Parser(scanner, new ComplexSymbolFactory());
         Symbol resultado = parser.parse();
         if (!scanner.getErrores().isEmpty()) {
@@ -107,7 +107,7 @@ public class Dartam {
             return;
         }
         SymbolScript script = (SymbolScript) resultado.value;
-        // Análisis semántico
+        // Analisis semantico
         AnalizadorSemantico sem = new AnalizadorSemantico(script);
         if (!sem.getErrores().isEmpty()) {
             System.err.println(sem.getErrores());
@@ -121,12 +121,12 @@ public class Dartam {
         // si no ha habido errores empieza a escribir en los ficheros
         escribir("tokens_" + nombreFichero + ".txt", scanner.getTokens());
         escribir("symbols_" + nombreFichero + ".txt", sem.getSymbols());
-        // Generación de código intermedio realizada durante el análisis semántico
+        // Generacion de codigo intermedio realizada durante el analisis semantico
         GestorCodigoIntermedio generadorCodigoIntermedio = sem.getGenerador();
         GestorCodigoIntermedio generadorParaOptimizar = new GestorCodigoIntermedio(generadorCodigoIntermedio); // se copia
         escribir("codigoIntermedio_" + nombreFichero + ".txt", generadorCodigoIntermedio.toString());
         escribir("tablasVariablesProcedimientos_" + nombreFichero + ".txt", generadorCodigoIntermedio.tablas());
-        // Generación de código ensamblador
+        // Generacion de codigo ensamblador
         
         GeneradorEnsamblador codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorCodigoIntermedio);
         escribir(nombreFichero + "SinOptimizaciones.X68", codigoEnsamblador.toString());
@@ -134,7 +134,7 @@ public class Dartam {
         
         Optimizador op = new Optimizador(generadorParaOptimizar);
         escribir("codigoOptimizado_" + nombreFichero + ".txt", op.toString());
-        // Generación de código ensamblador
+        // Generacion de codigo ensamblador
         codigoEnsamblador = new GeneradorEnsamblador(nombreFichero, generadorParaOptimizar);
         escribir(nombreFichero + ".X68", codigoEnsamblador.toString());
     }
@@ -146,7 +146,7 @@ public class Dartam {
     }
 
     private static String elegirArchivo() {
-        String nombreArchivo = "¡ningún archivo seleccionado!";
+        String nombreArchivo = "¡ningun archivo seleccionado!";
         System.out.println("Indica el fichero a compilar (sin indicar la ruta): ");
         try {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
@@ -191,7 +191,7 @@ public class Dartam {
                 strArchvios2 += archivo.getName() + ", ";
             }
         }
-        System.out.println("Ficheros erróneos en la ruta " + dir2.getAbsolutePath()
+        System.out.println("Ficheros erroneos en la ruta " + dir2.getAbsolutePath()
                 + ": \n" + strArchvios2.substring(0, strArchvios2.length() - 2) + "\n");
     }
 }

@@ -60,7 +60,7 @@ public class ProcInfo {
         } else if (id.equalsIgnoreCase(ParserSym.terminalNames[ParserSym.INTO])) {
             return TipoMetodoEspecial.WRITE;
         }
-        return null; //throw new Exception("No existe el método especial " + id);
+        return null; //throw new Exception("No existe el metodo especial " + id);
     }
     
     public String getNombre() {
@@ -74,9 +74,9 @@ public class ProcInfo {
             params += parametro + ", ";
         }
         if (!params.isEmpty()) {
-            params = " y sus parámetros son " + params.substring(0, params.length() - 2);
+            params = " y sus parametros son " + params.substring(0, params.length() - 2);
         } else {
-            params = " y no recibe parámetros";
+            params = " y no recibe parametros";
         }
         return nombre + ": identificado por " + etiqueta + ", devuelve " + bytesRetorno + " bytes de retorno" + params;
     }

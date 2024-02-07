@@ -27,7 +27,7 @@ public class TablaSimbolos {
         vaciar();
     }
 
-    //Clase entrada usado para la tabla de expansión!
+    //Clase entrada usado para la tabla de expansion!
     public class Entrada {
 
         /**
@@ -35,7 +35,7 @@ public class TablaSimbolos {
          */
         public final String id;
         /**
-         * Descripción
+         * Descripcion
          */
         private final DescripcionSimbolo d;
         /**
@@ -57,7 +57,7 @@ public class TablaSimbolos {
 
         @Override
         public String toString() {
-            return "Variable: '" + id + "'\t Descripción: " + d + "\n";
+            return "Variable: '" + id + "'\t Descripcion: " + d + "\n";
         }
 
         public int getNivel() {
@@ -89,7 +89,7 @@ public class TablaSimbolos {
 
         if (sd != null) { //Existe actualmente
             if (sd.getNivel() == this.n) { //Si ya hay uno al mismo nivel error
-                throw new Exception("El identificador " + id + " se repite varias veces para la declaración de elementos");
+                throw new Exception("El identificador " + id + " se repite varias veces para la declaracion de elementos");
             }
 
             //Si no estan declaradas al mismo nivel
@@ -113,7 +113,7 @@ public class TablaSimbolos {
     public DescripcionSimbolo sustituir(String id, DescripcionSimbolo d) throws Exception{
         DescripcionSimbolo ds = td.remove(id);
         if (ds == null) {
-            throw new Exception("Se ha intentado sustituir una entrada de la tabla de símbolos que no existe");
+            throw new Exception("Se ha intentado sustituir una entrada de la tabla de simbolos que no existe");
         }
         return poner(id, d);
     }
@@ -124,7 +124,7 @@ public class TablaSimbolos {
      */
     public void entraBloque() throws Exception {
         n++; //Actualizamos el nivel
-        //ta valdrá lo mismo que la entrada anterior
+        //ta valdra lo mismo que la entrada anterior
         //A medida que se añadan simbolos este valor ta variara
         if (n == ta.size()) {
             ta.add(n, ta.get(n - 1));
@@ -165,7 +165,7 @@ public class TablaSimbolos {
     }
 
     /**
-     * Comprueba si ya ha estado declarado y es visible o si el id corresponde a una función o tupla
+     * Comprueba si ya ha estado declarado y es visible o si el id corresponde a una funcion o tupla
      * @param id
      * @return 
      */
@@ -175,7 +175,7 @@ public class TablaSimbolos {
             return "";
         }
         if (ds.isDefinicionTupla() || ds.isFunction()) {
-            return "El identificador '" + id + "' ha intentado hacer override de una función o de una tupla";
+            return "El identificador '" + id + "' ha intentado hacer override de una funcion o de una tupla";
         }
         if (ds.getNivel() < n) { // !=
             return "";
@@ -186,14 +186,14 @@ public class TablaSimbolos {
     @Override
     public String toString() {
         int nChars = 12;
-        String s = "";//"Tabla de símbolos:\n";
+        String s = "";//"Tabla de simbolos:\n";
         for (HashMap.Entry<String, DescripcionSimbolo> e : td.entrySet()) {
             s += e.getKey() + ":" + calcularTabuladores(nChars, e.getKey()) + e.getValue() + "\n";
         }
         for (Pair<String, DescripcionSimbolo> e : historialSimbolos) {
             s += e.fst + ":" + calcularTabuladores(nChars, e.fst) + e.snd + "\n";
         }
-        //s += "\nTabla de ámbitos:" + ta.toString() + "\n\nTabla de expansión:" + te.toString() + "\n";
+        //s += "\nTabla de ambitos:" + ta.toString() + "\n\nTabla de expansion:" + te.toString() + "\n";
         return s;
     }
 
