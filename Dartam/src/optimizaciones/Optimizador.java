@@ -16,9 +16,12 @@ public class Optimizador {
     public Optimizador(GestorCodigoIntermedio g3d) throws Exception {
         instrucciones = g3d.getInstrucciones();
         variables = g3d.getTablaVariables();
-        while (saltosAdyacentes() || saltoSobreSalto() || asignacionesDiferidas() || etiquetasSinUsarse()); // se realiza la optimización hasta que no hayan cambios
+        while (saltosAdyacentes() || saltoSobreSalto() /*|| asignacionesDiferidas()*/ || etiquetasSinUsarse()); // se realiza la optimización hasta que no hayan cambios
     }
 
+    /**
+     * No funciona correctamente
+     */
     private boolean asignacionesDiferidas() {
         boolean cambio = false;
         for (int i = 0; i < instrucciones.size(); i++) {

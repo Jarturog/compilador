@@ -1,36 +1,196 @@
 e_inicio: skip
 pmb e_inicio
-d_str = 81
-i = 0
-e: skip
+t = 3
+turnos = t
+t_1 = 
+str = t_1
+param_s p1
 t_2 = 1
-if i < t_2 goto e_3
-t_3 = 0
+param_s t_2
+t_3 = a
+param_s t_3
+call e_nuevapersona
+param_s p2
+t_4 = 2
+param_s t_4
+t_5 = m
+param_s t_5
+call e_nuevapersona
+t_6 = Bienvenido a la simulación
+param_s t_6
+call e_show
+t_7 = Dos personas pensarán hasta que tengan hambre, momento en el que comerán
+param_s t_7
+call e_show
+t_8 = 
+param_s t_8
+call e_show
+t_9 = 0
+i = t_9
+e: skip
+if i < turnos goto e_3
+t_10 = 0
 goto e_4
 e_3: skip
-t_3 = -1
+t_10 = -1
 e_4: skip
-if t_3 == 0 goto e_1
-d_str_1 = 81
-t_5 = 1
-t_6 = i + t_5
-i = t_6
+if t_10 == 0 goto e_1
+t_11 = La persona
+str_1 = t_11
+t_12 = 8
+t_13 = p1[t_12]
+t_14 = 1
+t_15 = t_13 + t_14
+t_16 = 8
+p1[t_16] = t_15
+t_17 = 8
+t_18 = p2[t_17]
+t_19 = 1
+t_20 = t_18 + t_19
+t_21 = 8
+p2[t_21] = t_20
+t_22 = 8
+t_23 = p1[t_22]
+t_24 = 0
+t_25 = p1[t_24]
+if t_23 > t_25 goto e_5
+t_26 = 0
+goto e_6
+e_5: skip
+t_26 = -1
+e_6: skip
+t_27 = 8
+t_28 = p2[t_27]
+t_29 = 0
+t_30 = p2[t_29]
+if t_28 > t_30 goto e_7
+t_31 = 0
+goto e_8
+e_7: skip
+t_31 = -1
+e_8: skip
+t_32 = t_26 or t_31
+t_33 = not t_32
+if t_33 == 0 goto e_10
+t_34 = La persona
+param_s t_34
+t_35 = 4
+t_36 = p1[t_35]
+t_37 = t_36
+param_s t_37
+t_38 = piensa
+param_s t_38
+call e_imprimirtexto
+t_39 = La persona
+param_s t_39
+t_40 = 4
+t_41 = p2[t_40]
+t_42 = t_41
+param_s t_42
+t_43 = piensa
+param_s t_43
+call e_imprimirtexto
+goto e_2
+goto e_9
+e_10: skip
+e_9: skip
+t_44 = 8
+t_45 = p1[t_44]
+t_46 = 0
+t_47 = p1[t_46]
+if t_45 > t_47 goto e_11
+t_48 = 0
+goto e_12
+e_11: skip
+t_48 = -1
+e_12: skip
+if t_48 == 0 goto e_14
+t_49 = 4
+t_50 = p1[t_49]
+t_51 = t_50
+str_1 = t_51
+t_52 = 0
+t_53 = 8
+p1[t_53] = t_52
+goto e_13
+e_14: skip
+t_54 = 4
+t_55 = p2[t_54]
+t_56 = t_55
+str_1 = t_56
+t_57 = 0
+t_58 = 8
+p2[t_58] = t_57
+e_13: skip
+t_59 = La persona
+param_s t_59
+param_s str_1
+t_60 = come
+param_s t_60
+call e_imprimirtexto
+e_2: skip
+t_61 = 1
+t_62 = i + t_61
+i = t_62
 goto e
 e_1: skip
-t_7 = prueba.txt
-param_s t_7
 param_s str
-call e_from
+call e_show
+t_63 = Escribe lo que te ha parecido
+param_s t_63
+call e_show
+t_64 = El resultado se guardará en opinion.txt
+param_s t_64
+call e_show
 param_s str
+call e_scan
+t_65 = opinion.txt
+param_s t_65
+param_s str
+call e_into
+t_66 = Fin
+param_s t_66
 call e_show
 rtn e_inicio
 
 
 e_nuevapersona: skip
 pmb e_nuevapersona
-t_8 = 0
-p[t_8] = idpersona
-t_9 = 4
-p[t_9] = inicial
+if maxhambre > turnos goto e_15
+t_67 = 0
+goto e_16
+e_15: skip
+t_67 = -1
+e_16: skip
+if t_67 == 0 goto e_18
+t_68 = La persona con inicial
+param_s t_68
+call e_show
+t_69 = inicial
+param_s t_69
+call e_show
+t_70 = Nunca pasará hambre
+param_s t_70
+call e_show
+goto e_17
+e_18: skip
+e_17: skip
+t_71 = 0
+p[t_71] = maxhambre
+t_72 = 4
+p[t_72] = inicial
 rtn e_nuevapersona
+
+e_imprimirtexto: skip
+pmb e_imprimirtexto
+param_s s1
+call e_show
+param_s s2
+call e_show
+param_s s3
+call e_show
+t_73 = 
+param_s t_73
+call e_show
+rtn e_imprimirtexto
 

@@ -1,6 +1,6 @@
-000012DC Starting Address
+00001820 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 07/02/2024 15:30:39
+Created On: 07/02/2024 16:04:25
 
 00000000                             1  ; ==============================================================================
 00000000                             2  ; TITLE       : persona
@@ -12,206 +12,813 @@ Created On: 07/02/2024 15:30:39
 00000000                             8  
 00001000                             9              ORG         $1000       ; Origen
 00001000                            10  
-00001000                            11  persona:    DS.L 1                  ; Inicializando el miembro id de la tupla persona
+00001000                            11  persona:    DS.L 1                  ; Inicializando el miembro maxHambre de la tupla persona
 00001004                            12              DS.L 1                  ; Inicializando el miembro inicial de la tupla persona
 00001008= 00000000                  13              DC.L 0                  ; Inicializando el miembro hambre de la tupla persona
-0000100C= 00000051                  14  t           DC.L 81                 ; INT
-00001010= 00000000                  15  t_1         DC.L 0                  ; INT
-00001014= 00000001                  16  t_2         DC.L 1                  ; INT
-00001018= 00000000                  17  t_3         DC.L 0                  ; BOOLEAN
-0000101C= 00000051                  18  t_4         DC.L 81                 ; INT
-00001020= 00000001                  19  t_5         DC.L 1                  ; INT
-00001024= 70 72 75 65 62 61 ...     20  t_7         DC.B 'prueba.txt'       ; STRING
-0000102E= 00                        21              DC.B 0                  ; Los strings y chars acaban en 0
-00001030                            22              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001030= 45 72 72 6F 72 20 ...     23  errread     DC.B 'Error de lectura',0  ; Mensaje de error
-00001042                            24              DS.W 0                  ; Para evitar imparidad
-00001042= 00000000                  25  t_8         DC.L 0                  ; INT
-00001046= 00000004                  26  t_9         DC.L 4                  ; INT
-0000104A                            27  idpersona   DS.L 1                  ; INT
-0000104E                            28  str_1       DS.B 256                ; STRING
-0000114E= 00                        29              DC.B 0                  ; Los strings y chars acaban en 0
-00001150                            30              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001150                            31  i           DS.L 1                  ; INT
-00001154                            32  t_6         DS.L 1                  ; INT
-00001158                            33  inicial     DS.L 1                  ; CHAR
-0000115C                            34  p           DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
-00001160                            35  str         DS.B 256                ; STRING
-00001260= 00                        36              DC.B 0                  ; Los strings y chars acaban en 0
-00001262                            37              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001262                            38  d_str       DS.L 1                  ; INT
-00001266                            39  d_str_1     DS.L 1                  ; INT
-0000126A                            40  
-0000126A                            41  ; --------- SUBROUTINES             
-0000126A  226F 0008                 42  e_from      MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
-0000126E  246F 0004                 43              MOVEA.L     4(SP), A2   ; File information -> A2
-00001272  7033                      44              MOVE.L      #51, D0     ; Task 51 of TRAP 15: Open existing file
-00001274  4E4F                      45              TRAP        #15         ; Interruption generated
-00001276  B07C 0002                 46              CMP.W       #2, D0      ; Si error
-0000127A  6700 002E                 47              BEQ         e_from0     ; Fin
-0000127E  243C 00000100             48              MOVE.L      #256, D2    
-00001284  7035                      49              MOVE.L      #53, D0     ; Task 53 of TRAP 15: Read file
-00001286  224A                      50              MOVEA.L     A2, A1      
-00001288  4E4F                      51              TRAP        #15         ; Interruption generated
-0000128A  B07C 0001                 52              CMP.W       #1, D0      ; Si vacío
-0000128E  6600 000C                 53              BNE         emptyfile   ; Fin
-00001292  B47C 0100                 54              CMP.W       #256, D2    ; Si vacío
-00001296  6600 0004                 55              BNE         emptyfile   ; Fin
-0000129A  4282                      56              CLR.L       D2          
-0000129C  224A                      57  emptyfile   MOVEA.L     A2, A1      
-0000129E  D3C2                      58              ADDA.L      D2, A1      
-000012A0  12BC 0000                 59              MOVE.B      #0, (A1)    
-000012A4  7038                      60              MOVE.L      #56, D0     ; Task 56 of TRAP 15: Close file
-000012A6  4E4F                      61              TRAP        #15         ; Interruption generated
-000012A8  4E75                      62              RTS                     ; RETURN TO SUBROUTINE ...
-000012AA  43F8 1030                 63  e_from0:    LEA.L       errread, A1 ; A1 = mnsj error
-000012AE  700D                      64              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
-000012B0  4E4F                      65              TRAP        #15         ; Interruption generated
-000012B2  4E75                      66              RTS                     ; RETURN TO SUBROUTINE ...
-000012B4  226F 0004                 67  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
-000012B8  700D                      68              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
-000012BA  4E4F                      69              TRAP        #15         ; Interruption generated
-000012BC  4E75                      70              RTS                     ; RETURN TO SUBROUTINE ...
-000012BE  41F8 1000                 71  initpersona LEA.L       persona, A0 ; load persona into A0
-000012C2  226F 0004                 72              MOVEA.L     4(SP), A1   ; load instance into A1
-000012C6  7003                      73              MOVE.L      #3, D0      
-000012C8  B0BC 00000000             74  nextlongwordpersona CMP.L       #0, D0 
-000012CE  6700 000A                 75              BEQ         endinitpersona 
-000012D2  22D8                      76              MOVE.L      (A0)+, (A1)+ ; copy 4 bytes
-000012D4  5380                      77              SUB.L       #1, D0      
-000012D6  4EF8 12C8                 78              JMP         nextlongwordpersona 
-000012DA                            79  endinitpersona                      ; end of loop
-000012DA  4E75                      80              RTS                     
-000012DC                            81  
-000012DC                            82  
-000012DC                            83  ; --------- INITIALIZATION          
-000012DC                            84  persona0                            ; Etiqueta inicial (main)
-000012DC                            85  
-000012DC  7020                      86              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
-000012DE  123C 0005                 87              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
-000012E2  4E4F                      88              TRAP        #15         ; Interruption generated
-000012E4  4EB9 000012EE             89              JSR         e_inicio    ; Se ejecuta el main
-000012EA  FFFF FFFF                 90              SIMHALT                 ; Fin de la ejecución
-000012EE                            91  
-000012EE                            92  ; --------- e_inicio: skip          
-000012EE                            93                                      
-000012EE                            94  ; --------- pmb e_inicio            
-000012EE                            95  ; --------- t = 81                  
-000012EE  7051                      96  e_inicio:   MOVE.L      #81, D0     ; D0 = #81
-000012F0  21C0 100C                 97              MOVE.L      D0, t       ; t = D0
-000012F4                            98  ; --------- d_str = t               
-000012F4  2038 100C                 99              MOVE.L      t, D0       ; D0 = t
-000012F8  21C0 1262                100              MOVE.L      D0, d_str   ; d_str = D0
-000012FC                           101  ; --------- t_1 = 0                 
-000012FC  7000                     102              MOVE.L      #0, D0      ; D0 = #0
-000012FE  21C0 1010                103              MOVE.L      D0, t_1     ; t_1 = D0
-00001302                           104  ; --------- i = t_1                 
-00001302  2038 1010                105              MOVE.L      t_1, D0     ; D0 = t_1
-00001306  21C0 1150                106              MOVE.L      D0, i       ; i = D0
-0000130A                           107  ; --------- e: skip                 
-0000130A                           108                                      
-0000130A                           109  ; --------- t_2 = 1                 
-0000130A  7001                     110  .e:         MOVE.L      #1, D0      ; D0 = #1
-0000130C  21C0 1014                111              MOVE.L      D0, t_2     ; t_2 = D0
-00001310                           112  ; --------- if i < t_2 goto e_3     
-00001310  2038 1150                113              MOVE.L      i, D0       ; D0 = i
-00001314  2238 1014                114              MOVE.L      t_2, D1     ; D1 = t_2
-00001318  B081                     115              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
-0000131A  6D00 000E                116              BLT         .e_3        ; IF (N XOR V) FLAGS = 1 GOTO .e_3
-0000131E                           117  ; --------- t_3 = 0                 
-0000131E  7000                     118              MOVE.L      #0, D0      ; D0 = #0
-00001320  21C0 1018                119              MOVE.L      D0, t_3     ; t_3 = D0
-00001324                           120  ; --------- goto e_4                
-00001324  4EF9 00001330            121              JMP         .e_4        ; goto .e_4
-0000132A                           122  ; --------- e_3: skip               
-0000132A                           123                                      
-0000132A                           124  ; --------- t_3 = -1                
-0000132A  70FF                     125  .e_3:       MOVE.L      #-1, D0     ; D0 = #-1
-0000132C  21C0 1018                126              MOVE.L      D0, t_3     ; t_3 = D0
-00001330                           127  ; --------- e_4: skip               
-00001330                           128                                      
-00001330                           129  ; --------- if t_3 == 0 goto e_1    
-00001330  2038 1018                130  .e_4:       MOVE.L      t_3, D0     ; D0 = t_3
-00001334  7200                     131              MOVE.L      #0, D1      ; D1 = #0
-00001336  B081                     132              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
-00001338  6700 0030                133              BEQ         .e_1        ; IF Z FLAG = 1 GOTO .e_1
-0000133C                           134  ; --------- t_4 = 81                
-0000133C  7051                     135              MOVE.L      #81, D0     ; D0 = #81
-0000133E  21C0 101C                136              MOVE.L      D0, t_4     ; t_4 = D0
-00001342                           137  ; --------- d_str_1 = t_4           
-00001342  2038 101C                138              MOVE.L      t_4, D0     ; D0 = t_4
-00001346  21C0 1266                139              MOVE.L      D0, d_str_1 ; d_str_1 = D0
-0000134A                           140  ; --------- e_2: skip               
-0000134A                           141                                      
-0000134A                           142  ; --------- t_5 = 1                 
-0000134A  7001                     143  .e_2:       MOVE.L      #1, D0      ; D0 = #1
-0000134C  21C0 1020                144              MOVE.L      D0, t_5     ; t_5 = D0
-00001350                           145  ; --------- t_6 = i + t_5           
-00001350  2038 1150                146              MOVE.L      i, D0       ; D0 = i
-00001354  2238 1020                147              MOVE.L      t_5, D1     ; D1 = t_5
-00001358  D280                     148              ADD.L       D0, D1      ; D1 = D1 + D0
-0000135A  21C1 1154                149              MOVE.L      D1, t_6     ; t_6 = D1
-0000135E                           150  ; --------- i = t_6                 
-0000135E  2038 1154                151              MOVE.L      t_6, D0     ; D0 = t_6
-00001362  21C0 1150                152              MOVE.L      D0, i       ; i = D0
-00001366                           153  ; --------- goto e                  
-00001366  4EF8 130A                154              JMP         .e          ; goto .e
-0000136A                           155  ; --------- e_1: skip               
-0000136A                           156                                      
-0000136A                           157  ; --------- t_7 = prueba.txt        
-0000136A                           158  ; --------- param_s t_7             
-0000136A  41F8 1024                159  .e_1:       LEA.L       t_7, A0     ; A0 = t_7
-0000136E  2F08                     160              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-00001370                           161  ; --------- param_s str             
-00001370  41F8 1160                162              LEA.L       str, A0     ; A0 = str
-00001374  2F08                     163              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-00001376                           164  ; --------- call e_from             
-00001376  4EB8 126A                165              JSR         e_from      ; JUMP TO SUBROUTINE e_from
-0000137A  508F                     166              ADDA.L      #8, SP      ; SP = SP + 8
-0000137C                           167  ; --------- param_s str             
-0000137C  41F8 1160                168              LEA.L       str, A0     ; A0 = str
-00001380  2F08                     169              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-00001382                           170  ; --------- call e_show             
-00001382  4EB8 12B4                171              JSR         e_show      ; JUMP TO SUBROUTINE e_show
-00001386  588F                     172              ADDA.L      #4, SP      ; SP = SP + 4
-00001388                           173  ; --------- rtn e_inicio            
-00001388  4E75                     174              RTS                     ; RETURN TO SUBROUTINE e_inicio
-0000138A                           175  
-0000138A                           176  
-0000138A                           177  
-0000138A                           178  
-0000138A                           179  ; --------- e_nuevapersona: skip    
-0000138A                           180                                      
-0000138A                           181  ; --------- pmb e_nuevapersona      
-0000138A  202F 0004                182  e_nuevapersona: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
-0000138E  21C0 1158                183              MOVE.L      D0, inicial ; inicial = D0
-00001392  202F 0008                184              MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
-00001396  21C0 104A                185              MOVE.L      D0, idpersona ; idpersona = D0
-0000139A  202F 000C                186              MOVE.L      12(SP), D0  ; D0 = POP FROM STACK
-0000139E  21C0 115C                187              MOVE.L      D0, p       ; p = D0
-000013A2                           188  ; --------- t_8 = 0                 
-000013A2  7000                     189              MOVE.L      #0, D0      ; D0 = #0
-000013A4  21C0 1042                190              MOVE.L      D0, t_8     ; t_8 = D0
-000013A8                           191  ; --------- p[t_8] = idpersona      
-000013A8  2038 104A                192              MOVE.L      idpersona, D0 ; D0 = idpersona
-000013AC  2238 1042                193              MOVE.L      t_8, D1     ; D1 = t_8
-000013B0  2078 115C                194              MOVEA.L     p, A0       ; A0 = p
-000013B4  D1C1                     195              ADDA.L      D1, A0      ; A0 = A0 + D1
-000013B6  2080                     196              MOVE.L      D0, (A0)    ; (A0) = D0
-000013B8                           197  ; --------- t_9 = 4                 
-000013B8  7004                     198              MOVE.L      #4, D0      ; D0 = #4
-000013BA  21C0 1046                199              MOVE.L      D0, t_9     ; t_9 = D0
-000013BE                           200  ; --------- p[t_9] = inicial        
-000013BE  2038 1158                201              MOVE.L      inicial, D0 ; D0 = inicial
-000013C2  2238 1046                202              MOVE.L      t_9, D1     ; D1 = t_9
-000013C6  2078 115C                203              MOVEA.L     p, A0       ; A0 = p
-000013CA  D1C1                     204              ADDA.L      D1, A0      ; A0 = A0 + D1
-000013CC  2080                     205              MOVE.L      D0, (A0)    ; (A0) = D0
-000013CE                           206  ; --------- rtn e_nuevapersona      
-000013CE  4E75                     207              RTS                     ; RETURN TO SUBROUTINE e_nuevapersona
-000013D0                           208  
-000013D0                           209  
-000013D0                           210              END persona0            ; Fin del programa
+0000100C= 00000003                  14  t           DC.L 3                  ; INT
+00001010=                           15  t_1         DC.B ''                 ; STRING
+00001010= 00                        16              DC.B 0                  ; Los strings y chars acaban en 0
+00001012                            17              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001012= 00000001                  18  t_2         DC.L 1                  ; INT
+00001016= 61000000                  19  t_3         DC.L 'a'                ; CHAR
+0000101A= 00000002                  20  t_4         DC.L 2                  ; INT
+0000101E= 6D000000                  21  t_5         DC.L 'm'                ; CHAR
+00001022= 42 69 65 6E 76 65 ...     22  t_6         DC.B 'Bienvenido a la simulación'  ; STRING
+0000103D= 00                        23              DC.B 0                  ; Los strings y chars acaban en 0
+0000103E                            24              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000103E= 44 6F 73 20 70 65 ...     25  t_7         DC.B 'Dos personas pensarán hasta que tengan hambre, momento en el que comerán por turnos'  ; STRING
+00001093= 00                        26              DC.B 0                  ; Los strings y chars acaban en 0
+00001094                            27              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001094=                           28  t_8         DC.B ''                 ; STRING
+00001094= 00                        29              DC.B 0                  ; Los strings y chars acaban en 0
+00001096                            30              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001096= 00000000                  31  t_9         DC.L 0                  ; INT
+0000109A= 00000000                  32  t_10        DC.L 0                  ; BOOLEAN
+0000109E= 4C 61 20 70 65 72 ...     33  t_11        DC.B 'La persona'       ; STRING
+000010A8= 00                        34              DC.B 0                  ; Los strings y chars acaban en 0
+000010AA                            35              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010AA= 00000008                  36  t_12        DC.L 8                  ; INT
+000010AE= 00000001                  37  t_14        DC.L 1                  ; INT
+000010B2= 00000008                  38  t_16        DC.L 8                  ; INT
+000010B6= 00000008                  39  t_17        DC.L 8                  ; INT
+000010BA= 00000001                  40  t_19        DC.L 1                  ; INT
+000010BE= 00000008                  41  t_21        DC.L 8                  ; INT
+000010C2= 00000008                  42  t_22        DC.L 8                  ; INT
+000010C6= 00000000                  43  t_24        DC.L 0                  ; INT
+000010CA= 00000000                  44  t_26        DC.L 0                  ; BOOLEAN
+000010CE= 00000008                  45  t_27        DC.L 8                  ; INT
+000010D2= 00000000                  46  t_29        DC.L 0                  ; INT
+000010D6= 00000000                  47  t_31        DC.L 0                  ; BOOLEAN
+000010DA= 4C 61 20 70 65 72 ...     48  t_34        DC.B 'La persona'       ; STRING
+000010E4= 00                        49              DC.B 0                  ; Los strings y chars acaban en 0
+000010E6                            50              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010E6= 00000004                  51  t_35        DC.L 4                  ; INT
+000010EA= 70 69 65 6E 73 61         52  t_38        DC.B 'piensa'           ; STRING
+000010F0= 00                        53              DC.B 0                  ; Los strings y chars acaban en 0
+000010F2                            54              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010F2= 4C 61 20 70 65 72 ...     55  t_39        DC.B 'La persona'       ; STRING
+000010FC= 00                        56              DC.B 0                  ; Los strings y chars acaban en 0
+000010FE                            57              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000010FE= 00000004                  58  t_40        DC.L 4                  ; INT
+00001102= 70 69 65 6E 73 61         59  t_43        DC.B 'piensa'           ; STRING
+00001108= 00                        60              DC.B 0                  ; Los strings y chars acaban en 0
+0000110A                            61              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000110A= 00000008                  62  t_44        DC.L 8                  ; INT
+0000110E= 00000000                  63  t_46        DC.L 0                  ; INT
+00001112= 00000000                  64  t_48        DC.L 0                  ; BOOLEAN
+00001116= 00000004                  65  t_49        DC.L 4                  ; INT
+0000111A= 00000000                  66  t_52        DC.L 0                  ; INT
+0000111E= 00000008                  67  t_53        DC.L 8                  ; INT
+00001122= 00000004                  68  t_54        DC.L 4                  ; INT
+00001126= 00000000                  69  t_57        DC.L 0                  ; INT
+0000112A= 00000008                  70  t_58        DC.L 8                  ; INT
+0000112E= 4C 61 20 70 65 72 ...     71  t_59        DC.B 'La persona'       ; STRING
+00001138= 00                        72              DC.B 0                  ; Los strings y chars acaban en 0
+0000113A                            73              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000113A= 63 6F 6D 65               74  t_60        DC.B 'come'             ; STRING
+0000113E= 00                        75              DC.B 0                  ; Los strings y chars acaban en 0
+00001140                            76              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001140= 00000001                  77  t_61        DC.L 1                  ; INT
+00001144= 45 73 63 72 69 62 ...     78  t_63        DC.B 'Escribe lo que te ha parecido'  ; STRING
+00001161= 00                        79              DC.B 0                  ; Los strings y chars acaban en 0
+00001162                            80              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001162= 45 6C 20 72 65 73 ...     81  t_64        DC.B 'El resultado se guardará en opinion.txt'  ; STRING
+0000118A= 00                        82              DC.B 0                  ; Los strings y chars acaban en 0
+0000118C                            83              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000118C= 6F 70 69 6E 69 6F ...     84  t_65        DC.B 'opinion.txt'      ; STRING
+00001197= 00                        85              DC.B 0                  ; Los strings y chars acaban en 0
+00001198                            86              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001198= 45 72 72 6F 72 20 ...     87  errwrite    DC.B 'Error de escritura',0  ; Mensaje de error
+000011AC                            88              DS.W 0                  ; Para evitar imparidad
+000011AC= 45 6C 20 66 69 63 ...     89  errreadonly DC.B 'El fichero solo permite lectura',0  ; Mensaje de error
+000011CC                            90              DS.W 0                  ; Para evitar imparidad
+000011CC= 46 69 6E                  91  t_66        DC.B 'Fin'              ; STRING
+000011CF= 00                        92              DC.B 0                  ; Los strings y chars acaban en 0
+000011D0                            93              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000011D0= 00000000                  94  t_67        DC.L 0                  ; BOOLEAN
+000011D4= 4C 61 20 70 65 72 ...     95  t_68        DC.B 'La persona con inicial'  ; STRING
+000011EA= 00                        96              DC.B 0                  ; Los strings y chars acaban en 0
+000011EC                            97              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+000011EC= 4E 75 6E 63 61 20 ...     98  t_70        DC.B 'Nunca pasará hambre'  ; STRING
+00001200= 00                        99              DC.B 0                  ; Los strings y chars acaban en 0
+00001202                           100              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001202= 00000000                 101  t_71        DC.L 0                  ; INT
+00001206= 00000004                 102  t_72        DC.L 4                  ; INT
+0000120A=                          103  t_73        DC.B ''                 ; STRING
+0000120A= 00                       104              DC.B 0                  ; Los strings y chars acaban en 0
+0000120C                           105              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000120C                           106  maxhambre   DS.L 1                  ; INT
+00001210                           107  t_47        DS.L 1                  ; INT
+00001214                           108  t_45        DS.L 1                  ; INT
+00001218                           109  s1          DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+0000121C                           110  t_41        DS.L 1                  ; CHAR
+00001220                           111  s2          DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001224                           112  t_42        DS.B 256                ; STRING
+00001324= 00                       113              DC.B 0                  ; Los strings y chars acaban en 0
+00001326                           114              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001326                           115  s3          DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+0000132A                           116  str_1       DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+0000132E                           117  str         DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+00001332                           118  t_36        DS.L 1                  ; CHAR
+00001336                           119  turnos      DS.L 1                  ; INT
+0000133A                           120  t_37        DS.B 256                ; STRING
+0000143A= 00                       121              DC.B 0                  ; Los strings y chars acaban en 0
+0000143C                           122              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+0000143C                           123  t_32        DS.L 1                  ; BOOLEAN
+00001440                           124  t_33        DS.L 1                  ; BOOLEAN
+00001444                           125  t_30        DS.L 1                  ; INT
+00001448                           126  p1          DS.B 12                 ; TUPLE
+00001454= 00                       127              DC.B 0                  ; Los strings y chars acaban en 0
+00001456                           128              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001456                           129  p2          DS.B 12                 ; TUPLE
+00001462= 00                       130              DC.B 0                  ; Los strings y chars acaban en 0
+00001464                           131              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001464                           132  t_28        DS.L 1                  ; INT
+00001468                           133  t_62        DS.L 1                  ; INT
+0000146C                           134  t_25        DS.L 1                  ; INT
+00001470                           135  t_69        DS.B 256                ; STRING
+00001570= 00                       136              DC.B 0                  ; Los strings y chars acaban en 0
+00001572                           137              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001572                           138  t_23        DS.L 1                  ; INT
+00001576                           139  t_20        DS.L 1                  ; INT
+0000157A                           140  t_18        DS.L 1                  ; INT
+0000157E                           141  i           DS.L 1                  ; INT
+00001582                           142  inicial     DS.L 1                  ; CHAR
+00001586                           143  p           DS.L 1                  ; POINTER TO ARRAY, TUPLE OR STRING
+0000158A                           144  t_50        DS.L 1                  ; CHAR
+0000158E                           145  t_51        DS.B 256                ; STRING
+0000168E= 00                       146              DC.B 0                  ; Los strings y chars acaban en 0
+00001690                           147              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001690                           148  t_15        DS.L 1                  ; INT
+00001694                           149  t_56        DS.B 256                ; STRING
+00001794= 00                       150              DC.B 0                  ; Los strings y chars acaban en 0
+00001796                           151              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001796                           152  t_13        DS.L 1                  ; INT
+0000179A                           153  t_55        DS.L 1                  ; CHAR
+0000179E                           154  
+0000179E                           155  ; --------- SUBROUTINES             
+0000179E  226F 0004                156  e_show      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+000017A2  700D                     157              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+000017A4  4E4F                     158              TRAP        #15         ; Interruption generated
+000017A6  4E75                     159              RTS                     ; RETURN TO SUBROUTINE ...
+000017A8  226F 0004                160  e_scan      MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+000017AC  7002                     161              MOVE.L      #2, D0      ; Read string from keyboard and store at (A1), NULL (0) terminated, length returned in D1.W (max 80)
+000017AE  4E4F                     162              TRAP        #15         ; Interruption generated
+000017B0  4E75                     163              RTS                     ; RETURN TO SUBROUTINE ...
+000017B2  226F 0008                164  e_into      MOVEA.L     8(SP), A1   ; Pre: (A1) null terminated file name
+000017B6  246F 0004                165              MOVEA.L     4(SP), A2   ; A2: pop
+000017BA  7034                     166              MOVE.L      #52, D0     ; Task 51 of TRAP 15: Open existing file
+000017BC  4E4F                     167              TRAP        #15         ; Interruption generated
+000017BE  B07C 0002                168              CMP.W       #2, D0      ; Si error
+000017C2  6700 002A                169              BEQ         e_into0     ; Fin
+000017C6  B07C 0003                170              CMP.W       #3, D0      ; Si error
+000017CA  6700 002C                171              BEQ         e_into1     ; error, read only
+000017CE  4282                     172              CLR.L       D2          
+000017D0  224A                     173  e_into2     MOVEA.L     A2, A1      
+000017D2  D3C2                     174              ADDA.L      D2, A1      
+000017D4  0C11 0000                175              CMP.B       #0, (A1)    
+000017D8  6700 0008                176              BEQ         e_into3     
+000017DC  5282                     177              ADD.L       #1, D2      
+000017DE  4EF8 17D0                178              JMP         e_into2     
+000017E2  224A                     179  e_into3     MOVEA.L     A2, A1      
+000017E4  7036                     180              MOVE.L      #54, D0     ; Task 54 of TRAP 15: Write file
+000017E6  4E4F                     181              TRAP        #15         ; Interruption generated
+000017E8  7038                     182              MOVE.L      #56, D0     ; Task 56 of TRAP 15: Close file
+000017EA  4E4F                     183              TRAP        #15         ; Interruption generated
+000017EC  4E75                     184              RTS                     ; RETURN TO SUBROUTINE ...
+000017EE  43F8 1198                185  e_into0:    LEA.L       errwrite, A1 ; A1 = mnsj error
+000017F2  700D                     186              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+000017F4  4E4F                     187              TRAP        #15         ; Interruption generated
+000017F6  4E75                     188              RTS                     ; RETURN TO SUBROUTINE ...
+000017F8  43F8 11AC                189  e_into1:    LEA.L       errreadonly, A1 ; A1 = mnsj error
+000017FC  700D                     190              MOVE.L      #13, D0     ; Task 13 of TRAP 15: Display the NULL terminated string pointed to by (A1) with CR, LF
+000017FE  4E4F                     191              TRAP        #15         ; Interruption generated
+00001800  4E75                     192              RTS                     ; RETURN TO SUBROUTINE ...
+00001802  41F8 1000                193  initpersona LEA.L       persona, A0 ; load persona into A0
+00001806  226F 0004                194              MOVEA.L     4(SP), A1   ; load instance into A1
+0000180A  7003                     195              MOVE.L      #3, D0      
+0000180C  B0BC 00000000            196  nextlongwordpersona CMP.L       #0, D0 
+00001812  6700 000A                197              BEQ         endinitpersona 
+00001816  22D8                     198              MOVE.L      (A0)+, (A1)+ ; copy 4 bytes
+00001818  5380                     199              SUB.L       #1, D0      
+0000181A  4EF8 180C                200              JMP         nextlongwordpersona 
+0000181E                           201  endinitpersona                      ; end of loop
+0000181E  4E75                     202              RTS                     
+00001820                           203  
+00001820                           204  
+00001820                           205  ; --------- INITIALIZATION          
+00001820                           206  persona0                            ; Etiqueta inicial (main)
+00001820                           207  
+00001820  7020                     208              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+00001822  123C 0005                209              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+00001826  4E4F                     210              TRAP        #15         ; Interruption generated
+00001828  41F8 1448                211              LEA.L       p1, A0      
+0000182C  2F08                     212              MOVE.L      A0, -(SP)   
+0000182E  4EB8 1802                213              JSR         initpersona 
+00001832  588F                     214              ADDA.L      #4, SP      
+00001834                           215  
+00001834  41F8 1456                216              LEA.L       p2, A0      
+00001838  2F08                     217              MOVE.L      A0, -(SP)   
+0000183A  4EB8 1802                218              JSR         initpersona 
+0000183E  588F                     219              ADDA.L      #4, SP      
+00001840                           220  
+00001840  4EB9 0000184A            221              JSR         e_inicio    ; Se ejecuta el main
+00001846  FFFF FFFF                222              SIMHALT                 ; Fin de la ejecución
+0000184A                           223  
+0000184A                           224  ; --------- e_inicio: skip          
+0000184A                           225                                      
+0000184A                           226  ; --------- pmb e_inicio            
+0000184A                           227  ; --------- t = 3                   
+0000184A  7003                     228  e_inicio:   MOVE.L      #3, D0      ; D0 = #3
+0000184C  21C0 100C                229              MOVE.L      D0, t       ; t = D0
+00001850                           230  ; --------- turnos = t              
+00001850  2038 100C                231              MOVE.L      t, D0       ; D0 = t
+00001854  21C0 1336                232              MOVE.L      D0, turnos  ; turnos = D0
+00001858                           233  ; --------- t_1 =                   
+00001858                           234  ; --------- str = t_1               
+00001858  41F8 1010                235              LEA.L       t_1, A0     ; A0 = t_1
+0000185C  21C8 132E                236              MOVE.L      A0, str     ; str = A0
+00001860                           237  ; --------- param_s p1              
+00001860  41F8 1448                238              LEA.L       p1, A0      ; A0 = p1
+00001864  2F08                     239              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001866                           240  ; --------- t_2 = 1                 
+00001866  7001                     241              MOVE.L      #1, D0      ; D0 = #1
+00001868  21C0 1012                242              MOVE.L      D0, t_2     ; t_2 = D0
+0000186C                           243  ; --------- param_s t_2             
+0000186C  2038 1012                244              MOVE.L      t_2, D0     ; D0 = t_2
+00001870  2F00                     245              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+00001872                           246  ; --------- t_3 = a                 
+00001872  7061                     247              MOVE.L      #'a', D0    ; D0 = #'a'
+00001874  21C0 1016                248              MOVE.L      D0, t_3     ; t_3 = D0
+00001878                           249  ; --------- param_s t_3             
+00001878  2038 1016                250              MOVE.L      t_3, D0     ; D0 = t_3
+0000187C  2F00                     251              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+0000187E                           252  ; --------- call e_nuevapersona     
+0000187E  4EB9 00001C3A            253              JSR         e_nuevapersona ; JUMP TO SUBROUTINE e_nuevapersona
+00001884  DFFC 0000000C            254              ADDA.L      #12, SP     ; SP = SP + 12
+0000188A                           255  ; --------- param_s p2              
+0000188A  41F8 1456                256              LEA.L       p2, A0      ; A0 = p2
+0000188E  2F08                     257              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001890                           258  ; --------- t_4 = 2                 
+00001890  7002                     259              MOVE.L      #2, D0      ; D0 = #2
+00001892  21C0 101A                260              MOVE.L      D0, t_4     ; t_4 = D0
+00001896                           261  ; --------- param_s t_4             
+00001896  2038 101A                262              MOVE.L      t_4, D0     ; D0 = t_4
+0000189A  2F00                     263              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+0000189C                           264  ; --------- t_5 = m                 
+0000189C  706D                     265              MOVE.L      #'m', D0    ; D0 = #'m'
+0000189E  21C0 101E                266              MOVE.L      D0, t_5     ; t_5 = D0
+000018A2                           267  ; --------- param_s t_5             
+000018A2  2038 101E                268              MOVE.L      t_5, D0     ; D0 = t_5
+000018A6  2F00                     269              MOVE.L      D0, -(SP)   ; PUSH INTO STACK D0
+000018A8                           270  ; --------- call e_nuevapersona     
+000018A8  4EB9 00001C3A            271              JSR         e_nuevapersona ; JUMP TO SUBROUTINE e_nuevapersona
+000018AE  DFFC 0000000C            272              ADDA.L      #12, SP     ; SP = SP + 12
+000018B4                           273  ; --------- t_6 = Bienvenido a la simulación  
+000018B4                           274  ; --------- param_s t_6             
+000018B4  41F8 1022                275              LEA.L       t_6, A0     ; A0 = t_6
+000018B8  2F08                     276              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000018BA                           277  ; --------- call e_show             
+000018BA  4EB8 179E                278              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000018BE  588F                     279              ADDA.L      #4, SP      ; SP = SP + 4
+000018C0                           280  ; --------- t_7 = Dos personas pensarán hasta que tengan hambre, momento en el que comerán por turnos  
+000018C0                           281  ; --------- param_s t_7             
+000018C0  41F8 103E                282              LEA.L       t_7, A0     ; A0 = t_7
+000018C4  2F08                     283              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000018C6                           284  ; --------- call e_show             
+000018C6  4EB8 179E                285              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000018CA  588F                     286              ADDA.L      #4, SP      ; SP = SP + 4
+000018CC                           287  ; --------- t_8 =                   
+000018CC                           288  ; --------- param_s t_8             
+000018CC  41F8 1094                289              LEA.L       t_8, A0     ; A0 = t_8
+000018D0  2F08                     290              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+000018D2                           291  ; --------- call e_show             
+000018D2  4EB8 179E                292              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+000018D6  588F                     293              ADDA.L      #4, SP      ; SP = SP + 4
+000018D8                           294  ; --------- t_9 = 0                 
+000018D8  7000                     295              MOVE.L      #0, D0      ; D0 = #0
+000018DA  21C0 1096                296              MOVE.L      D0, t_9     ; t_9 = D0
+000018DE                           297  ; --------- i = t_9                 
+000018DE  2038 1096                298              MOVE.L      t_9, D0     ; D0 = t_9
+000018E2  21C0 157E                299              MOVE.L      D0, i       ; i = D0
+000018E6                           300  ; --------- e: skip                 
+000018E6                           301                                      
+000018E6                           302  ; --------- if i < turnos goto e_3  
+000018E6  2038 157E                303  .e:         MOVE.L      i, D0       ; D0 = i
+000018EA  2238 1336                304              MOVE.L      turnos, D1  ; D1 = turnos
+000018EE  B081                     305              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000018F0  6D00 000E                306              BLT         .e_3        ; IF (N XOR V) FLAGS = 1 GOTO .e_3
+000018F4                           307  ; --------- t_10 = 0                
+000018F4  7000                     308              MOVE.L      #0, D0      ; D0 = #0
+000018F6  21C0 109A                309              MOVE.L      D0, t_10    ; t_10 = D0
+000018FA                           310  ; --------- goto e_4                
+000018FA  4EF9 00001906            311              JMP         .e_4        ; goto .e_4
+00001900                           312  ; --------- e_3: skip               
+00001900                           313                                      
+00001900                           314  ; --------- t_10 = -1               
+00001900  70FF                     315  .e_3:       MOVE.L      #-1, D0     ; D0 = #-1
+00001902  21C0 109A                316              MOVE.L      D0, t_10    ; t_10 = D0
+00001906                           317  ; --------- e_4: skip               
+00001906                           318                                      
+00001906                           319  ; --------- if t_10 == 0 goto e_1   
+00001906  2038 109A                320  .e_4:       MOVE.L      t_10, D0    ; D0 = t_10
+0000190A  7200                     321              MOVE.L      #0, D1      ; D1 = #0
+0000190C  B081                     322              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+0000190E  6700 02DA                323              BEQ         .e_1        ; IF Z FLAG = 1 GOTO .e_1
+00001912                           324  ; --------- t_11 = La persona       
+00001912                           325  ; --------- str_1 = t_11            
+00001912  41F8 109E                326              LEA.L       t_11, A0    ; A0 = t_11
+00001916  21C8 132A                327              MOVE.L      A0, str_1   ; str_1 = A0
+0000191A                           328  ; --------- t_12 = 8                
+0000191A  7008                     329              MOVE.L      #8, D0      ; D0 = #8
+0000191C  21C0 10AA                330              MOVE.L      D0, t_12    ; t_12 = D0
+00001920                           331  ; --------- t_13 = p1[t_12]         
+00001920  41F8 1448                332              LEA.L       p1, A0      ; A0 = p1
+00001924  2038 10AA                333              MOVE.L      t_12, D0    ; D0 = t_12
+00001928  D1C0                     334              ADDA.L      D0, A0      ; A0 = A0 + D0
+0000192A  21D0 1796                335              MOVE.L      (A0), t_13  ; t_13 = (A0)
+0000192E                           336  ; --------- t_14 = 1                
+0000192E  7001                     337              MOVE.L      #1, D0      ; D0 = #1
+00001930  21C0 10AE                338              MOVE.L      D0, t_14    ; t_14 = D0
+00001934                           339  ; --------- t_15 = t_13 + t_14      
+00001934  2038 1796                340              MOVE.L      t_13, D0    ; D0 = t_13
+00001938  2238 10AE                341              MOVE.L      t_14, D1    ; D1 = t_14
+0000193C  D280                     342              ADD.L       D0, D1      ; D1 = D1 + D0
+0000193E  21C1 1690                343              MOVE.L      D1, t_15    ; t_15 = D1
+00001942                           344  ; --------- t_16 = 8                
+00001942  7008                     345              MOVE.L      #8, D0      ; D0 = #8
+00001944  21C0 10B2                346              MOVE.L      D0, t_16    ; t_16 = D0
+00001948                           347  ; --------- p1[t_16] = t_15         
+00001948  2038 1690                348              MOVE.L      t_15, D0    ; D0 = t_15
+0000194C  2238 10B2                349              MOVE.L      t_16, D1    ; D1 = t_16
+00001950  41F8 1448                350              LEA.L       p1, A0      ; A0 = p1
+00001954  D1C1                     351              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001956  2080                     352              MOVE.L      D0, (A0)    ; (A0) = D0
+00001958                           353  ; --------- t_17 = 8                
+00001958  7008                     354              MOVE.L      #8, D0      ; D0 = #8
+0000195A  21C0 10B6                355              MOVE.L      D0, t_17    ; t_17 = D0
+0000195E                           356  ; --------- t_18 = p2[t_17]         
+0000195E  41F8 1456                357              LEA.L       p2, A0      ; A0 = p2
+00001962  2038 10B6                358              MOVE.L      t_17, D0    ; D0 = t_17
+00001966  D1C0                     359              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001968  21D0 157A                360              MOVE.L      (A0), t_18  ; t_18 = (A0)
+0000196C                           361  ; --------- t_19 = 1                
+0000196C  7001                     362              MOVE.L      #1, D0      ; D0 = #1
+0000196E  21C0 10BA                363              MOVE.L      D0, t_19    ; t_19 = D0
+00001972                           364  ; --------- t_20 = t_18 + t_19      
+00001972  2038 157A                365              MOVE.L      t_18, D0    ; D0 = t_18
+00001976  2238 10BA                366              MOVE.L      t_19, D1    ; D1 = t_19
+0000197A  D280                     367              ADD.L       D0, D1      ; D1 = D1 + D0
+0000197C  21C1 1576                368              MOVE.L      D1, t_20    ; t_20 = D1
+00001980                           369  ; --------- t_21 = 8                
+00001980  7008                     370              MOVE.L      #8, D0      ; D0 = #8
+00001982  21C0 10BE                371              MOVE.L      D0, t_21    ; t_21 = D0
+00001986                           372  ; --------- p2[t_21] = t_20         
+00001986  2038 1576                373              MOVE.L      t_20, D0    ; D0 = t_20
+0000198A  2238 10BE                374              MOVE.L      t_21, D1    ; D1 = t_21
+0000198E  41F8 1456                375              LEA.L       p2, A0      ; A0 = p2
+00001992  D1C1                     376              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001994  2080                     377              MOVE.L      D0, (A0)    ; (A0) = D0
+00001996                           378  ; --------- t_22 = 8                
+00001996  7008                     379              MOVE.L      #8, D0      ; D0 = #8
+00001998  21C0 10C2                380              MOVE.L      D0, t_22    ; t_22 = D0
+0000199C                           381  ; --------- t_23 = p1[t_22]         
+0000199C  41F8 1448                382              LEA.L       p1, A0      ; A0 = p1
+000019A0  2038 10C2                383              MOVE.L      t_22, D0    ; D0 = t_22
+000019A4  D1C0                     384              ADDA.L      D0, A0      ; A0 = A0 + D0
+000019A6  21D0 1572                385              MOVE.L      (A0), t_23  ; t_23 = (A0)
+000019AA                           386  ; --------- t_24 = 0                
+000019AA  7000                     387              MOVE.L      #0, D0      ; D0 = #0
+000019AC  21C0 10C6                388              MOVE.L      D0, t_24    ; t_24 = D0
+000019B0                           389  ; --------- t_25 = p1[t_24]         
+000019B0  41F8 1448                390              LEA.L       p1, A0      ; A0 = p1
+000019B4  2038 10C6                391              MOVE.L      t_24, D0    ; D0 = t_24
+000019B8  D1C0                     392              ADDA.L      D0, A0      ; A0 = A0 + D0
+000019BA  21D0 146C                393              MOVE.L      (A0), t_25  ; t_25 = (A0)
+000019BE                           394  ; --------- if t_23 > t_25 goto e_5  
+000019BE  2038 1572                395              MOVE.L      t_23, D0    ; D0 = t_23
+000019C2  2238 146C                396              MOVE.L      t_25, D1    ; D1 = t_25
+000019C6  B081                     397              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+000019C8  6E00 000E                398              BGT         .e_5        ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_5
+000019CC                           399  ; --------- t_26 = 0                
+000019CC  7000                     400              MOVE.L      #0, D0      ; D0 = #0
+000019CE  21C0 10CA                401              MOVE.L      D0, t_26    ; t_26 = D0
+000019D2                           402  ; --------- goto e_6                
+000019D2  4EF9 000019DE            403              JMP         .e_6        ; goto .e_6
+000019D8                           404  ; --------- e_5: skip               
+000019D8                           405                                      
+000019D8                           406  ; --------- t_26 = -1               
+000019D8  70FF                     407  .e_5:       MOVE.L      #-1, D0     ; D0 = #-1
+000019DA  21C0 10CA                408              MOVE.L      D0, t_26    ; t_26 = D0
+000019DE                           409  ; --------- e_6: skip               
+000019DE                           410                                      
+000019DE                           411  ; --------- t_27 = 8                
+000019DE  7008                     412  .e_6:       MOVE.L      #8, D0      ; D0 = #8
+000019E0  21C0 10CE                413              MOVE.L      D0, t_27    ; t_27 = D0
+000019E4                           414  ; --------- t_28 = p2[t_27]         
+000019E4  41F8 1456                415              LEA.L       p2, A0      ; A0 = p2
+000019E8  2038 10CE                416              MOVE.L      t_27, D0    ; D0 = t_27
+000019EC  D1C0                     417              ADDA.L      D0, A0      ; A0 = A0 + D0
+000019EE  21D0 1464                418              MOVE.L      (A0), t_28  ; t_28 = (A0)
+000019F2                           419  ; --------- t_29 = 0                
+000019F2  7000                     420              MOVE.L      #0, D0      ; D0 = #0
+000019F4  21C0 10D2                421              MOVE.L      D0, t_29    ; t_29 = D0
+000019F8                           422  ; --------- t_30 = p2[t_29]         
+000019F8  41F8 1456                423              LEA.L       p2, A0      ; A0 = p2
+000019FC  2038 10D2                424              MOVE.L      t_29, D0    ; D0 = t_29
+00001A00  D1C0                     425              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001A02  21D0 1444                426              MOVE.L      (A0), t_30  ; t_30 = (A0)
+00001A06                           427  ; --------- if t_28 > t_30 goto e_7  
+00001A06  2038 1464                428              MOVE.L      t_28, D0    ; D0 = t_28
+00001A0A  2238 1444                429              MOVE.L      t_30, D1    ; D1 = t_30
+00001A0E  B081                     430              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001A10  6E00 000E                431              BGT         .e_7        ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_7
+00001A14                           432  ; --------- t_31 = 0                
+00001A14  7000                     433              MOVE.L      #0, D0      ; D0 = #0
+00001A16  21C0 10D6                434              MOVE.L      D0, t_31    ; t_31 = D0
+00001A1A                           435  ; --------- goto e_8                
+00001A1A  4EF9 00001A26            436              JMP         .e_8        ; goto .e_8
+00001A20                           437  ; --------- e_7: skip               
+00001A20                           438                                      
+00001A20                           439  ; --------- t_31 = -1               
+00001A20  70FF                     440  .e_7:       MOVE.L      #-1, D0     ; D0 = #-1
+00001A22  21C0 10D6                441              MOVE.L      D0, t_31    ; t_31 = D0
+00001A26                           442  ; --------- e_8: skip               
+00001A26                           443                                      
+00001A26                           444  ; --------- t_32 = t_26 or t_31     
+00001A26  2038 10CA                445  .e_8:       MOVE.L      t_26, D0    ; D0 = t_26
+00001A2A  2238 10D6                446              MOVE.L      t_31, D1    ; D1 = t_31
+00001A2E  8280                     447              OR.L        D0, D1      ; D1 = D1 or D0
+00001A30  21C1 143C                448              MOVE.L      D1, t_32    ; t_32 = D1
+00001A34                           449  ; --------- t_33 = not t_32         
+00001A34  2038 143C                450              MOVE.L      t_32, D0    ; D0 = t_32
+00001A38  4680                     451              NOT.L       D0          ; D0 = not D0
+00001A3A  21C0 1440                452              MOVE.L      D0, t_33    ; t_33 = D0
+00001A3E                           453  ; --------- if t_33 == 0 goto e_10  
+00001A3E  2038 1440                454              MOVE.L      t_33, D0    ; D0 = t_33
+00001A42  7200                     455              MOVE.L      #0, D1      ; D1 = #0
+00001A44  B081                     456              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001A46  6700 0086                457              BEQ         .e_10       ; IF Z FLAG = 1 GOTO .e_10
+00001A4A                           458  ; --------- t_34 = La persona       
+00001A4A                           459  ; --------- param_s t_34            
+00001A4A  41F8 10DA                460              LEA.L       t_34, A0    ; A0 = t_34
+00001A4E  2F08                     461              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001A50                           462  ; --------- t_35 = 4                
+00001A50  7004                     463              MOVE.L      #4, D0      ; D0 = #4
+00001A52  21C0 10E6                464              MOVE.L      D0, t_35    ; t_35 = D0
+00001A56                           465  ; --------- t_36 = p1[t_35]         
+00001A56  41F8 1448                466              LEA.L       p1, A0      ; A0 = p1
+00001A5A  2038 10E6                467              MOVE.L      t_35, D0    ; D0 = t_35
+00001A5E  D1C0                     468              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001A60  21D0 1332                469              MOVE.L      (A0), t_36  ; t_36 = (A0)
+00001A64                           470  ; --------- t_37 = t_36             
+00001A64  2038 1332                471              MOVE.L      t_36, D0    ; D0 = t_36
+00001A68  E098                     472              ROR.L       #8, D0      ; move to the left so it is followed by 0's, since it is a casting from char to string
+00001A6A  21C0 133A                473              MOVE.L      D0, t_37    ; t_37 = D0
+00001A6E                           474  ; --------- param_s t_37            
+00001A6E  41F8 133A                475              LEA.L       t_37, A0    ; A0 = t_37
+00001A72  2F08                     476              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001A74                           477  ; --------- t_38 = piensa           
+00001A74                           478  ; --------- param_s t_38            
+00001A74  41F8 10EA                479              LEA.L       t_38, A0    ; A0 = t_38
+00001A78  2F08                     480              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001A7A                           481  ; --------- call e_imprimirtexto    
+00001A7A  4EB9 00001CE0            482              JSR         e_imprimirtexto ; JUMP TO SUBROUTINE e_imprimirtexto
+00001A80  DFFC 0000000C            483              ADDA.L      #12, SP     ; SP = SP + 12
+00001A86                           484  ; --------- t_39 = La persona       
+00001A86                           485  ; --------- param_s t_39            
+00001A86  41F8 10F2                486              LEA.L       t_39, A0    ; A0 = t_39
+00001A8A  2F08                     487              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001A8C                           488  ; --------- t_40 = 4                
+00001A8C  7004                     489              MOVE.L      #4, D0      ; D0 = #4
+00001A8E  21C0 10FE                490              MOVE.L      D0, t_40    ; t_40 = D0
+00001A92                           491  ; --------- t_41 = p2[t_40]         
+00001A92  41F8 1456                492              LEA.L       p2, A0      ; A0 = p2
+00001A96  2038 10FE                493              MOVE.L      t_40, D0    ; D0 = t_40
+00001A9A  D1C0                     494              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001A9C  21D0 121C                495              MOVE.L      (A0), t_41  ; t_41 = (A0)
+00001AA0                           496  ; --------- t_42 = t_41             
+00001AA0  2038 121C                497              MOVE.L      t_41, D0    ; D0 = t_41
+00001AA4  E098                     498              ROR.L       #8, D0      ; move to the left so it is followed by 0's, since it is a casting from char to string
+00001AA6  21C0 1224                499              MOVE.L      D0, t_42    ; t_42 = D0
+00001AAA                           500  ; --------- param_s t_42            
+00001AAA  41F8 1224                501              LEA.L       t_42, A0    ; A0 = t_42
+00001AAE  2F08                     502              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001AB0                           503  ; --------- t_43 = piensa           
+00001AB0                           504  ; --------- param_s t_43            
+00001AB0  41F8 1102                505              LEA.L       t_43, A0    ; A0 = t_43
+00001AB4  2F08                     506              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001AB6                           507  ; --------- call e_imprimirtexto    
+00001AB6  4EB9 00001CE0            508              JSR         e_imprimirtexto ; JUMP TO SUBROUTINE e_imprimirtexto
+00001ABC  DFFC 0000000C            509              ADDA.L      #12, SP     ; SP = SP + 12
+00001AC2                           510  ; --------- goto e_2                
+00001AC2  4EF9 00001BCA            511              JMP         .e_2        ; goto .e_2
+00001AC8                           512  ; --------- goto e_9                
+00001AC8  4EF9 00001ACE            513              JMP         .e_9        ; goto .e_9
+00001ACE                           514  ; --------- e_10: skip              
+00001ACE                           515                                      
+00001ACE                           516  ; --------- e_9: skip               
+00001ACE                           517  .e_10:                              
+00001ACE                           518  ; --------- t_44 = 8                
+00001ACE  7008                     519  .e_9:       MOVE.L      #8, D0      ; D0 = #8
+00001AD0  21C0 110A                520              MOVE.L      D0, t_44    ; t_44 = D0
+00001AD4                           521  ; --------- t_45 = p1[t_44]         
+00001AD4  41F8 1448                522              LEA.L       p1, A0      ; A0 = p1
+00001AD8  2038 110A                523              MOVE.L      t_44, D0    ; D0 = t_44
+00001ADC  D1C0                     524              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001ADE  21D0 1214                525              MOVE.L      (A0), t_45  ; t_45 = (A0)
+00001AE2                           526  ; --------- t_46 = 0                
+00001AE2  7000                     527              MOVE.L      #0, D0      ; D0 = #0
+00001AE4  21C0 110E                528              MOVE.L      D0, t_46    ; t_46 = D0
+00001AE8                           529  ; --------- t_47 = p1[t_46]         
+00001AE8  41F8 1448                530              LEA.L       p1, A0      ; A0 = p1
+00001AEC  2038 110E                531              MOVE.L      t_46, D0    ; D0 = t_46
+00001AF0  D1C0                     532              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001AF2  21D0 1210                533              MOVE.L      (A0), t_47  ; t_47 = (A0)
+00001AF6                           534  ; --------- if t_45 > t_47 goto e_11  
+00001AF6  2038 1214                535              MOVE.L      t_45, D0    ; D0 = t_45
+00001AFA  2238 1210                536              MOVE.L      t_47, D1    ; D1 = t_47
+00001AFE  B081                     537              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001B00  6E00 000E                538              BGT         .e_11       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_11
+00001B04                           539  ; --------- t_48 = 0                
+00001B04  7000                     540              MOVE.L      #0, D0      ; D0 = #0
+00001B06  21C0 1112                541              MOVE.L      D0, t_48    ; t_48 = D0
+00001B0A                           542  ; --------- goto e_12               
+00001B0A  4EF9 00001B16            543              JMP         .e_12       ; goto .e_12
+00001B10                           544  ; --------- e_11: skip              
+00001B10                           545                                      
+00001B10                           546  ; --------- t_48 = -1               
+00001B10  70FF                     547  .e_11:      MOVE.L      #-1, D0     ; D0 = #-1
+00001B12  21C0 1112                548              MOVE.L      D0, t_48    ; t_48 = D0
+00001B16                           549  ; --------- e_12: skip              
+00001B16                           550                                      
+00001B16                           551  ; --------- if t_48 == 0 goto e_14  
+00001B16  2038 1112                552  .e_12:      MOVE.L      t_48, D0    ; D0 = t_48
+00001B1A  7200                     553              MOVE.L      #0, D1      ; D1 = #0
+00001B1C  B081                     554              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001B1E  6700 004A                555              BEQ         .e_14       ; IF Z FLAG = 1 GOTO .e_14
+00001B22                           556  ; --------- t_49 = 4                
+00001B22  7004                     557              MOVE.L      #4, D0      ; D0 = #4
+00001B24  21C0 1116                558              MOVE.L      D0, t_49    ; t_49 = D0
+00001B28                           559  ; --------- t_50 = p1[t_49]         
+00001B28  41F8 1448                560              LEA.L       p1, A0      ; A0 = p1
+00001B2C  2038 1116                561              MOVE.L      t_49, D0    ; D0 = t_49
+00001B30  D1C0                     562              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001B32  21D0 158A                563              MOVE.L      (A0), t_50  ; t_50 = (A0)
+00001B36                           564  ; --------- t_51 = t_50             
+00001B36  2038 158A                565              MOVE.L      t_50, D0    ; D0 = t_50
+00001B3A  E098                     566              ROR.L       #8, D0      ; move to the left so it is followed by 0's, since it is a casting from char to string
+00001B3C  21C0 158E                567              MOVE.L      D0, t_51    ; t_51 = D0
+00001B40                           568  ; --------- str_1 = t_51            
+00001B40  41F8 158E                569              LEA.L       t_51, A0    ; A0 = t_51
+00001B44  21C8 132A                570              MOVE.L      A0, str_1   ; str_1 = A0
+00001B48                           571  ; --------- t_52 = 0                
+00001B48  7000                     572              MOVE.L      #0, D0      ; D0 = #0
+00001B4A  21C0 111A                573              MOVE.L      D0, t_52    ; t_52 = D0
+00001B4E                           574  ; --------- t_53 = 8                
+00001B4E  7008                     575              MOVE.L      #8, D0      ; D0 = #8
+00001B50  21C0 111E                576              MOVE.L      D0, t_53    ; t_53 = D0
+00001B54                           577  ; --------- p1[t_53] = t_52         
+00001B54  2038 111A                578              MOVE.L      t_52, D0    ; D0 = t_52
+00001B58  2238 111E                579              MOVE.L      t_53, D1    ; D1 = t_53
+00001B5C  41F8 1448                580              LEA.L       p1, A0      ; A0 = p1
+00001B60  D1C1                     581              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001B62  2080                     582              MOVE.L      D0, (A0)    ; (A0) = D0
+00001B64                           583  ; --------- goto e_13               
+00001B64  4EF9 00001BAC            584              JMP         .e_13       ; goto .e_13
+00001B6A                           585  ; --------- e_14: skip              
+00001B6A                           586                                      
+00001B6A                           587  ; --------- t_54 = 4                
+00001B6A  7004                     588  .e_14:      MOVE.L      #4, D0      ; D0 = #4
+00001B6C  21C0 1122                589              MOVE.L      D0, t_54    ; t_54 = D0
+00001B70                           590  ; --------- t_55 = p2[t_54]         
+00001B70  41F8 1456                591              LEA.L       p2, A0      ; A0 = p2
+00001B74  2038 1122                592              MOVE.L      t_54, D0    ; D0 = t_54
+00001B78  D1C0                     593              ADDA.L      D0, A0      ; A0 = A0 + D0
+00001B7A  21D0 179A                594              MOVE.L      (A0), t_55  ; t_55 = (A0)
+00001B7E                           595  ; --------- t_56 = t_55             
+00001B7E  2038 179A                596              MOVE.L      t_55, D0    ; D0 = t_55
+00001B82  E098                     597              ROR.L       #8, D0      ; move to the left so it is followed by 0's, since it is a casting from char to string
+00001B84  21C0 1694                598              MOVE.L      D0, t_56    ; t_56 = D0
+00001B88                           599  ; --------- str_1 = t_56            
+00001B88  41F8 1694                600              LEA.L       t_56, A0    ; A0 = t_56
+00001B8C  21C8 132A                601              MOVE.L      A0, str_1   ; str_1 = A0
+00001B90                           602  ; --------- t_57 = 0                
+00001B90  7000                     603              MOVE.L      #0, D0      ; D0 = #0
+00001B92  21C0 1126                604              MOVE.L      D0, t_57    ; t_57 = D0
+00001B96                           605  ; --------- t_58 = 8                
+00001B96  7008                     606              MOVE.L      #8, D0      ; D0 = #8
+00001B98  21C0 112A                607              MOVE.L      D0, t_58    ; t_58 = D0
+00001B9C                           608  ; --------- p2[t_58] = t_57         
+00001B9C  2038 1126                609              MOVE.L      t_57, D0    ; D0 = t_57
+00001BA0  2238 112A                610              MOVE.L      t_58, D1    ; D1 = t_58
+00001BA4  41F8 1456                611              LEA.L       p2, A0      ; A0 = p2
+00001BA8  D1C1                     612              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001BAA  2080                     613              MOVE.L      D0, (A0)    ; (A0) = D0
+00001BAC                           614  ; --------- e_13: skip              
+00001BAC                           615                                      
+00001BAC                           616  ; --------- t_59 = La persona       
+00001BAC                           617  ; --------- param_s t_59            
+00001BAC  41F8 112E                618  .e_13:      LEA.L       t_59, A0    ; A0 = t_59
+00001BB0  2F08                     619              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001BB2                           620  ; --------- param_s str_1           
+00001BB2  2078 132A                621              MOVEA.L     str_1, A0   ; A0 = str_1
+00001BB6  2F08                     622              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001BB8                           623  ; --------- t_60 = come             
+00001BB8                           624  ; --------- param_s t_60            
+00001BB8  41F8 113A                625              LEA.L       t_60, A0    ; A0 = t_60
+00001BBC  2F08                     626              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001BBE                           627  ; --------- call e_imprimirtexto    
+00001BBE  4EB9 00001CE0            628              JSR         e_imprimirtexto ; JUMP TO SUBROUTINE e_imprimirtexto
+00001BC4  DFFC 0000000C            629              ADDA.L      #12, SP     ; SP = SP + 12
+00001BCA                           630  ; --------- e_2: skip               
+00001BCA                           631                                      
+00001BCA                           632  ; --------- t_61 = 1                
+00001BCA  7001                     633  .e_2:       MOVE.L      #1, D0      ; D0 = #1
+00001BCC  21C0 1140                634              MOVE.L      D0, t_61    ; t_61 = D0
+00001BD0                           635  ; --------- t_62 = i + t_61         
+00001BD0  2038 157E                636              MOVE.L      i, D0       ; D0 = i
+00001BD4  2238 1140                637              MOVE.L      t_61, D1    ; D1 = t_61
+00001BD8  D280                     638              ADD.L       D0, D1      ; D1 = D1 + D0
+00001BDA  21C1 1468                639              MOVE.L      D1, t_62    ; t_62 = D1
+00001BDE                           640  ; --------- i = t_62                
+00001BDE  2038 1468                641              MOVE.L      t_62, D0    ; D0 = t_62
+00001BE2  21C0 157E                642              MOVE.L      D0, i       ; i = D0
+00001BE6                           643  ; --------- goto e                  
+00001BE6  4EF8 18E6                644              JMP         .e          ; goto .e
+00001BEA                           645  ; --------- e_1: skip               
+00001BEA                           646                                      
+00001BEA                           647  ; --------- param_s str             
+00001BEA  2078 132E                648  .e_1:       MOVEA.L     str, A0     ; A0 = str
+00001BEE  2F08                     649              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001BF0                           650  ; --------- call e_show             
+00001BF0  4EB8 179E                651              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001BF4  588F                     652              ADDA.L      #4, SP      ; SP = SP + 4
+00001BF6                           653  ; --------- t_63 = Escribe lo que te ha parecido  
+00001BF6                           654  ; --------- param_s t_63            
+00001BF6  41F8 1144                655              LEA.L       t_63, A0    ; A0 = t_63
+00001BFA  2F08                     656              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001BFC                           657  ; --------- call e_show             
+00001BFC  4EB8 179E                658              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001C00  588F                     659              ADDA.L      #4, SP      ; SP = SP + 4
+00001C02                           660  ; --------- t_64 = El resultado se guardará en opinion.txt  
+00001C02                           661  ; --------- param_s t_64            
+00001C02  41F8 1162                662              LEA.L       t_64, A0    ; A0 = t_64
+00001C06  2F08                     663              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C08                           664  ; --------- call e_show             
+00001C08  4EB8 179E                665              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001C0C  588F                     666              ADDA.L      #4, SP      ; SP = SP + 4
+00001C0E                           667  ; --------- param_s str             
+00001C0E  2078 132E                668              MOVEA.L     str, A0     ; A0 = str
+00001C12  2F08                     669              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C14                           670  ; --------- call e_scan             
+00001C14  4EB8 17A8                671              JSR         e_scan      ; JUMP TO SUBROUTINE e_scan
+00001C18  588F                     672              ADDA.L      #4, SP      ; SP = SP + 4
+00001C1A                           673  ; --------- t_65 = opinion.txt      
+00001C1A                           674  ; --------- param_s t_65            
+00001C1A  41F8 118C                675              LEA.L       t_65, A0    ; A0 = t_65
+00001C1E  2F08                     676              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C20                           677  ; --------- param_s str             
+00001C20  2078 132E                678              MOVEA.L     str, A0     ; A0 = str
+00001C24  2F08                     679              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C26                           680  ; --------- call e_into             
+00001C26  4EB8 17B2                681              JSR         e_into      ; JUMP TO SUBROUTINE e_into
+00001C2A  508F                     682              ADDA.L      #8, SP      ; SP = SP + 8
+00001C2C                           683  ; --------- t_66 = Fin              
+00001C2C                           684  ; --------- param_s t_66            
+00001C2C  41F8 11CC                685              LEA.L       t_66, A0    ; A0 = t_66
+00001C30  2F08                     686              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C32                           687  ; --------- call e_show             
+00001C32  4EB8 179E                688              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001C36  588F                     689              ADDA.L      #4, SP      ; SP = SP + 4
+00001C38                           690  ; --------- rtn e_inicio            
+00001C38  4E75                     691              RTS                     ; RETURN TO SUBROUTINE e_inicio
+00001C3A                           692  
+00001C3A                           693  
+00001C3A                           694  
+00001C3A                           695  
+00001C3A                           696  ; --------- e_nuevapersona: skip    
+00001C3A                           697                                      
+00001C3A                           698  ; --------- pmb e_nuevapersona      
+00001C3A  202F 0004                699  e_nuevapersona: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
+00001C3E  21C0 1582                700              MOVE.L      D0, inicial ; inicial = D0
+00001C42  202F 0008                701              MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
+00001C46  21C0 120C                702              MOVE.L      D0, maxhambre ; maxhambre = D0
+00001C4A  202F 000C                703              MOVE.L      12(SP), D0  ; D0 = POP FROM STACK
+00001C4E  21C0 1586                704              MOVE.L      D0, p       ; p = D0
+00001C52                           705  ; --------- if maxhambre > turnos goto e_15  
+00001C52  2038 120C                706              MOVE.L      maxhambre, D0 ; D0 = maxhambre
+00001C56  2238 1336                707              MOVE.L      turnos, D1  ; D1 = turnos
+00001C5A  B081                     708              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001C5C  6E00 000E                709              BGT         .e_15       ; IF ((N XOR V) OR Z) FLAGS = 0 GOTO .e_15
+00001C60                           710  ; --------- t_67 = 0                
+00001C60  7000                     711              MOVE.L      #0, D0      ; D0 = #0
+00001C62  21C0 11D0                712              MOVE.L      D0, t_67    ; t_67 = D0
+00001C66                           713  ; --------- goto e_16               
+00001C66  4EF9 00001C72            714              JMP         .e_16       ; goto .e_16
+00001C6C                           715  ; --------- e_15: skip              
+00001C6C                           716                                      
+00001C6C                           717  ; --------- t_67 = -1               
+00001C6C  70FF                     718  .e_15:      MOVE.L      #-1, D0     ; D0 = #-1
+00001C6E  21C0 11D0                719              MOVE.L      D0, t_67    ; t_67 = D0
+00001C72                           720  ; --------- e_16: skip              
+00001C72                           721                                      
+00001C72                           722  ; --------- if t_67 == 0 goto e_18  
+00001C72  2038 11D0                723  .e_16:      MOVE.L      t_67, D0    ; D0 = t_67
+00001C76  7200                     724              MOVE.L      #0, D1      ; D1 = #0
+00001C78  B081                     725              CMP.L       D1, D0      ; UPDATE FLAGS WITH D0 - D1
+00001C7A  6700 0036                726              BEQ         .e_18       ; IF Z FLAG = 1 GOTO .e_18
+00001C7E                           727  ; --------- t_68 = La persona con inicial  
+00001C7E                           728  ; --------- param_s t_68            
+00001C7E  41F8 11D4                729              LEA.L       t_68, A0    ; A0 = t_68
+00001C82  2F08                     730              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C84                           731  ; --------- call e_show             
+00001C84  4EB8 179E                732              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001C88  588F                     733              ADDA.L      #4, SP      ; SP = SP + 4
+00001C8A                           734  ; --------- t_69 = inicial          
+00001C8A  2038 1582                735              MOVE.L      inicial, D0 ; D0 = inicial
+00001C8E  E098                     736              ROR.L       #8, D0      ; move to the left so it is followed by 0's, since it is a casting from char to string
+00001C90  21C0 1470                737              MOVE.L      D0, t_69    ; t_69 = D0
+00001C94                           738  ; --------- param_s t_69            
+00001C94  41F8 1470                739              LEA.L       t_69, A0    ; A0 = t_69
+00001C98  2F08                     740              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001C9A                           741  ; --------- call e_show             
+00001C9A  4EB8 179E                742              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001C9E  588F                     743              ADDA.L      #4, SP      ; SP = SP + 4
+00001CA0                           744  ; --------- t_70 = Nunca pasará hambre  
+00001CA0                           745  ; --------- param_s t_70            
+00001CA0  41F8 11EC                746              LEA.L       t_70, A0    ; A0 = t_70
+00001CA4  2F08                     747              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001CA6                           748  ; --------- call e_show             
+00001CA6  4EB8 179E                749              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001CAA  588F                     750              ADDA.L      #4, SP      ; SP = SP + 4
+00001CAC                           751  ; --------- goto e_17               
+00001CAC  4EF9 00001CB2            752              JMP         .e_17       ; goto .e_17
+00001CB2                           753  ; --------- e_18: skip              
+00001CB2                           754                                      
+00001CB2                           755  ; --------- e_17: skip              
+00001CB2                           756  .e_18:                              
+00001CB2                           757  ; --------- t_71 = 0                
+00001CB2  7000                     758  .e_17:      MOVE.L      #0, D0      ; D0 = #0
+00001CB4  21C0 1202                759              MOVE.L      D0, t_71    ; t_71 = D0
+00001CB8                           760  ; --------- p[t_71] = maxhambre     
+00001CB8  2038 120C                761              MOVE.L      maxhambre, D0 ; D0 = maxhambre
+00001CBC  2238 1202                762              MOVE.L      t_71, D1    ; D1 = t_71
+00001CC0  2078 1586                763              MOVEA.L     p, A0       ; A0 = p
+00001CC4  D1C1                     764              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001CC6  2080                     765              MOVE.L      D0, (A0)    ; (A0) = D0
+00001CC8                           766  ; --------- t_72 = 4                
+00001CC8  7004                     767              MOVE.L      #4, D0      ; D0 = #4
+00001CCA  21C0 1206                768              MOVE.L      D0, t_72    ; t_72 = D0
+00001CCE                           769  ; --------- p[t_72] = inicial       
+00001CCE  2038 1582                770              MOVE.L      inicial, D0 ; D0 = inicial
+00001CD2  2238 1206                771              MOVE.L      t_72, D1    ; D1 = t_72
+00001CD6  2078 1586                772              MOVEA.L     p, A0       ; A0 = p
+00001CDA  D1C1                     773              ADDA.L      D1, A0      ; A0 = A0 + D1
+00001CDC  2080                     774              MOVE.L      D0, (A0)    ; (A0) = D0
+00001CDE                           775  ; --------- rtn e_nuevapersona      
+00001CDE  4E75                     776              RTS                     ; RETURN TO SUBROUTINE e_nuevapersona
+00001CE0                           777  
+00001CE0                           778  
+00001CE0                           779  ; --------- e_imprimirtexto: skip   
+00001CE0                           780                                      
+00001CE0                           781  ; --------- pmb e_imprimirtexto     
+00001CE0  202F 0004                782  e_imprimirtexto: MOVE.L      4(SP), D0 ; D0 = POP FROM STACK
+00001CE4  21C0 1326                783              MOVE.L      D0, s3      ; s3 = D0
+00001CE8  202F 0008                784              MOVE.L      8(SP), D0   ; D0 = POP FROM STACK
+00001CEC  21C0 1220                785              MOVE.L      D0, s2      ; s2 = D0
+00001CF0  202F 000C                786              MOVE.L      12(SP), D0  ; D0 = POP FROM STACK
+00001CF4  21C0 1218                787              MOVE.L      D0, s1      ; s1 = D0
+00001CF8                           788  ; --------- param_s s1              
+00001CF8  2078 1218                789              MOVEA.L     s1, A0      ; A0 = s1
+00001CFC  2F08                     790              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001CFE                           791  ; --------- call e_show             
+00001CFE  4EB8 179E                792              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001D02  588F                     793              ADDA.L      #4, SP      ; SP = SP + 4
+00001D04                           794  ; --------- param_s s2              
+00001D04  2078 1220                795              MOVEA.L     s2, A0      ; A0 = s2
+00001D08  2F08                     796              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001D0A                           797  ; --------- call e_show             
+00001D0A  4EB8 179E                798              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001D0E  588F                     799              ADDA.L      #4, SP      ; SP = SP + 4
+00001D10                           800  ; --------- param_s s3              
+00001D10  2078 1326                801              MOVEA.L     s3, A0      ; A0 = s3
+00001D14  2F08                     802              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001D16                           803  ; --------- call e_show             
+00001D16  4EB8 179E                804              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001D1A  588F                     805              ADDA.L      #4, SP      ; SP = SP + 4
+00001D1C                           806  ; --------- t_73 =                  
+00001D1C                           807  ; --------- param_s t_73            
+00001D1C  41F8 120A                808              LEA.L       t_73, A0    ; A0 = t_73
+00001D20  2F08                     809              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001D22                           810  ; --------- call e_show             
+00001D22  4EB8 179E                811              JSR         e_show      ; JUMP TO SUBROUTINE e_show
+00001D26  588F                     812              ADDA.L      #4, SP      ; SP = SP + 4
+00001D28                           813  ; --------- rtn e_imprimirtexto     
+00001D28  4E75                     814              RTS                     ; RETURN TO SUBROUTINE e_imprimirtexto
+00001D2A                           815  
+00001D2A                           816  
+00001D2A                           817              END persona0            ; Fin del programa
 
 No errors detected
 No warnings generated
@@ -220,38 +827,125 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-D_STR               1262
-D_STR_1             1266
-EMPTYFILE           129C
-ENDINITPERSONA      12DA
-ERRREAD             1030
-E_FROM              126A
-E_FROM0             12AA
-E_INICIO            12EE
-E_INICIO:E          130A
-E_INICIO:E_1        136A
-E_INICIO:E_2        134A
-E_INICIO:E_3        132A
-E_INICIO:E_4        1330
-E_NUEVAPERSONA      138A
-E_SHOW              12B4
-I                   1150
-IDPERSONA           104A
-INICIAL             1158
-INITPERSONA         12BE
-NEXTLONGWORDPERSONA  12C8
-P                   115C
+ENDINITPERSONA      181E
+ERRREADONLY         11AC
+ERRWRITE            1198
+E_IMPRIMIRTEXTO     1CE0
+E_INICIO            184A
+E_INICIO:E          18E6
+E_INICIO:E_1        1BEA
+E_INICIO:E_10       1ACE
+E_INICIO:E_11       1B10
+E_INICIO:E_12       1B16
+E_INICIO:E_13       1BAC
+E_INICIO:E_14       1B6A
+E_INICIO:E_2        1BCA
+E_INICIO:E_3        1900
+E_INICIO:E_4        1906
+E_INICIO:E_5        19D8
+E_INICIO:E_6        19DE
+E_INICIO:E_7        1A20
+E_INICIO:E_8        1A26
+E_INICIO:E_9        1ACE
+E_INTO              17B2
+E_INTO0             17EE
+E_INTO1             17F8
+E_INTO2             17D0
+E_INTO3             17E2
+E_NUEVAPERSONA      1C3A
+E_NUEVAPERSONA:E_15  1C6C
+E_NUEVAPERSONA:E_16  1C72
+E_NUEVAPERSONA:E_17  1CB2
+E_NUEVAPERSONA:E_18  1CB2
+E_SCAN              17A8
+E_SHOW              179E
+I                   157E
+INICIAL             1582
+INITPERSONA         1802
+MAXHAMBRE           120C
+NEXTLONGWORDPERSONA  180C
+P                   1586
+P1                  1448
+P2                  1456
 PERSONA             1000
-PERSONA0            12DC
-STR                 1160
-STR_1               104E
+PERSONA0            1820
+S1                  1218
+S2                  1220
+S3                  1326
+STR                 132E
+STR_1               132A
 T                   100C
+TURNOS              1336
 T_1                 1010
-T_2                 1014
-T_3                 1018
-T_4                 101C
-T_5                 1020
-T_6                 1154
-T_7                 1024
-T_8                 1042
-T_9                 1046
+T_10                109A
+T_11                109E
+T_12                10AA
+T_13                1796
+T_14                10AE
+T_15                1690
+T_16                10B2
+T_17                10B6
+T_18                157A
+T_19                10BA
+T_2                 1012
+T_20                1576
+T_21                10BE
+T_22                10C2
+T_23                1572
+T_24                10C6
+T_25                146C
+T_26                10CA
+T_27                10CE
+T_28                1464
+T_29                10D2
+T_3                 1016
+T_30                1444
+T_31                10D6
+T_32                143C
+T_33                1440
+T_34                10DA
+T_35                10E6
+T_36                1332
+T_37                133A
+T_38                10EA
+T_39                10F2
+T_4                 101A
+T_40                10FE
+T_41                121C
+T_42                1224
+T_43                1102
+T_44                110A
+T_45                1214
+T_46                110E
+T_47                1210
+T_48                1112
+T_49                1116
+T_5                 101E
+T_50                158A
+T_51                158E
+T_52                111A
+T_53                111E
+T_54                1122
+T_55                179A
+T_56                1694
+T_57                1126
+T_58                112A
+T_59                112E
+T_6                 1022
+T_60                113A
+T_61                1140
+T_62                1468
+T_63                1144
+T_64                1162
+T_65                118C
+T_66                11CC
+T_67                11D0
+T_68                11D4
+T_69                1470
+T_7                 103E
+T_70                11EC
+T_71                1202
+T_72                1206
+T_73                120A
+T_8                 1094
+T_9                 1096

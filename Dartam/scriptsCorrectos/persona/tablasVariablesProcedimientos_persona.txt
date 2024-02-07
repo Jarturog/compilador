@@ -1,28 +1,97 @@
 Tabla de procedimientos
 from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
-nuevaPersona: identificado por e_nuevapersona, devuelve 0 bytes de retorno y sus parámetros son TUPLE persona p siendo su variable de CI p, ENT idPersona siendo su variable de CI idpersona, CAR inicial siendo su variable de CI inicial
+imprimirTexto: identificado por e_imprimirtexto, devuelve 0 bytes de retorno y sus parámetros son CAR [] s1 siendo su variable de CI s1, CAR [] s2 siendo su variable de CI s2, CAR [] s3 siendo su variable de CI s3
+nuevaPersona: identificado por e_nuevapersona, devuelve 0 bytes de retorno y sus parámetros son TUPLE persona p siendo su variable de CI p, ENT maxHambre siendo su variable de CI maxhambre, CAR inicial siendo su variable de CI inicial
 show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
 inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
 scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
 into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
 
 Tabla de variables
+t_49: tipo INT inicializado a 4
+maxhambre: tipo INT
+t_40: tipo INT inicializado a 4
+t_47: tipo INT
+t_48: tipo BOOLEAN inicializado a 0
+t_45: tipo INT
+t_46: tipo INT inicializado a 0
+t_43: tipo STRING inicializado a piensa almacenando una estructura de datos de 256 bytes
+t_44: tipo INT inicializado a 8
+s1: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_41: tipo CHAR
+s2: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_42: tipo STRING
+s3: tipo POINTER TO ARRAY, TUPLE OR STRING
 persona: tipo POINTER TO ARRAY, TUPLE OR STRING almacenando una estructura de datos de 12 bytes
 t_2: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
-idpersona: tipo INT
-t_1: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
-t_4: tipo INT inicializado a 81 almacenando una estructura de datos de 256 bytes
-str_1: tipo STRING almacenando una estructura de datos de 324 bytes
+t_38: tipo STRING inicializado a piensa almacenando una estructura de datos de 256 bytes
+t_1: tipo STRING inicializado a  almacenando una estructura de datos de 256 bytes
+t_39: tipo STRING inicializado a La persona almacenando una estructura de datos de 256 bytes
+t_4: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+str_1: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_3: tipo CHAR inicializado a a almacenando una estructura de datos de 256 bytes
+t_6: tipo STRING inicializado a Bienvenido a la simulación almacenando una estructura de datos de 256 bytes
+t_5: tipo CHAR inicializado a m almacenando una estructura de datos de 256 bytes
+t_8: tipo STRING inicializado a  almacenando una estructura de datos de 256 bytes
+t_7: tipo STRING inicializado a Dos personas pensarán hasta que tengan hambre, momento en el que comerán almacenando una estructura de datos de 256 bytes
+t_9: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+str: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_72: tipo INT inicializado a 4
+t_73: tipo STRING inicializado a  almacenando una estructura de datos de 256 bytes
+t_70: tipo STRING inicializado a Nunca pasará hambre almacenando una estructura de datos de 256 bytes
+t_71: tipo INT inicializado a 0
+t_36: tipo CHAR
+turnos: tipo INT
+t_37: tipo STRING
+t_34: tipo STRING inicializado a La persona almacenando una estructura de datos de 256 bytes
+t_35: tipo INT inicializado a 4
+t_32: tipo BOOLEAN
+t_33: tipo BOOLEAN
+t_30: tipo INT
+t_31: tipo BOOLEAN inicializado a 0
+p1: tipo TUPLE almacenando una estructura de datos de 12 bytes de tipo persona
+p2: tipo TUPLE almacenando una estructura de datos de 12 bytes de tipo persona
+t_29: tipo INT inicializado a 0
+t_27: tipo INT inicializado a 8
+t_28: tipo INT
+t_61: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_62: tipo INT
+t_60: tipo STRING inicializado a come almacenando una estructura de datos de 256 bytes
+t_25: tipo INT
+t_69: tipo STRING
+t_26: tipo BOOLEAN inicializado a 0
+t_23: tipo INT
+t_67: tipo BOOLEAN inicializado a 0
+t_24: tipo INT inicializado a 0
+t_68: tipo STRING inicializado a La persona con inicial almacenando una estructura de datos de 256 bytes
+t_21: tipo INT inicializado a 8
+t_65: tipo STRING inicializado a opinion.txt almacenando una estructura de datos de 256 bytes
+t_22: tipo INT inicializado a 8
+t_66: tipo STRING inicializado a Fin almacenando una estructura de datos de 256 bytes
+t_63: tipo STRING inicializado a Escribe lo que te ha parecido almacenando una estructura de datos de 256 bytes
+t_20: tipo INT
+t_64: tipo STRING inicializado a El resultado se guardará en opinion.txt almacenando una estructura de datos de 256 bytes
+t_18: tipo INT
+t_19: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_16: tipo INT inicializado a 8
+t_17: tipo INT inicializado a 8
 i: tipo INT
-t_3: tipo BOOLEAN inicializado a 0
-t_6: tipo INT
-t_5: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
 inicial: tipo CHAR
-t_8: tipo INT inicializado a 0
-t_7: tipo STRING inicializado a prueba.txt almacenando una estructura de datos de 256 bytes
-t_9: tipo INT inicializado a 4
 p: tipo POINTER TO ARRAY, TUPLE OR STRING
-str: tipo STRING almacenando una estructura de datos de 324 bytes
-t: tipo INT inicializado a 81 almacenando una estructura de datos de 256 bytes
-d_str: tipo INT
-d_str_1: tipo INT
+t_50: tipo CHAR
+t_51: tipo STRING
+t: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_14: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_58: tipo INT inicializado a 8
+t_15: tipo INT
+t_59: tipo STRING inicializado a La persona almacenando una estructura de datos de 256 bytes
+t_12: tipo INT inicializado a 8
+t_56: tipo STRING
+t_13: tipo INT
+t_57: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_10: tipo BOOLEAN inicializado a 0
+t_54: tipo INT inicializado a 4
+t_11: tipo STRING inicializado a La persona almacenando una estructura de datos de 256 bytes
+t_55: tipo CHAR
+t_52: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_53: tipo INT inicializado a 8
