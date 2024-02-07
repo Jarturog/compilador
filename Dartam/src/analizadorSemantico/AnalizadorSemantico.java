@@ -200,6 +200,11 @@ public class AnalizadorSemantico {
                     indicarLocalizacion(tipo);
                     error = true;
                 }
+                if(d!= null && (d.isArray() || d.isTipoTupla())) {
+                    errores.add("No está permitido realizar asignaciones entre identificadores de estructuras de datos complejas ("+id+")");
+                    indicarLocalizacion(dec);
+                    error = true;
+                }
             }
             if (tuplaActualmenteSiendoTratada == null) { // si forma parte de una tupla si se puede declarar  ---------------------------------------------------------------------
                 String errMsg = tablaSimbolos.sePuedeDeclarar(id);
@@ -354,9 +359,9 @@ public class AnalizadorSemantico {
                             variableCodigoIntermedio);
                 } else { // array inicializado
                     // suponiendo que valores son constantes
-                    int total = 0;
+                    int total = 1;
                     for (int i = 0; i < valoresDimension.size(); i++) {
-                        total += valoresDimension.get(i);
+                        total *= valoresDimension.get(i);
                     }
                     descVar = new DescripcionArray(tipo.getTipo(), decs.isConst,
                             tipo.dimArray.getDimensiones(),
@@ -463,10 +468,14 @@ public class AnalizadorSemantico {
             String tipoVariable = null;
             // array
             String indexReal = null;
-            boolean stringAsignado = false;
             // fin array
             switch (asig.getTipo()) {
                 case ID -> {
+                    if(d.isArray() || d.isTipoTupla()) {
+                        errores.add("No está permitido realizar asignaciones entre identificadores de estructuras de datos complejas ("+asig.id+")");
+                        indicarLocalizacion(asig);
+                        error = true;
+                    }
                     if (d.tieneValorAsignado() && d.isConstante()) {
                         errores.add("Se esta intentado asignar un valor a la constante '" + asig.id + "' que ya tenia valor");
                         indicarLocalizacion(asig);
@@ -478,7 +487,7 @@ public class AnalizadorSemantico {
                         da = (DescripcionArray) d;
                     }
                     if (tipoValor.equals(d.tipo) && da != null && da.isString()) {
-                        stringAsignado = true;
+                        //stringAsignado = true;
                     } else if ((d.isArray() || d.isTipoTupla()) && ds == null) {
                         errores.add("Se ha intentado asignar '" + asig.valor + "' que no es una variable a '" + asig.id + "'");
                         indicarLocalizacion(asig.valor);
@@ -514,8 +523,10 @@ public class AnalizadorSemantico {
                             error = true;
                         }
                         if (!error) {
-                            String varIndice = varActual;
-                            variablesIndice.add(varIndice);
+//                            TipoVariable tv = TipoVariable.PUNTERO;
+//                            String varIndice = g3d.nuevaVariable(tv);
+//                            g3d.generarInstr(TipoInstr.COPY, new Operador(g3d.getTipoFromVar(varActual), varActual), null, new Operador(tv, varIndice));
+                            variablesIndice.add(varActual);//varIndice);
                         }
                         dim = dim.siguienteDimension;
                     }
@@ -528,8 +539,8 @@ public class AnalizadorSemantico {
                         tipoVariable = tipoDesplazado;
                         DescripcionArray da = (DescripcionArray) d;
                         ArrayList<String> variablesDimension = da.getVariablesDimension();
-                        String varInd = variablesIndice.get(0);
-                        for (int i = 0; i < variablesIndice.size() - 1; i++) {
+                        String varInd = variablesIndice.get(variablesIndice.size() - 1);
+                        for (int i = variablesIndice.size() - 2; i >= 0 ; i--) {
                             //String varIndice = variablesIndice.get(i);
                             String varDesplazamiento = variablesDimension.get(i + 1);
                             String varTemp = g3d.nuevaVariable(TipoVariable.INT);
@@ -576,7 +587,6 @@ public class AnalizadorSemantico {
                         }
                     }
                 }
-
             }
             if (error) {
                 continue;
@@ -1590,17 +1600,18 @@ public class AnalizadorSemantico {
                     errores.add("El operador que se quiere usar como indice (" + idx + ") no es un entero, es de tipo " + tipoIdx);
                     indicarLocalizacion(idx); // indice es otra cosa que un entero
                     return null;
-                } else if (arr.atomicExp == null) {
-                    errores.add("No se puede acceder al elemento de un array si se realizan operaciones, en vez de ser un identificador");
-                    indicarLocalizacion(arr);
-                    return null;
                 }
-                DescripcionArray da = (DescripcionArray) tablaSimbolos.consulta(arr.atomicExp.value.toString());
-                if (da != null && !da.tieneValorAsignado()) {
-                    errores.add("No se puede acceder a un elemento del array " + arr.atomicExp.value.toString() + " porque este no ha sido inicializado con anterioridad");
-                    indicarLocalizacion(arr);
-                    return null;
-                }
+//                else if (arr.atomicExp == null) {
+//                    errores.add("No se puede acceder al elemento de un array si se realizan operaciones, en vez de ser un identificador");
+//                    indicarLocalizacion(arr);
+//                    return null;
+//                }
+//                DescripcionArray da = (DescripcionArray) tablaSimbolos.consulta(arr.atomicExp.value.toString());
+//                if (da != null && !da.tieneValorAsignado()) {
+//                    errores.add("No se puede acceder a un elemento del array " + arr.atomicExp.value.toString() + " porque este no ha sido inicializado con anterioridad");
+//                    indicarLocalizacion(arr);
+//                    return null;
+//                }
                 TipoVariable t = g3d.getTipoFromVar(varIndex);
                 TipoVariable tArr = g3d.getTipoFromVar(varArray);
                 TipoVariable tNuevo = TipoVariable.getTipo(nuevoTipo, nuevoTipo.contains("[") || nuevoTipo.startsWith(ParserSym.terminalNames[ParserSym.TUPLE]));

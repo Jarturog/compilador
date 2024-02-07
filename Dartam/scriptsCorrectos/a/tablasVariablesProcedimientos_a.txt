@@ -1,0 +1,22 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] input
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parametros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parametros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parametros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] output
+
+Tabla de variables
+t_2: tipo CHAR inicializado a A almacenando una estructura de datos de 256 bytes
+t_1: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+t_4: tipo INT
+t_3: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+d_matrizcars: tipo INT
+t_6: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_5: tipo CHAR
+t_8: tipo INT
+t_7: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_9: tipo INT
+d_matrizcars_1: tipo INT
+t: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
+matrizcars: tipo ARRAY almacenando una estructura de datos de 64 bytes
+t_10: tipo INT

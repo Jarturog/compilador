@@ -1,0 +1,19 @@
+e_inicio: skip
+pmb e_inicio
+t = 4
+d_matrizcars = t
+t_1 = 4
+d_matrizcars_1 = t_1
+t_2 = A
+t_3 = 2
+t_4 = t_3
+t_5 = t_2 + t_4
+t_6 = 2
+t_7 = 3
+t_8 = t_7 * d_matrizcars_1
+t_9 = t_7 + t_8
+t_10 = t_9 * 4
+matrizcars[t_10] = t_5
+rtn e_inicio
+
+

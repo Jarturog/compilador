@@ -367,25 +367,25 @@ public class GeneradorEnsamblador {
             case IFGE -> { // if op1 >= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("CMP" + extOp1, r1 + ", " + r2, "UPDATE FLAGS WITH " + r2 + " - " + r1); 
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r2 + " - " + r1); // r2 >= r1 GOTO 
                 add("BGE", dstConPunto, "IF (N XOR V) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFLT -> { // if op1 < op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("CMP" + extOp1, r1 + ", " + r2, "UPDATE FLAGS WITH " + r2 + " - " + r1);
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r2 + " - " + r1);
                 add("BLT", dstConPunto, "IF (N XOR V) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IFGT -> { // if op1 > op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("CMP" + extOp1, r1 + ", " + r2, "UPDATE FLAGS WITH " + r2 + " - " + r1);
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r2 + " - " + r1);
                 add("BGT", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 0 GOTO " + dstConPunto);
             }
             case IFLE -> { // if op1 <= op2 goto dst
                 String r1 = load(instr.op1(), instr.op1().toAssembly(), instr.op1().tipo());
                 String r2 = load(instr.op2(), instr.op2().toAssembly(), instr.op2().tipo());
-                add("CMP" + extOp1, r1 + ", " + r2, "UPDATE FLAGS WITH " + r2 + " - " + r1);
+                add("CMP" + extOp1, r2 + ", " + r1, "UPDATE FLAGS WITH " + r2 + " - " + r1);
                 add("BLE", dstConPunto, "IF ((N XOR V) OR Z) FLAGS = 1 GOTO " + dstConPunto);
             }
             case IND_ASS -> { // dst[op2] = op1

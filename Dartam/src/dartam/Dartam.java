@@ -60,6 +60,7 @@ public class Dartam {
             if (!dartam.error) {
                 System.out.flush();
                 System.out.println("Compilacion finalizada");
+                System.out.println("Ficheros creados en la carpeta " + RUTA + nombreArchivo.substring(0, nombreArchivo.lastIndexOf(".")));
             }
         } catch (Exception e) {
             if (e instanceof FileNotFoundException) {

@@ -1,29 +1,62 @@
 Tabla de procedimientos
-from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
-show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
-inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
-scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
-into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] input
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parametros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parametros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parametros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parametros son CAR [] file, CAR [] output
 
 Tabla de variables
-arr: tipo ARRAY almacenando una estructura de datos de 28 bytes
-b: tipo POINTER TO ARRAY, TUPLE OR STRING
-c: tipo POINTER TO ARRAY, TUPLE OR STRING
-t_2: tipo CHAR inicializado a   almacenando una estructura de datos de 256 bytes
-t_1: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
-t_4: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+d_matrizcars: tipo INT
+t_40: tipo INT
+t_47: tipo INT
+t_45: tipo INT
+t_46: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_43: tipo STRING
+t_44: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_41: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_42: tipo CHAR
+t_2: tipo CHAR inicializado a a almacenando una estructura de datos de 256 bytes
+t_38: tipo INT
+t_1: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_39: tipo INT
+t_4: tipo POINTER TO ARRAY, TUPLE OR STRING
 t_3: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
-d_c: tipo INT
-t_6: tipo INT
-d_arr: tipo INT
-t_5: tipo INT
-t_8: tipo BOOLEAN inicializado a -1 almacenando una estructura de datos de 256 bytes
+t_6: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_5: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_8: tipo INT
 t_7: tipo INT
-d_arr_1: tipo INT
-t_9: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_9: tipo INT
+matrizcars: tipo ARRAY almacenando una estructura de datos de 36 bytes
+t_36: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_37: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_34: tipo INT
+t_35: tipo CHAR
+t_32: tipo CHAR inicializado a A almacenando una estructura de datos de 256 bytes
+t_33: tipo INT
+t_30: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_31: tipo BOOLEAN inicializado a 0
+t_29: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_27: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_28: tipo BOOLEAN inicializado a 0
+d_matrizcars_1: tipo INT
+t_25: tipo INT
+t_26: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_23: tipo INT
+t_24: tipo INT
+t_21: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_22: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_20: tipo POINTER TO ARRAY, TUPLE OR STRING
+c: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_18: tipo CHAR inicializado a d almacenando una estructura de datos de 256 bytes
+t_19: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_16: tipo INT
+t_17: tipo INT
+i: tipo INT
+j: tipo INT
 t: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
-c_1: tipo ARRAY almacenando una estructura de datos de 36 bytes
-d_c_2: tipo INT
-d_c_1: tipo INT
-t_10: tipo INT inicializado a 4 almacenando una estructura de datos de 256 bytes
-t_11: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_14: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_15: tipo INT
+t_12: tipo POINTER TO ARRAY, TUPLE OR STRING
+t_13: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_10: tipo CHAR inicializado a b almacenando una estructura de datos de 256 bytes
+t_11: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
