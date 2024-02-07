@@ -671,7 +671,7 @@ public class AnalizadorSemantico {
             opLista = opLista.siguienteOperando;
         }
         if (opLista != null) {
-            errores.add("La funcion " + nombre + " tiene " + params.size() + " parametros, pero se han pasado " + n);
+            errores.add("La funcion " + nombre + " recibe " + params.size() + " parametros, pero se han pasado más");
             indicarLocalizacion(fcall);
             error = true;
         }

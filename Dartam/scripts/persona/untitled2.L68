@@ -1,43 +1,36 @@
 00001102 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.16.01
-Created On: 07/02/2024 3:32:27
+Created On: 07/02/2024 11:20:46
 
-00000000                             1  ; ==============================================================================
-00000000                             2  ; TITLE       : persona
-00000000                             3  ; COMPILED BY : jartu
-00000000                             4  ; COMPILER BY : Juan Arturo Abaurrea Calafell
-00000000                             5  ;               Dani Salanova Dmitriyev
-00000000                             6  ;               Marta González Juan
-00000000                             7  ; ==============================================================================
-00000000                             8  
-00001000                             9              ORG         $1000       ; Origen
-00001000                            10  
-00001000                            11  str         DS.B 256                ; STRING
-00001100= 00                        12              DC.B 0                  ; Los strings y chars acaban en 0
-00001102                            13              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
-00001102                            14   
-00001102                            15  ; --------- INITIALIZATION          
-00001102                            16  persona0                            ; Etiqueta inicial (main)
-00001102                            17  
-00001102  7020                      18              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
-00001104  123C 0005                 19              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
-00001108  4E4F                      20              TRAP        #15         ; Interruption generated
-0000110A                            21  
-0000110A  703E                      22              MOVE.L      #62, D0     ; Task 62 of TRAP 15: Enable/Disable keyboard IRQ
-0000110C  323C 0103                 23              MOVE.W      #$0103, D1  ; Enable keyboard IRQ level 1 for key up and key down
-00001110  4E4F                      24              TRAP        #15         ; Interruption generated
-00001112                            25              
-00001112  41F8 1000                 26              LEA.L       str, A0     ; A0 = str
-00001116  2F08                      27              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
-00001118                            28  
-00001118  226F 0004                 29              MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
-0000111C  7002                      30              MOVE.L      #2, D0      ; Read string from keyboard and store at (A1), NULL (0) terminated, length returned in D1.W (max 80)
-0000111E  4E4F                      31              TRAP        #15         ; Interruption generated
-00001120  588F                      32              ADDA.L      #4, SP      ; SP = SP + 4
-00001122                            33              
-00001122  FFFF FFFF                 34              SIMHALT                 ; Fin de la ejecución
-00001126                            35                
-00001126                            36              END persona0            ; Fin del programa
+00000000                             1  
+00001000                             2              ORG         $1000       ; Origen
+00001000                             3  
+00001000                             4  str         DS.B 256                ; STRING
+00001100= 00                         5              DC.B 0                  ; Los strings y chars acaban en 0
+00001102                             6              DS.W 0                  ; No pueden haber variables en zonas de memoria impar
+00001102                             7   
+00001102                             8  ; --------- INITIALIZATION          
+00001102                             9  persona0                            ; Etiqueta inicial (main)
+00001102                            10  
+00001102  7020                      11              MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
+00001104  123C 0005                 12              MOVE.B      #5, D1      ; Enable exception processing (for input/output)
+00001108  4E4F                      13              TRAP        #15         ; Interruption generated
+0000110A                            14  
+0000110A  703E                      15              MOVE.L      #62, D0     ; Task 62 of TRAP 15: Enable/Disable keyboard IRQ
+0000110C  323C 0103                 16              MOVE.W      #$0103, D1  ; Enable keyboard IRQ level 1 for key up and key down
+00001110  4E4F                      17              TRAP        #15         ; Interruption generated
+00001112                            18              
+00001112  41F8 1000                 19              LEA.L       str, A0     ; A0 = str
+00001116  2F08                      20              MOVE.L      A0, -(SP)   ; PUSH INTO STACK A0
+00001118                            21  
+00001118  226F 0004                 22              MOVEA.L     4(SP), A1   ; A1 = POP FROM STACK
+0000111C  7002                      23              MOVE.L      #2, D0      ; Read string from keyboard and store at (A1), NULL (0) terminated, length returned in D1.W (max 80)
+0000111E  4E4F                      24              TRAP        #15         ; Interruption generated
+00001120  588F                      25              ADDA.L      #4, SP      ; SP = SP + 4
+00001122                            26              
+00001122  FFFF FFFF                 27              SIMHALT                 ; Fin de la ejecución
+00001126                            28                
+00001126                            29              END persona0            ; Fin del programa
 
 No errors detected
 No warnings generated

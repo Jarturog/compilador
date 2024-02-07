@@ -1,5 +1,5 @@
 ; ==============================================================================
-; TITLE       : persona
+; TITLE       : PERSONA
 ; COMPILED BY : jartu
 ; COMPILER BY : Juan Arturo Abaurrea Calafell
 ;               Dani Salanova Dmitriyev
@@ -53,10 +53,6 @@ persona0                            ; Etiqueta inicial (main)
 
             MOVE.L      #32, D0     ; Task 32 of TRAP 15: Hardware/Simulator
             MOVE.B      #5, D1      ; Enable exception processing (for input/output)
-            TRAP        #15         ; Interruption generated
-
-            MOVE.L      #62, D0     ; Task 62 of TRAP 15: Enable/Disable keyboard IRQ
-            MOVE.W      #$0103, D1  ; Enable keyboard IRQ level 1 for key up and key down
             TRAP        #15         ; Interruption generated
             JSR         e_inicio    ; Se ejecuta el main
             SIMHALT                 ; Fin de la ejecución

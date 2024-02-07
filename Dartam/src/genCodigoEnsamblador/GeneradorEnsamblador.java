@@ -130,12 +130,13 @@ public class GeneradorEnsamblador {
             preMain.add(margen("", "MOVE.B", "#5, D1", "Enable exception processing (for input/output)"));
             preMain.add(margen("", "TRAP", "#15", "Interruption generated"));
         }
-        if (scanUsado) {
-            preMain.add("");
-            preMain.add(margen("", "MOVE.L", "#62, D0", "Task 62 of TRAP 15: Enable/Disable keyboard IRQ"));
-            preMain.add(margen("", "MOVE.W", "#$0103, D1", "Enable keyboard IRQ level 1 for key up and key down"));
-            preMain.add(margen("", "TRAP", "#15", "Interruption generated"));
-        }
+        // HACE QUE EL TECLADO NO FUNCIONE, DESPUÉS DEL TRAP 15 DE LECTURA DE TECLADO DA BUS ERROR
+//        if (scanUsado) {
+//            preMain.add("");
+//            preMain.add(margen("", "MOVE.L", "#62, D0", "Task 62 of TRAP 15: Enable/Disable keyboard IRQ"));
+//            preMain.add(margen("", "MOVE.W", "#$0103, D1", "Enable keyboard IRQ level 1 for key up and key down"));
+//            preMain.add(margen("", "TRAP", "#15", "Interruption generated"));
+//        }
         add("");
         // inicializamos las tuplas
         //for (Map.Entry<String, VData> e : variables.entrySet()) {
@@ -216,7 +217,7 @@ public class GeneradorEnsamblador {
         if (op.isEstructura() || op.isArray() || op.isString()) {//op.isPuntero()) {//(!op.isLiteral()) {
             register = "A" + AnActual++;
             operacion = "LEA.L";
-        } else if (op.isPuntero()){
+        } else if (op.isPuntero()) {
             register = "A" + AnActual++;
             operacion = "MOVEA" + ext;
         } else {
@@ -473,7 +474,7 @@ public class GeneradorEnsamblador {
             }
             case SCAN -> { // scan(dst)
                 if (f.getParametros().size() != 1) {
-                    throw new Exception("Error, no se ha implementao el scan para tratar con " + f.getParametros().size() + " parámetros, sino con 1");
+                    throw new Exception("Error, no se ha implementado el scan para tratar con " + f.getParametros().size() + " parámetros, sino con 1");
                 }
                 if (scanUsado) {
                     return;
