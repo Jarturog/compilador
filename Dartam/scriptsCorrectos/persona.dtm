@@ -1,29 +1,51 @@
+inmut ent TURNOS;
+
 f vacio inicio(){
-	tupla persona p1;
-	nuevaPersona(p1, 1, 'a');
-	show((car[])(car)p1.let);
-	loop ent i:0; i < 1; i++ {
-		car[81] str;
+	TURNOS: 10;
+	car[81] str;
+	tupla persona p1, p2;
+	nuevaPersona(p1, 4, 'a');
+	nuevaPersona(p2, 7, 'm');
+	show("Bienvenido a la simulación");
+	show("Dos personas pensarán hasta que tengan hambre, momento en el que comerán");
+	show("");
+	loop ent i:0; i < ; i++ {
+		car[120] str: "La persona";
+		p1.hambre: p1.hambre + 1;
+		p2.hambre: p2.hambre + 1;
+		si ¬((p1.hambre > p1.maxHambre) | (p2.hambre > p2.maxHambre)) {
+			continuar;
+		}
+		show(str);
+		si p1.hambre > p1.maxHambre {
+			show((char[])p1.inicial);
+			p1.hambre: 0;
+		} no {
+			show((char[])p2.inicial);
+			p2.hambre: 0;
+		}
+		show("come");
 	}
-	show(str);
-	//p2: p1;
-	//show((car[])(car)p2.let);
-	//nuevaPersona(p2, 2, 'b');
-	//car [] aux: "hola";
-	//show(aux);
-	//show((car[])(car)61);
-	//car ox: p1.let;
-	//show((car[])ox);
-	//show((car[])p2.let);
+	show("");
+	show("Escribe lo que te ha parecido");
+	show("El resultado se guardará en opinion.txt");
+	scan(str);
+	into("opinion.txt", str);
+	show("Fin");
 }
 
-f vacio nuevaPersona(tupla persona p, ent idPersona, car inicial) {//car[] nombrePersona) {
-	p.id: idPersona;
+f vacio nuevaPersona(tupla persona p, ent maxHambre, car inicial) {//car[] nombrePersona) {
+	si maxHambre > TURNOS {
+		show("La persona con inicial");
+		show((car[])inicial);
+		show("Nunca pasará hambre");
+	}
+	p.maxHambre: maxHambre;
 	p.inicial: inicial; //p.nombre: nombrePersona;
 }
 
 tupla persona {
-	inmut ent id;
+	inmut ent maxHambre;
 	car inicial;
 	ent hambre: 0;
 }
