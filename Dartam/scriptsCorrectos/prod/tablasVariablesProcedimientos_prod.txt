@@ -1,0 +1,33 @@
+Tabla de procedimientos
+from: identificado por e_from, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] input
+product: identificado por e_product, devuelve 4 bytes de retorno y sus parámetros son ENT x siendo su variable de CI x, ENT y siendo su variable de CI y
+show: identificado por e_show, devuelve 0 bytes de retorno y sus parámetros son CAR [] output
+inicio: identificado por e_inicio, devuelve 0 bytes de retorno y no recibe parámetros
+scan: identificado por e_scan, devuelve 0 bytes de retorno y sus parámetros son CAR [] input
+into: identificado por e_into, devuelve 0 bytes de retorno y sus parámetros son CAR [] file, CAR [] output
+
+Tabla de variables
+a: tipo INT
+t_18: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_19: tipo INT
+t_2: tipo INT
+t_16: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+t_1: tipo INT inicializado a 3 almacenando una estructura de datos de 256 bytes
+t_17: tipo INT
+t_4: tipo BOOLEAN inicializado a 0
+t_3: tipo INT inicializado a 6 almacenando una estructura de datos de 256 bytes
+t_6: tipo STRING inicializado a 6 está almacenado en 'a' almacenando una estructura de datos de 256 bytes
+t_5: tipo STRING inicializado a 2 * 3 = 6 almacenando una estructura de datos de 256 bytes
+t_8: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t_7: tipo STRING inicializado a ERROR: 2*3 no ha dado 6 almacenando una estructura de datos de 256 bytes
+t_9: tipo INT inicializado a 0 almacenando una estructura de datos de 256 bytes
+t: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes
+x: tipo INT
+t_14: tipo BOOLEAN inicializado a 0
+y: tipo INT
+t_15: tipo INT
+z: tipo INT
+t_12: tipo INT
+t_13: tipo INT inicializado a 1 almacenando una estructura de datos de 256 bytes
+t_10: tipo BOOLEAN inicializado a 0
+t_11: tipo INT inicializado a 2 almacenando una estructura de datos de 256 bytes

@@ -1,0 +1,70 @@
+e_inicio: skip
+pmb e_inicio
+t = 2
+param_s t
+t_1 = 3
+param_s t_1
+call e_product, t_2
+a = t_2
+t_3 = 6
+if a == t_3 goto e
+t_4 = 0
+goto e_1
+e: skip
+t_4 = -1
+e_1: skip
+if t_4 == 0 goto e_3
+t_5 = 2 * 3 = 6
+param_s t_5
+call e_show
+t_6 = 6 está almacenado en 'a'
+param_s t_6
+call e_show
+goto e_2
+e_3: skip
+t_7 = ERROR: 2*3 no ha dado 6
+param_s t_7
+call e_show
+e_2: skip
+rtn e_inicio
+
+
+e_product: skip
+pmb e_product
+t_8 = 0
+z = t_8
+e_4: skip
+t_9 = 0
+if x /= t_9 goto e_7
+t_10 = 0
+goto e_8
+e_7: skip
+t_10 = -1
+e_8: skip
+if t_10 == 0 goto e_5
+t_11 = 2
+t_12 = x mod t_11
+t_13 = 1
+if t_12 == t_13 goto e_9
+t_14 = 0
+goto e_10
+e_9: skip
+t_14 = -1
+e_10: skip
+if t_14 == 0 goto e_12
+t_15 = z + y
+z = t_15
+goto e_11
+e_12: skip
+e_11: skip
+t_16 = 2
+t_17 = y * t_16
+y = t_17
+t_18 = 2
+t_19 = x / t_18
+x = t_19
+e_6: skip
+goto e_4
+e_5: skip
+rtn e_product, z
+

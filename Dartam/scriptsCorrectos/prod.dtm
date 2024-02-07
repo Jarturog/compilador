@@ -1,6 +1,11 @@
 f vacio inicio(){
 	ent a : product(2,3);
-	show((car[])(car)a);
+	si a = 6 {
+		show("2 * 3 = 6");
+		show("6 esta almacenado en a");
+	} no {
+		show("ERROR: 2*3 no ha dado 6");
+	}
 }
 
 f ent product(ent x, ent y){
