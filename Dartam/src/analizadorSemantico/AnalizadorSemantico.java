@@ -1666,14 +1666,14 @@ public class AnalizadorSemantico {
                 g3d.generarInstr(TipoInstr.MUL, new Operador(TipoVariable.INT, varInd), new Operador(TipoVariable.INT, t.bytes), new Operador(TipoVariable.INT, indexReal));
 
                 TipoVariable tArr = g3d.getTipoFromVar(varArray);
-                TipoVariable tNuevo = TipoVariable.getTipo(nuevoTipo, nuevoTipo.contains("[") || nuevoTipo.startsWith(ParserSym.terminalNames[ParserSym.TUPLE]));
+                TipoVariable tNuevo = TipoVariable.getTipo(tipoDesplazado, tipoDesplazado.contains("[") || tipoDesplazado.startsWith(ParserSym.terminalNames[ParserSym.TUPLE]));
                 // comprobacion de que el entero sea positivo???
                 //Esto funcionaria unicamente para a = b[i], no para b[i] = a
                 String nuevaVariable = g3d.nuevaVariable(tNuevo);
                 g3d.generarInstr(TipoInstr.IND_VAL, new Operador(tArr, varArray), new Operador(TipoVariable.INT, indexReal), new Operador(tNuevo, nuevaVariable));
                 varActual = nuevaVariable;
                 // calcular desplazamiento? ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                return nuevoTipo;
+                return tipoDesplazado;
             }
             case MEMBER_ACCESS -> {
                 SymbolOperand tupla = op.op;

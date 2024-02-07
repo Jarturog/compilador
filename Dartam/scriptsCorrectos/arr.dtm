@@ -1,21 +1,14 @@
 f vacio inicio() {
-	//ent[3][3] tensor;
-	car [3][3] matrizCars;
-	matrizCars[0][0]: 'a';
-	matrizCars[0][1]: 'b';
-	matrizCars[1][0]: 'd';
-	car[][] c;
-	loop ent i: 0; i < 3; i++ {
+	show("Impresion de las primeras 2*3*2=12 letras del abecedario");
+	car [2][3][2] matrizCars;
+	loop ent i: 0; i < 2; i++ {
 		loop ent j: 0; j < 3; j++ {
-			matrizCars[i][j]: 'A'+(car)(i+j);
-			show((car[])matrizCars[i][j]);
-		}
-	}
-	#loop ent i: 0; i < 3; i++ {
-		loop ent j: 0; j < 3; j++ {
-			loop ent k: 0; k < 3; k++ {
-				//tensor[i][j][k];
+			loop ent k: 0; k < 2; k++ {
+				matrizCars[i][j][k]: 'A'+(car)(((i * 3 * 2) + (j * 2) + k) \ 26);
+				show((car[])(matrizCars[i][j][k]));
 			}
 		}
-	}#
+	}
+	# comentario #
 }
+
